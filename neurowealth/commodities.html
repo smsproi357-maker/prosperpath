@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Real-time commodities market data and AI-driven analysis. Track Gold, Oil, Silver, and more with ProsperPath Insights.">
+    <title>Live Commodities Market | ProsperPath Insights</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">⚡</div>
+                    <span>ProsperPath</span>
+                </a>
+
+                <div class="nav-links" id="nav-links">
+                    <a href="wealth-guides.html">Wealth Guides</a>
+                    <a href="crypto-tracker.html" class="active"
+                        style="color: var(--color-accent); font-weight: 600;">Market</a>
+                    <a href="tool-reviews.html">Tool Reviews</a>
+                    <a href="ai-calculators.html">AI Calculators</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="about.html">About</a>
+                </div>
+
+                <div class="nav-actions"
+                    style="display: flex; align-items: center; gap: var(--space-4); position: relative;">
+                    <div class="settings-wrapper" style="position: relative;">
+                        <button id="settings-btn" class="settings-icon-btn" aria-label="Settings"
+                            onclick="toggleAuthMenu()">
+                            <span class="icon">⚙️</span>
+                        </button>
+                        <div id="auth-wrapper" class="auth-rolldown-container">
+                            <div id="auth-container">
+                                <!-- Google Sign-In button will render here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="page-header">
+        <div class="container">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+                <h1 data-animate>Global Commodities <span class="text-gradient">Market Pulse</span></h1>
+                <div class="currency-selector-wrapper" style="position: relative;">
+                    <button id="currency-selector-btn" class="currency-selector-btn" aria-label="Select Currency"
+                        title="Select Display Currency">
+                        💱 <span id="currency-label">USD</span>
+                    </button>
+                    <div id="currency-dropdown" class="currency-dropdown" style="display: none;">
+                    </div>
+                </div>
+            </div>
+            <p class="subtitle" data-animate>Real-time prices, supply chain analysis, and AI-driven resource trends.</p>
+
+            <!-- Market Stats -->
+            <div class="crypto-stats-bar" data-animate>
+                <div class="stat-item">
+                    <span class="label">Gold (Spot)</span>
+                    <span class="value val-greed">$2,642.10</span>
+                </div>
+                <div class="stat-item">
+                    <span class="label">Crude Oil</span>
+                    <span class="value">$74.20</span>
+                </div>
+                <div class="stat-item">
+                    <span class="label">Silver</span>
+                    <span class="value val-greed">$31.55</span>
+                </div>
+            </div>
+
+            <!-- Market Sub-Navigation -->
+            <div class="market-subnav-container" data-animate>
+                <div class="market-categories">
+                    <a href="crypto-tracker.html" class="subnav-link">Crypto</a>
+                    <a href="stocks.html" class="subnav-link">Stocks</a>
+                    <a href="commodities.html" class="subnav-link active">Commodities</a>
+                    <a href="forex.html" class="subnav-link">Forex</a>
+                    <a href="watchlist.html" class="subnav-link">Watchlist</a>
+                </div>
+                <div class="market-options">
+                    <a href="commodities.html" class="option-link active">Live Prices</a>
+                    <a href="commodities.html?filter=gainers" class="option-link">Top Gainers</a>
+                    <a href="commodities.html?filter=losers" class="option-link">Top Losers</a>
+                    <a href="commodities.html?filter=potential" class="option-link">Highest Potential</a>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="market-search-container" data-animate>
+                <input type="text" id="market-search" placeholder="Search Commodity (e.g. ZC=F)...">
+                <button id="search-btn" class="market-search-btn">Search</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Commodities Dashboard -->
+    <section class="section">
+        <div class="container">
+            <div class="crypto-grid" id="commodities-grid">
+                <!-- Loading State -->
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Connecting to Futures Markets...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 ProsperPath Insights. Data provided by TradingView.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js?v=rx1"></script>
+    <script src="ai-widget.js"></script>
+
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="google-auth.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            if (typeof initGoogleAuth === 'function') initGoogleAuth();
+        });
+    </script>
+</body>
+
+</html>

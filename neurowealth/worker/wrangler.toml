@@ -1,0 +1,12 @@
+name = "neurowealth-worker"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+
+[vars]
+# We will add Plaid env vars here later
+
+[[kv_namespaces]]
+binding = "USER_DATA"
+id = "35ae7f2928344a52b02b4a07b6cf1adc"

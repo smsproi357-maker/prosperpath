@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Expert insights on AI portfolio strategies, tax automation, and digital asset insurance. Stay informed with the latest in AI-powered investing and automated wealth management.">
+    <meta name="keywords"
+        content="AI investing blog, portfolio strategies, tax automation, digital asset insurance, robo advisor insights, automated wealth management blog">
+
+    <title>Blog | ProsperPath Insights - AI Investing & Wealth Management Articles</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">⚡</div>
+                    <span>ProsperPath</span>
+                </a>
+
+                <div class="nav-links" id="nav-links">
+                    <a href="wealth-guides.html">Wealth Guides</a>
+                    <a href="trade.html">Trade</a>
+                    <a href="portfolio.html">Portfolio</a>
+                    <a href="clarity-box.html">Clarity Box</a>
+                    <a href="tool-reviews.html">Tool Reviews</a>
+                    <a href="ai-calculators.html">AI Calculators</a>
+                    <a href="blog.html" class="active">Blog</a>
+                    <a href="about.html">About</a>
+                </div>
+
+                <div class="nav-actions"
+                    style="display: flex; align-items: center; gap: var(--space-4); position: relative;">
+                    <a href="index.html#get-started" class="btn btn-primary nav-cta">Get Started</a>
+
+                    <div class="settings-wrapper" style="position: relative;">
+                        <button id="settings-btn" class="settings-icon-btn" aria-label="Settings"
+                            onclick="toggleAuthMenu()">
+                            <span class="icon">⚙️</span>
+                        </button>
+                        <div id="auth-wrapper" class="auth-rolldown-container">
+                            <div id="auth-container">
+                                <!-- Google Sign-In button will render here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Blog</h1>
+            <p>Expert insights on AI-powered investing, tax automation, and digital asset security</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="section">
+        <div class="container">
+            <div class="category-pills" data-animate>
+                <button class="category-pill" data-category="live"
+                    style="display: flex; align-items: center; gap: 8px;">
+                    <span class="pulse-ring" style="width: 8px; height: 8px; position: static; flex-shrink: 0;"></span>
+                    Live Insights
+                </button>
+                <button class="category-pill" data-category="live-crypto"
+                    style="display: flex; align-items: center; gap: 8px;">
+                    <span class="pulse-ring"
+                        style="width: 8px; height: 8px; position: static; flex-shrink: 0; background: #f7931a;"></span>
+                    Live: Crypto
+                </button>
+                <button class="category-pill" data-category="live-stocks"
+                    style="display: flex; align-items: center; gap: 8px;">
+                    <span class="pulse-ring"
+                        style="width: 8px; height: 8px; position: static; flex-shrink: 0; background: #00ffbd;"></span>
+                    Live: Stocks
+                </button>
+                <button class="category-pill active" data-category="all">All Posts</button>
+                <button class="category-pill" data-category="portfolio">AI Portfolio Strategies</button>
+                <button class="category-pill" data-category="tax">Tax Automation</button>
+                <button class="category-pill" data-category="insurance">Digital Asset Insurance</button>
+            </div>
+
+            <div class="main-layout">
+                <div class="main-content">
+                    <!-- Featured Post -->
+                    <div class="card card-accent card-featured" style="margin-bottom: var(--space-8);" data-animate
+                        id="featured-post-container" data-category="portfolio">
+                        <div class="flex-between" style="margin-bottom: var(--space-4);">
+                            <span class="blog-category" id="featured-category">Featured</span>
+                            <span style="color: var(--color-text-muted); font-size: var(--text-sm);"
+                                id="featured-date">Jan 5, 2026</span>
+                        </div>
+                        <h2 style="font-size: var(--text-3xl); margin-bottom: var(--space-4);">
+                            <a href="blog-post.html#id=guide-ai-retirement" style="color: var(--color-text-primary);"
+                                id="featured-title">The Complete 2026 Guide
+                                to AI-Powered Automated Retirement Planning</a>
+                        </h2>
+                        <p style="font-size: var(--text-lg); margin-bottom: var(--space-6);" id="featured-excerpt">
+                            Everything you need to know
+                            about leveraging AI and machine learning to optimize your retirement portfolio, minimize
+                            taxes, and achieve your financial goals faster.</p>
+                        <div style="display: flex; gap: var(--space-4); align-items: center;">
+                            <a href="blog-post.html#id=guide-ai-retirement" class="btn btn-primary"
+                                id="featured-link">Read Article</a>
+                            <span style="color: var(--color-text-muted); font-size: var(--text-sm);"
+                                id="featured-read-time">15 min read</span>
+                        </div>
+                    </div>
+
+                    <!-- Live AI Insights Section -->
+                    <div id="live-blog-container">
+                        <!-- Dynamically populated by script.js -->
+                    </div>
+
+                    <!-- Blog Grid -->
+                    <div id="static-blog-grid" class="blog-grid" style="margin-top: var(--space-8);" data-animate>
+                        <!-- Post 1 -->
+                        <article class="card blog-card" data-category="portfolio">
+                            <div class="blog-card-image">📈</div>
+                            <span class="blog-category">AI Portfolio Strategies</span>
+                            <h3><a href="blog-post.html#id=ai-revolution-2026">How AI Is Revolutionizing Automated
+                                    Retirement Planning in
+                                    2026</a></h3>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Discover how machine
+                                learning algorithms are optimizing retirement portfolios for maximum growth and minimal
+                                risk.</p>
+                            <div class="blog-meta">
+                                <span>Jan 3, 2026</span>
+                                <span>•</span>
+                                <span>8 min read</span>
+                            </div>
+                        </article>
+
+                        <!-- Post 2 -->
+                        <article class="card blog-card" data-category="tax">
+                            <div class="blog-card-image">📋</div>
+                            <span class="blog-category">Tax Automation</span>
+                            <h3><a href="blog-post.html#id=top-10-tax-software">Top 10 AI Tax Software Reviews: Complete
+                                    Comparison Guide</a>
+                            </h3>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Our comprehensive
+                                review of the best AI-powered tax software for investors and traders in 2026.</p>
+                            <div class="blog-meta">
+                                <span>Jan 1, 2026</span>
+                                <span>•</span>
+                                <span>12 min read</span>
+                            </div>
+                        </article>
+
+                        <!-- Post 3 -->
+                        <article class="card blog-card" data-category="insurance">
+                            <div class="blog-card-image">🛡️</div>
+                            <span class="blog-category">Digital Asset Insurance</span>
+                            <h3><a href="blog-post.html#id=crypto-insurance-essentials">Essential Insurance Coverage for
+                                    Your Cryptocurrency
+                                    Holdings</a></h3>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Everything you need to
+                                know about protecting your digital assets from theft, hacks, and loss.</p>
+                            <div class="blog-meta">
+                                <span>Dec 28, 2025</span>
+                                <span>•</span>
+                                <span>6 min read</span>
+                            </div>
+                        </article>
+
+                        <!-- Post 4 -->
+                        <article class="card blog-card" data-category="portfolio">
+                            <div class="blog-card-image">🤖</div>
+                            <span class="blog-category">AI Portfolio Strategies</span>
+                            <h3><a href="blog-post.html#id=robo-vs-human-2026">Robo-Advisors vs Human Advisors: The 2026
+                                    Comparison</a></h3>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">A detailed analysis of
+                                when to use AI-powered robo-advisors and when human expertise is worth the cost.</p>
+                            <div class="blog-meta">
+                                <span>Dec 25, 2025</span>
+                                <span>•</span>
+                                <span>10 min read</span>
+                            </div>
+                        </article>
+
+                        <!-- Post 5 -->
+                        <article class="card blog-card" data-category="tax">
+                            <div class="blog-card-image">💰</div>
+                            <span class="blog-category">Tax Automation</span>
+                            <h3><a href="blog-post.html#id=tax-loss-harvesting-ai">Tax-Loss Harvesting: How AI Saves You
+                                    Thousands
+                                    Automatically</a></h3>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Learn how automated
+                                tax-loss harvesting works and which platforms do it best.</p>
+                            <div class="blog-meta">
+                                <span>Dec 22, 2025</span>
+                                <span>•</span>
+                                <span>7 min read</span>
+                            </div>
+                        </article>
+
+                        <!-- Post 6 -->
+                        <article class="card blog-card" data-category="insurance">
+                            <div class="blog-card-image">🔐</div>
+                            <span class="blog-category">Digital Asset Insurance</span>
+                            <h3><a href="blog-post.html#id=multi-sig-wallets">Multi-Signature Wallets: The Gold Standard
+                                    for Crypto
+                                    Security</a></h3>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Understanding multi-sig
+                                technology and how it protects your digital assets from unauthorized access.</p>
+                            <div class="blog-meta">
+                                <span>Dec 18, 2025</span>
+                                <span>•</span>
+                                <span>9 min read</span>
+                            </div>
+                        </article>
+
+                        <!-- Post 7 -->
+                        <article class="card blog-card" data-category="portfolio">
+                            <div class="blog-card-image">⚡</div>
+                            <span class="blog-category">AI Portfolio Strategies</span>
+                            <h3><a href="blog-post.html#id=factor-investing-ai">Factor Investing with AI: Capturing
+                                    Alpha in 2026</a></h3>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">How machine learning is
+                                identifying market inefficiencies and generating superior returns.</p>
+                            <div class="blog-meta">
+                                <span>Dec 15, 2025</span>
+                                <span>•</span>
+                                <span>11 min read</span>
+                            </div>
+                        </article>
+
+                        <!-- Post 8 -->
+                        <article class="card blog-card" data-category="tax">
+                            <div class="blog-card-image">📊</div>
+                            <span class="blog-category">Tax Automation</span>
+                            <h3><a href="blog-post.html#id=crypto-tax-made-easy">Crypto Tax Reporting Made Easy: AI
+                                    Tools That Do the Work</a>
+                            </h3>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Navigate the complex
+                                world of cryptocurrency taxation with intelligent automation.</p>
+                            <div class="blog-meta">
+                                <span>Dec 12, 2025</span>
+                                <span>•</span>
+                                <span>8 min read</span>
+                            </div>
+                        </article>
+
+                        <!-- Post 9 -->
+                        <article class="card blog-card" data-category="insurance">
+                            <div class="blog-card-image">🏦</div>
+                            <span class="blog-category">Digital Asset Insurance</span>
+                            <h3><a href="blog-post.html#id=institutional-custody">Institutional Custody Solutions:
+                                    Protecting Millions in
+                                    Crypto</a></h3>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">A look at how
+                                institutional investors secure large digital asset holdings.</p>
+                            <div class="blog-meta">
+                                <span>Dec 8, 2025</span>
+                                <span>•</span>
+                                <span>10 min read</span>
+                            </div>
+                        </article>
+                    </div>
+
+                    <!-- Load More -->
+                    <div style="text-align: center; margin-top: var(--space-10);">
+                        <button class="btn btn-secondary btn-lg">Load More Articles</button>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <div class="card" style="padding: var(--space-5);">
+                        <h4 style="margin-bottom: var(--space-4); font-size: var(--text-base);">📬 Newsletter</h4>
+                        <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Get weekly AI investing
+                            insights delivered to your inbox.</p>
+                        <form class="newsletter-form">
+                            <input type="hidden" name="access_key" value="1b466c63-74a3-48dc-a727-19ed779887b6">
+                            <input type="email" name="email" placeholder="Enter your email" required
+                                style="width: 100%; padding: var(--space-3); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); color: var(--color-text-primary); margin-bottom: var(--space-3);">
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Subscribe</button>
+                        </form>
+                    </div>
+
+                    <div class="card" style="padding: var(--space-5);">
+                        <h4 style="margin-bottom: var(--space-4); font-size: var(--text-base);">🔥 Trending</h4>
+                        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+                            <a href="blog-post.html#id=guide-ai-retirement"
+                                style="font-size: var(--text-sm); color: var(--color-text-secondary); line-height: 1.4;">1.
+                                Complete Guide to Automated Retirement Planning</a>
+                            <a href="blog-post.html#id=top-10-tax-software"
+                                style="font-size: var(--text-sm); color: var(--color-text-secondary); line-height: 1.4;">2.
+                                AI Tax Software Reviews 2026</a>
+                            <a href="blog-post.html#id=crypto-insurance-essentials"
+                                style="font-size: var(--text-sm); color: var(--color-text-secondary); line-height: 1.4;">3.
+                                Cryptocurrency Insurance Essentials</a>
+                            <a href="blog-post.html#id=robo-vs-human-2026"
+                                style="font-size: var(--text-sm); color: var(--color-text-secondary); line-height: 1.4;">4.
+                                Robo-Advisors vs Human Advisors</a>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo">
+                        <div class="logo-icon">⚡</div>
+                        <span>ProsperPath</span>
+                    </a>
+                    <p>Your trusted source for AI-powered investing insights, automated wealth management strategies,
+                        and digital asset security guidance.</p>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <div class="footer-links">
+                        <a href="wealth-guides.html">Wealth Guides</a>
+                        <a href="tool-reviews.html">Tool Reviews</a>
+                        <a href="ai-calculators.html">AI Calculators</a>
+                        <a href="blog.html">Blog</a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <div class="footer-links">
+                        <a href="blog.html">AI Portfolio Strategies</a>
+                        <a href="blog.html">Tax Automation</a>
+                        <a href="blog.html">Digital Asset Insurance</a>
+                        <a href="blog.html">Robo-Advisors</a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <div class="footer-links">
+                        <a href="about.html">About Us</a>
+                        <a href="#">Contact</a>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2026 ProsperPath Insights. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link" aria-label="Twitter">𝕏</a>
+                    <a href="#" class="social-link" aria-label="LinkedIn">in</a>
+                    <a href="#" class="social-link" aria-label="YouTube">▶</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="ai-widget.js"></script>
+
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="google-auth.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            if (typeof initGoogleAuth === 'function') initGoogleAuth();
+        });
+    </script>
+</body>
+
+</html>

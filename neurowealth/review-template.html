@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ProsperPath Insights Tool Review">
+    <title>Tool Review | ProsperPath Insights</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">⚡</div>
+                    <span>ProsperPath</span>
+                </a>
+
+                <div class="nav-links" id="nav-links">
+                    <a href="wealth-guides.html">Wealth Guides</a>
+                    <a href="trade.html">Trade</a>
+                    <a href="tool-reviews.html" class="active">Tool Reviews</a>
+                    <a href="ai-calculators.html">AI Calculators</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="about.html">About</a>
+                </div>
+
+                <div class="nav-actions"
+                    style="display: flex; align-items: center; gap: var(--space-4); position: relative;">
+                    <a href="index.html#get-started" class="btn btn-primary nav-cta">Get Started</a>
+
+                    <div class="settings-wrapper" style="position: relative;">
+                        <button id="settings-btn" class="settings-icon-btn" aria-label="Settings"
+                            onclick="toggleAuthMenu()">
+                            <span class="icon">⚙️</span>
+                        </button>
+                        <div id="auth-wrapper" class="auth-rolldown-container">
+                            <div id="auth-container">
+                                <!-- Google Sign-In button will render here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Review Header -->
+    <section class="blog-post-header">
+        <div class="container">
+            <span class="blog-category" id="review-category">Loading...</span>
+            <h1 id="review-title">Loading...</h1>
+            <div style="display: flex; justify-content: center; align-items: center; gap: var(--space-2); margin-top: var(--space-4);"
+                id="review-rating-container">
+                <!-- Rating Stars -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Review Content -->
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div class="main-layout">
+                <article class="main-content blog-post-content">
+                    <div class="card card-accent"
+                        style="margin-bottom: var(--space-8); border-left: 4px solid var(--color-primary);">
+                        <h3 style="margin-bottom: var(--space-2);">ProsperPath Verdict</h3>
+                        <p id="review-verdict" style="font-size: var(--text-lg);">...</p>
+                    </div>
+
+                    <div id="review-body">
+                        <!-- Dynamic Content injected here -->
+                    </div>
+
+                    <!-- Call to Action -->
+                    <div class="card card-accent" style="margin: var(--space-8) 0; text-align: center;">
+                        <h4 style="margin-bottom: var(--space-3);" id="review-cta-text">Interested in this tool?</h4>
+                        <div style="display: flex; gap: 10px; justify-content: center;">
+                            <a href="#" class="btn btn-primary" id="review-external-link">Visit Official Site</a>
+                            <a href="tool-reviews.html" class="btn btn-secondary">Compare Others</a>
+                        </div>
+                    </div>
+
+                </article>
+
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <div class="card" style="padding: var(--space-5);">
+                        <h4 style="margin-bottom: var(--space-4); font-size: var(--text-base);">📊 Key Specs</h4>
+                        <div id="review-specs"
+                            style="display: flex; flex-direction: column; gap: var(--space-3); font-size: var(--text-sm);">
+                            <!-- Dynamic Specs -->
+                        </div>
+                    </div>
+
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo">
+                        <div class="logo-icon">⚡</div>
+                        <span>ProsperPath</span>
+                    </a>
+                    <p>Your trusted source for AI-powered investing insights, automated wealth management strategies,
+                        and digital asset security guidance.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 ProsperPath Insights. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="google-auth.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            if (typeof initGoogleAuth === 'function') initGoogleAuth();
+        });
+    </script>
+</body>
+
+</html>

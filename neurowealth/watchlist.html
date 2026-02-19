@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="View your personal watchlist of crypto, stocks, and commodities. Track your favorite assets with ProsperPath Insights.">
+    <title>My Watchlist | ProsperPath Insights</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">⚡</div>
+                    <span>ProsperPath</span>
+                </a>
+
+                <div class="nav-links" id="nav-links">
+                    <a href="wealth-guides.html">Wealth Guides</a>
+                    <a href="trade.html">Trade</a>
+                    <a href="portfolio.html">Portfolio</a>
+                    <a href="tool-reviews.html">Tool Reviews</a>
+                    <a href="ai-calculators.html">AI Calculators</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="about.html">About</a>
+                </div>
+
+                <div class="nav-actions"
+                    style="display: flex; align-items: center; gap: var(--space-4); position: relative;">
+                    <div class="settings-wrapper" style="position: relative;">
+                        <button id="settings-btn" class="settings-icon-btn" aria-label="Settings"
+                            onclick="toggleAuthMenu()">
+                            <span class="icon">⚙️</span>
+                        </button>
+                        <div id="auth-wrapper" class="auth-rolldown-container">
+                            <div id="auth-container">
+                                <!-- Google Sign-In button will render here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="page-header">
+        <div class="container">
+            <h1 data-animate>My Personal <span class="text-gradient">Watchlist</span></h1>
+            <p class="subtitle" data-animate>Keep track of the assets you're most interested in. Live prices and
+                sentiment for your selected crypto, stocks, and commodities.</p>
+
+            <!-- Market Sub-Navigation -->
+            <div class="market-subnav-container" data-animate>
+                <div class="market-categories">
+                    <a href="crypto-tracker.html" class="subnav-link">Crypto</a>
+                    <a href="stocks.html" class="subnav-link">Stocks</a>
+                    <a href="commodities.html" class="subnav-link">Commodities</a>
+                    <a href="watchlist.html" class="subnav-link active">Watchlist</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Watchlist Grid -->
+    <section class="section">
+        <div class="container">
+            <div id="watchlist-empty-state" class="hidden" style="text-align: center; padding: 60px 20px;">
+                <div style="font-size: 64px; margin-bottom: 20px;">⭐</div>
+                <h3>Your watchlist is empty</h3>
+                <p>Start adding assets from the Market pages to track them here.</p>
+                <div style="margin-top: 30px;">
+                    <a href="crypto-tracker.html" class="btn btn-primary">Browse Markets</a>
+                </div>
+            </div>
+
+            <div class="crypto-grid" id="watchlist-grid">
+                <!-- Watchlist items added dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 ProsperPath Insights. Real-time market data.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js?v=rx1"></script>
+    <script src="ai-widget.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initWatchlistPage();
+        });
+
+        async function initWatchlistPage() {
+            const grid = document.getElementById('watchlist-grid');
+            const emptyState = document.getElementById('watchlist-empty-state');
+            const list = Watchlist.get();
+
+            if (!list || list.length === 0) {
+                grid.style.display = 'none';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.style.display = 'grid';
+            grid.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Fetching Live Data for your Watchlist...</p></div>';
+
+            const cryptoIds = list.filter(i => i.type === 'crypto').map(i => i.id);
+            const stockSymbols = list.filter(i => i.type === 'stock').map(i => i.symbol);
+            const commoditySymbols = list.filter(i => i.type === 'resource').map(i => i.symbol);
+
+            let cryptoData = [];
+            let marketData = [];
+
+            // Fetch Crypto Data
+            if (cryptoIds.length > 0) {
+                try {
+                    const res = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${cryptoIds.join(',')}&order=market_cap_desc&sparkline=false&price_change_percentage=24h`);
+                    if (res.ok) cryptoData = await res.json();
+                } catch (e) {
+                    console.warn('Crypto fetch error:', e);
+                }
+            }
+
+            // Fetch Stock/Commodity Data
+            const allSymbols = [...stockSymbols, ...commoditySymbols];
+            if (allSymbols.length > 0) {
+                try {
+                    marketData = await fetchFinnhubData(allSymbols);
+                } catch (e) {
+                    console.warn('Market fetch error:', e);
+                }
+            }
+
+            grid.innerHTML = '';
+
+            // Render Crypto Items
+            cryptoData.forEach(coin => {
+                renderWatchlistCard(coin, grid, 'crypto');
+            });
+
+            // Render Market Items
+            marketData.forEach(item => {
+                const type = stockSymbols.includes(item.symbol) ? 'stock' : 'resource';
+                renderWatchlistCard(item, grid, type);
+            });
+
+            // Check if anything was rendered (in case APIs failed)
+            if (grid.innerHTML === '') {
+                grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">Unable to fetch live data. Please try again later.</p>';
+            }
+        }
+
+        function renderWatchlistCard(item, container, type) {
+            let id, name, symbol, price, change, icon;
+
+            if (type === 'crypto') {
+                id = item.id;
+                name = item.name;
+                symbol = item.symbol;
+                price = item.current_price;
+                change = item.price_change_percentage_24h;
+                icon = item.image;
+            } else {
+                id = item.symbol;
+                name = item.longName || item.symbol;
+                symbol = item.symbol;
+                price = item.regularMarketPrice;
+                change = item.regularMarketChangePercent;
+
+                // Determine icon
+                if (type === 'resource') {
+                    if (symbol.includes('GLD')) icon = '🥇';
+                    else if (symbol.includes('SLV')) icon = '🥈';
+                    else if (symbol.includes('USO')) icon = '🛢️';
+                    else icon = '⛏️';
+                } else {
+                    icon = '📊';
+                }
+            }
+
+            const changeClass = change >= 0 ? 'trend-up' : 'trend-down';
+            const sign = change >= 0 ? '+' : '';
+
+            const link = document.createElement('a');
+            link.href = type === 'crypto' ? `crypto-detail.html#id=${id}` : `market-detail.html?symbol=${symbol}&type=${type}`;
+            link.style.textDecoration = 'none';
+            link.style.color = 'inherit';
+            link.className = 'watchlist-item-link';
+
+            link.innerHTML = `
+                <div class="crypto-card">
+                    <div class="coin-header">
+                        ${type === 'crypto' ? `<img src="${icon}" class="coin-icon">` : `<div class="coin-icon" style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:24px;">${icon}</div>`}
+                        <div class="coin-name-group">
+                            <h3>${name}</h3>
+                            <span class="coin-symbol">${symbol.replace('=F', '')}</span>
+                        </div>
+                    </div>
+                    <div class="coin-price">$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: (price < 1 ? 4 : 2) })}</div>
+                    <div class="coin-stats-row">
+                        <span class="sentiment-badge ${change > 0 ? 'bg-bullish' : 'bg-bearish'}">${type.toUpperCase()}</span>
+                        <span class="${changeClass}">${sign}${change.toFixed(2)}%</span>
+                    </div>
+                </div>
+            `;
+
+            // Add Watchlist Toggle
+            const watchlistBtn = document.createElement('button');
+            watchlistBtn.className = 'watchlist-btn active';
+            watchlistBtn.innerHTML = '★';
+            watchlistBtn.onclick = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                Watchlist.toggle({ id, type });
+                link.remove();
+                if (container.children.length === 0) {
+                    document.getElementById('watchlist-empty-state').classList.remove('hidden');
+                    container.style.display = 'none';
+                }
+            };
+
+            link.querySelector('.crypto-card').appendChild(watchlistBtn);
+            container.appendChild(link);
+        }
+    </script>
+</body>
+
+</html>

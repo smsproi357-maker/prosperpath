@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Free AI-powered financial calculators for retirement planning, tax optimization, portfolio allocation, and investment growth. Make smarter decisions with intelligent tools.">
+    <meta name="keywords"
+        content="AI calculators, retirement calculator, tax optimization calculator, portfolio calculator, investment calculator, automated retirement planning calculator">
+
+    <title>AI Calculators | ProsperPath Insights - Free Financial Planning Tools</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">⚡</div>
+                    <span>ProsperPath</span>
+                </a>
+
+                <div class="nav-links" id="nav-links">
+                    <a href="wealth-guides.html">Wealth Guides</a>
+                    <a href="trade.html">Trade</a>
+                    <a href="portfolio.html">Portfolio</a>
+                    <a href="clarity-box.html">Clarity Box</a>
+                    <a href="tool-reviews.html">Tool Reviews</a>
+                    <a href="ai-calculators.html" class="active">AI Calculators</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="about.html">About</a>
+                </div>
+
+                <div class="nav-actions"
+                    style="display: flex; align-items: center; gap: var(--space-4); position: relative;">
+                    <a href="index.html#get-started" class="btn btn-primary nav-cta">Get Started</a>
+
+                    <div class="settings-wrapper" style="position: relative;">
+                        <button id="settings-btn" class="settings-icon-btn" aria-label="Settings"
+                            onclick="toggleAuthMenu()">
+                            <span class="icon">⚙️</span>
+                        </button>
+                        <div id="auth-wrapper" class="auth-rolldown-container">
+                            <div id="auth-container">
+                                <!-- Google Sign-In button will render here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>AI Calculators</h1>
+            <p>Free AI-powered calculators to help you make smarter financial decisions</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="section">
+        <div class="container">
+            <div class="main-layout">
+                <div class="main-content">
+                    <!-- Calculator Grid -->
+                    <div class="grid grid-2" style="gap: var(--space-8);" data-animate>
+                        <!-- Retirement Calculator -->
+                        <div class="card calculator-card">
+                            <div class="card-icon">🎯</div>
+                            <h3>AI Retirement Planner</h3>
+                            <p style="margin-bottom: var(--space-6);">Calculate how much you need to save for retirement
+                                with AI-powered projections that account for inflation, market volatility, and Social
+                                Security.</p>
+                            <div
+                                style="background: var(--color-surface); padding: var(--space-5); border-radius: var(--radius-lg); margin-bottom: var(--space-5);">
+                                <div style="margin-bottom: var(--space-4);">
+                                    <label
+                                        style="display: block; font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-2);">Current
+                                        Age</label>
+                                    <input type="number" value="35" id="retire-current-age"
+                                        style="width: 100%; padding: var(--space-3); background: var(--color-secondary); border: 1px solid var(--color-border); border-radius: var(--radius-md); color: var(--color-text-primary);">
+                                </div>
+                                <div style="margin-bottom: var(--space-4);">
+                                    <label
+                                        style="display: block; font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-2);">Target
+                                        Retirement Age</label>
+                                    <input type="number" value="65" id="retire-target-age"
+                                        style="width: 100%; padding: var(--space-3); background: var(--color-secondary); border: 1px solid var(--color-border); border-radius: var(--radius-md); color: var(--color-text-primary);">
+                                </div>
+                                <div style="margin-bottom: var(--space-4);">
+                                    <label
+                                        style="display: block; font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-2);">Current
+                                        Savings ($)</label>
+                                    <input type="number" value="50000" id="retire-current-savings"
+                                        style="width: 100%; padding: var(--space-3); background: var(--color-secondary); border: 1px solid var(--color-border); border-radius: var(--radius-md); color: var(--color-text-primary);">
+                                </div>
+                                <button class="btn btn-primary" id="btn-calculate-retirement"
+                                    style="width: 100%;">Calculate Retirement</button>
+                            </div>
+                            <div
+                                style="text-align: center; padding: var(--space-4); background: rgba(0, 212, 170, 0.1); border-radius: var(--radius-md);">
+                                <div
+                                    style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-1);">
+                                    Estimated Monthly Need</div>
+                                <div style="font-size: var(--text-2xl); font-weight: 700; color: var(--color-accent);"
+                                    id="retire-result">
+                                    $8,450/mo</div>
+                            </div>
+                        </div>
+
+                        <!-- Tax Optimization Calculator -->
+                        <div class="card calculator-card">
+                            <div class="card-icon">📊</div>
+                            <h3>Tax Optimization Analyzer</h3>
+                            <p style="margin-bottom: var(--space-6);">Discover potential tax savings through AI analysis
+                                of your investment strategy, including tax-loss harvesting and asset location
+                                optimization.</p>
+                            <div
+                                style="background: var(--color-surface); padding: var(--space-5); border-radius: var(--radius-lg); margin-bottom: var(--space-5);">
+                                <div style="margin-bottom: var(--space-4);">
+                                    <label
+                                        style="display: block; font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-2);">Annual
+                                        Income ($)</label>
+                                    <input type="number" value="150000" id="tax-income"
+                                        style="width: 100%; padding: var(--space-3); background: var(--color-secondary); border: 1px solid var(--color-border); border-radius: var(--radius-md); color: var(--color-text-primary);">
+                                </div>
+                                <div style="margin-bottom: var(--space-4);">
+                                    <label
+                                        style="display: block; font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-2);">Portfolio
+                                        Value ($)</label>
+                                    <input type="number" value="250000" id="tax-portfolio"
+                                        style="width: 100%; padding: var(--space-3); background: var(--color-secondary); border: 1px solid var(--color-border); border-radius: var(--radius-md); color: var(--color-text-primary);">
+                                </div>
+                                <div style="margin-bottom: var(--space-4);">
+                                    <label
+                                        style="display: block; font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-2);">Filing
+                                        Status</label>
+                                    <select id="tax-status"
+                                        style="width: 100%; padding: var(--space-3); background: var(--color-secondary); border: 1px solid var(--color-border); border-radius: var(--radius-md); color: var(--color-text-primary);">
+                                        <option>Single</option>
+                                        <option>Married Filing Jointly</option>
+                                        <option>Married Filing Separately</option>
+                                        <option>Head of Household</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-primary" id="btn-calculate-tax" style="width: 100%;">Analyze Tax
+                                    Savings</button>
+                            </div>
+                            <div
+                                style="text-align: center; padding: var(--space-4); background: rgba(0, 212, 170, 0.1); border-radius: var(--radius-md);">
+                                <div
+                                    style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-1);">
+                                    Potential Annual Savings</div>
+                                <div style="font-size: var(--text-2xl); font-weight: 700; color: var(--color-accent);"
+                                    id="tax-result">
+                                    $4,250</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- More Calculators -->
+                    <div class="grid grid-3" style="gap: var(--space-6); margin-top: var(--space-10);" data-animate>
+                        <!-- Portfolio Allocation -->
+                        <div class="card calculator-card" style="padding: var(--space-6);">
+                            <div class="card-icon" style="width: 56px; height: 56px; margin-bottom: var(--space-4);">⚖️
+                            </div>
+                            <h3 style="font-size: var(--text-lg);">Portfolio Allocator</h3>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Get personalized asset
+                                allocation based on your risk tolerance.</p>
+
+                            <div style="margin-bottom: var(--space-3);">
+                                <label style="display: block; font-size: var(--text-xs); margin-bottom: 5px;">Investment
+                                    ($)</label>
+                                <input type="number" id="port-amount" value="10000"
+                                    style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-background);">
+                            </div>
+                            <div style="margin-bottom: var(--space-3);">
+                                <label style="display: block; font-size: var(--text-xs); margin-bottom: 5px;">Risk
+                                    Level</label>
+                                <select id="port-risk"
+                                    style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-background);">
+                                    <option value="low">Conservative</option>
+                                    <option value="med" selected>Balanced</option>
+                                    <option value="high">Aggressive</option>
+                                </select>
+                            </div>
+
+                            <div
+                                style="padding: 10px; background: rgba(0, 212, 170, 0.1); border-radius: 8px; margin-bottom: 10px;">
+                                <span
+                                    style="display: block; font-size: 11px; color: var(--color-text-muted); text-align: center; margin-bottom: 5px;">Rec.
+                                    Allocation</span>
+                                <div id="port-result"
+                                    style="font-size: 13px; font-weight: 600; color: var(--color-accent); line-height: 1.4;">
+                                    60% Stocks<br>40% Bonds
+                                </div>
+                            </div>
+
+                            <button class="btn btn-secondary" id="btn-calculate-port"
+                                style="width: 100%;">Calculate</button>
+                        </div>
+
+                        <!-- Compound Interest -->
+                        <div class="card calculator-card" style="padding: var(--space-6);">
+                            <div class="card-icon" style="width: 56px; height: 56px; margin-bottom: var(--space-4);">📈
+                            </div>
+                            <h3 style="font-size: var(--text-lg);">Compound Growth</h3>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">See how your
+                                investments grow over time with compound interest.</p>
+
+                            <div style="margin-bottom: var(--space-3);">
+                                <label style="display: block; font-size: var(--text-xs); margin-bottom: 5px;">Principal
+                                    ($)</label>
+                                <input type="number" id="ci-principal" value="1000"
+                                    style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-background);">
+                            </div>
+                            <div style="margin-bottom: var(--space-3);">
+                                <label style="display: block; font-size: var(--text-xs); margin-bottom: 5px;">Monthly
+                                    Add ($)</label>
+                                <input type="number" id="ci-monthly" value="500"
+                                    style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-background);">
+                            </div>
+                            <div style="margin-bottom: var(--space-3);">
+                                <label style="display: block; font-size: var(--text-xs); margin-bottom: 5px;">Rate
+                                    (%)</label>
+                                <input type="number" id="ci-rate" value="8"
+                                    style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-background);">
+                            </div>
+                            <div style="margin-bottom: var(--space-3);">
+                                <label
+                                    style="display: block; font-size: var(--text-xs); margin-bottom: 5px;">Years</label>
+                                <input type="number" id="ci-years" value="20"
+                                    style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-background);">
+                            </div>
+
+                            <div
+                                style="padding: 10px; background: rgba(0, 212, 170, 0.1); border-radius: 8px; margin-bottom: 10px; text-align: center;">
+                                <span style="display: block; font-size: 11px; color: var(--color-text-muted);">Future
+                                    Value</span>
+                                <strong id="ci-result"
+                                    style="font-size: 18px; color: var(--color-accent);">$296,000</strong>
+                            </div>
+
+                            <button class="btn btn-secondary" id="btn-calculate-ci"
+                                style="width: 100%;">Calculate</button>
+                        </div>
+
+                        <!-- FIRE Calculator -->
+                        <div class="card calculator-card" style="padding: var(--space-6);">
+                            <div class="card-icon" style="width: 56px; height: 56px; margin-bottom: var(--space-4);">🔥
+                            </div>
+                            <h3 style="font-size: var(--text-lg);">FIRE Calculator</h3>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Calculate when you can
+                                Retire Early based on spending.</p>
+
+                            <div style="margin-bottom: var(--space-3);">
+                                <label style="display: block; font-size: var(--text-xs); margin-bottom: 5px;">Annual
+                                    Spend ($)</label>
+                                <input type="number" id="fire-spend" value="40000"
+                                    style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-background);">
+                            </div>
+                            <div style="margin-bottom: var(--space-3);">
+                                <label style="display: block; font-size: var(--text-xs); margin-bottom: 5px;">Net Worth
+                                    ($)</label>
+                                <input type="number" id="fire-worth" value="200000"
+                                    style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--color-border); background: var(--color-background);">
+                            </div>
+
+                            <div
+                                style="padding: 10px; background: rgba(0, 212, 170, 0.1); border-radius: 8px; margin-bottom: 10px; text-align: center;">
+                                <span style="display: block; font-size: 11px; color: var(--color-text-muted);">Years to
+                                    FIRE</span>
+                                <strong id="fire-result" style="font-size: 18px; color: var(--color-accent);">21
+                                    Years</strong>
+                            </div>
+
+                            <button class="btn btn-secondary" id="btn-calculate-fire"
+                                style="width: 100%;">Calculate</button>
+                        </div>
+
+                        <!-- 401k Optimizer -->
+                        <div class="card calculator-card" style="padding: var(--space-6);">
+                            <div class="card-icon" style="width: 56px; height: 56px; margin-bottom: var(--space-4);">💼
+                            </div>
+                            <h3 style="font-size: var(--text-lg);">401(k) Optimizer</h3>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Maximize employer
+                                matching and optimize contributions.</p>
+                            <button class="btn btn-secondary" style="width: 100%;">Open Calculator</button>
+                        </div>
+
+                        <!-- Crypto Tax -->
+                        <div class="card calculator-card" style="padding: var(--space-6);">
+                            <div class="card-icon" style="width: 56px; height: 56px; margin-bottom: var(--space-4);">₿
+                            </div>
+                            <h3 style="font-size: var(--text-lg);">Crypto Tax Estimator</h3>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Estimate taxes on your
+                                cryptocurrency gains and losses.</p>
+                            <button class="btn btn-secondary" style="width: 100%;">Open Calculator</button>
+                        </div>
+
+                        <!-- Risk Assessment -->
+                        <div class="card calculator-card" style="padding: var(--space-6);">
+                            <div class="card-icon" style="width: 56px; height: 56px; margin-bottom: var(--space-4);">🎲
+                            </div>
+                            <h3 style="font-size: var(--text-lg);">Risk Assessment</h3>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Discover your
+                                investment risk tolerance profile.</p>
+                            <button class="btn btn-secondary" style="width: 100%;">Take Assessment</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <div class="card" style="padding: var(--space-5);">
+                        <h4 style="margin-bottom: var(--space-4); font-size: var(--text-base);">🔥 Popular Calculators
+                        </h4>
+                        <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+                            <a href="#" style="font-size: var(--text-sm); color: var(--color-text-secondary);">→
+                                Retirement Planner</a>
+                            <a href="#" style="font-size: var(--text-sm); color: var(--color-text-secondary);">→ Tax
+                                Savings Analyzer</a>
+                            <a href="#" style="font-size: var(--text-sm); color: var(--color-text-secondary);">→ FIRE
+                                Calculator</a>
+                            <a href="#" style="font-size: var(--text-sm); color: var(--color-text-secondary);">→
+                                Portfolio Rebalancer</a>
+                        </div>
+                    </div>
+
+                    <div class="card" style="padding: var(--space-5);">
+                        <h4 style="margin-bottom: var(--space-4); font-size: var(--text-base);">📬 Get Updates</h4>
+                        <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">New calculators and tools
+                            delivered to your inbox.</p>
+                        <form class="newsletter-form">
+                            <input type="hidden" name="access_key" value="1b466c63-74a3-48dc-a727-19ed779887b6">
+                            <input type="email" name="email" placeholder="Enter your email" required
+                                style="width: 100%; padding: var(--space-3); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); color: var(--color-text-primary); margin-bottom: var(--space-3);">
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Subscribe</button>
+                        </form>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo">
+                        <div class="logo-icon">⚡</div>
+                        <span>ProsperPath</span>
+                    </a>
+                    <p>Your trusted source for AI-powered investing insights, automated wealth management strategies,
+                        and digital asset security guidance.</p>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <div class="footer-links">
+                        <a href="wealth-guides.html">Wealth Guides</a>
+                        <a href="tool-reviews.html">Tool Reviews</a>
+                        <a href="ai-calculators.html">AI Calculators</a>
+                        <a href="blog.html">Blog</a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <div class="footer-links">
+                        <a href="blog.html">AI Portfolio Strategies</a>
+                        <a href="blog.html">Tax Automation</a>
+                        <a href="blog.html">Digital Asset Insurance</a>
+                        <a href="blog.html">Robo-Advisors</a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <div class="footer-links">
+                        <a href="about.html">About Us</a>
+                        <a href="#">Contact</a>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2026 ProsperPath Insights. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link" aria-label="Twitter">𝕏</a>
+                    <a href="#" class="social-link" aria-label="LinkedIn">in</a>
+                    <a href="#" class="social-link" aria-label="YouTube">▶</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="ai-widget.js"></script>
+
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="google-auth.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            if (typeof initGoogleAuth === 'function') initGoogleAuth();
+        });
+    </script>
+</body>
+
+</html>

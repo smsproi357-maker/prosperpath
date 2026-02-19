@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="In-depth AI tool reviews for investing, tax automation, and digital asset security. Compare robo-advisors, AI tax software, and crypto security tools with expert analysis.">
+    <meta name="keywords"
+        content="AI tool reviews, robo advisor reviews, AI tax software reviews, crypto security tools, automated investing platforms, wealth management tools">
+
+    <title>Tool Reviews | ProsperPath Insights - AI Investing & Tax Software Reviews</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">⚡</div>
+                    <span>ProsperPath</span>
+                </a>
+
+                <div class="nav-links" id="nav-links">
+                    <a href="wealth-guides.html">Wealth Guides</a>
+                    <a href="crypto-tracker.html" style="color: var(--color-accent); font-weight: 600;">Market</a>
+                    <a href="portfolio.html">Portfolio</a>
+                    <a href="clarity-box.html">Clarity Box</a>
+                    <a href="tool-reviews.html" class="active">Tool Reviews</a>
+                    <a href="ai-calculators.html">AI Calculators</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="about.html">About</a>
+                </div>
+
+                <div class="nav-actions"
+                    style="display: flex; align-items: center; gap: var(--space-4); position: relative;">
+                    <a href="index.html#get-started" class="btn btn-primary nav-cta">Get Started</a>
+
+                    <div class="settings-wrapper" style="position: relative;">
+                        <button id="settings-btn" class="settings-icon-btn" aria-label="Settings"
+                            onclick="toggleAuthMenu()">
+                            <span class="icon">⚙️</span>
+                        </button>
+                        <div id="auth-wrapper" class="auth-rolldown-container">
+                            <div id="auth-container">
+                                <!-- Google Sign-In button will render here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Tool Reviews</h1>
+            <p>Expert analysis and comparisons of the best AI-powered financial tools</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="section">
+        <div class="container">
+            <div class="main-layout">
+                <div class="main-content">
+                    <!-- Category Filters -->
+                    <div class="category-pills" style="justify-content: flex-start; margin-bottom: var(--space-8);"
+                        data-animate>
+                        <button class="category-pill active" data-category="all">All Tools</button>
+                        <button class="category-pill" data-category="robo">Robo-Advisors</button>
+                        <button class="category-pill" data-category="tax">Tax Software</button>
+                        <button class="category-pill" data-category="crypto">Crypto Security</button>
+                        <button class="category-pill" data-category="planning">Planning Tools</button>
+                    </div>
+
+                    <!-- Featured Review -->
+                    <div class="card card-accent" style="margin-bottom: var(--space-8);" data-animate>
+                        <div class="flex-between"
+                            style="flex-wrap: wrap; gap: var(--space-4); margin-bottom: var(--space-4);">
+                            <div style="display: flex; align-items: center; gap: var(--space-4);">
+                                <div class="tool-logo" style="width: 60px; height: 60px; font-size: var(--text-2xl);">🧠
+                                </div>
+                                <div>
+                                    <span class="blog-category">Editor's Choice</span>
+                                    <h2 style="font-size: var(--text-2xl); margin-top: var(--space-2);">Magnifi Review
+                                    </h2>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="rating" style="font-size: var(--text-lg); margin-bottom: var(--space-1);">
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                </div>
+                                <span style="color: var(--color-text-muted); font-size: var(--text-sm);">5.0 /
+                                    5.0</span>
+                            </div>
+                        </div>
+                        <p style="font-size: var(--text-lg); margin-bottom: var(--space-6);">The most advanced
+                            AI-powered robo-advisor we've tested. Features automatic tax-loss harvesting, intelligent
+                            rebalancing, and personalized portfolio optimization.</p>
+                        <div style="display: flex; gap: var(--space-4); flex-wrap: wrap;">
+                            <a href="review-template.html#id=magnifi" class="btn btn-primary">Read Full Review</a>
+                            <a href="https://magnifi.com/" target="_blank" rel="noopener noreferrer"
+                                class="btn btn-secondary">Visit Official Site</a>
+                        </div>
+                    </div>
+
+                    <!-- Reviews Grid -->
+                    <div class="section-header" style="text-align: left; margin-top: var(--space-10);" data-animate>
+                        <h2>All Tool Reviews</h2>
+                    </div>
+
+                    <div class="grid grid-2" style="gap: var(--space-6);" data-animate>
+                        <!-- Review Card 1 -->
+                        <div class="card" style="padding: var(--space-6);">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-4);">
+                                <div style="display: flex; gap: var(--space-3);">
+                                    <div class="tool-logo">🪙</div>
+                                    <div>
+                                        <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-1);">
+                                            CoinTracker
+                                        </h3>
+                                        <span style="color: var(--color-text-muted); font-size: var(--text-sm);">Tax
+                                            Software</span>
+                                    </div>
+                                </div>
+                                <div class="rating">
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star empty">★</span>
+                                </div>
+                            </div>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">The world's leading
+                                crypto tax reporter. Automatically syncs with 500+ exchanges to generate IRS-ready tax
+                                forms in minutes.</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <a href="review-template.html#id=cointracker" class="btn btn-sm btn-ghost">Read Review
+                                    →</a>
+                                <a href="https://www.cointracker.io/" target="_blank" rel="noopener noreferrer"
+                                    class="btn btn-sm btn-secondary">Visit Site</a>
+                            </div>
+                        </div>
+
+                        <!-- Review Card 2 -->
+                        <div class="card" style="padding: var(--space-6);">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-4);">
+                                <div style="display: flex; gap: var(--space-3);">
+                                    <div class="tool-logo">🔒</div>
+                                    <div>
+                                        <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-1);">
+                                            Ledger</h3>
+                                        <span
+                                            style="color: var(--color-text-muted); font-size: var(--text-sm);">Security</span>
+                                    </div>
+                                </div>
+                                <div class="rating">
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                </div>
+                            </div>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">The gold standard of
+                                cold storage. Protect your digital assets with institutional-grade security and a
+                                user-friendly software ecosystem.</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <a href="review-template.html#id=ledger" class="btn btn-sm btn-ghost">Read Review →</a>
+                                <a href="https://www.ledger.com/" target="_blank" rel="noopener noreferrer"
+                                    class="btn btn-sm btn-secondary">Visit Site</a>
+                            </div>
+                        </div>
+
+                        <!-- Review Card 3 -->
+                        <div class="card" style="padding: var(--space-6);">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-4);">
+                                <div style="display: flex; gap: var(--space-3);">
+                                    <div class="tool-logo">📈</div>
+                                    <div>
+                                        <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-1);">
+                                            NewRetirement
+                                        </h3>
+                                        <span
+                                            style="color: var(--color-text-muted); font-size: var(--text-sm);">Retirement</span>
+                                    </div>
+                                </div>
+                                <div class="rating">
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star empty">★</span>
+                                </div>
+                            </div>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Professional-grade
+                                retirement modeling. Uses advanced Monte Carlo simulations to find your optimal path to
+                                financial independence.</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <a href="review-template.html#id=newretirement" class="btn btn-sm btn-ghost">Read Review
+                                    →</a>
+                                <a href="https://www.newretirement.com/" target="_blank" rel="noopener noreferrer"
+                                    class="btn btn-sm btn-secondary">Visit Site</a>
+                            </div>
+                        </div>
+
+                        <!-- Review Card 4 -->
+                        <div class="card" style="padding: var(--space-6);">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-4);">
+                                <div style="display: flex; gap: var(--space-3);">
+                                    <div class="tool-logo">🤖</div>
+                                    <div>
+                                        <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-1);">Betterment
+                                        </h3>
+                                        <span
+                                            style="color: var(--color-text-muted); font-size: var(--text-sm);">Robo-Advisor</span>
+                                    </div>
+                                </div>
+                                <div class="rating">
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                </div>
+                            </div>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Passive investing made
+                                easy. Automated rebalancing, socially responsible portfolios, and goal-based tracking
+                                for long-term growth.</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <a href="review-template.html#id=betterment" class="btn btn-sm btn-ghost">Read Review
+                                    →</a>
+                                <a href="https://www.betterment.com/" target="_blank" rel="noopener noreferrer"
+                                    class="btn btn-sm btn-secondary">Visit Site</a>
+                            </div>
+                        </div>
+
+                        <!-- Review Card 5 -->
+                        <div class="card" style="padding: var(--space-6);">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-4);">
+                                <div style="display: flex; gap: var(--space-3);">
+                                    <div class="tool-logo">�</div>
+                                    <div>
+                                        <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-1);">
+                                            Q.ai</h3>
+                                        <span
+                                            style="color: var(--color-text-muted); font-size: var(--text-sm);">Investing</span>
+                                    </div>
+                                </div>
+                                <div class="rating">
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star empty">★</span>
+                                </div>
+                            </div>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">AI-powered investing
+                                kits that rebalance weekly. Leverage hedge-fund level quant models and downside
+                                protection features.</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <a href="review-template.html#id=q-ai" class="btn btn-sm btn-ghost">Read Review →</a>
+                                <a href="https://q.ai/" target="_blank" rel="noopener noreferrer"
+                                    class="btn btn-sm btn-secondary">Visit Site</a>
+                            </div>
+                        </div>
+
+                        <!-- Review Card 6 -->
+                        <div class="card" style="padding: var(--space-6);">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-4);">
+                                <div style="display: flex; gap: var(--space-3);">
+                                    <div class="tool-logo">📱</div>
+                                    <div>
+                                        <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-1);">
+                                            Monarch Money</h3>
+                                        <span
+                                            style="color: var(--color-text-muted); font-size: var(--text-sm);">Planning</span>
+                                    </div>
+                                </div>
+                                <div class="rating">
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star">★</span>
+                                    <span class="rating-star empty">★</span>
+                                </div>
+                            </div>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">The ultimate financial
+                                command center. Track your entire net worth, manage custom budgets, and gain AI-driven
+                                cash flow insights.</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <a href="review-template.html#id=monarch-money" class="btn btn-sm btn-ghost">Read Review
+                                    →</a>
+                                <a href="https://www.monarchmoney.com/" target="_blank" rel="noopener noreferrer"
+                                    class="btn btn-sm btn-secondary">Visit Site</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comparison Section -->
+                    <div class="section-header" style="text-align: left; margin-top: var(--space-10);" data-animate>
+                        <h2>Quick Comparisons</h2>
+                        <p>Head-to-head comparisons of popular tools</p>
+                    </div>
+
+                    <div class="grid grid-3" data-animate>
+                        <div class="card" style="text-align: center; padding: var(--space-6);">
+                            <h4 style="margin-bottom: var(--space-3);">Magnifi vs Betterment</h4>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Robo-advisor showdown
+                            </p>
+                            <a href="compare.html#id=magnifi-vs-betterment" class="btn btn-sm btn-secondary">Compare</a>
+                        </div>
+
+                        <div class="card" style="text-align: center; padding: var(--space-6);">
+                            <h4 style="margin-bottom: var(--space-3);">CoinTracker vs Koinly</h4>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Crypto tax battle
+                            </p>
+                            <a href="compare.html#id=cointracker-vs-koinly" class="btn btn-sm btn-secondary">Compare</a>
+                        </div>
+
+                        <div class="card" style="text-align: center; padding: var(--space-6);">
+                            <h4 style="margin-bottom: var(--space-3);">Ledger vs Trezor</h4>
+                            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Hardware security</p>
+                            <a href="compare.html#id=ledger-vs-trezor" class="btn btn-sm btn-secondary">Compare</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <div class="card" style="padding: var(--space-5);">
+                        <h4 style="margin-bottom: var(--space-4); font-size: var(--text-base);">🏆 Top Rated</h4>
+                        <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+                            <div style="display: flex; align-items: center; gap: var(--space-3);">
+                                <span style="font-size: var(--text-xl);">🥇</span>
+                                <div>
+                                    <div style="font-weight: 600; font-size: var(--text-sm);">Magnifi</div>
+                                    <div style="font-size: var(--text-xs); color: var(--color-text-muted);">5.0/5 Rating
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: var(--space-3);">
+                                <span style="font-size: var(--text-xl);">🥈</span>
+                                <div>
+                                    <div style="font-weight: 600; font-size: var(--text-sm);">CoinTracker</div>
+                                    <div style="font-size: var(--text-xs); color: var(--color-text-muted);">5.0/5 Rating
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: var(--space-3);">
+                                <span style="font-size: var(--text-xl);">🥉</span>
+                                <div>
+                                    <div style="font-weight: 600; font-size: var(--text-sm);">Monarch Money</div>
+                                    <div style="font-size: var(--text-xs); color: var(--color-text-muted);">5.0/5 Rating
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo">
+                        <div class="logo-icon">⚡</div>
+                        <span>ProsperPath</span>
+                    </a>
+                    <p>Your trusted source for AI-powered investing insights, automated wealth management strategies,
+                        and digital asset security guidance.</p>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <div class="footer-links">
+                        <a href="wealth-guides.html">Wealth Guides</a>
+                        <a href="tool-reviews.html">Tool Reviews</a>
+                        <a href="ai-calculators.html">AI Calculators</a>
+                        <a href="blog.html">Blog</a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <div class="footer-links">
+                        <a href="blog.html">AI Portfolio Strategies</a>
+                        <a href="blog.html">Tax Automation</a>
+                        <a href="blog.html">Digital Asset Insurance</a>
+                        <a href="blog.html">Robo-Advisors</a>
+                    </div>
+                </div>
+
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <div class="footer-links">
+                        <a href="about.html">About Us</a>
+                        <a href="#">Contact</a>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2026 ProsperPath Insights. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link" aria-label="Twitter">𝕏</a>
+                    <a href="#" class="social-link" aria-label="LinkedIn">in</a>
+                    <a href="#" class="social-link" aria-label="YouTube">▶</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="ai-widget.js"></script>
+
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="google-auth.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            if (typeof initGoogleAuth === 'function') initGoogleAuth();
+        });
+    </script>
+</body>
+
+</html>

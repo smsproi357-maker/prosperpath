@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Professional backtest engine for quantitative strategy research. Test trading strategies with institutional-grade analytics and performance metrics.">
+    <title>Backtest Engine | ProsperPath Insights</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="backtest.css">
+</head>
+
+
+<body class="bt-page">
+    <!-- Minimal Backtest Header -->
+    <header class="bt-header">
+        <div class="bt-header-left">
+            <a href="index.html" class="logo bt-header-logo">
+                <div class="logo-icon">⚡</div>
+                <span>ProsperPath</span>
+            </a>
+            <span class="bt-header-divider"></span>
+            <a href="trade.html" class="bt-header-back">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                Back to Trading
+            </a>
+        </div>
+        <div class="bt-header-center">
+            <h1 class="bt-header-title">Backtest Engine</h1>
+        </div>
+        <div class="bt-header-right">
+            <button class="bt-btn-ai-strategy" id="btn-ai-strategy">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+                Create Strategy (AI)
+            </button>
+        </div>
+    </header>
+
+    <!-- Backtest Engine -->
+    <main class="bt-engine" id="backtest-engine">
+
+        <!-- Status Bar (minimal) -->
+        <div class="bt-status-bar">
+            <div class="bt-status" id="bt-status">
+                <span class="bt-status-dot"></span>
+                <span>Ready</span>
+            </div>
+        </div>
+
+        <!-- Three Column Layout -->
+        <div class="bt-layout">
+
+            <!-- LEFT PANEL – Strategy Builder -->
+            <aside class="bt-panel bt-panel-left" id="panel-left">
+                <div class="bt-panel-header">
+                    <h2 class="bt-panel-title">Strategy Builder</h2>
+                    <button class="bt-panel-collapse" title="Collapse panel" data-panel="left">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                            <path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="bt-panel-body">
+                    <!-- Strategy Name -->
+                    <div class="bt-field-group">
+                        <label class="bt-label">Strategy Name</label>
+                        <input type="text" class="bt-input" id="strategy-name" placeholder="e.g. Mean Reversion Alpha"
+                            value="Momentum Breakout v2">
+                    </div>
+
+                    <!-- Asset & Timeframe Row -->
+                    <div class="bt-row-2">
+                        <div class="bt-field-group">
+                            <label class="bt-label">Asset</label>
+                            <select class="bt-select" id="asset-select">
+                                <option value="AAPL">AAPL</option>
+                                <option value="MSFT">MSFT</option>
+                                <option value="GOOGL">GOOGL</option>
+                                <option value="AMZN">AMZN</option>
+                                <option value="TSLA">TSLA</option>
+                                <option value="SPY" selected>SPY</option>
+                                <option value="QQQ">QQQ</option>
+                                <option value="BTC-USD">BTC-USD</option>
+                                <option value="ETH-USD">ETH-USD</option>
+                            </select>
+                        </div>
+                        <div class="bt-field-group">
+                            <label class="bt-label">Timeframe</label>
+                            <select class="bt-select" id="timeframe-select">
+                                <option value="1m">1 Min</option>
+                                <option value="5m">5 Min</option>
+                                <option value="15m">15 Min</option>
+                                <option value="1h">1 Hour</option>
+                                <option value="4h">4 Hour</option>
+                                <option value="1d" selected>Daily</option>
+                                <option value="1w">Weekly</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Date Range -->
+                    <div class="bt-row-2">
+                        <div class="bt-field-group">
+                            <label class="bt-label">Start Date</label>
+                            <input type="date" class="bt-input" id="start-date" value="2023-01-01">
+                        </div>
+                        <div class="bt-field-group">
+                            <label class="bt-label">End Date</label>
+                            <input type="date" class="bt-input" id="end-date" value="2025-12-31">
+                        </div>
+                    </div>
+
+                    <div class="bt-divider"></div>
+
+                    <!-- Capital & Position -->
+                    <div class="bt-section-label">Capital & Sizing</div>
+
+                    <div class="bt-field-group">
+                        <label class="bt-label">Starting Capital</label>
+                        <div class="bt-input-prefix">
+                            <span class="bt-prefix">$</span>
+                            <input type="number" class="bt-input" id="starting-capital" value="100000" step="1000">
+                        </div>
+                    </div>
+
+                    <div class="bt-row-3">
+                        <div class="bt-field-group">
+                            <label class="bt-label">Position %</label>
+                            <div class="bt-input-suffix">
+                                <input type="number" class="bt-input" id="position-size" value="10" min="1" max="100"
+                                    step="1">
+                                <span class="bt-suffix">%</span>
+                            </div>
+                        </div>
+                        <div class="bt-field-group">
+                            <label class="bt-label">Fees</label>
+                            <div class="bt-input-suffix">
+                                <input type="number" class="bt-input" id="trading-fees" value="0.10" min="0" max="5"
+                                    step="0.01">
+                                <span class="bt-suffix">%</span>
+                            </div>
+                        </div>
+                        <div class="bt-field-group">
+                            <label class="bt-label">Slippage</label>
+                            <div class="bt-input-suffix">
+                                <input type="number" class="bt-input" id="slippage" value="0.05" min="0" max="5"
+                                    step="0.01">
+                                <span class="bt-suffix">%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bt-divider"></div>
+
+                    <!-- Indicators -->
+                    <div class="bt-section-header">
+                        <span class="bt-section-label">Indicators</span>
+                        <button class="bt-btn-sm" id="btn-add-indicator">
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                <path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.5"
+                                    stroke-linecap="round" />
+                            </svg>
+                            Add
+                        </button>
+                    </div>
+
+                    <div class="bt-indicator-list" id="indicator-list">
+                        <!-- Indicator 1 -->
+                        <div class="bt-indicator-card">
+                            <div class="bt-indicator-header">
+                                <span class="bt-indicator-badge sma">SMA</span>
+                                <span class="bt-indicator-name">Simple Moving Average</span>
+                                <button class="bt-indicator-remove" title="Remove">&times;</button>
+                            </div>
+                            <div class="bt-indicator-params">
+                                <div class="bt-mini-field">
+                                    <label>Period</label>
+                                    <input type="number" value="20" class="bt-input-mini">
+                                </div>
+                                <div class="bt-mini-field">
+                                    <label>Source</label>
+                                    <select class="bt-select-mini">
+                                        <option>Close</option>
+                                        <option>Open</option>
+                                        <option>High</option>
+                                        <option>Low</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Indicator 2 -->
+                        <div class="bt-indicator-card">
+                            <div class="bt-indicator-header">
+                                <span class="bt-indicator-badge rsi">RSI</span>
+                                <span class="bt-indicator-name">Relative Strength Index</span>
+                                <button class="bt-indicator-remove" title="Remove">&times;</button>
+                            </div>
+                            <div class="bt-indicator-params">
+                                <div class="bt-mini-field">
+                                    <label>Period</label>
+                                    <input type="number" value="14" class="bt-input-mini">
+                                </div>
+                                <div class="bt-mini-field">
+                                    <label>Overbought</label>
+                                    <input type="number" value="70" class="bt-input-mini">
+                                </div>
+                                <div class="bt-mini-field">
+                                    <label>Oversold</label>
+                                    <input type="number" value="30" class="bt-input-mini">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Indicator 3 -->
+                        <div class="bt-indicator-card">
+                            <div class="bt-indicator-header">
+                                <span class="bt-indicator-badge macd">MACD</span>
+                                <span class="bt-indicator-name">MACD</span>
+                                <button class="bt-indicator-remove" title="Remove">&times;</button>
+                            </div>
+                            <div class="bt-indicator-params">
+                                <div class="bt-mini-field">
+                                    <label>Fast</label>
+                                    <input type="number" value="12" class="bt-input-mini">
+                                </div>
+                                <div class="bt-mini-field">
+                                    <label>Slow</label>
+                                    <input type="number" value="26" class="bt-input-mini">
+                                </div>
+                                <div class="bt-mini-field">
+                                    <label>Signal</label>
+                                    <input type="number" value="9" class="bt-input-mini">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bt-divider"></div>
+
+                    <!-- Entry Conditions -->
+                    <div class="bt-section-label">Entry Conditions</div>
+                    <div class="bt-condition-block">
+                        <div class="bt-condition-row">
+                            <select class="bt-select-sm">
+                                <option>RSI(14)</option>
+                                <option>SMA(20)</option>
+                                <option>MACD Signal</option>
+                                <option>Price</option>
+                            </select>
+                            <select class="bt-select-sm bt-select-op">
+                                <option>crosses below</option>
+                                <option>crosses above</option>
+                                <option>&lt;</option>
+                                <option>&gt;</option>
+                                <option>=</option>
+                            </select>
+                            <input type="number" class="bt-input-sm" value="30">
+                        </div>
+                        <div class="bt-condition-logic">AND</div>
+                        <div class="bt-condition-row">
+                            <select class="bt-select-sm">
+                                <option selected>Price</option>
+                                <option>RSI(14)</option>
+                                <option>SMA(20)</option>
+                                <option>MACD Signal</option>
+                            </select>
+                            <select class="bt-select-sm bt-select-op">
+                                <option selected>crosses above</option>
+                                <option>crosses below</option>
+                                <option>&lt;</option>
+                                <option>&gt;</option>
+                            </select>
+                            <select class="bt-select-sm">
+                                <option selected>SMA(20)</option>
+                                <option>EMA(20)</option>
+                                <option>VWAP</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Exit Conditions -->
+                    <div class="bt-section-label">Exit Conditions</div>
+                    <div class="bt-condition-block">
+                        <div class="bt-condition-row">
+                            <select class="bt-select-sm">
+                                <option selected>RSI(14)</option>
+                                <option>SMA(20)</option>
+                                <option>MACD Signal</option>
+                                <option>Price</option>
+                            </select>
+                            <select class="bt-select-sm bt-select-op">
+                                <option selected>crosses above</option>
+                                <option>crosses below</option>
+                                <option>&lt;</option>
+                                <option>&gt;</option>
+                            </select>
+                            <input type="number" class="bt-input-sm" value="70">
+                        </div>
+                    </div>
+
+                    <div class="bt-divider"></div>
+
+                    <!-- Risk Management -->
+                    <div class="bt-section-label">Risk Management</div>
+                    <div class="bt-row-2">
+                        <div class="bt-field-group">
+                            <label class="bt-label">Stop Loss</label>
+                            <div class="bt-input-suffix">
+                                <input type="number" class="bt-input" id="stop-loss" value="2.0" min="0" max="50"
+                                    step="0.1">
+                                <span class="bt-suffix">%</span>
+                            </div>
+                        </div>
+                        <div class="bt-field-group">
+                            <label class="bt-label">Take Profit</label>
+                            <div class="bt-input-suffix">
+                                <input type="number" class="bt-input" id="take-profit" value="5.0" min="0" max="100"
+                                    step="0.1">
+                                <span class="bt-suffix">%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Run Button -->
+                    <button class="bt-btn-run" id="btn-run-backtest">
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                            <path d="M4 3l11 6-11 6V3z" fill="currentColor" />
+                        </svg>
+                        Run Backtest
+                    </button>
+                </div>
+            </aside>
+
+            <!-- CENTER PANEL – Chart Area -->
+            <section class="bt-panel bt-panel-center" id="panel-center">
+                <div class="bt-panel-header">
+                    <div class="bt-chart-header-left">
+                        <h2 class="bt-panel-title">SPY</h2>
+                        <span class="bt-chart-price">$587.42</span>
+                        <span class="bt-chart-change positive">+1.24%</span>
+                    </div>
+                    <div class="bt-chart-toggles">
+                        <button class="bt-toggle active" id="toggle-equity">Equity Curve</button>
+                        <button class="bt-toggle" id="toggle-drawdown">Drawdown</button>
+                        <button class="bt-toggle" id="toggle-log">Log Scale</button>
+                    </div>
+                </div>
+
+                <div class="bt-chart-container" id="main-chart">
+                    <!-- Candlestick chart area -->
+                    <canvas id="candlestick-canvas"></canvas>
+                    <div class="bt-chart-overlay" id="chart-overlay">
+                        <div class="bt-chart-crosshair-x" id="crosshair-x"></div>
+                        <div class="bt-chart-crosshair-y" id="crosshair-y"></div>
+                    </div>
+                    <!-- Indicator overlay zone -->
+                    <div class="bt-indicator-overlay" id="indicator-overlay"></div>
+                    <!-- Trade markers -->
+                    <div class="bt-trade-markers" id="trade-markers"></div>
+
+                    <!-- Backtest Loading Overlay -->
+                    <div class="bt-loading-overlay" id="bt-loading-overlay">
+                        <div class="bt-loading-content">
+                            <div class="bt-loading-spinner">
+                                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                                    <circle cx="16" cy="16" r="13" stroke="rgba(99,102,241,0.2)" stroke-width="2.5"
+                                        fill="none" />
+                                    <path d="M16 3a13 13 0 0 1 13 13" stroke="#6366f1" stroke-width="2.5"
+                                        stroke-linecap="round" fill="none"
+                                        style="animation: bt-spin 1s linear infinite; transform-origin: center;" />
+                                </svg>
+                            </div>
+                            <div class="bt-loading-title">Running Backtest</div>
+                            <div class="bt-loading-steps" id="bt-loading-steps"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Volume sub-chart -->
+                <div class="bt-volume-chart" id="volume-chart">
+                    <canvas id="volume-canvas"></canvas>
+                </div>
+            </section>
+
+            <!-- RIGHT PANEL – Performance Metrics -->
+            <aside class="bt-panel bt-panel-right" id="panel-right">
+                <div class="bt-panel-header">
+                    <h2 class="bt-panel-title">Performance</h2>
+                    <button class="bt-panel-collapse" title="Collapse panel" data-panel="right">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                            <path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="bt-panel-body">
+                    <!-- Key Metrics -->
+                    <div class="bt-metrics-grid" id="bt-metrics-grid">
+                        <div class="bt-metric">
+                            <div class="bt-metric-label">Total Return</div>
+                            <div class="bt-metric-value positive" data-metric="totalReturn">+42.87%</div>
+                        </div>
+                        <div class="bt-metric">
+                            <div class="bt-metric-label">CAGR</div>
+                            <div class="bt-metric-value positive" data-metric="cagr">+13.24%</div>
+                        </div>
+                        <div class="bt-metric">
+                            <div class="bt-metric-label">Max Drawdown</div>
+                            <div class="bt-metric-value negative" data-metric="maxDrawdown">-8.34%</div>
+                        </div>
+                        <div class="bt-metric">
+                            <div class="bt-metric-label">Sharpe Ratio</div>
+                            <div class="bt-metric-value" data-metric="sharpe">1.87</div>
+                        </div>
+                        <div class="bt-metric">
+                            <div class="bt-metric-label">Sortino Ratio</div>
+                            <div class="bt-metric-value" data-metric="sortino">2.41</div>
+                        </div>
+                        <div class="bt-metric">
+                            <div class="bt-metric-label">Win Rate</div>
+                            <div class="bt-metric-value" data-metric="winRate">63.2%</div>
+                        </div>
+                        <div class="bt-metric">
+                            <div class="bt-metric-label">Profit Factor</div>
+                            <div class="bt-metric-value positive" data-metric="profitFactor">1.94</div>
+                        </div>
+                        <div class="bt-metric">
+                            <div class="bt-metric-label">Expectancy</div>
+                            <div class="bt-metric-value positive" data-metric="expectancy">$284</div>
+                        </div>
+                        <div class="bt-metric bt-metric-wide">
+                            <div class="bt-metric-label">Number of Trades</div>
+                            <div class="bt-metric-value" data-metric="tradeCount">147</div>
+                        </div>
+                    </div>
+
+                    <div class="bt-divider"></div>
+
+                    <!-- Summary Stats -->
+                    <div class="bt-section-label">Risk-Adjusted</div>
+                    <div class="bt-stat-rows">
+                        <div class="bt-stat-row">
+                            <span class="bt-stat-key">Calmar Ratio</span>
+                            <span class="bt-stat-val" data-metric="calmar">1.59</span>
+                        </div>
+                        <div class="bt-stat-row">
+                            <span class="bt-stat-key">Avg Win / Avg Loss</span>
+                            <span class="bt-stat-val" data-metric="avgWinLoss">1.72</span>
+                        </div>
+                        <div class="bt-stat-row">
+                            <span class="bt-stat-key">Max Consec. Losses</span>
+                            <span class="bt-stat-val" data-metric="maxConsecLosses">4</span>
+                        </div>
+                        <div class="bt-stat-row">
+                            <span class="bt-stat-key">Avg Trade Duration</span>
+                            <span class="bt-stat-val" data-metric="avgTradeDuration">3.2d</span>
+                        </div>
+                        <div class="bt-stat-row">
+                            <span class="bt-stat-key">Exposure Time</span>
+                            <span class="bt-stat-val" data-metric="exposureTime">67.4%</span>
+                        </div>
+                    </div>
+
+                    <div class="bt-divider"></div>
+
+                    <!-- Trade Log Mini Table -->
+                    <div class="bt-section-label">Recent Trades</div>
+                    <div class="bt-trade-table-wrap">
+                        <table class="bt-trade-table">
+                            <thead>
+                                <tr>
+                                    <th>Entry</th>
+                                    <th>Exit</th>
+                                    <th>Side</th>
+                                    <th>Return</th>
+                                    <th>PnL</th>
+                                    <th>Duration</th>
+                                </tr>
+                            </thead>
+                            <tbody id="trade-log-body">
+                                <tr>
+                                    <td>Dec 02</td>
+                                    <td>Dec 05</td>
+                                    <td><span class="bt-side long">LONG</span></td>
+                                    <td class="positive">+3.21%</td>
+                                    <td class="positive">+$3,210</td>
+                                    <td>3d</td>
+                                </tr>
+                                <tr>
+                                    <td>Nov 28</td>
+                                    <td>Dec 01</td>
+                                    <td><span class="bt-side short">SHORT</span></td>
+                                    <td class="negative">-1.14%</td>
+                                    <td class="negative">-$1,140</td>
+                                    <td>3d</td>
+                                </tr>
+                                <tr>
+                                    <td>Nov 20</td>
+                                    <td>Nov 26</td>
+                                    <td><span class="bt-side long">LONG</span></td>
+                                    <td class="positive">+4.56%</td>
+                                    <td class="positive">+$4,560</td>
+                                    <td>6d</td>
+                                </tr>
+                                <tr>
+                                    <td>Nov 15</td>
+                                    <td>Nov 19</td>
+                                    <td><span class="bt-side long">LONG</span></td>
+                                    <td class="positive">+2.08%</td>
+                                    <td class="positive">+$2,080</td>
+                                    <td>4d</td>
+                                </tr>
+                                <tr>
+                                    <td>Nov 10</td>
+                                    <td>Nov 14</td>
+                                    <td><span class="bt-side short">SHORT</span></td>
+                                    <td class="positive">+1.73%</td>
+                                    <td class="positive">+$1,730</td>
+                                    <td>4d</td>
+                                </tr>
+                                <tr>
+                                    <td>Nov 04</td>
+                                    <td>Nov 09</td>
+                                    <td><span class="bt-side long">LONG</span></td>
+                                    <td class="negative">-0.82%</td>
+                                    <td class="negative">-$820</td>
+                                    <td>5d</td>
+                                </tr>
+                                <tr>
+                                    <td>Oct 30</td>
+                                    <td>Nov 03</td>
+                                    <td><span class="bt-side long">LONG</span></td>
+                                    <td class="positive">+5.12%</td>
+                                    <td class="positive">+$5,120</td>
+                                    <td>4d</td>
+                                </tr>
+                                <tr>
+                                    <td>Oct 24</td>
+                                    <td>Oct 29</td>
+                                    <td><span class="bt-side short">SHORT</span></td>
+                                    <td class="negative">-1.94%</td>
+                                    <td class="negative">-$1,940</td>
+                                    <td>5d</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </aside>
+
+        </div><!-- /bt-layout -->
+
+        <!-- BELOW FOLD SECTION -->
+        <section class="bt-below-fold" id="below-fold">
+
+            <div class="bt-below-header">
+                <h2 class="bt-below-title">Detailed Analytics</h2>
+                <div class="bt-below-tabs">
+                    <button class="bt-tab active" data-tab="equity">Equity Curve</button>
+                    <button class="bt-tab" data-tab="drawdown">Drawdown</button>
+                    <button class="bt-tab" data-tab="monthly">Monthly Returns</button>
+                    <button class="bt-tab" data-tab="distribution">Distribution</button>
+                </div>
+            </div>
+
+            <!-- Full Equity Curve -->
+            <div class="bt-analytics-panel active" id="tab-equity">
+                <div class="bt-full-chart" id="equity-chart">
+                    <canvas id="equity-canvas"></canvas>
+                </div>
+            </div>
+
+            <!-- Drawdown Chart -->
+            <div class="bt-analytics-panel" id="tab-drawdown">
+                <div class="bt-full-chart" id="drawdown-chart">
+                    <canvas id="drawdown-canvas"></canvas>
+                </div>
+            </div>
+
+            <!-- Monthly Returns Heatmap -->
+            <div class="bt-analytics-panel" id="tab-monthly">
+                <div class="bt-heatmap-container">
+                    <table class="bt-heatmap" id="monthly-heatmap">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Jan</th>
+                                <th>Feb</th>
+                                <th>Mar</th>
+                                <th>Apr</th>
+                                <th>May</th>
+                                <th>Jun</th>
+                                <th>Jul</th>
+                                <th>Aug</th>
+                                <th>Sep</th>
+                                <th>Oct</th>
+                                <th>Nov</th>
+                                <th>Dec</th>
+                                <th>Year</th>
+                            </tr>
+                        </thead>
+                        <tbody id="heatmap-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Trade Distribution Histogram -->
+            <div class="bt-analytics-panel" id="tab-distribution">
+                <div class="bt-full-chart" id="distribution-chart">
+                    <canvas id="distribution-canvas"></canvas>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- AI Strategy Modal -->
+        <div class="bt-modal-overlay" id="ai-modal-overlay">
+            <div class="bt-modal" id="ai-modal">
+                <div class="bt-modal-header">
+                    <div class="bt-modal-title-group">
+                        <div class="bt-modal-icon">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M10 2l2.5 5.5L18 10l-5.5 2.5L10 18l-2.5-5.5L2 10l5.5-2.5L10 2z"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"
+                                    fill="rgba(99,102,241,0.15)" />
+                            </svg>
+                        </div>
+                        <h2 class="bt-modal-title">Describe Your Strategy</h2>
+                    </div>
+                    <button class="bt-modal-close" id="btn-modal-close">&times;</button>
+                </div>
+
+                <div class="bt-modal-body">
+                    <!-- Strategy Description -->
+                    <div class="bt-field-group">
+                        <label class="bt-label">Strategy Description</label>
+                        <textarea class="bt-textarea" id="ai-strategy-input" rows="5"
+                            placeholder="Example: Buy when price closes above 50-day EMA and RSI is below 30. Exit when RSI crosses above 70. Use a 2% stop loss and 5% take profit."></textarea>
+                    </div>
+
+                    <!-- Advanced Mode Toggle -->
+                    <div class="bt-advanced-toggle">
+                        <label class="bt-toggle-switch">
+                            <input type="checkbox" id="advanced-mode-toggle">
+                            <span class="bt-toggle-slider"></span>
+                        </label>
+                        <span class="bt-advanced-label">Advanced Mode</span>
+                        <span class="bt-advanced-hint">Paste structured logic or JSON</span>
+                    </div>
+
+                    <!-- Advanced Mode Textarea (hidden by default) -->
+                    <div class="bt-advanced-area" id="advanced-area" style="display:none;">
+                        <textarea class="bt-textarea bt-textarea-code" id="ai-json-input" rows="6" placeholder='{
+  "entry": { "conditions": [...] },
+  "exit": { "conditions": [...] },
+  "indicators": [...]
+}'></textarea>
+                    </div>
+
+                    <!-- Config Row -->
+                    <div class="bt-modal-config">
+                        <div class="bt-field-group">
+                            <label class="bt-label">Asset</label>
+                            <select class="bt-select" id="ai-asset">
+                                <option value="SPY">SPY</option>
+                                <option value="AAPL">AAPL</option>
+                                <option value="MSFT">MSFT</option>
+                                <option value="GOOGL">GOOGL</option>
+                                <option value="QQQ">QQQ</option>
+                                <option value="BTC-USD">BTC-USD</option>
+                                <option value="ETH-USD">ETH-USD</option>
+                            </select>
+                        </div>
+                        <div class="bt-field-group">
+                            <label class="bt-label">Timeframe</label>
+                            <select class="bt-select" id="ai-timeframe">
+                                <option value="5m">5 Min</option>
+                                <option value="15m">15 Min</option>
+                                <option value="1h">1 Hour</option>
+                                <option value="4h">4 Hour</option>
+                                <option value="1d" selected>Daily</option>
+                                <option value="1w">Weekly</option>
+                            </select>
+                        </div>
+                        <div class="bt-field-group">
+                            <label class="bt-label">Start Date</label>
+                            <input type="date" class="bt-input" id="ai-start" value="2023-01-01">
+                        </div>
+                        <div class="bt-field-group">
+                            <label class="bt-label">End Date</label>
+                            <input type="date" class="bt-input" id="ai-end" value="2025-12-31">
+                        </div>
+                        <div class="bt-field-group">
+                            <label class="bt-label">Risk Profile</label>
+                            <select class="bt-select" id="ai-risk-profile">
+                                <option value="conservative">Conservative</option>
+                                <option value="moderate" selected>Moderate</option>
+                                <option value="aggressive">Aggressive</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Generate Button -->
+                    <button class="bt-btn-generate" id="btn-generate-strategy">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M8 1l2 4.4L14.5 8l-4.5 2.6L8 15l-2-4.4L1.5 8l4.5-2.6L8 1z" stroke="currentColor"
+                                stroke-width="1.2" stroke-linejoin="round" fill="rgba(255,255,255,0.1)" />
+                        </svg>
+                        Generate Strategy
+                    </button>
+
+                    <!-- AI Result Preview (hidden until generated) -->
+                    <div class="bt-ai-result" id="ai-result" style="display:none;">
+                        <div class="bt-ai-result-header">
+                            <span class="bt-ai-result-badge">AI Generated</span>
+                            <span class="bt-ai-result-title">Strategy Logic</span>
+                        </div>
+                        <pre class="bt-ai-result-code" id="ai-result-code"></pre>
+                        <button class="bt-btn-apply" id="btn-apply-strategy">
+                            Apply to Strategy Builder
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo">
+                        <div class="logo-icon">⚡</div>
+                        <span>ProsperPath</span>
+                    </a>
+                    <p>Your trusted source for AI-powered investing insights, automated wealth management strategies,
+                        and digital asset security guidance.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <div class="footer-links">
+                        <a href="wealth-guides.html">Wealth Guides</a>
+                        <a href="tool-reviews.html">Tool Reviews</a>
+                        <a href="ai-calculators.html">AI Calculators</a>
+                        <a href="blog.html">Blog</a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <div class="footer-links">
+                        <a href="blog.html">AI Portfolio Strategies</a>
+                        <a href="blog.html">Tax Automation</a>
+                        <a href="blog.html">Digital Asset Insurance</a>
+                        <a href="blog.html">Robo-Advisors</a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <div class="footer-links">
+                        <a href="about.html">About Us</a>
+                        <a href="#">Contact</a>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ProsperPath Insights. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link" aria-label="Twitter">𝕏</a>
+                    <a href="#" class="social-link" aria-label="LinkedIn">in</a>
+                    <a href="#" class="social-link" aria-label="YouTube">▶</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js?v=rx1"></script>
+    <script src="backtest.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Manage your investment portfolio with AI-powered insights. Track holdings and transactions securely with ProsperPath.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="My Portfolio | ProsperPath Insights">
+    <meta property="og:description"
+        content="Manage your investment portfolio with AI-powered insights. Track holdings and transactions securely.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://prosperpathinsights.com/portfolio.html">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="My Portfolio | ProsperPath Insights">
+    <meta name="twitter:description" content="AI-powered portfolio management and insights.">
+    <title>My Portfolio | ProsperPath Insights</title>
+
+    <!-- Plaid Link script -->
+    <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
+
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">⚡</div>
+                    <span>ProsperPath</span>
+                </a>
+
+                <div class="nav-links" id="nav-links">
+                    <a href="wealth-guides.html">Wealth Guides</a>
+                    <a href="crypto-tracker.html">Market</a>
+                    <a href="portfolio.html" class="active">Portfolio</a>
+                    <a href="clarity-box.html">Clarity Box</a>
+                    <a href="tool-reviews.html">Tool Reviews</a>
+                    <a href="ai-calculators.html">AI Calculators</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="about.html">About</a>
+                </div>
+
+                <div class="nav-actions"
+                    style="display: flex; align-items: center; gap: var(--space-4); position: relative;">
+                    <div class="settings-wrapper" style="position: relative;">
+                        <button id="settings-btn" class="settings-icon-btn" aria-label="Settings"
+                            onclick="toggleAuthMenu()">
+                            <span class="icon">⚙️</span>
+                        </button>
+                        <div id="auth-wrapper" class="auth-rolldown-container">
+                            <div id="auth-container">
+                                <!-- Google Sign-In button will render here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Page Header / Hero -->
+        <section class="page-header">
+            <div class="container">
+                <h1 data-animate>Smart <span class="text-gradient">Portfolio Manager</span></h1>
+                <p class="subtitle" data-animate>Connect your brokerage accounts to analyze holdings, track
+                    transactions, and unlock AI-powered wealth insights.</p>
+
+                <!-- Summary Bar (Active when connected) -->
+                <div id="portfolio-summary-bar" class="crypto-stats-bar hidden" data-animate>
+                    <div class="stat-item">
+                        <span class="label">Total Value</span>
+                        <span id="summary-total-value" class="value">$0.00</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">Total Holdings</span>
+                        <span id="summary-holdings-count" class="value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="label">Account Status</span>
+                        <span class="value text-accent">Synced</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Portfolio Analysis Section (Visualizations) -->
+        <section class="section hidden" id="analysis-section">
+            <div class="container">
+                <div class="section-header" style="text-align: left; margin-bottom: 30px;">
+                    <h2>Portfolio Analysis</h2>
+                    <p>Visual breakdown and detailed allocation of your wealth.</p>
+                </div>
+
+                <div class="grid grid-2" style="gap: var(--space-8); align-items: start;">
+                    <!-- Allocation Pie Chart -->
+                    <div class="card" style="padding: var(--space-8);">
+                        <h3 style="margin-bottom: var(--space-6); text-align: center;">Money Distribution</h3>
+                        <div style="max-width: 400px; margin: 0 auto;">
+                            <canvas id="distribution-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Breakdown List -->
+                    <div class="card" style="padding: var(--space-8);">
+                        <h3 style="margin-bottom: var(--space-6);">Allocation Details</h3>
+                        <div id="allocation-details-container"
+                            style="display: flex; flex-direction: column; gap: var(--space-4);">
+                            <!-- Detailed items added dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Visualization Area -->
+        <section class="section" id="portfolio-data-section">
+            <div class="container">
+                <!-- Holdings Grid -->
+                <div id="holdings-section" class="hidden">
+                    <div class="section-header" style="text-align: left; margin-bottom: 30px;">
+                        <h2>Investment Holdings</h2>
+                        <p>Detailed breakdown of your current market positions.</p>
+                    </div>
+                    <div id="holdings-container" class="crypto-grid">
+                        <!-- Holdings cards added dynamically -->
+                    </div>
+                </div>
+
+                <!-- Transactions Table -->
+                <div id="transactions-section" class="hidden" style="margin-top: 60px;">
+                    <div class="section-header" style="text-align: left; margin-bottom: 30px;">
+                        <h2>Recent Activity</h2>
+                        <p>Your latest 20 investment transactions.</p>
+                    </div>
+                    <div class="card" style="padding: 0; overflow: hidden;">
+                        <div id="transactions-container" class="transactions-wrapper">
+                            <!-- Transactions table added dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Connectivity Section -->
+        <section class="section">
+            <div class="container">
+                <div class="card connection-card" id="connection-container" data-animate>
+                    <!-- Disconnected State -->
+                    <div id="disconnected-state" class="connection-state">
+                        <div class="card-icon">🏦</div>
+                        <h3>Connect Your Wealth</h3>
+                        <p>Unlock deep analysis by securely linking your investment accounts via Plaid.</p>
+                        <button id="link-button" class="btn btn-primary btn-lg">
+                            Connect Account
+                        </button>
+                    </div>
+
+                    <!-- Connected State -->
+                    <div id="connected-state" class="connection-state hidden">
+                        <div class="card-icon success">✅</div>
+                        <h3>Portfolio Connected</h3>
+                        <p>Your institutional data is synced and ready for AI enrichment.</p>
+                        <div class="hero-buttons" style="justify-content: center; margin-top: 20px;">
+                            <button id="refresh-button" class="btn btn-secondary">
+                                🔄 Refresh Data
+                            </button>
+                            <button id="analyze-button" class="btn btn-primary">
+                                🤖 AI Analysis
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loading Shell -->
+        <div id="loading-overlay" class="loading-overlay hidden">
+            <div class="spinner"></div>
+            <p>Syncing Marketplace Data...</p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 ProsperPath Insights. Securely integrated via Plaid API.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="plaid-client.js"></script>
+    <script src="script.js"></script>
+    <script src="ai-widget.js"></script>
+
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="google-auth.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            if (typeof initGoogleAuth === 'function') {
+                initGoogleAuth();
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ProsperPath Insights Tool Comparison">
+    <title>Tool Comparison | ProsperPath Insights</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .compare-header-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: var(--space-8);
+            margin: var(--space-8) 0;
+            text-align: center;
+        }
+
+        .compare-tool-card {
+            padding: var(--space-6);
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+        }
+
+        .vs-circle {
+            width: 60px;
+            height: 60px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: var(--text-xl);
+            box-shadow: 0 0 20px rgba(100, 108, 255, 0.4);
+        }
+
+        .comparison-table-v2 {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--space-8) 0;
+        }
+
+        .comparison-table-v2 th,
+        .comparison-table-v2 td {
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--color-border);
+            text-align: center;
+        }
+
+        .comparison-table-v2 th:first-child,
+        .comparison-table-v2 td:first-child {
+            text-align: left;
+            font-weight: 600;
+            width: 30%;
+        }
+
+        .comparison-table-v2 tr:last-child td {
+            border-bottom: none;
+        }
+
+        .winner-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: var(--color-success-bg);
+            color: var(--color-success);
+            border-radius: 4px;
+            font-size: var(--text-xs);
+            font-weight: 600;
+            margin-top: var(--space-1);
+        }
+
+        @media (max-width: 768px) {
+            .compare-header-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .vs-circle {
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">⚡</div>
+                    <span>ProsperPath</span>
+                </a>
+
+                <div class="nav-links" id="nav-links">
+                    <a href="wealth-guides.html">Wealth Guides</a>
+                    <a href="trade.html">Trade</a>
+                    <a href="tool-reviews.html" class="active">Tool Reviews</a>
+                    <a href="ai-calculators.html">AI Calculators</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="about.html">About</a>
+                </div>
+
+                <div class="nav-actions"
+                    style="display: flex; align-items: center; gap: var(--space-4); position: relative;">
+                    <a href="index.html#get-started" class="btn btn-primary nav-cta">Get Started</a>
+
+                    <div class="settings-wrapper" style="position: relative;">
+                        <button id="settings-btn" class="settings-icon-btn" aria-label="Settings"
+                            onclick="toggleAuthMenu()">
+                            <span class="icon">⚙️</span>
+                        </button>
+                        <div id="auth-wrapper" class="auth-rolldown-container">
+                            <div id="auth-container">
+                                <!-- Google Sign-In button will render here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Comparison Header -->
+    <section class="section">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: var(--space-10);">
+                <span class="blog-category">Head-to-Head Comparison</span>
+                <h1 id="compare-title">Comparing Tools</h1>
+            </div>
+
+            <div class="compare-header-grid">
+                <div class="compare-tool-card" id="tool1-card">
+                    <div class="tool-logo" id="tool1-logo" style="margin: 0 auto var(--space-4);">?</div>
+                    <h3 id="tool1-name">Tool 1</h3>
+                    <div id="tool1-winner"></div>
+                </div>
+
+                <div class="vs-circle">VS</div>
+
+                <div class="compare-tool-card" id="tool2-card">
+                    <div class="tool-logo" id="tool2-logo" style="margin: 0 auto var(--space-4);">?</div>
+                    <h3 id="tool2-name">Tool 2</h3>
+                    <div id="tool2-winner"></div>
+                </div>
+            </div>
+
+            <div class="main-content" style="max-width: 900px; margin: 0 auto;">
+                <table class="comparison-table-v2">
+                    <tbody id="compare-table-body">
+                        <!-- Dynamic comparison rows -->
+                    </tbody>
+                </table>
+
+                <div class="card card-accent"
+                    style="margin-top: var(--space-10); border-left: 4px solid var(--color-primary);">
+                    <h3 style="margin-bottom: var(--space-4);">The Verdict</h3>
+                    <div id="compare-verdict">
+                        <!-- Dynamic verdict -->
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: var(--space-4); justify-content: center; margin-top: var(--space-8);">
+                    <a href="tool-reviews.html" class="btn btn-secondary">Back to Reviews</a>
+                    <a href="index.html" class="btn btn-primary">Try Winning Tool</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo">
+                        <div class="logo-icon">⚡</div>
+                        <span>ProsperPath</span>
+                    </a>
+                    <p>Your trusted source for AI-powered investing insights, automated wealth management strategies,
+                        and digital asset security guidance.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 ProsperPath Insights. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="ai-widget.js"></script>
+
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="google-auth.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            if (typeof initGoogleAuth === 'function') initGoogleAuth();
+        });
+    </script>
+</body>
+
+</html>
