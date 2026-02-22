@@ -3053,12 +3053,10 @@
 
             const currentConfig = BacktestEngine.collectInputs();
             const allowedParams = {
-                stop_loss_pct: currentConfig.stopLoss,
-                take_profit_pct: currentConfig.takeProfit,
-                trailing_stop_pct: currentConfig.trailingStop,
-                fee_rate: currentConfig.fees,
-                slippage_pct: currentConfig.slippage,
-                position_size: currentConfig.positionSize
+                stop_loss_pct: parseFloat((currentConfig.stopPercent * 100).toFixed(2)),
+                risk_per_trade_pct: parseFloat((currentConfig.riskPercent * 100).toFixed(2)),
+                fee_rate_pct: parseFloat((currentConfig.feeRate * 100).toFixed(3)),
+                slippage_pct: parseFloat((currentConfig.slippagePct * 100).toFixed(3))
             };
 
             const systemPrompt = `You are a quantitative trading strategy optimizer. 
@@ -3080,19 +3078,17 @@ CRITICAL: Output ONLY a valid JSON object matching this schema. NO Markdown wrap
       "label": "Tighter risk, higher winrate",
       "overrides": {
         "stop_loss_pct": 2.0,
-        "take_profit_pct": 4.0
+        "risk_per_trade_pct": 1.0
       }
     }
   ]
 }
 
 Strict Override Boundaries (do not exceed):
-- stop_loss_pct: 0.5 to 10
-- take_profit_pct: 0.5 to 30
-- trailing_stop_pct: 0 to 10
-- fee_rate: 0 to 0.5
-- slippage_pct: 0 to 0.5
-- position_size: 5 to 100
+- stop_loss_pct: 0.5 to 10.0
+- risk_per_trade_pct: 0.5 to 10.0
+- fee_rate_pct: 0.0 to 0.5
+- slippage_pct: 0.0 to 0.5
 
 Limit to MAXIMUM 12 runs total (including CONTROL).`;
 
@@ -3206,12 +3202,10 @@ Limit to MAXIMUM 12 runs total (including CONTROL).`;
                     const runConfig = BacktestEngine.collectInputs();
 
                     if (runDef.overrides) {
-                        if (runDef.overrides.stop_loss_pct !== undefined) runConfig.stopLoss = runDef.overrides.stop_loss_pct;
-                        if (runDef.overrides.take_profit_pct !== undefined) runConfig.takeProfit = runDef.overrides.take_profit_pct;
-                        if (runDef.overrides.trailing_stop_pct !== undefined) runConfig.trailingStop = runDef.overrides.trailing_stop_pct;
-                        if (runDef.overrides.fee_rate !== undefined) runConfig.fees = runDef.overrides.fee_rate;
-                        if (runDef.overrides.slippage_pct !== undefined) runConfig.slippage = runDef.overrides.slippage_pct;
-                        if (runDef.overrides.position_size !== undefined) runConfig.positionSize = runDef.overrides.position_size;
+                        if (runDef.overrides.stop_loss_pct !== undefined) runConfig.stopPercent = runDef.overrides.stop_loss_pct / 100;
+                        if (runDef.overrides.risk_per_trade_pct !== undefined) runConfig.riskPercent = runDef.overrides.risk_per_trade_pct / 100;
+                        if (runDef.overrides.fee_rate_pct !== undefined) runConfig.feeRate = runDef.overrides.fee_rate_pct / 100;
+                        if (runDef.overrides.slippage_pct !== undefined) runConfig.slippagePct = runDef.overrides.slippage_pct / 100;
                     }
 
                     const engineResult = BacktestEngine.runBacktest(candles, runConfig);

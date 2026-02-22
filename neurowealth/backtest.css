@@ -1969,39 +1969,7 @@
     padding-top: 8px;
 }
 
-/* ---- Batch Experiments UI (Parameter Sweep) ---- */
-.bt-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(10, 14, 23, 0.85);
-    backdrop-filter: blur(8px);
-    z-index: 1000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.bt-modal-overlay.open {
-    opacity: 1;
-}
-
-.bt-modal {
-    background: #0f172a;
-    border: 1px solid rgba(226, 232, 240, 0.1);
-    border-radius: 12px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    transform: translateY(20px);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.bt-modal-overlay.open .bt-modal {
-    transform: translateY(0);
-}
+/* ---- Batch Experiments UI (Parameter Sweep) removed duplicate modal styles ---- */
 
 .bt-modal-header {
     display: flex;
