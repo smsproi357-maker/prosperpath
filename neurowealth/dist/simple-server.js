@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = 3000;
+const PORT = 3001;
 
 const MIME_TYPES = {
     '.html': 'text/html',
@@ -63,15 +63,30 @@ const server = http.createServer((req, res) => {
         if (error) {
             if (error.code === 'ENOENT') {
                 fs.readFile('./404.html', (error, content) => {
-                    res.writeHead(404, { 'Content-Type': 'text/html' });
+                    res.writeHead(404, {
+                        'Content-Type': 'text/html',
+                        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    });
                     res.end(content || '404 Not Found', 'utf-8');
                 });
             } else {
-                res.writeHead(500);
+                res.writeHead(500, {
+                    'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+                    'Pragma': 'no-cache',
+                    'Expires': '0'
+                });
                 res.end('Sorry, check with the site admin for error: ' + error.code + ' ..\n');
             }
         } else {
-            res.writeHead(200, { 'Content-Type': contentType });
+            res.writeHead(200, {
+                'Content-Type': contentType,
+                'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0',
+                'Surrogate-Control': 'no-store'
+            });
             res.end(content, 'utf-8');
         }
     });

@@ -3,7 +3,7 @@
    ======================================== */
 
 /* ---- Page Entry Transition ---- */
-.bt-page {
+.bt-page-wrapper {
     animation: bt-pageEnter 0.5s ease both;
 }
 
@@ -605,6 +605,36 @@
     background: rgba(34, 197, 94, 0.15);
     color: #4ade80;
     border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+/* Production Badge */
+.bt-production-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    letter-spacing: 0.04em;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 10px;
+    text-transform: uppercase;
+}
+
+/* Production Notes List */
+.bt-production-notes ul li {
+    margin-bottom: 6px;
+    position: relative;
+}
+
+.bt-production-notes ul li::before {
+    content: '•';
+    color: #818cf8;
+    position: absolute;
+    left: -14px;
+    font-weight: bold;
 }
 
 .bt-indicator-name {
@@ -1329,7 +1359,9 @@
 .bt-modal-overlay {
     position: fixed;
     inset: 0;
-    z-index: 1000;
+    width: 100%;
+    height: 100vh !important;
+    z-index: 2000;
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(6px);
     display: flex;
@@ -1359,6 +1391,8 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    margin: auto;
+    /* Ensure centering works in various flex environments */
 }
 
 .bt-modal-overlay.open .bt-modal {
@@ -1662,4 +1696,351 @@
 .bt-btn-apply:hover {
     background: rgba(34, 197, 94, 0.15);
     color: #86efac;
+}
+
+/* ---- Quant Explanation Panel ---- */
+.bt-quant-explanation {
+    max-height: 480px;
+    overflow-y: auto;
+    padding: 14px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(99, 102, 241, 0.12);
+    border-radius: 10px;
+    font-size: 0.74rem;
+    line-height: 1.65;
+    color: #94a3b8;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(99, 102, 241, 0.25) transparent;
+}
+
+.bt-quant-explanation::-webkit-scrollbar {
+    width: 5px;
+}
+
+.bt-quant-explanation::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.bt-quant-explanation::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.25);
+    border-radius: 4px;
+}
+
+.bt-quant-explanation .qe-section {
+    margin-bottom: 14px;
+}
+
+.bt-quant-explanation .qe-section:last-child {
+    margin-bottom: 0;
+}
+
+.bt-quant-explanation .qe-heading {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #818cf8;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+.bt-quant-explanation .qe-verdict {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    margin-bottom: 4px;
+}
+
+.bt-quant-explanation ul {
+    margin: 0;
+    padding-left: 16px;
+}
+
+.bt-quant-explanation ul li {
+    margin-bottom: 3px;
+}
+
+.bt-quant-explanation .qe-val {
+    color: #c7d2fe;
+    font-weight: 600;
+}
+
+.bt-quant-explanation .qe-positive {
+    color: #4ade80;
+}
+
+.bt-quant-explanation .qe-negative {
+    color: #f87171;
+}
+
+.bt-quant-explanation .qe-neutral {
+    color: #fbbf24;
+}
+
+/* ---- Explain Results Button ---- */
+#btn-explain-results {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: #818cf8;
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+}
+
+#btn-explain-results:hover {
+    background: rgba(99, 102, 241, 0.18);
+    color: #a5b4fc;
+    border-color: rgba(99, 102, 241, 0.5);
+}
+
+.qe-disclosure {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(226, 232, 240, 0.08);
+    font-size: 0.65rem;
+    color: #94a3b8;
+    opacity: 0.75;
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* ---- A/B Compare Runs ---- */
+#compare-modal .bt-trades-table th,
+#compare-modal .bt-trades-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.05);
+    white-space: nowrap;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+#compare-modal .bt-trades-table th {
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    background: rgba(15, 23, 42, 0.8);
+}
+
+#compare-modal .bt-trades-table td {
+    font-size: 0.8rem;
+    color: #e2e8f0;
+}
+
+#compare-modal .bt-trades-table td.positive-delta {
+    color: #4ade80;
+    font-weight: 600;
+}
+
+#compare-modal .bt-trades-table td.negative-delta {
+    color: #f87171;
+    font-weight: 600;
+}
+
+#compare-modal .bt-trades-table td.neutral-delta {
+    color: #94a3b8;
+}
+
+.compare-diff-card {
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid rgba(226, 232, 240, 0.08);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+}
+
+.compare-diff-label {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+}
+
+.compare-diff-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---- Strategy Versions / Journal ---- */
+.bt-version-card {
+    background: rgba(30, 41, 59, 0.4);
+    border: 1px solid rgba(226, 232, 240, 0.08);
+    border-radius: 8px;
+    padding: 12px;
+    transition: all 0.2s ease;
+}
+
+.bt-version-card:hover {
+    background: rgba(30, 41, 59, 0.7);
+    border-color: rgba(168, 85, 247, 0.3);
+}
+
+.bt-version-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.bt-version-title {
+    font-size: 0.9rem;
+    color: #e2e8f0;
+    font-weight: 500;
+    margin: 0;
+}
+
+.bt-version-time {
+    font-size: 0.65rem;
+    color: #64748b;
+}
+
+.bt-version-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.bt-version-tag {
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    background: rgba(168, 85, 247, 0.1);
+    color: #c084fc;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.bt-version-metrics {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-bottom: 10px;
+    background: rgba(15, 23, 42, 0.5);
+    padding: 6px 8px;
+    border-radius: 4px;
+}
+
+.bt-version-metric {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.bt-version-metric-val {
+    color: #e2e8f0;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.bt-version-notes {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-bottom: 10px;
+    font-style: italic;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.bt-version-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    border-top: 1px solid rgba(226, 232, 240, 0.05);
+    padding-top: 8px;
+}
+
+/* ---- Batch Experiments UI (Parameter Sweep) ---- */
+.bt-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 14, 23, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.bt-modal-overlay.open {
+    opacity: 1;
+}
+
+.bt-modal {
+    background: #0f172a;
+    border: 1px solid rgba(226, 232, 240, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    transform: translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.bt-modal-overlay.open .bt-modal {
+    transform: translateY(0);
+}
+
+.bt-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.05);
+}
+
+.bt-modal-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #f8fafc;
+    margin: 0;
+}
+
+.bt-modal-close {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 4px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.bt-modal-close:hover {
+    color: #f8fafc;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.batch-param-row,
+.bt-checkbox {
+    accent-color: #6366f1;
+}
+
+.batch-param-row:hover {
+    border-color: rgba(99, 102, 241, 0.3) !important;
 }

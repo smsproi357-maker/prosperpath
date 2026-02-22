@@ -6479,23 +6479,41 @@ function calcMACD(closes) {
 
     const k12 = 2 / 13, k26 = 2 / 27, k9 = 2 / 10;
 
-    // Build full EMA(12) and EMA(26) series to compute MACD series
+    // ---- Build EMA(12) series ----
+    // Seed: SMA of first 12 closes
     let ema12 = closes.slice(0, 12).reduce((a, b) => a + b, 0) / 12;
-    let ema26 = closes.slice(0, 26).reduce((a, b) => a + b, 0) / 26;
-
-    const macdSeries = [];
-
-    for (let i = 1; i < closes.length; i++) {
+    const ema12Series = [ema12];
+    // Continue from index 12 onward (NOT index 1 — avoids double-counting seed data)
+    for (let i = 12; i < closes.length; i++) {
         ema12 = closes[i] * k12 + ema12 * (1 - k12);
+        ema12Series.push(ema12);
+    }
+
+    // ---- Build EMA(26) series ----
+    // Seed: SMA of first 26 closes
+    let ema26 = closes.slice(0, 26).reduce((a, b) => a + b, 0) / 26;
+    const ema26Series = [ema26];
+    for (let i = 26; i < closes.length; i++) {
         ema26 = closes[i] * k26 + ema26 * (1 - k26);
-        if (i >= 25) {
-            macdSeries.push(ema12 - ema26);
+        ema26Series.push(ema26);
+    }
+
+    // ---- Build MACD series (EMA12 - EMA26 where both exist) ----
+    // EMA12 series starts at index 11 (offset 0), EMA26 series starts at index 25 (offset 0)
+    // Both exist from close index 26 onward: EMA12 at offset (26-12)=14, EMA26 at offset (26-26)=0
+    const macdSeries = [];
+    for (let i = 26; i < closes.length; i++) {
+        const e12 = ema12Series[i - 12 + 1]; // +1 because series[0] is the seed
+        const e26 = ema26Series[i - 26 + 1];
+        if (e12 !== undefined && e26 !== undefined) {
+            macdSeries.push(e12 - e26);
         }
     }
 
+    if (macdSeries.length === 0) return null;
     const macdLine = macdSeries[macdSeries.length - 1];
 
-    // Signal line = EMA(9) of MACD series
+    // ---- Signal line = EMA(9) of MACD series ----
     let signal = null;
     if (macdSeries.length >= 9) {
         signal = macdSeries.slice(0, 9).reduce((a, b) => a + b, 0) / 9;
@@ -6521,29 +6539,119 @@ function calcBollingerBands(closes, period = 20, mult = 2) {
     };
 }
 
+// ---- Fetch OHLC from Yahoo Finance via CORS proxy ----
+async function fetchYahooOHLC(symbol, range = '1y', interval = '1d') {
+    const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=${range}&interval=${interval}&includePrePost=false`;
+
+    for (let i = 0; i < CORS_PROXIES.length; i++) {
+        try {
+            const proxyUrl = CORS_PROXIES[i](yahooUrl);
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 12000);
+
+            const response = await fetch(proxyUrl, { signal: controller.signal });
+            clearTimeout(timeout);
+            if (!response.ok) continue;
+
+            const data = await response.json();
+            const result = data?.chart?.result?.[0];
+            if (!result) continue;
+
+            const timestamps = result.timestamp;
+            const quote = result.indicators?.quote?.[0];
+            if (!timestamps || !quote) continue;
+
+            const ohlc = [];
+            for (let j = 0; j < timestamps.length; j++) {
+                const o = quote.open?.[j];
+                const h = quote.high?.[j];
+                const l = quote.low?.[j];
+                const c = quote.close?.[j];
+                const v = quote.volume?.[j];
+                if (c == null) continue; // skip null candles
+                ohlc.push({
+                    time: new Date(timestamps[j] * 1000).toISOString().split('T')[0],
+                    open: o ?? c,
+                    high: h ?? c,
+                    low: l ?? c,
+                    close: c,
+                    volume: v ?? 0
+                });
+            }
+            if (ohlc.length > 0) return ohlc;
+        } catch (e) {
+            continue; // try next proxy
+        }
+    }
+    console.warn(`fetchYahooOHLC failed for ${symbol} (all proxies exhausted)`);
+    return [];
+}
+
 // ---- Fetch price history for indicators ----
 async function fetchIndicatorOHLC(assetInfo) {
     try {
         if (assetInfo.type === 'crypto') {
-            // CoinGecko market_chart — daily prices for 365 days (gives ~365 data points)
-            const url = `https://api.coingecko.com/api/v3/coins/${assetInfo.id}/market_chart?vs_currency=usd&days=365&interval=daily`;
-            const res = await fetch(url);
-            if (!res.ok) throw new Error('CoinGecko market_chart failed');
-            const data = await res.json();
-            // market_chart returns { prices: [[ts, price], ...], ... }
-            if (data && data.prices) {
-                return data.prices.map(d => ({
-                    time: new Date(d[0]).toISOString().split('T')[0],
-                    close: d[1]
-                }));
+            // CoinGecko market_chart — daily prices + volumes
+            // Try 365 days first (reliable on free tier), fallback to 180 days
+            const daysOptions = [365, 180];
+            for (const days of daysOptions) {
+                try {
+                    const url = `https://api.coingecko.com/api/v3/coins/${assetInfo.id}/market_chart?vs_currency=usd&days=${days}&interval=daily`;
+                    console.log(`[Indicators] Fetching CoinGecko market_chart: days=${days} for ${assetInfo.id}`);
+                    const res = await fetch(url);
+                    if (!res.ok) {
+                        console.warn(`[Indicators] CoinGecko returned ${res.status} for days=${days}`);
+                        continue;
+                    }
+                    const data = await res.json();
+                    if (data && data.prices && data.prices.length > 0) {
+                        // Build volume lookup from total_volumes
+                        const volMap = {};
+                        if (data.total_volumes) {
+                            data.total_volumes.forEach(v => {
+                                const day = new Date(v[0]).toISOString().split('T')[0];
+                                volMap[day] = v[1] || 0;
+                            });
+                        }
+                        // Deduplicate by date (market_chart can return duplicate timestamps)
+                        const seen = new Set();
+                        const result = [];
+                        for (const d of data.prices) {
+                            const day = new Date(d[0]).toISOString().split('T')[0];
+                            if (seen.has(day)) continue;
+                            seen.add(day);
+                            result.push({
+                                time: day,
+                                close: d[1],
+                                open: d[1],   // market_chart only provides close; open≈close for daily
+                                high: d[1],   // approximation for OHLC-dependent indicators
+                                low: d[1],
+                                volume: volMap[day] || 0
+                            });
+                        }
+                        console.log(`[Indicators] Got ${result.length} daily data points from CoinGecko (days=${days})`);
+                        return result;
+                    }
+                } catch (innerErr) {
+                    console.warn(`[Indicators] CoinGecko days=${days} failed:`, innerErr.message);
+                    continue;
+                }
             }
+            console.error('[Indicators] All CoinGecko attempts failed for', assetInfo.id);
             return [];
         } else {
-            // Stocks/Commodities — use existing fetchYahooOHLC with 5y range for 200+ daily candles
-            return await fetchYahooOHLC(assetInfo.symbol, '5y');
+            // Stocks/Commodities/Forex — Yahoo Finance real OHLC
+            // Try 2y first for SMA 200 accuracy, fallback to 1y
+            let data = await fetchYahooOHLC(assetInfo.symbol, '2y', '1d');
+            if (data.length === 0) {
+                console.warn('[Indicators] 2y Yahoo fetch failed, trying 1y for', assetInfo.symbol);
+                data = await fetchYahooOHLC(assetInfo.symbol, '1y', '1d');
+            }
+            console.log(`[Indicators] Got ${data.length} data points from Yahoo for ${assetInfo.symbol}`);
+            return data;
         }
     } catch (e) {
-        console.warn('Indicator data fetch failed:', e);
+        console.error('[Indicators] Data fetch failed:', e);
         return [];
     }
 }
@@ -6639,9 +6747,15 @@ async function buildIndicators(assetInfo) {
     const macd = calcMACD(closes);
     const bb = calcBollingerBands(closes, 20, 2);
 
-    // Fear & Greed
-    const fgValue = fearGreed ? fearGreed.value : null;
-    const fgLabel = fearGreed ? fearGreed.label : 'Unavailable';
+    // Fear & Greed (crypto-specific index from alternative.me)
+    const isCrypto = assetInfo.type === 'crypto';
+    const fgValue = (isCrypto && fearGreed) ? fearGreed.value : null;
+    const fgLabel = (isCrypto && fearGreed) ? fearGreed.label : (isCrypto ? 'Unavailable' : 'N/A (Stocks)');
+
+    // Data freshness info
+    const dataPoints = closes.length;
+    const dataSource = isCrypto ? 'CoinGecko' : 'Yahoo Finance';
+    const lastDataDate = ohlcData.length > 0 ? ohlcData[ohlcData.length - 1].time : 'N/A';
 
     // ---- Render ----
     // RSI
@@ -6682,10 +6796,11 @@ async function buildIndicators(assetInfo) {
             </div>
         </div>
 
-        <!-- Fear & Greed -->
+        <!-- Fear & Greed (crypto only) -->
+        ${isCrypto ? `
         <div class="indicator-card" data-ind-id="fear_greed">
             <div class="indicator-card-header">
-                <span class="indicator-card-title">🧠 Fear & Greed</span>
+                <span class="indicator-card-title">🧠 Crypto Fear & Greed</span>
                 <span class="indicator-card-badge ${fgBias}">${fgLabel}</span>
             </div>
             <div style="font-size: 2rem; font-weight: 700; color: ${fgColor}; margin: 4px 0;">${fgValue !== null ? fgValue : '—'}</div>
@@ -6696,6 +6811,7 @@ async function buildIndicators(assetInfo) {
                 <span>Extreme Fear (0)</span><span>Extreme Greed (100)</span>
             </div>
         </div>
+        ` : ''}
 
         <!-- Moving Averages -->
         <div class="indicator-card" data-ind-id="moving_avg">
@@ -6768,6 +6884,12 @@ async function buildIndicators(assetInfo) {
         <div class="add-indicator-btn" id="add-indicator-btn" title="Add more indicators">
             <div class="plus-icon">+</div>
             <span class="plus-label">Add Indicator</span>
+        </div>
+
+        <!-- Data Freshness Footer -->
+        <div style="grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; font-size: 0.7rem; color: var(--color-text-muted); border-top: 1px solid rgba(255,255,255,0.05); margin-top: 4px;">
+            <span>📡 Source: ${dataSource} · ${dataPoints} data points</span>
+            <span>Last: ${lastDataDate}</span>
         </div>
     `;
 
