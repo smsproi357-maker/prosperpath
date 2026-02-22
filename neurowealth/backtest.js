@@ -3242,18 +3242,20 @@ Limit to MAXIMUM 12 runs total (including CONTROL).`;
                         controlSnapshotId = snapshot.id;
                     }
 
+                    const retVal = parseFloat(rawMetrics.totalReturn) || 0;
+                    const ddVal = Math.abs(parseFloat(rawMetrics.maxDrawdown)) || 0;
+
                     adResults.push({
                         snapshotId: snapshot.id,
                         label: runDef.label,
                         overrides: runDef.overrides || {},
-                        ret: rawMetrics.totalReturnPct,
-                        dd: rawMetrics.maxDrawdownPct,
-                        score: (rawMetrics.maxDrawdownPct === 0) ? rawMetrics.totalReturnPct : (rawMetrics.totalReturnPct / rawMetrics.maxDrawdownPct),
-                        pf: rawMetrics.profitFactor || 0,
-                        trades: rawMetrics.totalTrades || 0,
-                        expectancy: rawMetrics.expectancyValue || (rawMetrics.netProfit / (rawMetrics.totalTrades || 1))
+                        ret: retVal,
+                        dd: ddVal,
+                        score: ddVal === 0 ? retVal : (retVal / ddVal),
+                        pf: parseFloat(rawMetrics.profitFactor) || 0,
+                        trades: rawMetrics.tradeCount || 0,
+                        expectancy: parseFloat(rawMetrics.expectancy) || 0
                     });
-
                 } catch (e) {
                     console.error("Run error on", runDef.label, e);
                 }
