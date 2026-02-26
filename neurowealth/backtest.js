@@ -742,6 +742,29 @@
                 }
 
                 console.log('✅ INTEGRATION COMPLETE — UI now powered by real backtest engine');
+
+                // ---- Strategy Health Memory: auto-record completed run ----
+                if (window.StrategyHealth && currentReport) {
+                    try { window.StrategyHealth.recordBacktestRun(currentReport); }
+                    catch (e) { console.warn('StrategyHealth record failed:', e); }
+                }
+
+                // ---- Capital Readiness Gate: evaluate and display ----
+                if (window.CapitalReadiness && window.CapitalReadiness.evaluateCapitalReadiness && currentReport) {
+                    try {
+                        const gateResult = window.CapitalReadiness.evaluateCapitalReadiness(currentReport);
+                        window._lastGateResult = gateResult;
+                        window.CapitalReadiness.renderGateBadge(gateResult);
+                        window.CapitalReadiness.renderGateWarningBanner(gateResult);
+                        console.log('Capital Readiness Gate:', gateResult.classification, gateResult);
+                    } catch (e) {
+                        console.warn('Capital Readiness Gate evaluation failed:', e);
+                    }
+                }
+
+                // ---- Strategy Lifecycle: notify backtestComplete ----
+                try { document.dispatchEvent(new CustomEvent('backtestComplete', { detail: { report: currentReport } })); }
+                catch (e) { /* non-fatal */ }
             }
         }
     }
@@ -1071,11 +1094,34 @@
             });
         }
 
+        // Capital Readiness Gate — Export Readiness Report
+        const btnExportReadiness = document.getElementById('btn-export-readiness');
+        if (btnExportReadiness) {
+            btnExportReadiness.addEventListener('click', () => {
+                if (!window._lastGateResult) return alert('Please run a backtest first.');
+                const gateExport = {
+                    version: '1.0.0-gate',
+                    timestamp: new Date().toISOString(),
+                    preset: document.getElementById('preset-selector')?.value || 'CUSTOM',
+                    capitalReadiness: window._lastGateResult
+                };
+                downloadJSON(gateExport, `readiness_${Date.now()}.json`);
+            });
+        }
+
         initCompareButtons();
     }
 
     function buildReportObj(mode = 'export') {
         if (!lastResult) return null;
+
+        // Capture preset identity (versioning metadata)
+        let presetIdentity = null;
+        try {
+            if (window.PresetVersioning) {
+                presetIdentity = window.PresetVersioning.snapshotIdentity();
+            }
+        } catch (e) { console.warn('[buildReportObj] PresetVersioning snapshot failed:', e); }
 
         const obj = {
             runTimestamp: new Date().toISOString(),
@@ -1102,7 +1148,14 @@
             equityCurve: equityCurve || [],
             drawdownCurve: drawdownData || [],
             distributionData: distributionData || [],
-            monthlyReturns: monthlyReturns || {}
+            monthlyReturns: monthlyReturns || {},
+            // Preset Versioning v1 — identity metadata
+            preset_id: presetIdentity ? presetIdentity.preset_id : null,
+            preset_version: presetIdentity ? presetIdentity.preset_version : null,
+            config_hash: presetIdentity ? presetIdentity.config_hash : null,
+            normalized_config: presetIdentity ? presetIdentity.normalized_config : null,
+            // Capital Readiness Gate v1
+            capitalReadiness: window._lastGateResult || null
         };
 
         return obj;
@@ -1159,6 +1212,80 @@
         if (!modal) return;
 
         try {
+            // --- Config Changes (Preset Versioning v1) ---
+            try {
+                const configDiffContainer = document.getElementById('pv-compare-config-diff');
+                if (configDiffContainer) configDiffContainer.remove(); // clean previous
+
+                if (window.PresetVersioning) {
+                    const bNorm = baselineReport.normalized_config
+                        || window.PresetVersioning.buildNormalizedFromObj(baselineReport.config);
+                    const cNorm = currentReport.normalized_config
+                        || window.PresetVersioning.buildNormalizedFromObj(currentReport.config);
+                    const configDiffs = window.PresetVersioning.diffConfigs(bNorm, cNorm);
+
+                    const diffSection = document.createElement('div');
+                    diffSection.className = 'pv-compare-config-section';
+                    diffSection.id = 'pv-compare-config-diff';
+
+                    const bHash = baselineReport.config_hash
+                        || window.PresetVersioning.computeConfigHashSync(bNorm);
+                    const cHash = currentReport.config_hash
+                        || window.PresetVersioning.computeConfigHashSync(cNorm);
+                    const hashMatch = bHash === cHash;
+
+                    const bVer = baselineReport.preset_version || '—';
+                    const cVer = currentReport.preset_version || '—';
+
+                    diffSection.innerHTML = `
+                        <div class="pv-compare-config-title">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            Config Changes
+                            <span style="margin-left:auto;font-size:0.6rem;color:#64748b;font-weight:400;">v${bVer} → v${cVer}</span>
+                        </div>
+                        ${hashMatch
+                            ? '<div class="pv-diff-empty"><span style="color:#4ade80;font-size:0.75rem;">✓ No config changes (hashes match)</span></div>'
+                            : window.PresetVersioning.renderDiffHTML(configDiffs)
+                        }
+                    `;
+
+                    // Insert before metrics table
+                    const metricsTable = document.getElementById('compare-metrics-table');
+                    if (metricsTable && metricsTable.parentNode) {
+                        metricsTable.parentNode.insertBefore(diffSection, metricsTable);
+                    }
+                }
+            } catch (pvErr) {
+                console.warn('[Compare] Config diff rendering failed (non-fatal):', pvErr);
+            }
+
+            // --- Strategy Lifecycle Labels ---
+            try {
+                if (window.StrategyLifecycle) {
+                    const bSid = baselineReport._strategy_id;
+                    const cSid = currentReport._strategy_id;
+                    if (bSid || cSid) {
+                        const bStrat = bSid ? window.StrategyLifecycle.getStrategy(bSid) : null;
+                        const cStrat = cSid ? window.StrategyLifecycle.getStrategy(cSid) : null;
+                        const bLabel = bStrat ? `${bStrat.name}@${baselineReport._strategy_version || '?'}` : '';
+                        const cLabel = cStrat ? `${cStrat.name}@${currentReport._strategy_version || '?'}` : '';
+                        if (bLabel || cLabel) {
+                            let slDiv = document.getElementById('sl-compare-labels');
+                            if (!slDiv) {
+                                slDiv = document.createElement('div');
+                                slDiv.id = 'sl-compare-labels';
+                                Object.assign(slDiv.style, { marginBottom: '8px', fontSize: '0.7rem', color: '#94a3b8', fontFamily: "'JetBrains Mono', monospace" });
+                                const metricsTable = document.getElementById('compare-metrics-table');
+                                if (metricsTable && metricsTable.parentNode) metricsTable.parentNode.insertBefore(slDiv, metricsTable);
+                            }
+                            if (slDiv) slDiv.textContent = `${bLabel ? 'Baseline: ' + bLabel : ''}${bLabel && cLabel ? '  vs  ' : ''}${cLabel ? 'Current: ' + cLabel : ''}`;
+                        }
+                    }
+                }
+            } catch (slErr) { /* non-fatal */ }
+
             // --- Header Setup ---
             const bMeta = baselineReport.candleMetadata || {};
             const cMeta = currentReport.candleMetadata || {};
@@ -1780,6 +1907,8 @@
         document.getElementById('sv-name').value = '';
         document.getElementById('sv-notes').value = '';
         document.getElementById('sv-tags').value = '';
+        const opNotesEl = document.getElementById('sv-operator-notes');
+        if (opNotesEl) opNotesEl.value = '';
 
         const modal = document.getElementById('save-version-modal');
         if (modal) {
@@ -1844,10 +1973,12 @@
                 const notes = document.getElementById('sv-notes').value.trim();
                 const tagsRaw = document.getElementById('sv-tags').value.trim();
                 const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()) : [];
+                const opNotesEl = document.getElementById('sv-operator-notes');
+                const operatorNotes = opNotesEl ? opNotesEl.value.trim() : '';
 
                 if (!name) return alert('Please enter a version name.');
 
-                saveVersion(name, notes, tags);
+                saveVersion(name, notes, tags, operatorNotes);
                 if (modal) {
                     modal.classList.remove('open');
                     document.body.style.overflow = '';
@@ -1856,7 +1987,7 @@
         }
     }
 
-    function saveVersion(name, notes, tags) {
+    function saveVersion(name, notes, tags, operatorNotes) {
         try {
             logJournal("saveVersion called. Name:", name);
             if (!currentReport || !currentReport.trades) {
@@ -1871,6 +2002,14 @@
                 alert('Run a backtest first — incomplete report data.');
                 return;
             }
+
+            // Capture preset identity (Versioning v1)
+            let pvIdentity = null;
+            try {
+                if (window.PresetVersioning) {
+                    pvIdentity = window.PresetVersioning.snapshotIdentity();
+                }
+            } catch (e) { console.warn('[saveVersion] PresetVersioning snapshot failed:', e); }
 
             const newVersion = {
                 id: generateCacheId(),
@@ -1889,7 +2028,11 @@
                     expectancy: fullReport.metrics.avgWinLoss,
                     winrate: fullReport.metrics.winRate
                 },
-                full_report: fullReport
+                full_report: fullReport,
+                // Preset Versioning v1
+                preset_id: pvIdentity ? pvIdentity.preset_id : null,
+                preset_version: pvIdentity ? pvIdentity.preset_version : null,
+                config_hash: pvIdentity ? pvIdentity.config_hash : null
             };
 
             strategyVersions.unshift(newVersion);
@@ -1900,6 +2043,49 @@
             saveVersionsToStorage();
             logJournal("saveVersion success, total versions:", strategyVersions.length);
             renderVersionsList();
+
+            // ── DEPLOYMENT JOURNAL v1 — Save enriched journal entry ──
+            if (window.DeploymentJournal && typeof window.DeploymentJournal.saveEntry === 'function') {
+                try {
+                    const cfg = fullReport.config || {};
+                    const m = fullReport.metrics || {};
+                    const presetKey = cfg.preset_name || 'CUSTOM';
+
+                    window.DeploymentJournal.saveEntry({
+                        entry_type: 'BACKTEST',
+                        title: name || '',
+                        tags: tags || [],
+                        linkages: { run_record_id: newVersion.id, strategy_id: newVersion._strategy_id || null, version_id: newVersion._version_id || null },
+                        context: {
+                            preset_name: presetKey,
+                            asset: cfg.asset || '',
+                            timeframe: cfg.timeframe || '',
+                            date_range: cfg.startDate && cfg.endDate ? { start: cfg.startDate, end: cfg.endDate } : null,
+                            starting_capital: cfg.capital ? parseFloat(cfg.capital) : null
+                        },
+                        metrics: {
+                            return_pct: parseFloat(m.totalReturn) || null,
+                            maxdd_pct: parseFloat(m.maxDrawdown) || null,
+                            score_ret_dd: parseFloat(m.profitFactor) || null,
+                            profit_factor: parseFloat(m.profitFactor) || null,
+                            expectancy_per_trade: parseFloat(m.avgWinLoss) || null,
+                            trades: fullReport.trades ? fullReport.trades.length : null,
+                            win_rate: parseFloat(m.winRate) || null
+                        },
+                        operator_notes: operatorNotes || notes || '',
+                        config_export: cfg,
+                        report_export: {
+                            headline_metrics: m,
+                            trades_count: fullReport.trades ? fullReport.trades.length : 0,
+                            config: cfg
+                        },
+                        presetKey: presetKey
+                    });
+                    logJournal("DeploymentJournal entry saved.");
+                } catch (djErr) {
+                    console.warn('[Journal] DeploymentJournal save failed (non-fatal):', djErr);
+                }
+            }
 
             const btn = document.getElementById('btn-save-version');
             if (btn) {
@@ -2096,6 +2282,14 @@
 
         const tags = tagsStr.split(',').map(s => s.trim()).filter(Boolean);
 
+        // Capture preset identity (Versioning v1)
+        let pvSnapshot = null;
+        try {
+            if (window.PresetVersioning) {
+                pvSnapshot = window.PresetVersioning.snapshotIdentity();
+            }
+        } catch (e) { console.warn('[confirmSaveRun] PresetVersioning snapshot failed:', e); }
+
         const snapshot = {
             id: 'run_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9),
             name: name,
@@ -2104,6 +2298,10 @@
             config: currentReport.config,
             report: currentReport,
             notes: notes,
+            // Preset Versioning v1
+            preset_id: pvSnapshot ? pvSnapshot.preset_id : null,
+            preset_version: pvSnapshot ? pvSnapshot.preset_version : null,
+            config_hash: pvSnapshot ? pvSnapshot.config_hash : null,
             tags: tags
         };
 
@@ -3439,7 +3637,8 @@ Limit to MAXIMUM 12 runs total (including CONTROL).`;
             { name: 'PackImportExport', fn: initPackImportExport },
             { name: 'RunHistory', fn: initRunHistory },
             { name: 'BatchExperiments', fn: initBatchExperiments },
-            { name: 'AutoDiscovery', fn: initAutoDiscovery }
+            { name: 'AutoDiscovery', fn: initAutoDiscovery },
+            { name: 'PaperTrading', fn: () => { if (typeof window.initPaperTrading === 'function') window.initPaperTrading(); } }
         ];
 
         initSteps.forEach(step => {

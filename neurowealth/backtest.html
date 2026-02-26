@@ -43,6 +43,13 @@
                 <h1 class="bt-header-title">Backtest Engine</h1>
             </div>
             <div class="bt-header-right">
+                <button class="pw-btn-header" id="btn-open-paper-trading">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                        <circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.4" fill="none" />
+                        <path d="M5 5.5L9 7L5 8.5Z" fill="currentColor" />
+                    </svg>
+                    Deployment Watchlist
+                </button>
                 <button class="bt-btn-ai-strategy" id="btn-ai-strategy">
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                         <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
@@ -418,7 +425,14 @@
                                 </svg>
                                 Export Report
                             </button>
-
+                            <button class="bt-btn-sm" id="btn-export-readiness"
+                                style="justify-content: center; padding: 8px; grid-column: span 2; background: rgba(34, 197, 94, 0.08); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.25);">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="margin-right: 4px;">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                Export Readiness Report
+                            </button>
                             <button class="bt-btn-sm" id="btn-save-version" onclick="openSaveVersionModal()"
                                 style="justify-content: center; padding: 8px; grid-column: span 2; background: rgba(168, 85, 247, 0.08); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3);">
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right: 4px;">
@@ -773,6 +787,21 @@
 
                         <div id="quant-explanation" class="bt-quant-explanation" style="display:none;"></div>
 
+                        <div class="bt-divider"></div>
+
+                        <!-- Strategy Health Memory -->
+                        <button class="bt-btn bt-btn-outline" id="btn-strategy-health"
+                            style="width:100%; margin-bottom:12px; display:flex; align-items:center; justify-content:center; gap:6px; padding:10px 16px; font-size:0.8rem; font-weight:500; color:#94a3b8; background:rgba(99,102,241,0.04); border:1px solid rgba(99,102,241,0.15); border-radius:8px; cursor:pointer; transition:all 0.2s; font-family:'Inter',sans-serif;"
+                            onmouseover="this.style.borderColor='rgba(99,102,241,0.35)';this.style.color='#c4b5fd';"
+                            onmouseout="this.style.borderColor='rgba(99,102,241,0.15)';this.style.color='#94a3b8';">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                                <path d="M3 12h4l3-9 4 18 3-9h4" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            Strategy Health
+                            <span id="sh-inline-badge" style="margin-left:4px;"></span>
+                        </button>
+
                     </div>
                 </aside>
 
@@ -1105,6 +1134,12 @@
                 <div class="bt-field-group">
                     <label class="bt-label">Tags (Comma-separated)</label>
                     <input type="text" class="bt-input" id="sv-tags" placeholder="trend, high-risk, experimental">
+                </div>
+                <div class="bt-field-group">
+                    <label class="bt-label">Operator Notes (Optional)</label>
+                    <textarea class="bt-input" id="sv-operator-notes" rows="3"
+                        placeholder="Observations, reasoning, deployment considerations..."
+                        style="resize: vertical;"></textarea>
                 </div>
                 <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
                     <button class="bt-btn-sm" id="btn-cancel-save"
@@ -1614,9 +1649,329 @@
         </div>
     </div>
 
+    <!-- Paper Trading Modal Overlay -->
+    <div class="bt-modal-overlay" id="paper-modal-overlay">
+        <div class="bt-modal pw-modal">
+            <!-- Header -->
+            <div class="bt-modal-header" style="flex-shrink: 0;">
+                <div class="bt-modal-title-group">
+                    <div class="bt-modal-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5" fill="none" />
+                            <path d="M7 7.5L13 10L7 12.5Z" fill="currentColor" />
+                        </svg>
+                    </div>
+                    <h2 class="bt-modal-title">Deployment Watchlist <span class="pw-mode-label">- Paper Mode</span></h2>
+                </div>
+                <button class="bt-modal-close" id="pw-modal-close">&times;</button>
+            </div>
+
+            <!-- Body -->
+            <div class="bt-modal-body pw-modal-body">
+
+                <!-- Disclaimer -->
+                <div class="pw-disclaimer">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;margin-top:1px;">
+                        <path
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Paper mode simulation &#8212; no real trades executed.
+                </div>
+
+                <!-- ASSET & RSK SETTINGS -->
+                <div class="pw-settings-panel">
+                    <div class="pw-settings-top">
+                        <!-- Left: Candidate Selector -->
+                        <div class="pw-settings-left">
+                            <div class="pw-settings-label">ASSET &amp; RSK SETTINGS</div>
+                            <select class="bt-select pw-select" id="pw-candidate-select">
+                                <option value="">&#8212; Select a candidate &#8212;</option>
+                            </select>
+                            <div class="pw-settings-row-sub" id="pw-settings-sub">
+                                <div><span class="pw-sub-label">SLK</span> <span class="pw-sub-value"
+                                        id="pw-sub-slk">—</span></div>
+                                <div><span class="pw-sub-label">FEES</span> <span class="pw-sub-value"
+                                        id="pw-sub-fees1">—</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Middle: Asset Info -->
+                        <div class="pw-settings-mid" id="pw-candidate-info">
+                            <div class="pw-info-pair">
+                                <span class="pw-info-label">TIMEFRAME</span>
+                                <span class="pw-info-value" id="pw-info-tf">—</span>
+                            </div>
+                            <div class="pw-info-pair">
+                                <span class="pw-info-label">CAPITAL</span>
+                                <span class="pw-info-value" id="pw-info-capital">—</span>
+                            </div>
+                            <div class="pw-settings-row-sub" id="pw-settings-sub2">
+                                <div><span class="pw-sub-label">SL</span> <span class="pw-sub-value"
+                                        id="pw-sub-sl">—</span></div>
+                                <div><span class="pw-sub-label">FEES</span> <span class="pw-sub-value"
+                                        id="pw-sub-fees2">—</span></div>
+                                <div><span class="pw-sub-label">FEES</span> <span class="pw-sub-value"
+                                        id="pw-sub-fees3">—</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Controls -->
+                        <div class="pw-settings-right">
+                            <div id="pw-status-badge" class="pw-status-badge">
+                                <span class="pw-status-dot"></span>IDLE
+                            </div>
+                            <!-- IDLE state: Start button -->
+                            <div id="pw-controls-idle">
+                                <button class="pw-btn pw-btn-start" id="pw-btn-start">
+                                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                                        <path d="M3 1.5L10 6L3 10.5Z" fill="currentColor" />
+                                    </svg>
+                                    Start Paper Watch
+                                </button>
+                            </div>
+                            <!-- RUNNING state: Pause + Reset -->
+                            <div id="pw-controls-running" style="display:none;">
+                                <button class="pw-btn pw-btn-kill" id="pw-btn-kill">
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none">
+                                        <rect x="4" y="4" width="16" height="16" rx="2" fill="currentColor" />
+                                    </svg>
+                                    Emergency Pause
+                                </button>
+                                <button class="pw-btn pw-btn-reset" id="pw-btn-reset">
+                                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                                        <path d="M1 6a5 5 0 019.33-2.5M11 6a5 5 0 01-9.33 2.5" stroke="currentColor"
+                                            stroke-width="1.5" stroke-linecap="round" />
+                                    </svg>
+                                    Reset Session
+                                </button>
+                            </div>
+                            <!-- PAUSED / AUTO_PAUSED state: Resume + Reset -->
+                            <div id="pw-controls-paused" style="display:none;">
+                                <button class="pw-btn pw-btn-resume" id="pw-btn-resume">
+                                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                                        <path d="M3 1.5L10 6L3 10.5Z" fill="currentColor" />
+                                    </svg>
+                                    Resume
+                                </button>
+                                <button class="pw-btn pw-btn-reset" id="pw-btn-reset-paused">
+                                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                                        <path d="M1 6a5 5 0 019.33-2.5M11 6a5 5 0 01-9.33 2.5" stroke="currentColor"
+                                            stroke-width="1.5" stroke-linecap="round" />
+                                    </svg>
+                                    Reset Session
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ARMING PANEL (hidden by default) -->
+                <div class="pw-arming-panel" id="pw-arming-panel" style="display:none;">
+                    <div class="pw-arming-header">
+                        <span class="pw-arming-title">ARM DEPLOYMENT</span>
+                        <button class="pw-arming-cancel" id="pw-arming-cancel">&times;</button>
+                    </div>
+                    <div class="pw-arming-body">
+                        <div class="pw-arming-checks">
+                            <label class="pw-arming-check">
+                                <input type="checkbox" class="pw-arm-cb" id="pw-arm-cb1">
+                                <span>I understand this is PAPER simulation (no real orders)</span>
+                            </label>
+                            <label class="pw-arming-check">
+                                <input type="checkbox" class="pw-arm-cb" id="pw-arm-cb2">
+                                <span>I accept that results may differ from backtest</span>
+                            </label>
+                            <label class="pw-arming-check">
+                                <input type="checkbox" class="pw-arm-cb" id="pw-arm-cb3">
+                                <span>I confirm the selected preset/config is intended</span>
+                            </label>
+                        </div>
+                        <div class="pw-arming-limits">
+                            <div class="pw-arming-limit">
+                                <label class="pw-arming-limit-label">Max Session DD (%)</label>
+                                <input type="number" class="pw-arming-input" id="pw-arm-dd" value="25" min="1"
+                                    max="100">
+                            </div>
+                            <div class="pw-arming-limit">
+                                <label class="pw-arming-limit-label">Max Loss Streak</label>
+                                <input type="number" class="pw-arming-input" id="pw-arm-streak" value="10" min="1"
+                                    max="100">
+                            </div>
+                            <div class="pw-arming-limit">
+                                <label class="pw-arming-limit-label">Max Trades/Day</label>
+                                <input type="number" class="pw-arming-input" id="pw-arm-tpd" value="10" min="1"
+                                    max="100">
+                            </div>
+                        </div>
+                        <button class="pw-btn pw-arm-btn" id="pw-btn-arm" disabled>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                                <path
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                            ARM &amp; START
+                        </button>
+                    </div>
+                </div>
+
+                <!-- LIVE-READINESS BADGE -->
+                <div class="pw-readiness-card" id="pw-readiness-card">
+                    <div class="pw-readiness-header">
+                        <span class="pw-readiness-title">LIVE-READINESS</span>
+                    </div>
+                    <div class="pw-readiness-row">
+                        <span class="pw-readiness-label">Mode</span>
+                        <span class="pw-readiness-value" id="pw-ready-mode">PAPER ONLY</span>
+                    </div>
+                    <div class="pw-readiness-row">
+                        <span class="pw-readiness-label">Signals</span>
+                        <span class="pw-readiness-value" id="pw-ready-signals">&mdash;</span>
+                    </div>
+                    <div class="pw-readiness-row">
+                        <span class="pw-readiness-label">DD vs MaxDD</span>
+                        <span class="pw-readiness-value" id="pw-ready-dd">&mdash; / &mdash;</span>
+                    </div>
+                </div>
+
+                <!-- SAFETY STATUS PANEL -->
+                <div class="pw-safety-panel" id="pw-safety-panel" style="display:none;">
+                    <div class="pw-safety-header">
+                        <span class="pw-safety-title">SAFETY STATUS</span>
+                    </div>
+                    <div class="pw-safety-row" id="pw-safety-dd">
+                        <span class="pw-safety-label">DD Limit</span>
+                        <div class="pw-safety-bar">
+                            <div class="pw-safety-fill" style="width:0%"></div>
+                        </div>
+                        <span class="pw-safety-value">0% / 25%</span>
+                    </div>
+                    <div class="pw-safety-row" id="pw-safety-streak">
+                        <span class="pw-safety-label">Loss Streak</span>
+                        <div class="pw-safety-bar">
+                            <div class="pw-safety-fill" style="width:0%"></div>
+                        </div>
+                        <span class="pw-safety-value">0 / 10</span>
+                    </div>
+                    <div class="pw-safety-row" id="pw-safety-tpd">
+                        <span class="pw-safety-label">Trades Today</span>
+                        <div class="pw-safety-bar">
+                            <div class="pw-safety-fill" style="width:0%"></div>
+                        </div>
+                        <span class="pw-safety-value">0 / 10</span>
+                    </div>
+                </div>
+
+                <!-- BREACH BANNER -->
+                <div class="pw-breach-banner" id="pw-breach-banner" style="display:none;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="flex-shrink:0">
+                        <path
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <span id="pw-breach-text">Auto-paused: Safety limit breached.</span>
+                </div>
+
+                <!-- HEALTH WARNINGS -->
+                <div class="pw-health-area" id="pw-health-area"></div>
+
+                <!-- ANOMALY FLAGS -->
+                <div class="pw-anomaly-area" id="pw-anomaly-area"></div>
+
+                <!-- PAPER PERFORMANCE -->
+                <div class="pw-perf-section">
+                    <div class="pw-perf-header">
+                        <span class="pw-perf-title">PAPER PERFORMANCE</span>
+                        <span id="pw-last-updated" class="pw-last-updated">Last updated: &#8212;</span>
+                    </div>
+
+                    <!-- Stats Row -->
+                    <div class="pw-stats-bar" id="pw-position-stats">
+                        <div class="pw-stat-cell">
+                            <div class="pw-stat-label">POSITION</div>
+                            <div class="pw-stat-value pw-pos-flat">FLAT</div>
+                        </div>
+                        <div class="pw-stat-cell">
+                            <div class="pw-stat-label">PAPER EQUITY</div>
+                            <div class="pw-stat-value" style="color:#4ade80">$10,000</div>
+                        </div>
+                        <div class="pw-stat-cell">
+                            <div class="pw-stat-label">DRAWDOWN</div>
+                            <div class="pw-stat-value" style="color:#4ade80">0.00%</div>
+                        </div>
+                        <div class="pw-stat-cell">
+                            <div class="pw-stat-label">LAST SIGNAL</div>
+                            <div class="pw-stat-value">&#8212;</div>
+                        </div>
+                        <div class="pw-stat-cell">
+                            <div class="pw-stat-label">SIGNAL TIME</div>
+                            <div class="pw-stat-value">&#8212;</div>
+                        </div>
+                        <div class="pw-stat-cell">
+                            <div class="pw-stat-label">TRADES</div>
+                            <div class="pw-stat-value">0</div>
+                        </div>
+                    </div>
+
+                    <!-- TRADE-STATE TIMELINE -->
+                    <div class="pw-state-timeline" id="pw-state-timeline">
+                        <div class="pw-state-step active" data-state="flat">FLAT</div>
+                        <div class="pw-state-arrow">&rarr;</div>
+                        <div class="pw-state-step" data-state="waiting">SIGNAL WAITING</div>
+                        <div class="pw-state-arrow">&rarr;</div>
+                        <div class="pw-state-step" data-state="armed">ARMED</div>
+                        <div class="pw-state-arrow">&rarr;</div>
+                        <div class="pw-state-step" data-state="intrade">IN TRADE</div>
+                    </div>
+
+                    <!-- Equity Chart -->
+                    <div class="pw-chart-container" id="pw-equity-chart">
+                        <canvas id="pw-equity-canvas"></canvas>
+                    </div>
+                </div>
+
+                <!-- RECENT TRADE LOG -->
+                <div class="pw-tradelog-section">
+                    <div class="pw-tradelog-header">
+                        <span class="pw-tradelog-title">RECENT TRADE LOG</span>
+                        <div class="pw-tradelog-cols">
+                            <span>TYPE</span><span>ENTRY PRICE</span><span>EXIT PRICE</span><span>P&amp;L</span>
+                        </div>
+                    </div>
+                    <div id="pw-trade-log" class="pw-tradelog-body">
+                        <div class="pw-tradelog-empty">No trades yet.</div>
+                    </div>
+                </div>
+
+                <!-- Activity Log -->
+                <div class="pw-activity-section">
+                    <div class="pw-activity-header" id="pw-logs-toggle">
+                        <span id="pw-logs-arrow">&#8744;</span> Activity Log
+                    </div>
+                    <div id="pw-logs-body" class="pw-logs-body"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
     <script src="backtest-engine.js"></script>
+    <script src="strategy-health.js"></script>
+    <script src="capital-readiness.js"></script>
+    <script src="deployment-journal.js"></script>
+    <script src="preset-versioning.js"></script>
+    <script src="strategy-lifecycle.js"></script>
     <script src="backtest.js?v=2"></script>
+    <script src="paper-trading.js"></script>
+    <script src="data-feed.js"></script>
+    <script src="paper-execution-engine.js"></script>
+    <script src="live-execution-adapter.js"></script>
+    <script src="paper-execution.js"></script>
+    <script src="portfolio-manager.js"></script>
+    <script src="portfolio-attribution.js"></script>
+    <script src="portfolio-risk-overlay.js"></script>
 </body>
 
 </html>
