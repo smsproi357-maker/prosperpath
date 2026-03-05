@@ -27,9 +27,14 @@
                 <span class="logo-text">ProsperPath</span>
             </a>
             <div class="clarity-nav-links">
-                <a href="clarity-box.html" class="active">Clarity</a>
-                <a href="wealth-guides.html">Library</a>
-                <a href="about.html">About</a>
+                <a href="clarity-box.html" class="active">Clarity Box</a>
+                <a href="trade.html">Trade</a>
+                <a href="market-mechanics.html">Market Mechanics</a>
+                <a href="portfolio.html">Portfolio</a>
+                <a href="wealth-guides.html">Wealth Guides</a>
+                <a href="tool-reviews.html">Tool Reviews</a>
+                <a href="ai-calculators.html">AI Calculators</a>
+                <a href="blog.html">Blog</a>
                 <!-- History Icon -->
                 <button class="clarity-history-btn" id="history-toggle-btn" aria-label="View history"
                     title="Question History">
@@ -64,10 +69,10 @@
     <!-- Landing View -->
     <main class="clarity-main" id="clarity-landing">
         <div class="clarity-landing">
-            <h1 class="clarity-headline">Understanding compounds.</h1>
+            <h1 class="clarity-headline"><i>Understanding</i> compounds.</h1>
             <p class="clarity-subtext">What are you trying to understand?</p>
 
-            <div class="clarity-input-wrapper">
+            <div class="clarity-input-wrapper" data-demo-id="clarity-input-wrapper">
                 <button class="clarity-web-toggle" id="clarity-web-toggle-landing" aria-label="Toggle web search"
                     title="Web Search (Tavily)">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -141,6 +146,7 @@
     </footer>
 
     <script src="clarity-box.js"></script>
+    <script type="module" src="demo-controller.js"></script>
 </body>
 
 </html>

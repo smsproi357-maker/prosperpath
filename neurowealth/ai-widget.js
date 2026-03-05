@@ -3,13 +3,24 @@
  * Integrates with OpenRouter to provide free access to various AI models.
  */
 
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function getAuthToken() {
+    return sessionStorage.getItem('auth_token') || localStorage.getItem('auth_token') || '';
+}
+
 class ProsporousWidget {
     constructor() {
         window.prosporousWidget = this;
-        const defaultKey = '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';
-        this.apiKey = localStorage.getItem('prosporous_api_key') || defaultKey;
-        const defaultTavilyKey = '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';
-        this.tavilyKey = localStorage.getItem('prosporous_tavily_key') || defaultTavilyKey;
+        this.apiKey = localStorage.getItem('prosporous_api_key') || '';
+        this.tavilyKey = localStorage.getItem('prosporous_tavily_key') || '';
         this.models = [];
         this.selectedModel = localStorage.getItem('prosporous_selected_model') || 'zhipu/glm-4.5-air'; // Default: GLM 4.5 Air
         this.sessions = JSON.parse(localStorage.getItem('prosporous_sessions') || '[]');
@@ -140,7 +151,7 @@ class ProsporousWidget {
 
         try {
             this.isSyncing = true;
-            const token = localStorage.getItem('auth_token');
+        const token = getAuthToken();
             if (!token) return;
 
             const response = await fetch(`${this.workerUrl}/user/chat`, {
@@ -165,7 +176,7 @@ class ProsporousWidget {
         if (!window.currentUser) return;
 
         try {
-            const token = localStorage.getItem('auth_token');
+        const token = getAuthToken();
             const res = await fetch(`${this.workerUrl}/user/data`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -1515,7 +1526,7 @@ Provide the full analysis first, then this block.
     formatContent(text) {
         if (!text) return '';
 
-        let formatted = text;
+        let formatted = escapeHtml(text);
 
         // Headers
         formatted = formatted.replace(/^### (.*$)/gm, '<h3>$1</h3>');
@@ -1592,7 +1603,7 @@ Provide the full analysis first, then this block.
             item.className = `history-item ${session.id === this.currentSessionId ? 'active' : ''}`;
             item.innerHTML = `
                 <div class="history-item-content">
-                    <span class="history-item-title">${session.title || 'New Chat'}</span>
+                    <span class="history-item-title">${escapeHtml(session.title || 'New Chat')}</span>
                     <span class="history-item-date">${new Date(session.timestamp).toLocaleDateString()}</span>
                 </div>
                 <button class="history-item-delete" title="Delete Session">&times;</button>

@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="description" content="Module 2.1 — Timeframes | ProsperPath Market Context">
+    <title>Timeframes | ProsperPath</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --m-bg: #0d0e10;
+            --m-surf: #141618;
+            --m-surf2: #18191c;
+            --m-bdr: #1e2023;
+            --m-bdrhi: #2e3035;
+            --m-txt: #e0e1e3;
+            --m-muted: #5e626a;
+            --m-muted2: #3a3d44;
+            --m-gold: #a07c2e;
+            --m-gold-dim: rgba(160, 124, 46, .13);
+            --m-gold-line: rgba(160, 124, 46, .38);
+            --m-green: rgba(120, 210, 160, .15);
+            --m-green-txt: #7ed8a8;
+            --m-red: rgba(220, 100, 80, .15);
+            --m-red-txt: #e08070;
+            --m-rad: 6px;
+            --m-tr: 150ms ease
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            background: var(--m-bg);
+            color: var(--m-txt);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh
+        }
+
+        #ai-chat-fab,
+        .ai-fab-btn,
+        .floating-action-btn,
+        [class*="fab"],
+        [id*="fab"] {
+            display: none !important
+        }
+
+        #module-shell {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden
+        }
+
+        #topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .75rem 1.25rem;
+            border-bottom: 1px solid var(--m-bdr);
+            background: var(--m-surf);
+            flex-shrink: 0;
+            gap: 1rem
+        }
+
+        #topbar-left {
+            display: flex;
+            align-items: center;
+            gap: .75rem
+        }
+
+        #back-btn {
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            font-size: .78rem;
+            padding: .38rem .85rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: border-color var(--m-tr), color var(--m-tr)
+        }
+
+        #back-btn:hover {
+            border-color: var(--m-bdrhi);
+            color: var(--m-txt)
+        }
+
+        #back-btn:focus-visible {
+            outline: 2px solid var(--m-bdrhi);
+            outline-offset: 2px
+        }
+
+        #topbar-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: .95rem;
+            font-weight: 600;
+            color: var(--m-txt)
+        }
+
+        #progress-label {
+            font-size: .75rem;
+            color: var(--m-muted);
+            letter-spacing: .04em;
+            white-space: nowrap
+        }
+
+        #progress-bar-wrap {
+            width: 80px;
+            height: 2px;
+            background: var(--m-bdr);
+            border-radius: 1px;
+            overflow: hidden
+        }
+
+        #progress-bar-fill {
+            height: 100%;
+            background: var(--m-gold);
+            border-radius: 1px;
+            transition: width .4s ease
+        }
+
+        #shell-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden
+        }
+
+        #section-nav {
+            width: 200px;
+            flex-shrink: 0;
+            border-right: 1px solid var(--m-bdr);
+            background: var(--m-surf);
+            overflow-y: auto;
+            padding: 1rem 0
+        }
+
+        .sn-item {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            padding: .6rem 1rem;
+            font-size: .75rem;
+            color: var(--m-muted);
+            cursor: pointer;
+            transition: color var(--m-tr), background var(--m-tr);
+            border-left: 2px solid transparent;
+            line-height: 1.3
+        }
+
+        .sn-item:hover {
+            color: var(--m-txt);
+            background: rgba(255, 255, 255, .025)
+        }
+
+        .sn-item:focus-visible {
+            outline: 2px solid var(--m-bdrhi);
+            outline-offset: -2px
+        }
+
+        .sn-item.visited {
+            color: var(--m-txt)
+        }
+
+        .sn-item.current {
+            color: var(--m-gold);
+            border-left-color: var(--m-gold);
+            background: var(--m-gold-dim)
+        }
+
+        .sn-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--m-muted2);
+            flex-shrink: 0;
+            transition: background var(--m-tr)
+        }
+
+        .sn-item.visited .sn-dot {
+            background: var(--m-muted)
+        }
+
+        .sn-item.current .sn-dot {
+            background: var(--m-gold)
+        }
+
+        #main-stage {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2.5rem 1.5rem
+        }
+
+        .screen {
+            width: 100%;
+            max-width: 640px;
+            animation: fadeIn .2s ease
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .scr-eyebrow {
+            font-size: .68rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--m-muted);
+            margin-bottom: 1.2rem
+        }
+
+        .scr-h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            font-weight: 700;
+            color: var(--m-txt);
+            letter-spacing: -.02em;
+            line-height: 1.15;
+            margin-bottom: .75rem
+        }
+
+        .scr-h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--m-txt);
+            margin-bottom: .9rem
+        }
+
+        .scr-meta {
+            font-size: .78rem;
+            color: var(--m-muted);
+            letter-spacing: .04em;
+            margin-bottom: 2rem
+        }
+
+        .scr-body {
+            font-size: .95rem;
+            color: var(--m-muted);
+            line-height: 1.7;
+            margin-bottom: 1.5rem
+        }
+
+        .scr-body p {
+            margin-bottom: .55rem
+        }
+
+        .scr-body p:last-child {
+            margin-bottom: 0
+        }
+
+        .anchor-line {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--m-txt);
+            padding: .7rem 1rem;
+            border-left: 2px solid var(--m-gold);
+            background: var(--m-gold-dim);
+            border-radius: 0 4px 4px 0;
+            margin: 1.5rem 0;
+            line-height: 1.5
+        }
+
+        .concept-line {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--m-muted);
+            padding: .55rem 0;
+            border-bottom: 1px solid var(--m-bdr);
+            opacity: 0;
+            transition: opacity .4s ease, color .3s ease
+        }
+
+        .concept-line:last-child {
+            border-bottom: none
+        }
+
+        .concept-line.revealed {
+            opacity: 1
+        }
+
+        .concept-line.primary {
+            color: var(--m-txt)
+        }
+
+        .checklist-item {
+            font-size: .95rem;
+            color: var(--m-txt);
+            padding: .55rem .75rem;
+            border-left: 2px solid var(--m-bdr);
+            margin-bottom: .5rem;
+            transition: border-color .2s
+        }
+
+        .checklist-item:hover {
+            border-left-color: var(--m-gold)
+        }
+
+        /* ── Zoom chart ── */
+        .tf-chart-outer {
+            position: relative;
+            margin: 1.25rem 0;
+            background: var(--m-surf2);
+            border: 1px solid var(--m-bdr);
+            border-radius: 4px;
+            overflow: hidden;
+            height: 200px
+        }
+
+        .tf-chart-viewport {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative
+        }
+
+        /* candle row: absolute container — candles are positioned inside per-frame */
+        .tf-candle-row {
+            position: absolute;
+            inset: 0;
+            overflow: hidden
+        }
+
+        .tf-candle {
+            position: absolute;
+            bottom: 0;
+            border-radius: 1px
+        }
+
+        .tf-highlight-box {
+            position: absolute;
+            border: 1.5px solid var(--m-gold-line);
+            background: rgba(160, 124, 46, .07);
+            border-radius: 3px;
+            top: 0;
+            bottom: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 200ms ease
+        }
+
+        .tf-focus-label {
+            position: absolute;
+            font-size: .68rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            letter-spacing: .04em;
+            color: var(--m-gold);
+            opacity: 0;
+            pointer-events: none;
+            white-space: nowrap;
+            transition: opacity 200ms ease;
+            transform: translateX(-50%);
+            top: .5rem
+        }
+
+        .tf-overlay-text {
+            position: absolute;
+            top: .6rem;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: .8rem;
+            color: var(--m-muted);
+            letter-spacing: .03em;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 500;
+            pointer-events: none;
+            line-height: 1.5
+        }
+
+        /* ── Buttons ── */
+        .btn-primary {
+            background: transparent;
+            border: 1px solid var(--m-gold-line);
+            color: var(--m-gold);
+            font-family: 'Inter', sans-serif;
+            font-size: .8rem;
+            font-weight: 600;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            padding: .65rem 1.5rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background var(--m-tr), border-color var(--m-tr);
+            margin-right: .6rem
+        }
+
+        .btn-primary:hover {
+            background: var(--m-gold-dim);
+            border-color: var(--m-gold)
+        }
+
+        .btn-primary:focus-visible {
+            outline: 2px solid var(--m-gold);
+            outline-offset: 2px
+        }
+
+        .btn-primary:disabled {
+            opacity: .42;
+            cursor: not-allowed
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: .8rem;
+            font-weight: 500;
+            letter-spacing: .04em;
+            padding: .62rem 1.2rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: border-color var(--m-tr), color var(--m-tr)
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--m-bdrhi);
+            color: var(--m-txt)
+        }
+
+        .btn-ghost:focus-visible {
+            outline: 2px solid var(--m-bdrhi);
+            outline-offset: 2px
+        }
+
+        .btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .6rem;
+            margin-top: 1.75rem
+        }
+
+        .clarify-btn {
+            background: none;
+            border: none;
+            color: var(--m-gold);
+            font-size: .78rem;
+            font-weight: 600;
+            letter-spacing: .04em;
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            padding: 0;
+            font-family: 'Inter', sans-serif
+        }
+
+        .clarify-btn:focus-visible {
+            outline: 2px solid var(--m-gold);
+            outline-offset: 2px
+        }
+
+        .opt-btn {
+            display: block;
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-txt);
+            font-family: 'Inter', sans-serif;
+            font-size: .875rem;
+            text-align: left;
+            padding: .75rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: .5rem;
+            transition: border-color var(--m-tr), background var(--m-tr)
+        }
+
+        .opt-btn:hover {
+            border-color: var(--m-bdrhi);
+            background: rgba(255, 255, 255, .025)
+        }
+
+        .opt-btn.selected {
+            border-color: var(--m-gold-line);
+            background: var(--m-gold-dim);
+            color: var(--m-gold)
+        }
+
+        .opt-btn:disabled {
+            cursor: default
+        }
+
+        .assessment-prog {
+            font-size: .72rem;
+            color: var(--m-muted);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem
+        }
+
+        .assessment-q {
+            font-size: 1rem;
+            color: var(--m-txt);
+            margin-bottom: 1.25rem;
+            line-height: 1.55
+        }
+
+        .result-box {
+            text-align: center;
+            padding: 2rem 1rem
+        }
+
+        .result-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--m-txt);
+            margin-bottom: .5rem
+        }
+
+        .result-gold {
+            color: var(--m-gold)
+        }
+
+        .result-body {
+            font-size: .9rem;
+            color: var(--m-muted);
+            line-height: 1.6;
+            margin-bottom: 1.75rem;
+            max-width: 360px;
+            margin-left: auto;
+            margin-right: auto
+        }
+
+        /* ── Clarify Panel ── */
+        #clarify-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .55);
+            z-index: 900;
+            display: none;
+            align-items: flex-start;
+            justify-content: flex-end
+        }
+
+        #clarify-overlay.open {
+            display: flex
+        }
+
+        #clarify-panel {
+            width: 340px;
+            max-width: 90vw;
+            height: 100%;
+            background: #16181b;
+            border-left: 1px solid var(--m-bdr);
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            animation: slideInRight .22s ease
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%)
+            }
+
+            to {
+                transform: translateX(0)
+            }
+        }
+
+        .cp-term {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--m-txt);
+            margin-bottom: .25rem
+        }
+
+        .cp-section {
+            margin-top: 1.25rem
+        }
+
+        .cp-label {
+            font-size: .65rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--m-muted);
+            margin-bottom: .4rem
+        }
+
+        .cp-text {
+            font-size: .85rem;
+            color: var(--m-muted);
+            line-height: 1.55
+        }
+
+        .cp-text strong {
+            color: var(--m-txt);
+            font-weight: 500
+        }
+
+        #cp-close {
+            margin-top: 2rem;
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: .78rem;
+            padding: .5rem 1rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: border-color var(--m-tr), color var(--m-tr)
+        }
+
+        #cp-close:hover {
+            border-color: var(--m-bdrhi);
+            color: var(--m-txt)
+        }
+
+        .nav-toggle {
+            display: none;
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            padding: .36rem .7rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: .75rem
+        }
+
+        @media(max-width:700px) {
+            #section-nav {
+                position: fixed;
+                inset: 0 auto 0 0;
+                z-index: 800;
+                transform: translateX(-100%);
+                transition: transform .3s ease;
+                width: 240px
+            }
+
+            #section-nav.open {
+                transform: translateX(0)
+            }
+
+            #nav-backdrop {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, .5);
+                z-index: 799;
+                display: none
+            }
+
+            #nav-backdrop.open {
+                display: block
+            }
+
+            #clarify-panel {
+                width: 100%;
+                height: 60vh;
+                border-left: none;
+                border-top: 1px solid var(--m-bdr);
+                position: fixed;
+                bottom: 0;
+                left: 0
+            }
+
+            #clarify-overlay {
+                align-items: flex-end;
+                justify-content: center
+            }
+
+            #main-stage {
+                padding: 1.5rem 1rem
+            }
+
+            .nav-toggle {
+                display: inline-flex;
+                align-items: center;
+                gap: .4rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="module-shell">
+        <div id="topbar">
+            <div id="topbar-left">
+                <button class="nav-toggle" id="nav-toggle-btn" onclick="toggleNavDrawer()"
+                    aria-label="Open section navigator">&#9776; Sections</button>
+                <button id="back-btn" onclick="goBack()">&#8592; Market Mechanics</button>
+                <span id="topbar-title">Timeframes</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:.75rem">
+                <span id="progress-label">Progress 0%</span>
+                <div id="progress-bar-wrap">
+                    <div id="progress-bar-fill" style="width:0%"></div>
+                </div>
+            </div>
+        </div>
+        <div id="nav-backdrop" onclick="toggleNavDrawer()"></div>
+        <div id="shell-body">
+            <nav id="section-nav" aria-label="Module sections">
+                <div id="sn-items"></div>
+            </nav>
+            <main id="main-stage">
+                <div class="screen" id="screen-container"></div>
+            </main>
+        </div>
+    </div>
+    <div id="clarify-overlay" onclick="handleClarifyOverlayClick(event)" role="dialog" aria-modal="true"
+        aria-label="Clarify">
+        <div id="clarify-panel">
+            <div class="cp-term" id="cp-term"></div>
+            <div class="cp-section">
+                <div class="cp-label">Explanation</div>
+                <div class="cp-text" id="cp-explanation"></div>
+            </div>
+            <div class="cp-section">
+                <div class="cp-label">Example</div>
+                <div class="cp-text" id="cp-example"></div>
+            </div>
+            <div class="cp-section">
+                <div class="cp-label">Common Misconception</div>
+                <div class="cp-text" id="cp-misconception"></div>
+            </div>
+            <button id="cp-close" onclick="closeClarify()">Close</button>
+        </div>
+    </div>
+    <script src="script.js?v=m21"></script>
+    <script src="ai-widget.js"></script>
+    <script src="google-auth.js"></script>
+    <script>
+        window.addEventListener('load', () => { if (typeof initGoogleAuth === 'function') initGoogleAuth(); });
+        /* ═══════════════════════════ STATE ═══════════════════════════ */
+        const STATE = {
+            currentSectionId: 0, currentScreenIndex: 0,
+            visitedSections: new Set(), sectionLastScreenIndex: {},
+            navHistory: [],
+            assessment: { answers: [null, null, null, null, null], isSubmitted: false, scorePercent: null, passed: null, currentQ: 0 },
+            showReview: false, verified: false,
+            microDecision: null
+        };
+        const SECTIONS = [
+            { id: 0, label: 'Entry' },
+            { id: 1, label: 'Section I \u2014 The Illusion' },
+            { id: 2, label: 'Section II \u2014 Nested Movements' },
+            { id: 3, label: 'Section III \u2014 Zooming Out' },
+            { id: 4, label: 'Section IV \u2014 Structural Hierarchy' },
+            { id: 5, label: 'Section V \u2014 Competency Check' }
+        ];
+        /* ═══════════════════════════ PROGRESS ═══════════════════════════ */
+        function computeProgress() {
+            // Task 7: progress = completed sections / total content sections (5)
+            // Sections 1-5 count; Entry (0) counts as visited but not scored.
+            const TOTAL_SECTIONS = 5;
+            const visited = [...STATE.visitedSections].filter(id => id >= 1 && id <= 5);
+            const base = Math.min(visited.length, TOTAL_SECTIONS);
+            // Linear 0–85% while progressing through sections
+            let pct = Math.round((base / TOTAL_SECTIONS) * 85);
+            // Assessment attempted but not passed → cap at 90
+            if (STATE.assessment.scorePercent !== null && STATE.assessment.scorePercent > 0 && !STATE.assessment.passed)
+                pct = Math.max(pct, 90);
+            // Assessment passed → 100% (locked in)
+            if (STATE.assessment.passed) pct = 100;
+            return pct;
+        }
+        function updateProgress() {
+            const pct = computeProgress();
+            document.getElementById('progress-label').textContent = 'Progress ' + pct + '%';
+            document.getElementById('progress-bar-fill').style.width = pct + '%';
+        }
+        // Once a section is visited it stays visited (prevents backward jumps)
+        function visit(sid) { if (!STATE.visitedSections.has(sid)) { STATE.visitedSections.add(sid); updateProgress(); } renderNav(); }
+        /* ═══════════════════════════ NAVIGATION ═══════════════════════════ */
+        function goToSection(sid, screenIndex, pushHistory) {
+            const maxVisited = STATE.visitedSections.size > 0 ? Math.max(...[...STATE.visitedSections]) : 0;
+            const allowed = STATE.visitedSections.has(sid) || sid <= maxVisited + 1 || sid === 0;
+            if (!allowed) return;
+            if (pushHistory !== false) STATE.navHistory.push({ sectionId: STATE.currentSectionId, screenIndex: STATE.currentScreenIndex });
+            STATE.sectionLastScreenIndex[STATE.currentSectionId] = STATE.currentScreenIndex;
+            STATE.currentSectionId = sid;
+            STATE.currentScreenIndex = (screenIndex !== undefined && screenIndex !== null) ? screenIndex : 0;
+            STATE.showReview = false;
+            visit(sid); renderNav(); renderScreen();
+            const nav = document.getElementById('section-nav');
+            if (nav.classList.contains('open')) toggleNavDrawer();
+        }
+        function goBack() {
+            if (STATE.showReview) { STATE.showReview = false; renderScreen(); return; }
+            if (STATE.navHistory.length > 0) {
+                const prev = STATE.navHistory.pop();
+                STATE.sectionLastScreenIndex[STATE.currentSectionId] = STATE.currentScreenIndex;
+                STATE.currentSectionId = prev.sectionId; STATE.currentScreenIndex = prev.screenIndex;
+                STATE.showReview = false; visit(prev.sectionId); renderNav(); renderScreen(); return;
+            }
+            // Task 1: back always returns to Market Mechanics hub (Timeframes lives inside Market Mechanics)
+            window.location.href = 'market-mechanics.html';
+        }
+        function toggleNavDrawer() {
+            document.getElementById('section-nav').classList.toggle('open');
+            document.getElementById('nav-backdrop').classList.toggle('open');
+        }
+        /* ═══════════════════════════ NAV RENDER ═══════════════════════════ */
+        function renderNav() {
+            const c = document.getElementById('sn-items'); c.innerHTML = '';
+            SECTIONS.forEach(s => {
+                if (s.id === 0) return;
+                const isCurrent = STATE.currentSectionId === s.id;
+                const isVisited = STATE.visitedSections.has(s.id);
+                const maxVisited = STATE.visitedSections.size > 0 ? Math.max(...[...STATE.visitedSections]) : 0;
+                const isAccessible = isVisited || s.id <= maxVisited + 1;
+                const div = document.createElement('div');
+                div.className = 'sn-item' + (isCurrent ? ' current' : '') + (isVisited ? ' visited' : '');
+                div.setAttribute('tabindex', isAccessible ? '0' : '-1');
+                div.setAttribute('role', 'button');
+                div.setAttribute('aria-label', s.label + (isCurrent ? ', current' : isVisited ? ', visited' : ', not visited'));
+                div.innerHTML = `<span class="sn-dot"></span><span>${s.label}</span>`;
+                if (isAccessible) {
+                    div.onclick = () => { const lsi = STATE.sectionLastScreenIndex[s.id]; goToSection(s.id, lsi !== undefined ? lsi : 0); };
+                    div.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { const lsi = STATE.sectionLastScreenIndex[s.id]; goToSection(s.id, lsi !== undefined ? lsi : 0); } };
+                } else { div.style.opacity = '.35'; div.style.cursor = 'not-allowed'; }
+                c.appendChild(div);
+            });
+        }
+        /* ═══════════════════════════ CLARIFY ═══════════════════════════ */
+        const CLARIFY_DATA = {
+            scale: {
+                term: 'Scale',
+                explanation: 'The same price movement looks completely different depending on the zoom level or aggregation used to observe it.',
+                example: 'A pullback that fills the entire screen at a close zoom can look like a tiny blip inside a larger trend when viewed at a wider scale.',
+                misconception: '<strong>"Changing the view changes the market."</strong> It changes your perspective only. The underlying movement is the same — scale determines how it appears.'
+            },
+            nestedmovements: {
+                term: 'Nested Movements',
+                explanation: 'Movements contain sub-movements at smaller scales. Every trend has pullbacks; every pullback has smaller swings inside it.',
+                example: 'A trend contains pullbacks. Each pullback contains smaller counter-swings. Each of those contains micro-fluctuations.',
+                misconception: '<strong>"A pullback means the trend ended."</strong> Pullbacks are part of trend structure — nested inside the larger directional movement, not opposed to it.'
+            },
+            context: {
+                term: 'Context',
+                explanation: 'The conditions surrounding a movement at the current scale — what larger movement it is inside, and whether it is expansion or a pullback.',
+                example: 'A pullback inside an uptrend has different meaning than the same pullback inside a range. Context is the surrounding structure.',
+                misconception: '<strong>"Context is a prediction tool."</strong> Context guides interpretation of what is happening — it does not predict where price will go next.'
+            }
+        };
+        function openClarify(topicId) {
+            const d = CLARIFY_DATA[topicId]; if (!d) return;
+            document.getElementById('cp-term').textContent = d.term;
+            document.getElementById('cp-explanation').textContent = d.explanation;
+            document.getElementById('cp-example').textContent = d.example;
+            document.getElementById('cp-misconception').innerHTML = d.misconception;
+            document.getElementById('clarify-overlay').classList.add('open');
+            document.getElementById('cp-close').focus();
+        }
+        function closeClarify() { document.getElementById('clarify-overlay').classList.remove('open'); }
+        function handleClarifyOverlayClick(e) { if (e.target === document.getElementById('clarify-overlay')) closeClarify(); }
+        function escHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+        function escAttr(s) { return String(s).replace(/"/g, '&quot;'); }
+        /* ═══════════════════════════ CHART — SINGLE SOURCE OF TRUTH ═══════════════════════════ */
+        // DEV: set DEBUG_ZOOM = true to overlay live viewport indices on the chart
+        const DEBUG_ZOOM = false;
+
+        // ── Single candle array (all chart states use THIS, never another array) ──
+        const CANDLES = (() => {
+            const pattern = [28, 24, 30, 22, 26, 32, 20, 28, 24, 36, 22, 30, 26, 24, 20, 28, 18, 24, 30, 22, 34, 26, 28, 32, 18, 24, 28, 22, 30, 26];
+            const colors = ['rgba(120,210,160,.2)', 'rgba(120,210,160,.2)', 'rgba(220,100,80,.18)', 'rgba(120,210,160,.2)', 'rgba(120,210,160,.22)',
+                'rgba(120,210,160,.2)', 'rgba(220,100,80,.18)', 'rgba(120,210,160,.22)', 'rgba(220,100,80,.16)', 'rgba(120,210,160,.24)',
+                'rgba(220,100,80,.18)', 'rgba(120,210,160,.22)', 'rgba(120,210,160,.2)', 'rgba(220,100,80,.16)', 'rgba(220,100,80,.18)',
+                'rgba(120,210,160,.22)', 'rgba(220,100,80,.18)', 'rgba(120,210,160,.2)', 'rgba(120,210,160,.24)', 'rgba(220,100,80,.16)',
+                'rgba(120,210,160,.26)', 'rgba(120,210,160,.22)', 'rgba(120,210,160,.24)', 'rgba(120,210,160,.26)', 'rgba(220,100,80,.16)',
+                'rgba(120,210,160,.2)', 'rgba(120,210,160,.24)', 'rgba(220,100,80,.16)', 'rgba(120,210,160,.22)', 'rgba(120,210,160,.22)'];
+            const bdrs = ['rgba(120,210,160,.4)', 'rgba(120,210,160,.38)', 'rgba(220,100,80,.35)', 'rgba(120,210,160,.38)', 'rgba(120,210,160,.42)',
+                'rgba(120,210,160,.4)', 'rgba(220,100,80,.35)', 'rgba(120,210,160,.42)', 'rgba(220,100,80,.32)', 'rgba(120,210,160,.44)',
+                'rgba(220,100,80,.35)', 'rgba(120,210,160,.42)', 'rgba(120,210,160,.4)', 'rgba(220,100,80,.32)', 'rgba(220,100,80,.35)',
+                'rgba(120,210,160,.42)', 'rgba(220,100,80,.35)', 'rgba(120,210,160,.4)', 'rgba(120,210,160,.44)', 'rgba(220,100,80,.32)',
+                'rgba(120,210,160,.46)', 'rgba(120,210,160,.42)', 'rgba(120,210,160,.44)', 'rgba(120,210,160,.46)', 'rgba(220,100,80,.32)',
+                'rgba(120,210,160,.4)', 'rgba(120,210,160,.44)', 'rgba(220,100,80,.32)', 'rgba(120,210,160,.42)', 'rgba(120,210,160,.42)'];
+            return pattern.map((h, i) => ({ h, col: colors[i], bdr: bdrs[i] }));
+        })();
+
+        // ── Viewport constants — highlight and zoom use IDENTICAL indices ──
+        const HL_START = 22, HL_COUNT = 6;          // highlight box start index, count
+        const VP_FULL = { start: 0, end: CANDLES.length };       // full 30-candle view
+        const VP_ZOOM = { start: HL_START, end: HL_START + HL_COUNT }; // SAME as highlight
+
+        // ── Chart scaffold: emits the container only; candles drawn by renderChartViewport ──
+        function buildChart(overlayText) {
+            const lines = (overlayText || '').split('\n').map(l => `<div>${l}</div>`).join('');
+            const dbgEl = DEBUG_ZOOM ? '<div id="tf-debug" style="position:absolute;bottom:3px;left:5px;font-size:9px;color:rgba(255,255,255,.4);font-family:monospace;letter-spacing:.03em;pointer-events:none"></div>' : '';
+            return `<div class="tf-chart-outer" id="tf-chart-outer">
+  <div class="tf-chart-viewport">
+    <div class="tf-candle-row" id="tf-candle-row"></div>
+    <div class="tf-highlight-box" id="tf-hl-box"></div>
+    <div class="tf-focus-label" id="tf-focus-label">Focus here.</div>
+  </div>
+  <div class="tf-overlay-text" id="tf-overlay-text">${lines}</div>
+  ${dbgEl}
+</div>`;
+        }
+
+        // ── Viewport renderer: draws candles absolutely inside tf-candle-row ──
+        // vp = { start: number, end: number }; hlOpacity = 0..1 (0 = hidden, 1 = fully visible)
+        function renderChartViewport(vp, hlOpacity) {
+            const outer = document.getElementById('tf-chart-outer');
+            const row = document.getElementById('tf-candle-row');
+            if (!outer || !row) return;
+
+            const outerW = outer.clientWidth || 600;
+            const outerH = outer.clientHeight || 200;
+            const topPad = 26; // px reserved at top for overlay text
+            const innerH = outerH - topPad;
+
+            // Slot width (candle + gap) based on viewport span
+            const count = vp.end - vp.start;
+            const slotW = outerW / count;
+            const gapW = Math.max(1, slotW * 0.18);
+            const bodyW = Math.max(1, slotW - gapW);
+
+            // Y-scale: tallest candle in visible range fills innerH
+            const si = Math.max(0, Math.floor(vp.start));
+            const ei = Math.min(CANDLES.length - 1, Math.ceil(vp.end - 0.0001));
+            let maxH = 0;
+            for (let i = si; i <= ei; i++) if (CANDLES[i].h > maxH) maxH = CANDLES[i].h;
+            const yScale = maxH > 0 ? innerH / maxH : 1;
+
+            // Build and inject candle HTML (absolutely positioned)
+            let html = '';
+            for (let i = 0; i < CANDLES.length; i++) {
+                const x = (i - vp.start) * slotW;
+                if (x + slotW <= 0 || x >= outerW) continue;
+                const h = Math.max(2, CANDLES[i].h * yScale);
+                html += `<div style="position:absolute;left:${x.toFixed(1)}px;bottom:0;width:${bodyW.toFixed(1)}px;height:${h.toFixed(1)}px;background:${CANDLES[i].col};border:1px solid ${CANDLES[i].bdr};border-radius:1px"></div>`;
+            }
+            row.innerHTML = html;
+
+            // Highlight box — always positioned at HL_START..HL_START+HL_COUNT, opacity-controlled
+            // Position is always set (even when invisible) so CSS opacity transitions work.
+            const hlBox = document.getElementById('tf-hl-box');
+            const focusLabel = document.getElementById('tf-focus-label');
+            const op = typeof hlOpacity === 'number' ? Math.max(0, Math.min(1, hlOpacity)) : 0;
+            if (hlBox) {
+                const boxL = (HL_START - vp.start) * slotW;
+                const boxR = (HL_START + HL_COUNT - vp.start) * slotW;
+                const clL = Math.max(0, boxL);
+                const clR = Math.min(outerW, boxR);
+                if (clR > clL) {
+                    // Always set position so animation has valid from/to coords
+                    hlBox.style.left = clL.toFixed(1) + 'px';
+                    hlBox.style.width = (clR - clL).toFixed(1) + 'px';
+                    hlBox.style.top = topPad + 'px';
+                    hlBox.style.bottom = '0';
+                    hlBox.style.opacity = op;
+                    if (focusLabel) {
+                        focusLabel.style.left = ((clL + clR) / 2).toFixed(1) + 'px';
+                        focusLabel.style.opacity = op * 0.7;
+                    }
+                } else {
+                    hlBox.style.opacity = '0';
+                    if (focusLabel) focusLabel.style.opacity = '0';
+                }
+            }
+
+            // Debug overlay
+            if (DEBUG_ZOOM) {
+                const dbg = document.getElementById('tf-debug');
+                if (dbg) dbg.textContent = `VP ${vp.start.toFixed(2)}–${vp.end.toFixed(2)} | HL ${HL_START}–${HL_START + HL_COUNT}`;
+            }
+        }
+
+        // ── Reduced-motion helper ──
+        const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // ── Task 2: Viewport animation — 800ms, easeOutCubic feel, no DOM chart swap ──
+        let _vpRaf = null;
+        // easeOutCubic: fast start, smooth settle — cubic-bezier(0.22, 1, 0.36, 1) approximation
+        function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+        // hlOpacity: if provided, fades HL from that start value to 0 during the zoom.
+        function animateViewport(fromVP, toVP, hlStartOpacity, onDone) {
+            if (_vpRaf) { cancelAnimationFrame(_vpRaf); _vpRaf = null; }
+            const hlStart = typeof hlStartOpacity === 'number' ? hlStartOpacity : 0;
+            if (REDUCED_MOTION) {
+                renderChartViewport(toVP, 0);
+                if (onDone) onDone();
+                return;
+            }
+            const t0 = performance.now();
+            const DURATION = 800; // ms — Task 2: premium 800ms zoom
+            function step(now) {
+                const raw = Math.min(1, (now - t0) / DURATION);
+                const e = easeOutCubic(raw);
+                // HL fades out as zoom progresses
+                const hlOp = hlStart * (1 - e);
+                renderChartViewport({
+                    start: fromVP.start + (toVP.start - fromVP.start) * e,
+                    end: fromVP.end + (toVP.end - fromVP.end) * e
+                }, hlOp);
+                if (raw < 1) { _vpRaf = requestAnimationFrame(step); }
+                else { _vpRaf = null; renderChartViewport(toVP, 0); if (onDone) onDone(); }
+            }
+            _vpRaf = requestAnimationFrame(step);
+        }
+
+        // ── Task 3: First-zoom micro-copy — fades in at S2 si===3 before the zoom begins ──
+        function showFirstZoomCopy(thenZoom) {
+            // Inject a small overlay line if not already there
+            const outer = document.getElementById('tf-chart-outer');
+            if (!outer) { if (thenZoom) thenZoom(); return; }
+            let el = document.getElementById('tf-zoom-copy');
+            if (!el) {
+                el = document.createElement('div');
+                el.id = 'tf-zoom-copy';
+                el.style.cssText = [
+                    'position:absolute', 'top:.55rem', 'right:.85rem',
+                    'font-size:.72rem', 'font-family:Outfit,sans-serif', 'font-weight:500',
+                    'color:rgba(160,124,46,.85)', 'letter-spacing:.04em',
+                    'pointer-events:none', 'opacity:0',
+                    'transition:opacity 150ms ease'
+                ].join(';');
+                el.textContent = 'Zoom in. Same market — different scale.';
+                outer.appendChild(el);
+            }
+            // Fade in (150ms), hold, then trigger zoom after 320ms total
+            if (REDUCED_MOTION) {
+                el.style.opacity = '0';
+                if (thenZoom) thenZoom();
+                return;
+            }
+            void el.offsetWidth;
+            el.style.opacity = '1';
+            setTimeout(() => {
+                if (thenZoom) thenZoom();
+                // Fade out after zoom finishes (800ms zoom + 250ms hold)
+                setTimeout(() => { el.style.opacity = '0'; }, 850);
+            }, 280);
+        }
+
+        // ── Focus window animation: fade-in → hold → then call onDone ──
+        // Used on S2 si===1 to reveal the highlight box with a label.
+        function animateFocusWindow(onDone) {
+            if (REDUCED_MOTION) {
+                renderChartViewport(VP_FULL, 1);
+                if (onDone) onDone();
+                return;
+            }
+            // Phase 1: render with hl=0, then CSS transition fades it in
+            renderChartViewport(VP_FULL, 0);
+            const hlBox = document.getElementById('tf-hl-box');
+            if (hlBox) {
+                void hlBox.offsetWidth;
+                renderChartViewport(VP_FULL, 1);
+            }
+            if (onDone) setTimeout(onDone, 600);
+        }
+
+        // triggerZoomIn: Task 5 — overlay leads zoom by 200ms (overlay is already placed)
+        // focusVisible=true means HL box is showing; fades it during zoom
+        function triggerZoomIn(focusVisible, onDone) {
+            // Task 3: show micro-copy BEFORE zoom ; overlay has a 200ms lead (via showFirstZoomCopy delay)
+            showFirstZoomCopy(() => {
+                animateViewport(VP_FULL, VP_ZOOM, focusVisible ? 1 : 0, onDone);
+            });
+        }
+        function triggerZoomOut() { animateViewport(VP_ZOOM, VP_FULL, 0, null); }
+
+        /* ═══════════════════════════ SCREEN RENDERERS ═══════════════════════════ */
+        function renderScreen() {
+            const c = document.getElementById('screen-container');
+            c.innerHTML = '';
+            const s = STATE.currentSectionId;
+            let html = '';
+            if (s === 0) html = buildEntry();
+            else if (s === 1) html = buildS1(STATE.currentScreenIndex);
+            else if (s === 2) html = buildS2(STATE.currentScreenIndex);
+            else if (s === 3) html = buildS3(STATE.currentScreenIndex);
+            else if (s === 4) html = buildS4(STATE.currentScreenIndex);
+            else if (s === 5) { if (STATE.showReview) html = buildReviewAnswers(); else html = buildS5(); }
+            c.innerHTML = html;
+            c.scrollTop = 0;
+            document.getElementById('main-stage').scrollTop = 0;
+            attachHandlers();
+            // Initialize chart viewport for Section II screens
+            if (s === 2) {
+                const si = STATE.currentScreenIndex;
+                if (si === 0) {
+                    // Large view, no highlight; no label
+                    renderChartViewport(VP_FULL, 0);
+                } else if (si === 1) {
+                    // Task 5: Large view; animate focus window in — label shows on this instructional step
+                    renderChartViewport(VP_FULL, 0);
+                    setTimeout(() => animateFocusWindow(null), 80);
+                } else if (si === 3) {
+                    // Task 5: Task 3: Show focus box, THEN trigger zoom with micro-copy leading by 200ms
+                    // The focus label is suppressed here (not instructional), only the highlight box shows
+                    renderChartViewport(VP_FULL, 1);
+                    // Hide the focus label on this step (we only want box, not label)
+                    const focusLabel = document.getElementById('tf-focus-label');
+                    if (focusLabel) focusLabel.style.opacity = '0';
+                    const overlayText = document.getElementById('tf-overlay-text');
+                    if (overlayText) {
+                        overlayText.style.transition = 'opacity 400ms ease';
+                        overlayText.style.opacity = '0';
+                    }
+                    // Zoom fires after short hold so user sees focus box first
+                    setTimeout(() => triggerZoomIn(true, () => {
+                        if (overlayText) {
+                            overlayText.style.opacity = '1';
+                        }
+                    }), REDUCED_MOTION ? 0 : 200);
+                } else if (si === 4) {
+                    renderChartViewport(VP_ZOOM, 0);
+                } else if (si === 5) {
+                    renderChartViewport(VP_ZOOM, 0);
+                    triggerZoomOut();
+                    // Anchor pause — 900ms after zoom begins before Continue is active
+                    const pauseMs = REDUCED_MOTION ? 0 : 1000;
+                    setTimeout(() => { const b = document.getElementById('s2-to-s3'); if (b) b.disabled = false; }, pauseMs);
+                }
+            }
+            // Initialize chart viewport for Section III screens (Task 4)
+            if (s === 3) {
+                const si = STATE.currentScreenIndex;
+                if (si === 0) {
+                    // S3-1: Start zoomed in (same VP_ZOOM from Section II)
+                    renderChartViewport(VP_ZOOM, 0);
+                } else if (si === 1) {
+                    // S3-2: Zoom out to mid-range (start = HL_START - some context; end = HL_START + HL_COUNT + context)
+                    const VP_MID = { start: Math.max(0, HL_START - 8), end: Math.min(CANDLES.length, HL_START + HL_COUNT + 8) };
+                    renderChartViewport(VP_ZOOM, 0);
+                    setTimeout(() => animateViewport(VP_ZOOM, VP_MID, 0, null), REDUCED_MOTION ? 0 : 80);
+                } else if (si === 2) {
+                    // S3-3: Zoom out more — show most of the chart
+                    const VP_WIDE = { start: Math.max(0, HL_START - 16), end: Math.min(CANDLES.length, HL_START + HL_COUNT + 10) };
+                    const VP_MID = { start: Math.max(0, HL_START - 8), end: Math.min(CANDLES.length, HL_START + HL_COUNT + 8) };
+                    renderChartViewport(VP_MID, 0);
+                    setTimeout(() => animateViewport(VP_MID, VP_WIDE, 0, null), REDUCED_MOTION ? 0 : 80);
+                } else if (si === 3) {
+                    // S3-4: Full view — same as Section II start
+                    const VP_WIDE = { start: Math.max(0, HL_START - 16), end: Math.min(CANDLES.length, HL_START + HL_COUNT + 10) };
+                    renderChartViewport(VP_WIDE, 0);
+                    setTimeout(() => animateViewport(VP_WIDE, VP_FULL, 0, null), REDUCED_MOTION ? 0 : 80);
+                }
+            }
+        }
+
+        function buildEntry() {
+            return `<div style="text-align:center;padding:2rem 0">
+<p class="scr-eyebrow">ProsperPath &mdash; Market Context</p>
+<h1 class="scr-h1">Timeframes</h1>
+<p class="scr-body" style="max-width:320px;margin:0 auto 1rem">Movement only makes sense<br>within scale.</p>
+<p class="scr-meta">Core &bull; 20 minutes &bull; Scale &amp; Context</p>
+<button class="btn-primary" id="begin-btn">Begin Module</button>
+</div>`;
+        }
+
+        /* ── Section I — The Illusion (3 screens) ── */
+        function buildS1(i) {
+            if (i === 0) {
+                return `<p class="scr-eyebrow">Section I &mdash; The Illusion</p>
+<div class="scr-body" style="margin-top:1.5rem">
+<p>Price appears to reverse.</p>
+<p>A strong pullback forms.</p>
+<p>It looks like direction changed.</p>
+</div>
+<div class="btn-row"><button class="btn-primary" id="s1-next">Continue</button></div>`;
+            }
+            if (i === 1) {
+                return `<p class="scr-eyebrow">Section I &mdash; The Illusion</p>
+<div class="scr-body" style="margin-top:1.5rem">
+<p>But interpretation depends on scale.</p>
+<p>What looks large at one level<br>can be small at another.</p>
+</div>
+<p style="font-size:.8rem;color:var(--m-muted);margin-bottom:1rem">Clarify: <button class="clarify-btn" data-topic="scale">Scale</button></p>
+<div class="btn-row"><button class="btn-primary" id="s1-next2">Continue</button></div>`;
+            }
+            // i===2 anchor
+            return `<p class="scr-eyebrow">Section I &mdash; The Illusion</p>
+<div class="anchor-line" style="margin-top:1.75rem">Direction did not change.<br>Scale changed.</div>
+<div class="btn-row"><button class="btn-primary" id="s1-to-s2">Continue to Section II</button></div>`;
+        }
+
+        /* ── Section II — Nested Movements (6 screens) ── */
+        // All chart screens use buildChart(overlayText) scaffold + renderChartViewport() post-render.
+        // No separate zoomed candle arrays — CANDLES is the single source of truth.
+        function buildS2(i) {
+            if (i === 0) {
+                return `<p class="scr-eyebrow">Section II &mdash; Nested Movements</p>
+<h2 class="scr-h2">A Larger Movement</h2>
+${buildChart('Observe the movement.')}
+<div class="btn-row"><button class="btn-primary" id="s2-next">Continue</button></div>`;
+            }
+            if (i === 1) {
+                // Chart renders at VP_FULL; focus window animates in via animateFocusWindow()
+                return `<p class="scr-eyebrow">Section II &mdash; Nested Movements</p>
+${buildChart('')}
+<div class="btn-row"><button class="btn-primary" id="s2-next">Continue</button></div>`;
+            }
+            // i===2 — Micro Decision Moment
+            if (i === 2) {
+                const sel = STATE.microDecision;
+                const opts = ['Trend reversal', 'Pullback', 'Unclear'];
+                const optsHTML = opts.map(o =>
+                    `<button class="opt-btn${sel === o ? ' selected' : ''}" data-dec="${o}">${o}</button>`
+                ).join('');
+                return `<p class="scr-eyebrow">Section II &mdash; Nested Movements</p>
+<div class="scr-body" style="margin-top:1.5rem">
+<p>What does this movement suggest?</p>
+</div>
+<div id="decision-opts">${optsHTML}</div>
+<div class="btn-row"><button class="btn-primary" id="s2-decision-next"${sel === null ? ' disabled' : ''}>Continue</button></div>
+${sel === null ? '<p style="font-size:.75rem;color:var(--m-muted);margin-top:.75rem">Select an option to continue.</p>' : ''}`;
+            }
+            // i===3 — focus box visible → zoom-in fires: VP_FULL → VP_ZOOM (HL fades during zoom)
+            if (i === 3) {
+                return `<p class="scr-eyebrow">Section II &mdash; Nested Movements</p>
+${buildChart('Price appears to reverse.\nBut you are only seeing part of the move.')}
+<div class="btn-row"><button class="btn-primary" id="s2-next">Continue</button></div>`;
+            }
+            // i===4 — static zoomed view (VP_ZOOM)
+            if (i === 4) {
+                return `<p class="scr-eyebrow">Section II &mdash; Nested Movements</p>
+${buildChart('The larger movement continues.')}
+<div class="btn-row"><button class="btn-primary" id="s2-next">Continue</button></div>`;
+            }
+            // i===5 — zoom-out reveal: animates VP_ZOOM → VP_FULL, anchor pause on button
+            return `<p class="scr-eyebrow">Section II &mdash; Nested Movements</p>
+${buildChart('')}
+<div class="anchor-line" style="margin-top:1.25rem">Direction did not change.<br>You changed scale.</div>
+<div class="btn-row"><button class="btn-primary" id="s2-to-s3" disabled>Continue to Section III</button></div>`;
+        }
+
+        /* ── Task 4: Section III — Zooming Out (4 chart-backed steps: S3-1 to S3-4) ── */
+        function buildS3(i) {
+            // S3-1: Zoomed view — "This looks like a move."
+            if (i === 0) {
+                return `<p class="scr-eyebrow">Section III &mdash; Zooming Out</p>
+${buildChart('')}
+<div class="scr-body" style="margin-top:.9rem"><p>This looks like a move.</p></div>
+<div class="btn-row"><button class="btn-primary" id="s3-next">Continue</button></div>`;
+            }
+            // S3-2: Zoom out slightly — "But it's only part of something larger."
+            if (i === 1) {
+                return `<p class="scr-eyebrow">Section III &mdash; Zooming Out</p>
+${buildChart('')}
+<div class="scr-body" style="margin-top:.9rem"><p>But it's only part of something larger.</p></div>
+<div class="btn-row"><button class="btn-primary" id="s3-next">Continue</button></div>`;
+            }
+            // S3-3: Zoom out more — "And that move lives inside another."
+            if (i === 2) {
+                return `<p class="scr-eyebrow">Section III &mdash; Zooming Out</p>
+${buildChart('')}
+<div class="scr-body" style="margin-top:.9rem">
+<p>And that move lives inside another.</p>
+<p style="font-size:.8rem;color:var(--m-muted);margin-top:.6rem">Clarify: <button class="clarify-btn" data-topic="nestedmovements">Nested Movements</button></p>
+</div>
+<div class="btn-row"><button class="btn-primary" id="s3-next">Continue</button></div>`;
+            }
+            // S3-4: Full view — "Timeframes don't change the market. They change what you can see."
+            return `<p class="scr-eyebrow">Section III &mdash; Zooming Out</p>
+${buildChart('')}
+<div class="anchor-line" style="margin-top:.9rem">Timeframes don't change the market.<br>They change what you can see.</div>
+<div class="btn-row"><button class="btn-primary" id="s3-to-s4">Continue to Section IV</button></div>`;
+        }
+
+        /* ── Section IV — Structural Hierarchy (2 screens) ── */
+        function buildS4(i) {
+            if (i === 0) {
+                return `<p class="scr-eyebrow">Section IV &mdash; Structural Hierarchy</p>
+<h2 class="scr-h2">A Cleaner Lens</h2>
+<div class="scr-body">
+<p>When analyzing price, ask:</p>
+<p>What movement am I inside?</p>
+<p>Is this expansion<br>or a pullback?</p>
+</div>
+<div class="btn-row"><button class="btn-primary" id="s4-next">Continue</button></div>`;
+            }
+            return `<p class="scr-eyebrow">Section IV &mdash; Structural Hierarchy</p>
+<h2 class="scr-h2">A Simple Process</h2>
+<div style="margin:1.25rem 0">
+<div class="checklist-item">1) Identify the larger movement</div>
+<div class="checklist-item">2) Observe the current movement</div>
+<div class="checklist-item">3) Compare their direction</div>
+</div>
+<p style="font-size:.8rem;color:var(--m-muted);margin-top:.75rem;font-style:italic">Scale prevents false conclusions.</p>
+<div class="btn-row"><button class="btn-primary" id="s4-to-s5">Continue to Section V</button></div>`;
+        }
+
+        /* ── Section V — Assessment ── */
+        const A_QUESTIONS = [
+            { q: 'A strong downward move appears. What should be considered first?', opts: ['Pattern strength', 'Indicator signal', 'Scale of the movement'], correct: 'Scale of the movement' },
+            { q: 'A pullback inside an uptrend appears bearish. What might be happening?', opts: ['Trend reversal', 'Movement within a larger move', 'Market manipulation'], correct: 'Movement within a larger move' },
+            { q: 'Markets move in:', opts: ['Straight lines', 'Random noise', 'Nested movements'], correct: 'Nested movements' },
+            { q: 'Changing timeframes changes:', opts: ['Market structure', 'Your perspective', 'Liquidity'], correct: 'Your perspective' },
+            { q: 'Understanding scale helps you:', opts: ['Predict direction', 'Interpret context', 'Avoid losses'], correct: 'Interpret context' }
+        ];
+
+        function buildS5() {
+            if (STATE.assessment.isSubmitted) return buildResultScreen();
+            const qi = STATE.assessment.currentQ;
+            const q = A_QUESTIONS[qi];
+            const userAns = STATE.assessment.answers[qi];
+            const hasAnswer = userAns !== null && userAns !== undefined;
+            const isLastQ = qi === A_QUESTIONS.length - 1;
+            return `<p class="scr-eyebrow">Section V &mdash; Competency Check</p>
+<div class="assessment-prog">Question ${qi + 1} of ${A_QUESTIONS.length}</div>
+<div class="assessment-q">${q.q}</div>
+<div id="assessment-opts">
+${q.opts.map(opt => `<button class="opt-btn${userAns === opt ? ' selected' : ''}" data-ans="${escAttr(opt)}">${escHtml(opt)}</button>`).join('')}
+</div>
+<div class="btn-row">
+  ${qi > 0 ? `<button class="btn-ghost" id="assess-back">Back</button>` : ''}
+  ${isLastQ
+                    ? `<button class="btn-primary" id="assess-submit" ${!hasAnswer ? 'disabled' : ''}>Submit Assessment</button>`
+                    : `<button class="btn-primary" id="assess-next" ${!hasAnswer ? 'disabled' : ''}>Next</button>`}
+</div>
+${!hasAnswer ? `<p style="font-size:.75rem;color:var(--m-muted);margin-top:.75rem">Select an answer to continue.</p>` : ''}`;
+        }
+
+        function buildResultScreen() {
+            const score = STATE.assessment.scorePercent;
+            const passed = STATE.assessment.passed;
+            const reviewBtn = `<button class="btn-ghost" id="result-review-answers" style="margin-top:.5rem">Review Answers</button>`;
+            if (passed) {
+                return `<div class="result-box">
+<div style="font-size:2rem;color:var(--m-gold);margin-bottom:1rem">&#10003;</div>
+<div class="result-title">Competency <span class="result-gold">Verified</span></div>
+<div class="result-body">You understand how scale changes interpretation.<br><span style="color:var(--m-gold);font-size:.85rem">Score: ${score}%</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:.5rem">
+  <button class="btn-primary" id="result-return">Return to Market Mechanics</button>
+  ${reviewBtn}
+</div>
+</div>`;
+            }
+            return `<div class="result-box">
+<div style="font-size:2rem;color:var(--m-muted);margin-bottom:1rem">&#8635;</div>
+<div class="result-title">Review Recommended</div>
+<div class="result-body">Revisit the sections, then try again.<br><span style="color:var(--m-red-txt);font-size:.85rem">Score: ${score}%</span></div>
+<div class="btn-row" style="justify-content:center">
+  <button class="btn-ghost" id="result-retry">Retry Assessment</button>
+</div>
+<div style="margin-top:.75rem;text-align:center">${reviewBtn}</div>
+</div>`;
+        }
+
+        const A_REVIEW_DATA = [
+            { explanation: 'Scale determines whether a move is a pullback or a reversal.', clarifyTopic: 'scale' },
+            { explanation: 'A bearish sequence can be a pullback inside a larger expansion.', clarifyTopic: 'nestedmovements' },
+            { explanation: 'Movements exist inside larger movements at different scales.', clarifyTopic: 'nestedmovements' },
+            { explanation: 'Changing timeframes changes what you see, not what happened.', clarifyTopic: 'scale' },
+            { explanation: 'Scale clarifies context and reduces misinterpretation.', clarifyTopic: 'context' }
+        ];
+
+        function buildReviewAnswers() {
+            const rows = A_QUESTIONS.map((q, i) => {
+                const userAns = STATE.assessment.answers[i];
+                const correct = userAns === q.correct;
+                const rv = A_REVIEW_DATA[i];
+                const icon = correct ? '&#10003;' : '&#10007;';
+                const iconColor = correct ? 'var(--m-green-txt)' : 'var(--m-red-txt)';
+                return `<div style="background:var(--m-surf2);border:1px solid var(--m-bdr);border-radius:6px;padding:1rem 1.1rem;margin-bottom:.85rem">
+<p style="font-size:.8rem;font-weight:600;letter-spacing:.04em;color:var(--m-gold);margin-bottom:.6rem">Q${i + 1}</p>
+<p style="font-size:.9rem;color:var(--m-txt);margin-bottom:.75rem;line-height:1.5">${escHtml(q.q)}</p>
+<p style="font-size:.82rem;margin-bottom:.3rem"><span style="color:${iconColor};font-weight:700;margin-right:.35rem">${icon}</span><span style="color:var(--m-muted)">Your answer:</span> <span style="color:var(--m-txt)">${escHtml(userAns || '(no answer)')}</span></p>
+<p style="font-size:.82rem;color:var(--m-muted);margin-bottom:.75rem">Correct answer: <span style="color:var(--m-txt);font-weight:500">${escHtml(q.correct)}</span></p>
+<p style="font-size:.82rem;color:var(--m-muted);line-height:1.55;margin-bottom:.65rem">${rv.explanation}</p>
+<button class="clarify-btn" data-topic="${rv.clarifyTopic}">Clarify</button>
+</div>`;
+            }).join('');
+            return `<p class="scr-eyebrow">Section V &mdash; Review Answers</p>
+<h2 class="scr-h2">Assessment Breakdown</h2>
+${rows}
+<div class="btn-row"><button class="btn-ghost" id="review-back-results">Back to Results</button></div>`;
+        }
+
+        /* ═══════════════════════════ SCORE ═══════════════════════════ */
+        function computeScore() {
+            let correct = 0;
+            A_QUESTIONS.forEach((q, i) => { if (STATE.assessment.answers[i] === q.correct) correct++; });
+            const pct = Math.round((correct / A_QUESTIONS.length) * 100);
+            STATE.assessment.scorePercent = pct;
+            STATE.assessment.passed = pct >= 70;
+            STATE.assessment.isSubmitted = true;
+            if (STATE.assessment.passed) {
+                STATE.verified = true;
+                try {
+                    const saved = JSON.parse(localStorage.getItem('pp_mc_modules') || '{}');
+                    saved['2.1'] = { verified: true, mastery: pct, mastery_percent: pct, status: 'Verified', progress: 100 };
+                    localStorage.setItem('pp_mc_modules', JSON.stringify(saved));
+                } catch (e) { }
+            }
+            updateProgress();
+        }
+
+        // triggerZoomIn / triggerZoomOut are defined above as animateViewport wrappers.
+        // renderChartViewport / animateViewport / easeInOut handle all zoom logic.
+
+        /* ═══════════════════════════ HANDLERS ═══════════════════════════ */
+        function advanceScreen(sid) {
+            STATE.currentScreenIndex++;
+            STATE.sectionLastScreenIndex[sid] = STATE.currentScreenIndex;
+            renderScreen();
+        }
+        function attachHandlers() {
+            const $ = id => document.getElementById(id);
+            const on = (id, ev, fn) => { const el = $(id); if (el) el.addEventListener(ev, fn); };
+            // Entry
+            on('begin-btn', 'click', () => goToSection(1, 0));
+            // S1
+            on('s1-next', 'click', () => advanceScreen(1));
+            on('s1-next2', 'click', () => advanceScreen(1));
+            on('s1-to-s2', 'click', () => goToSection(2, 0));
+            // S2
+            on('s2-next', 'click', () => advanceScreen(2));
+            on('s2-to-s3', 'click', () => goToSection(3, 0));
+            // S2 decision moment
+            document.querySelectorAll('[data-dec]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const val = btn.dataset.dec;
+                    STATE.microDecision = (STATE.microDecision === val) ? null : val;
+                    renderScreen();
+                });
+            });
+            on('s2-decision-next', 'click', () => { if (STATE.microDecision !== null) advanceScreen(2); });
+            // S3 — Task 4: 4-step section (screens 0-3)
+            on('s3-next', 'click', () => advanceScreen(3));
+            on('s3-to-s4', 'click', () => goToSection(4, 0));
+            // S4
+            on('s4-next', 'click', () => advanceScreen(4));
+            on('s4-to-s5', 'click', () => goToSection(5, 0));
+            // S5 assessment
+            document.querySelectorAll('[data-ans]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (STATE.assessment.isSubmitted) return;
+                    const qi = STATE.assessment.currentQ;
+                    if (STATE.assessment.answers[qi] === btn.dataset.ans) { STATE.assessment.answers[qi] = null; }
+                    else { STATE.assessment.answers[qi] = btn.dataset.ans; }
+                    renderScreen();
+                });
+            });
+            on('assess-back', 'click', () => { if (STATE.assessment.currentQ > 0) { STATE.assessment.currentQ--; renderScreen(); } });
+            on('assess-next', 'click', () => {
+                const qi = STATE.assessment.currentQ;
+                if (STATE.assessment.answers[qi] === null || STATE.assessment.answers[qi] === undefined) return;
+                STATE.assessment.currentQ++; renderScreen();
+            });
+            on('assess-submit', 'click', () => {
+                const qi = STATE.assessment.currentQ;
+                if (STATE.assessment.answers[qi] === null || STATE.assessment.answers[qi] === undefined) return;
+                computeScore(); renderScreen();
+            });
+            // Task 1: result-return goes back to Market Mechanics hub
+            on('result-return', 'click', () => { window.location.href = 'market-mechanics.html'; });
+            on('result-retry', 'click', () => {
+                STATE.assessment.answers = [null, null, null, null, null];
+                STATE.assessment.isSubmitted = false; STATE.assessment.scorePercent = null;
+                STATE.assessment.passed = null; STATE.assessment.currentQ = 0;
+                STATE.showReview = false; renderScreen();
+            });
+            on('result-review-answers', 'click', () => { if (STATE.assessment.isSubmitted) { STATE.showReview = true; renderScreen(); } });
+            on('review-back-results', 'click', () => { STATE.showReview = false; renderScreen(); });
+            // Clarify
+            document.querySelectorAll('.clarify-btn').forEach(btn => {
+                btn.addEventListener('click', () => openClarify(btn.dataset.topic));
+            });
+        }
+        /* ═══════════════════════════ INIT ═══════════════════════════ */
+        (function init() {
+            STATE.navHistory = []; STATE.currentSectionId = 0; STATE.currentScreenIndex = 0;
+            visit(0); renderNav(); renderScreen();
+        })();
+    </script>
+</body>
+
+</html>

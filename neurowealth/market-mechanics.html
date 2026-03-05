@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Market Mechanics — Understand how price truly moves. Module-based competency path by ProsperPath.">
+    <title>Market Mechanics | ProsperPath Insights</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        /* ─── MM Page Reset & Base ─────────────────────────── */
+        /* [2] Gold calibrated: more muted, less saturated */
+        :root {
+            --mm-bg: #0d0e10;
+            --mm-surface: #141618;
+            --mm-border: #1e2023;
+            --mm-border-hi: #2e3035;
+            /* hover-brightened border */
+            --mm-text: #e0e1e3;
+            --mm-muted: #5e626a;
+            --mm-gold: #a07c2e;
+            /* desaturated, darker gold */
+            --mm-gold-dim: rgba(160, 124, 46, 0.14);
+            --mm-gold-line: rgba(160, 124, 46, 0.42);
+            --mm-gold-dot: #a07c2e;
+            --mm-radius: 6px;
+            --mm-transition: 160ms ease;
+        }
+
+        /* [3] Hide floating action button (ai-widget fab) on this page */
+        #ai-chat-fab,
+        .ai-fab-btn,
+        .floating-action-btn,
+        [class*="fab"],
+        [id*="fab"] {
+            display: none !important;
+        }
+
+        .mm-page {
+            background: var(--mm-bg);
+            color: var(--mm-text);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        .mm-container {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 0 1.25rem;
+        }
+
+        /* ─── Hero ──────────────────────────────────────────── */
+        .mm-hero {
+            padding: 4rem 1.25rem 2.25rem;
+            text-align: center;
+        }
+
+        .mm-hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--mm-text);
+            margin: 0 0 0.6rem;
+        }
+
+        .mm-hero p {
+            font-size: 1rem;
+            color: var(--mm-muted);
+            letter-spacing: 0.03em;
+            margin: 0;
+        }
+
+        /* ─── Domain Status Bar ───────────────────────────── */
+        .mm-status-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 1.25rem 2rem;
+            border-bottom: 1px solid var(--mm-border);
+        }
+
+        /* [6] Status chips — reduced border contrast, stronger value text */
+        .mm-status-chip {
+            font-size: 0.7rem;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            color: var(--mm-muted);
+            padding: 0.32rem 0.7rem;
+            border: 1px solid var(--mm-border);
+            border-radius: 3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .mm-status-chip strong {
+            font-weight: 600;
+            color: var(--mm-text);
+            letter-spacing: 0;
+        }
+
+        .mm-status-chip.gold {
+            border-color: var(--mm-gold-line);
+        }
+
+        .mm-status-chip.gold strong {
+            color: var(--mm-gold);
+        }
+
+        /* [6] Gold dot for eligible state */
+        .mm-cert-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--mm-gold);
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        /* ─── Personalization Card ───────────────────────── */
+        .mm-section {
+            padding: 2.5rem 1.25rem;
+            border-bottom: 1px solid var(--mm-border);
+        }
+
+        .mm-card {
+            background: var(--mm-surface);
+            border: 1px solid var(--mm-border);
+            border-radius: var(--mm-radius);
+            padding: 1.75rem 1.5rem;
+        }
+
+        .mm-card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--mm-text);
+            margin: 0 0 0.4rem;
+        }
+
+        .mm-card-sub {
+            font-size: 0.85rem;
+            color: var(--mm-muted);
+            margin: 0 0 1.4rem;
+        }
+
+        /* [7] Focus rings + hover transitions */
+        .mm-btn-primary {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid var(--mm-gold-line);
+            color: var(--mm-gold);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 0.62rem 1.4rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background var(--mm-transition), border-color var(--mm-transition);
+        }
+
+        .mm-btn-primary:hover {
+            background: var(--mm-gold-dim);
+            border-color: var(--mm-gold);
+        }
+
+        .mm-btn-primary:focus-visible {
+            outline: 2px solid var(--mm-gold);
+            outline-offset: 2px;
+        }
+
+        .mm-btn-ghost {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid var(--mm-border);
+            color: var(--mm-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            padding: 0.6rem 1.2rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: border-color var(--mm-transition), color var(--mm-transition);
+        }
+
+        .mm-btn-ghost:hover {
+            border-color: var(--mm-border-hi);
+            color: var(--mm-text);
+        }
+
+        .mm-btn-ghost:focus-visible {
+            outline: 2px solid var(--mm-border-hi);
+            outline-offset: 2px;
+        }
+
+        /* Recommended Sequence block */
+        .mm-rec-block {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--mm-border);
+        }
+
+        .mm-rec-block.visible {
+            display: block;
+        }
+
+        .mm-rec-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--mm-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .mm-rec-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            margin-bottom: 0.85rem;
+        }
+
+        .mm-rec-item {
+            font-size: 0.85rem;
+            color: var(--mm-text);
+            padding: 0.5rem 0.75rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--mm-border);
+            border-radius: 4px;
+        }
+
+        .mm-rec-item span {
+            color: var(--mm-gold);
+            font-weight: 600;
+            margin-right: 0.4rem;
+        }
+
+        .mm-rec-note {
+            font-size: 0.75rem;
+            color: var(--mm-muted);
+            font-style: italic;
+        }
+
+        /* ─── Module List ────────────────────────────────── */
+        .mm-modules-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--mm-muted);
+            margin-bottom: 1.1rem;
+        }
+
+        .mm-modules-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        /* [5][7] Module card hover + verified accent */
+        .mm-module-card {
+            background: var(--mm-surface);
+            border: 1px solid var(--mm-border);
+            border-radius: var(--mm-radius);
+            border-left: 3px solid transparent;
+            padding: 1.1rem 1.25rem;
+            transition: border-color var(--mm-transition);
+        }
+
+        .mm-module-card:hover {
+            border-color: var(--mm-border-hi);
+        }
+
+        .mm-module-card.verified {
+            border-left-color: var(--mm-gold);
+        }
+
+        .mm-module-card.verified:hover {
+            border-color: var(--mm-gold-line);
+        }
+
+        /* [5] Mastery line under footer */
+        .mm-module-mastery {
+            font-size: 0.7rem;
+            color: var(--mm-gold);
+            margin-top: 0.4rem;
+            letter-spacing: 0.03em;
+        }
+
+        .mm-module-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mm-module-num {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--mm-muted);
+        }
+
+        .mm-diff-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            padding: 0.18rem 0.55rem;
+            border-radius: 2px;
+        }
+
+        .mm-diff-badge.core {
+            background: rgba(100, 160, 255, 0.1);
+            color: #7eb3ff;
+        }
+
+        .mm-diff-badge.intermediate {
+            background: rgba(120, 210, 160, 0.1);
+            color: #7ed8a8;
+        }
+
+        .mm-diff-badge.advanced {
+            background: rgba(220, 140, 100, 0.1);
+            color: #e09070;
+        }
+
+        .mm-status-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            padding: 0.18rem 0.55rem;
+            border-radius: 2px;
+        }
+
+        .mm-status-badge.not-started {
+            background: rgba(107, 111, 118, 0.15);
+            color: var(--mm-muted);
+        }
+
+        .mm-status-badge.in-progress {
+            background: rgba(100, 160, 255, 0.12);
+            color: #8ec0ff;
+        }
+
+        .mm-status-badge.completed {
+            background: rgba(120, 210, 160, 0.12);
+            color: #7ed8a8;
+        }
+
+        /* [2] Verified badge uses muted gold */
+        .mm-status-badge.verified {
+            background: rgba(160, 124, 46, 0.14);
+            color: var(--mm-gold);
+        }
+
+        .mm-module-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--mm-text);
+            margin: 0 0 0.35rem;
+        }
+
+        .mm-module-footer {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.6rem;
+            margin-top: 0.85rem;
+        }
+
+        .mm-module-info {
+            font-size: 0.73rem;
+            color: var(--mm-muted);
+        }
+
+        .mm-module-info+.mm-module-info::before {
+            content: "·";
+            margin-right: 0.6rem;
+        }
+
+        .mm-module-cta {
+            margin-left: auto;
+        }
+
+        /* ─── Competency Summary ─────────────────────────── */
+        .mm-comp-header {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--mm-text);
+            margin: 0 0 0.25rem;
+        }
+
+        .mm-comp-count {
+            font-size: 0.85rem;
+            color: var(--mm-muted);
+            margin: 0 0 1rem;
+        }
+
+        .mm-progress-track {
+            height: 2px;
+            background: var(--mm-border);
+            border-radius: 1px;
+            overflow: hidden;
+            margin-bottom: 1.1rem;
+        }
+
+        .mm-progress-fill {
+            height: 100%;
+            background: var(--mm-gold);
+            border-radius: 1px;
+            transition: width 0.4s ease;
+        }
+
+        .mm-comp-guidance {
+            font-size: 0.8rem;
+            color: var(--mm-muted);
+        }
+
+        /* ─── Modal Overlay ─────────────────────────────── */
+        .mm-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            z-index: 1000;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .mm-overlay.visible {
+            display: flex;
+        }
+
+        /* Slide-up bottom sheet */
+        .mm-sheet {
+            background: #16181b;
+            border: 1px solid var(--mm-border);
+            border-bottom: none;
+            border-radius: 10px 10px 0 0;
+            width: 100%;
+            max-width: 640px;
+            padding: 2rem 1.5rem 2.5rem;
+            transform: translateY(100%);
+            transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .mm-overlay.visible .mm-sheet {
+            transform: translateY(0);
+        }
+
+        .mm-sheet-handle {
+            width: 40px;
+            height: 3px;
+            background: var(--mm-border);
+            border-radius: 2px;
+            margin: 0 auto 1.75rem;
+        }
+
+        .mm-sheet-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--mm-text);
+            margin: 0 0 0.25rem;
+        }
+
+        .mm-sheet-prog {
+            font-size: 0.75rem;
+            color: var(--mm-muted);
+            letter-spacing: 0.05em;
+            margin: 0 0 1.75rem;
+        }
+
+        .mm-q-text {
+            font-size: 0.95rem;
+            color: var(--mm-text);
+            margin: 0 0 1.1rem;
+        }
+
+        .mm-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+        }
+
+        /* [7] Option buttons with focus ring */
+        .mm-option-btn {
+            background: transparent;
+            border: 1px solid var(--mm-border);
+            color: var(--mm-text);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            transition: border-color var(--mm-transition), background var(--mm-transition);
+        }
+
+        .mm-option-btn:hover {
+            border-color: var(--mm-border-hi);
+            background: rgba(255, 255, 255, 0.025);
+        }
+
+        .mm-option-btn:focus-visible {
+            outline: 2px solid var(--mm-border-hi);
+            outline-offset: 1px;
+        }
+
+        /* Certification modal — center overlay */
+        .mm-cert-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+        }
+
+        .mm-cert-overlay.visible {
+            display: flex;
+        }
+
+        .mm-cert-box {
+            background: #16181b;
+            border: 1px solid var(--mm-border);
+            border-radius: var(--mm-radius);
+            width: 100%;
+            max-width: 480px;
+            padding: 2rem 1.75rem;
+        }
+
+        .mm-cert-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--mm-text);
+            margin: 0 0 1.4rem;
+        }
+
+        .mm-cert-checks {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .mm-cert-check {
+            font-size: 0.85rem;
+            color: var(--mm-text);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mm-cert-check .chk {
+            color: var(--mm-gold);
+            font-size: 1rem;
+        }
+
+        .mm-cert-id-block {
+            background: rgba(184, 150, 62, 0.06);
+            border: 1px solid var(--mm-gold-line);
+            border-radius: 4px;
+            padding: 0.85rem 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .mm-cert-id-label {
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--mm-muted);
+            margin-bottom: 0.3rem;
+        }
+
+        .mm-cert-id-val {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--mm-gold);
+            word-break: break-all;
+        }
+
+        .mm-cert-issued {
+            font-size: 0.75rem;
+            color: var(--mm-muted);
+            margin-bottom: 1.25rem;
+        }
+
+        .mm-cert-actions {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .mm-cert-close {
+            margin-top: 1.5rem;
+            display: block;
+            font-size: 0.78rem;
+            color: var(--mm-muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ── Navbar ─────────────────────────────────────────── -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="app.html" class="logo">
+                    <div class="logo-icon">⚡</div>
+                    <span>ProsperPath</span>
+                </a>
+
+                <div class="nav-links" id="nav-links">
+                    <a href="clarity-box.html">Clarity Box</a>
+                    <a href="trade.html">Trade</a>
+                    <a href="market-mechanics.html" class="active">Market Mechanics</a>
+                    <a href="portfolio.html">Portfolio</a>
+                    <a href="wealth-guides.html">Wealth Guides</a>
+                    <a href="tool-reviews.html">Tool Reviews</a>
+                    <a href="ai-calculators.html">AI Calculators</a>
+                    <a href="blog.html">Blog</a>
+                </div>
+
+                <div class="nav-actions" style="display:flex;align-items:center;gap:var(--space-4);position:relative;">
+                    <div class="settings-wrapper" style="position:relative;">
+                        <button id="settings-btn" class="settings-icon-btn" aria-label="Settings"
+                            onclick="toggleAuthMenu()">
+                            <span class="icon">⚙️</span>
+                        </button>
+                        <div id="auth-wrapper" class="auth-rolldown-container">
+                            <div id="auth-container"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ── Main Page ─────────────────────────────────────── -->
+    <main class="mm-page">
+
+        <!-- 1. Hero -->
+        <section class="mm-hero">
+            <div class="mm-container">
+                <h1>Market Mechanics</h1>
+                <p>Understand how price truly moves.</p>
+            </div>
+        </section>
+
+        <!-- 2. Domain Status Bar [1][6] updated copy -->.
+        <div class="mm-status-bar" id="mm-status-bar">
+            <span class="mm-status-chip"><strong>Domain I</strong>&thinsp;— Market Structure</span>
+            <span class="mm-status-chip" id="chip-competency"><strong>Structural Competency:</strong>&thinsp;<span
+                    id="chip-comp-val">0 / 5</span> Verified</span>
+            <span class="mm-status-chip" id="chip-cert">Certification: <strong id="chip-cert-val">In
+                    Progress</strong></span>
+        </div>
+
+        <!-- 3. Personalization Card -->
+        <section class="mm-section">
+            <div class="mm-container">
+                <div class="mm-card">
+                    <p class="mm-card-title">Set Your Learning Path</p>
+                    <!-- [4] Button text updated -->
+                    <p class="mm-card-sub">Answer a few questions to receive a recommended sequence.</p>
+                    <button class="mm-btn-primary" id="checkin-open-btn" onclick="openCheckin()">Start Check-In</button>
+                    <p style="font-size:0.72rem; color:var(--mm-muted); margin:0.45rem 0 0;">Takes ~30 seconds</p>
+
+                    <!-- Recommended Sequence block (shown after checkin) -->
+                    <div class="mm-rec-block" id="rec-block">
+                        <p class="mm-rec-label">Recommended Sequence</p>
+                        <div class="mm-rec-list" id="rec-list"></div>
+                        <p class="mm-rec-note">You can explore any module at any time.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Module List -->
+        <section class="mm-section">
+            <div class="mm-container">
+                <!-- [1] Label copy updated -->
+                <p class="mm-modules-label">Domain I — 5 Modules</p>
+                <div class="mm-modules-list" id="modules-list">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 4b. Domain Two Entry -->
+        <section class="mm-section">
+            <div class="mm-container">
+                <p class="mm-modules-label">Domain II — Market Context</p>
+                <div class="mm-card"
+                    style="display:flex;flex-wrap:wrap;align-items:center;gap:1.25rem;justify-content:space-between;">
+                    <div>
+                        <p class="mm-card-title" style="margin-bottom:0.25rem;">Market Context</p>
+                        <p class="mm-card-sub" style="margin:0;">Understand price within scale. 1 module available.</p>
+                    </div>
+                    <a href="market-context.html" class="mm-btn-primary"
+                        style="text-decoration:none;white-space:nowrap;">Enter Domain II</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Competency Summary -->
+        <section class="mm-section" style="border-bottom:none; padding-bottom: 4rem;">
+            <div class="mm-container">
+                <div class="mm-card">
+                    <p class="mm-comp-header">Structural Competency</p>
+                    <p class="mm-comp-count" id="comp-count">Verified 0 / 5</p>
+                    <div class="mm-progress-track">
+                        <div class="mm-progress-fill" id="comp-bar" style="width:0%"></div>
+                    </div>
+                    <p class="mm-comp-guidance" id="comp-guidance">Complete 4 verified modules to become eligible for
+                        certification.</p>
+                    <button class="mm-btn-primary" id="cert-request-btn" style="display:none; margin-top:1.25rem;"
+                        onclick="openCertModal()">
+                        Request Certification Review
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ── Footer ────────────────────────────────────────── -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 ProsperPath Insights. AI-Powered Wealth Strategies.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ══ Check-In Slide-Up Modal ═══════════════════════ -->
+    <div class="mm-overlay" id="checkin-overlay" onclick="handleOverlayClick(event)">
+        <div class="mm-sheet" id="checkin-sheet" role="dialog" aria-modal="true" aria-label="Learning Path Check-In">
+            <div class="mm-sheet-handle"></div>
+            <p class="mm-sheet-title" id="sheet-title">Learning Path Check-In</p>
+            <p class="mm-sheet-prog" id="sheet-prog"></p>
+            <p class="mm-q-text" id="q-text"></p>
+            <div class="mm-options" id="q-options"></div>
+        </div>
+    </div>
+
+    <!-- ══ Certification Modal ════════════════════════════ -->
+    <div class="mm-cert-overlay" id="cert-overlay" onclick="handleCertOverlayClick(event)">
+        <div class="mm-cert-box" id="cert-box" role="dialog" aria-modal="true" aria-label="Certification">
+            <p class="mm-cert-title">Market Mechanics Certification</p>
+            <div class="mm-cert-checks" id="cert-checks"></div>
+            <div id="cert-generate-area">
+                <button class="mm-btn-primary" onclick="generateCertificate()">Generate Certificate</button>
+            </div>
+            <div id="cert-result" style="display:none;">
+                <div class="mm-cert-id-block">
+                    <p class="mm-cert-id-label">Certificate Name</p>
+                    <p class="mm-cert-id-val" id="cert-name-val"></p>
+                </div>
+                <div class="mm-cert-id-block">
+                    <p class="mm-cert-id-label">Certificate ID</p>
+                    <p class="mm-cert-id-val" id="cert-id-val"></p>
+                </div>
+                <p class="mm-cert-issued" id="cert-issued-val"></p>
+                <div class="mm-cert-actions">
+                    <button class="mm-btn-primary" onclick="downloadCertPDF()">Download PDF</button>
+                    <button class="mm-btn-ghost" onclick="verifyCertOnline()">Verify Online</button>
+                </div>
+            </div>
+            <button class="mm-cert-close" onclick="closeCertModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- ── Scripts ───────────────────────────────────────── -->
+    <script src="script.js?v=mm1"></script>
+    <script src="ai-widget.js"></script>
+    <script src="google-auth.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            if (typeof initGoogleAuth === 'function') initGoogleAuth();
+        });
+    </script>
+
+    <script>
+        /* ════════════════════════════════════════════════════════
+           MARKET MECHANICS — Page State & Logic
+        ════════════════════════════════════════════════════════ */
+
+        // ── Module Data ──────────────────────────────────────────
+        const MODULES = [
+            {
+                id: '1.1',
+                title: 'What Markets Actually Are',
+                difficulty: 'Core',
+                time: '18 minutes',
+                focus: 'Auction Mechanics',
+                mastery: 0,
+                progress: 0
+            },
+            {
+                id: '1.2',
+                title: 'Candles Without Myths',
+                difficulty: 'Core',
+                time: '20 minutes',
+                focus: 'Candle Structure',
+                mastery: 0,
+                progress: 0
+            },
+            {
+                id: '1.3',
+                title: 'Liquidity & Stop Clusters',
+                difficulty: 'Intermediate',
+                time: '22 minutes',
+                focus: 'Liquidity Mechanics',
+                mastery: 0,
+                progress: 0
+            },
+            {
+                id: '1.4',
+                title: 'When Liquidity Continues',
+                difficulty: 'Intermediate',
+                time: '20 minutes',
+                focus: 'Liquidity Outcomes',
+                mastery: 0,
+                progress: 0
+            },
+            {
+                id: '1.5',
+                title: 'The Full Mechanism',
+                difficulty: 'Core',
+                time: '18 minutes',
+                focus: 'Mechanics Synthesis',
+                mastery: 0,
+                progress: 0
+            }
+        ];
+
+        // Seed defaults — overwritten by localStorage below
+        MODULES[0].mastery = 0; MODULES[0].progress = 0;
+        MODULES[1].mastery = 0; MODULES[1].progress = 0;
+        MODULES[2].mastery = 0; MODULES[2].progress = 0;
+        MODULES[3].mastery = 0; MODULES[3].progress = 0;
+        MODULES[4].mastery = 0; MODULES[4].progress = 0;
+
+        // ── Helpers ──────────────────────────────────────────────
+        function getStatus(mod) {
+            if (mod.mastery >= 70) return 'Verified';
+            if (mod.progress > 0 && mod.mastery < 70) return 'In Progress';
+            return 'Not Started';
+        }
+
+        function diffClass(d) {
+            return { 'Core': 'core', 'Intermediate': 'intermediate', 'Advanced': 'advanced' }[d] || 'core';
+        }
+
+        function statusClass(s) {
+            return { 'Verified': 'verified', 'In Progress': 'in-progress', 'Completed': 'completed', 'Not Started': 'not-started' }[s] || 'not-started';
+        }
+
+        function countVerified() {
+            return MODULES.filter(m => getStatus(m) === 'Verified').length;
+        }
+
+        function avgMastery() {
+            const sum = MODULES.reduce((a, m) => a + m.mastery, 0);
+            return (sum / MODULES.length).toFixed(0);
+        }
+
+        // ── Render Modules [5] CTA rules: Review/Continue/Start Module; mastery % on verified ─────
+        function renderModules() {
+            const list = document.getElementById('modules-list');
+            list.innerHTML = '';
+            MODULES.forEach(mod => {
+                const status = getStatus(mod);
+                const isVerified = status === 'Verified';
+
+                // [5] CTA label rules
+                let ctaLabel;
+                if (status === 'Verified') ctaLabel = 'Review';
+                else if (status === 'In Progress') ctaLabel = 'Continue';
+                else ctaLabel = 'Start Module';
+
+                // [5] Mastery line only for Verified
+                const masteryLine = isVerified
+                    ? `<p class="mm-module-mastery">Mastery ${mod.mastery}%</p>`
+                    : '';
+
+                const card = document.createElement('div');
+                card.className = 'mm-module-card' + (isVerified ? ' verified' : '');
+                card.innerHTML = `
+                <div class="mm-module-meta">
+                    <span class="mm-module-num">MODULE ${mod.id}</span>
+                    <span class="mm-diff-badge ${diffClass(mod.difficulty)}">${mod.difficulty}</span>
+                    <span class="mm-status-badge ${statusClass(status)}">${status}</span>
+                </div>
+                <p class="mm-module-title">${mod.title}</p>
+                <div class="mm-module-footer">
+                    <span class="mm-module-info">${mod.time}</span>
+                    <span class="mm-module-info">${mod.focus}</span>
+                    <div class="mm-module-cta">
+                        <button class="mm-btn-primary" style="font-size:0.72rem; padding:0.46rem 0.95rem;" onclick="startModule('${mod.id}')">${ctaLabel}</button>
+                    </div>
+                </div>
+                ${masteryLine}
+            `;
+                list.appendChild(card);
+            });
+        }
+
+        // ── Render Status Bar & Competency [1][6] copy + gold dot ─────────
+        function renderStatus() {
+            const verified = countVerified();
+            const eligible = verified >= 4;
+
+            // [6] Chip: "X / 5 Verified" — update just the value span
+            document.getElementById('chip-comp-val').textContent = `${verified} / 5`;
+
+            // [1][6] Cert chip: "In Progress" or "Available" + gold dot when eligible
+            const certValEl = document.getElementById('chip-cert-val');
+            const certChip = document.getElementById('chip-cert');
+            certValEl.textContent = eligible ? 'Available' : 'In Progress';
+            certChip.className = 'mm-status-chip' + (eligible ? ' gold' : '');
+
+            // Gold dot: add if eligible, remove if not
+            const existingDot = certChip.querySelector('.mm-cert-dot');
+            if (eligible && !existingDot) {
+                const dot = document.createElement('span');
+                dot.className = 'mm-cert-dot';
+                certChip.insertBefore(dot, certChip.firstChild);
+            } else if (!eligible && existingDot) {
+                existingDot.remove();
+            }
+
+            // Competency summary
+            document.getElementById('comp-count').textContent = `${verified} / 5 Verified`;
+
+            const pct = (verified / 5) * 100;
+            document.getElementById('comp-bar').style.width = pct + '%';
+
+            const guidanceEl = document.getElementById('comp-guidance');
+            const certBtn = document.getElementById('cert-request-btn');
+
+            if (eligible) {
+                guidanceEl.style.display = 'none';
+                certBtn.style.display = 'inline-block';
+            } else {
+                guidanceEl.style.display = 'block';
+                guidanceEl.textContent = 'Complete 4 verified modules to become eligible for certification.';
+                certBtn.style.display = 'none';
+            }
+        }
+
+        function startModule(id) {
+            if (id === '1.1') {
+                window.location.href = 'module-1-1.html';
+            } else if (id === '1.2') {
+                window.location.href = 'module-1-2.html';
+            } else if (id === '1.3') {
+                window.location.href = 'module-1-3.html';
+            } else if (id === '1.4') {
+                window.location.href = 'module-1-4.html';
+            } else if (id === '1.5') {
+                window.location.href = 'module-1-5.html';
+            } else {
+                alert(`Module ${id} is coming soon.`);
+            }
+        }
+
+        // ── Check-In Modal ───────────────────────────────────────
+        const QUESTIONS = [
+            {
+                text: 'What is your current experience level?',
+                options: ['New to markets', 'Some experience', 'Actively trading']
+            },
+            {
+                text: 'What feels unclear in your current understanding?',
+                options: ['Price feels random', 'Breakouts fail often', "I don't know when to avoid trades", 'I struggle with volatility']
+            },
+            {
+                text: 'Which learning style works best for you?',
+                options: ['Visual simulations', 'Short explanation + tests', 'Scenario-based exercises']
+            },
+            {
+                text: 'What is your primary market?',
+                options: ['Crypto', 'Stocks', 'Forex']
+            },
+            {
+                text: 'How much time do you have today?',
+                options: ['10 min', '20 min', '30+ min']
+            }
+        ];
+
+        let currentQ = 0;
+        const answers = {};
+
+        function openCheckin() {
+            currentQ = 0;
+            Object.keys(answers).forEach(k => delete answers[k]);
+            renderQuestion();
+            const overlay = document.getElementById('checkin-overlay');
+            overlay.style.display = 'flex';
+            // Force reflow then add visible
+            requestAnimationFrame(() => overlay.classList.add('visible'));
+        }
+
+        function closeCheckin() {
+            const overlay = document.getElementById('checkin-overlay');
+            overlay.classList.remove('visible');
+            setTimeout(() => { overlay.style.display = 'none'; }, 300);
+        }
+
+        function handleOverlayClick(e) {
+            if (e.target === document.getElementById('checkin-overlay')) closeCheckin();
+        }
+
+        function renderQuestion() {
+            const q = QUESTIONS[currentQ];
+            document.getElementById('sheet-prog').textContent = `Question ${currentQ + 1} of ${QUESTIONS.length}`;
+            document.getElementById('q-text').textContent = q.text;
+
+            const opts = document.getElementById('q-options');
+            opts.innerHTML = '';
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'mm-option-btn';
+                btn.textContent = opt;
+                btn.onclick = () => selectOption(opt);
+                opts.appendChild(btn);
+            });
+        }
+
+        function selectOption(val) {
+            answers[currentQ] = val;
+            currentQ++;
+            if (currentQ < QUESTIONS.length) {
+                renderQuestion();
+            } else {
+                closeCheckin();
+                computeRecommendation();
+            }
+        }
+
+        // ── Recommendation Logic ─────────────────────────────────
+        function computeRecommendation() {
+            const unclear = answers[1] || '';
+            let order;
+
+            if (unclear === 'Price feels random') {
+                order = ['1.1', '1.2', '1.3'];
+            } else if (unclear === 'Breakouts fail often') {
+                order = ['1.3', '1.1', '1.2'];
+            } else if (unclear === "I don't know when to avoid trades") {
+                order = ['1.5', '1.4', '1.1'];
+            } else if (unclear === 'I struggle with volatility') {
+                order = ['1.4', '1.1', '1.2'];
+            } else {
+                order = ['1.1', '1.2', '1.3'];
+            }
+
+            // Render top 3
+            const recList = document.getElementById('rec-list');
+            recList.innerHTML = '';
+            order.slice(0, 3).forEach((id, idx) => {
+                const mod = MODULES.find(m => m.id === id);
+                if (!mod) return;
+                const item = document.createElement('div');
+                item.className = 'mm-rec-item';
+                item.innerHTML = `<span>${idx + 1}.</span>${mod.id} — ${mod.title}`;
+                recList.appendChild(item);
+            });
+
+            document.getElementById('rec-block').classList.add('visible');
+        }
+
+        // ── Certification Modal ──────────────────────────────────
+        function openCertModal() {
+            const verified = countVerified();
+            const avg = avgMastery();
+
+            const checks = document.getElementById('cert-checks');
+            checks.innerHTML = `
+            <div class="mm-cert-check">
+                <span class="chk">✓</span>
+                <span>${verified} of 5 modules verified</span>
+            </div>
+            <div class="mm-cert-check">
+                <span class="chk">✓</span>
+                <span>Average mastery ≥ 70% (current: ${avg}%)</span>
+            </div>
+        `;
+
+            document.getElementById('cert-generate-area').style.display = 'block';
+            document.getElementById('cert-result').style.display = 'none';
+
+            const overlay = document.getElementById('cert-overlay');
+            overlay.style.display = 'flex';
+            requestAnimationFrame(() => overlay.classList.add('visible'));
+        }
+
+        function closeCertModal() {
+            const overlay = document.getElementById('cert-overlay');
+            overlay.classList.remove('visible');
+            setTimeout(() => { overlay.style.display = 'none'; }, 200);
+        }
+
+        function handleCertOverlayClick(e) {
+            if (e.target === document.getElementById('cert-overlay')) closeCertModal();
+        }
+
+        function generateCertificate() {
+            const id = 'PP-MM-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+            const now = new Date();
+            const issued = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            document.getElementById('cert-name-val').textContent = 'ProsperPath — Market Mechanics Certificate';
+            document.getElementById('cert-id-val').textContent = id;
+            document.getElementById('cert-issued-val').textContent = `Issued: ${issued}`;
+
+            document.getElementById('cert-generate-area').style.display = 'none';
+            document.getElementById('cert-result').style.display = 'block';
+        }
+
+        function downloadCertPDF() {
+            alert('PDF generation is not yet connected to a backend.\nYour certificate ID has been recorded.');
+        }
+
+        function verifyCertOnline() {
+            alert('Online verification portal is coming soon.');
+        }
+
+        // ── Init ─────────────────────────────────────────────────
+        // Load persisted module progress from localStorage (set by module-1-1.html)
+        (function syncModuleProgress() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('pp_mm_modules') || '{}');
+                if (saved['1.1']) {
+                    const m = saved['1.1'];
+                    MODULES[0].mastery = m.mastery || 0;
+                    MODULES[0].progress = m.progress || 0;
+                }
+                if (saved['1.2']) {
+                    const m = saved['1.2'];
+                    MODULES[1].mastery = m.mastery || 0;
+                    MODULES[1].progress = m.progress || 0;
+                }
+                if (saved['1.3']) {
+                    const m = saved['1.3'];
+                    MODULES[2].mastery = m.mastery || 0;
+                    MODULES[2].progress = m.progress || 0;
+                }
+                if (saved['1.4']) {
+                    const m = saved['1.4'];
+                    MODULES[3].mastery = m.mastery || 0;
+                    MODULES[3].progress = m.progress || 0;
+                }
+                if (saved['1.5']) {
+                    const m = saved['1.5'];
+                    MODULES[4].mastery = m.mastery || 0;
+                    MODULES[4].progress = m.progress || 0;
+                }
+            } catch (e) { }
+        })();
+        renderModules();
+        renderStatus();
+    </script>
+</body>
+
+</html>

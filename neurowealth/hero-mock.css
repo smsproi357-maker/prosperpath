@@ -1,0 +1,432 @@
+/* ============================================
+   Hero Floating Cards — Premium UI
+   ============================================ */
+
+@media (max-width: 992px) {
+    .hero-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .hero-grid .hero-content {
+        margin: 0 auto;
+    }
+
+    .hero-grid p {
+        margin: 0 auto var(--space-8);
+    }
+
+    .hero-visual {
+        display: none;
+    }
+}
+
+.hero-visual {
+    position: relative;
+    height: 520px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeUp var(--transition-slow) 0.2s forwards;
+    opacity: 0;
+    perspective: 1200px;
+}
+
+.mock-ui-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+}
+
+/* Ambient glow behind the card cluster */
+.mock-ui-container::before {
+    content: '';
+    position: absolute;
+    top: 35%;
+    left: 35%;
+    width: 500px;
+    height: 500px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(245, 200, 66, 0.08) 0%, rgba(245, 200, 66, 0.03) 40%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+    filter: blur(40px);
+}
+
+/* Secondary cool-tone ambient light */
+.mock-ui-container::after {
+    content: '';
+    position: absolute;
+    top: 60%;
+    left: 70%;
+    width: 300px;
+    height: 300px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(100, 140, 255, 0.04) 0%, transparent 70%);
+    z-index: 0;
+    pointer-events: none;
+    filter: blur(30px);
+}
+
+/* ---- Base Panel — Deep Glassmorphism ---- */
+.mock-panel {
+    position: absolute;
+    background: linear-gradient(135deg, rgba(20, 20, 25, 0.85) 0%, rgba(12, 12, 16, 0.92) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 20px;
+    backdrop-filter: blur(32px) saturate(1.4);
+    -webkit-backdrop-filter: blur(32px) saturate(1.4);
+    box-shadow:
+        0 4px 24px rgba(0, 0, 0, 0.6),
+        0 1px 0 rgba(255, 255, 255, 0.04) inset,
+        0 -1px 0 rgba(0, 0, 0, 0.3) inset;
+    color: var(--color-text-primary);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+}
+
+/* Top highlight edge — simulates directional lighting */
+.mock-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20px;
+    right: 20px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+    border-radius: 1px;
+    pointer-events: none;
+}
+
+/* Subtle accent glow on bottom edge */
+.mock-panel::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 25%;
+    right: 25%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(245, 200, 66, 0.15), transparent);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.mock-panel:hover {
+    transform: translateY(-8px) scale(1.03) !important;
+    z-index: 10 !important;
+    background: linear-gradient(135deg, rgba(25, 25, 32, 0.9) 0%, rgba(15, 15, 20, 0.95) 100%);
+    border-color: rgba(245, 200, 66, 0.2);
+    box-shadow:
+        0 16px 48px rgba(0, 0, 0, 0.7),
+        0 4px 16px rgba(245, 200, 66, 0.06),
+        0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+.mock-panel:hover::after {
+    opacity: 1;
+}
+
+/* ---- Panel Header ---- */
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 10px;
+    margin-bottom: 8px;
+}
+
+.panel-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--color-text-primary);
+}
+
+.panel-title .icon {
+    filter: drop-shadow(0 0 4px rgba(245, 200, 66, 0.3));
+}
+
+.panel-dots {
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 10px;
+    letter-spacing: 3px;
+}
+
+/* ---- Individual Panel Positioning ---- */
+.panel-backtest {
+    top: 30px;
+    left: 0%;
+    width: 340px;
+    z-index: 1;
+    transform: rotate(-1.5deg) translateZ(0px);
+}
+
+.panel-pattern {
+    top: 12%;
+    left: 22%;
+    width: 310px;
+    z-index: 2;
+    transform: rotate(0.5deg) translateZ(20px);
+}
+
+.panel-clarity {
+    top: 22%;
+    left: 48%;
+    width: 280px;
+    z-index: 4;
+    transform: rotate(1deg) translateZ(40px);
+}
+
+.panel-portfolio {
+    top: 52%;
+    left: 8%;
+    width: 370px;
+    z-index: 3;
+    transform: rotate(-0.5deg) translateZ(10px);
+}
+
+/* ---- Backtest Chart ---- */
+.panel-date {
+    font-size: 10px;
+    color: var(--color-text-muted);
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+.panel-chart-placeholder {
+    height: 65px;
+    width: 100%;
+    position: relative;
+    background: linear-gradient(90deg, transparent 0%, rgba(245, 200, 66, 0.04) 50%, transparent 100%);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.pattern-chart {
+    background-image:
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 12px 12px;
+    position: relative;
+}
+
+.pattern-chart::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+}
+
+.pattern-chart::after {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: 8%;
+    width: 84%;
+    height: 60%;
+    background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="%23F5C842" stop-opacity="0.4"/><stop offset="100%" stop-color="%23F5C842" stop-opacity="1"/></linearGradient></defs><path d="M0,35 Q10,30 20,25 T40,20 T60,15 T80,10 T100,5" fill="none" stroke="url(%23g)" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>') no-repeat center center;
+    background-size: 100% 100%;
+    opacity: 0.9;
+}
+
+/* ---- Clarity Box Mini-Chart ---- */
+.mini-chart {
+    background: linear-gradient(180deg, rgba(74, 222, 128, 0.08) 0%, transparent 100%);
+    border-bottom: 1px solid rgba(74, 222, 128, 0.4);
+    position: relative;
+}
+
+.mini-chart::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 30" xmlns="http://www.w3.org/2000/svg"><path d="M0,25 Q15,22 25,18 T50,12 T75,8 T100,5" fill="none" stroke="rgba(74,222,128,0.5)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>') no-repeat center center;
+    background-size: 100% 100%;
+}
+
+/* ---- Pattern Hunter List ---- */
+.pattern-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.pattern-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    padding: 6px 8px;
+    border-radius: 6px;
+    border-bottom: none;
+    background: rgba(255, 255, 255, 0.02);
+    transition: background 0.2s ease;
+}
+
+.pattern-list li:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.pattern-list li:last-child {
+    border: none;
+}
+
+.pattern-list li span:last-child {
+    color: var(--color-text-muted);
+    font-size: 10px;
+}
+
+/* ---- Clarity Box Ticker/Price ---- */
+.panel-ticker {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.panel-price {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2px;
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+}
+
+/* ---- Portfolio Card ---- */
+.portfolio-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    margin-bottom: 12px;
+}
+
+.portfolio-dots {
+    color: rgba(255, 255, 255, 0.06);
+    letter-spacing: 2px;
+    font-size: 10px;
+}
+
+.portfolio-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.portfolio-val {
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+}
+
+.portfolio-change {
+    text-align: right;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.text-success {
+    color: #22c55e;
+}
+
+.change-sub {
+    font-size: 9px;
+    color: var(--color-text-muted);
+    font-weight: 400;
+}
+
+/* ---- Floating micro-animation for depth ---- */
+@keyframes floatPanel {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+.panel-backtest {
+    animation: floatPanel 6s ease-in-out infinite;
+    animation-delay: 0s;
+}
+
+.panel-pattern {
+    animation: floatPanel 7s ease-in-out infinite;
+    animation-delay: 1.5s;
+}
+
+.panel-clarity {
+    animation: floatPanel 5.5s ease-in-out infinite;
+    animation-delay: 0.8s;
+}
+
+.panel-portfolio {
+    animation: floatPanel 6.5s ease-in-out infinite;
+    animation-delay: 2s;
+}
+
+/* ---- Trust Elements ---- */
+.hero-trust-elements {
+    margin-top: var(--space-10);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: var(--space-6);
+}
+
+.trust-heading {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    color: var(--color-accent);
+    margin-bottom: var(--space-5);
+    font-weight: 400;
+}
+
+.trust-bullets {
+    display: flex;
+    gap: var(--space-6);
+    flex-wrap: wrap;
+}
+
+.trust-bullet {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+
+.trust-bullet svg {
+    color: var(--color-accent);
+}

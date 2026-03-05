@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us | ProsperPath</title>
+    <title>Features | ProsperPath</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -22,16 +22,15 @@
                     <span>ProsperPath</span>
                 </a>
                 <div class="nav-links" id="nav-links">
-                    <a href="features.html">Features</a>
+                    <a href="features.html" class="active">Features</a>
                     <a href="team.html">Team</a>
-                    <a href="about.html" class="active">About</a>
+                    <a href="about.html">About</a>
                 </div>
                 <div class="nav-actions"
                     style="display: flex; align-items: center; gap: var(--space-4); position: relative;">
                     <a href="app.html" class="btn btn-primary nav-cta">Get Started</a>
-                    <div class="settings-wrapper" style="position: relative;">
-                        <button id="settings-btn" class="settings-icon-btn" aria-label="Settings"
-                            onclick="toggleAuthMenu()">
+                    <div class="settings-wrapper">
+                        <button id="settings-btn" class="settings-icon-btn" onclick="toggleAuthMenu()">
                             <span class="icon">⚙️</span>
                         </button>
                         <div id="auth-wrapper" class="auth-rolldown-container">
@@ -39,33 +38,57 @@
                         </div>
                     </div>
                 </div>
-                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
-                    <span></span><span></span><span></span>
-                </button>
             </nav>
         </div>
     </header>
 
     <section class="page-header" style="padding-top: 140px; text-align: center;">
         <div class="container">
-            <h1>Our <i>Mission</i></h1>
-            <p>Advancing capital preservation through algorithmic transparency.</p>
+            <h1>Capabilities & <i>Features</i></h1>
+            <p>A complete suite of quantitative tools inside the application.</p>
         </div>
     </section>
 
     <section class="section">
-        <div class="container" style="max-width: 800px; margin: 0 auto; padding-bottom: 80px;">
-            <p style="font-size: var(--text-lg); margin-bottom: var(--space-4);">
-                At ProsperPath, we believe that serious investors require institutional-grade clarity.
-                Our mission is to establish rigorous operational transparency across digital asset and algorithmic
-                workflows.
-            </p>
-            <p style="font-size: var(--text-lg); margin-bottom: var(--space-6);">
-                Founded as a comprehensive quantitative platform, ProsperPath provides exactingly researched analysis
-                and
-                structured execution frameworks. We bridge the gap between abstract market complexity and actionable,
-                disciplined portfolio allocation.
-            </p>
+        <div class="container">
+            <div class="grid grid-3">
+                <div class="card feature-card">
+                    <div class="card-icon"
+                        style="color: var(--color-accent); border-color: var(--color-border-accent);">⌬</div>
+                    <h3>Clarity Box</h3>
+                    <p>Proprietary structural evaluation of systemic market health and risk premiums.</p>
+                </div>
+                <div class="card feature-card">
+                    <div class="card-icon"
+                        style="color: var(--color-accent); border-color: var(--color-border-accent);">◓</div>
+                    <h3>Trade Execution</h3>
+                    <p>Engineered for minimal slippage. Connect routing with deep institutional liquidity.</p>
+                </div>
+                <div class="card feature-card">
+                    <div class="card-icon"
+                        style="color: var(--color-accent); border-color: var(--color-border-accent);">⌗</div>
+                    <h3>Portfolio Analytics</h3>
+                    <p>Real-time attribution reporting and downside deviation modeling.</p>
+                </div>
+                <div class="card feature-card">
+                    <div class="card-icon"
+                        style="color: var(--color-accent); border-color: var(--color-border-accent);">⌘</div>
+                    <h3>Wealth Guides</h3>
+                    <p>Architectural blueprints for navigating capital constraints and systematic alpha.</p>
+                </div>
+                <div class="card feature-card">
+                    <div class="card-icon"
+                        style="color: var(--color-accent); border-color: var(--color-border-accent);">⎔</div>
+                    <h3>Tool Reviews</h3>
+                    <p>Rigorous, independent analysis of technological infrastructure dependencies.</p>
+                </div>
+                <div class="card feature-card">
+                    <div class="card-icon"
+                        style="color: var(--color-accent); border-color: var(--color-border-accent);">∑</div>
+                    <h3>AI Calculators</h3>
+                    <p>Predictive modeling for sophisticated forecasting and scenario testing.</p>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -108,11 +131,6 @@
     <script src="ai-widget.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="google-auth.js"></script>
-    <script>
-        window.addEventListener('load', () => {
-            if (typeof initGoogleAuth === 'function') initGoogleAuth();
-        });
-    </script>
 </body>
 
 </html>

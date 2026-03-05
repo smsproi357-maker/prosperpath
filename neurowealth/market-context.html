@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Market Context — Understand how scale shapes interpretation. Module-based competency path by ProsperPath.">
+    <title>Market Context | ProsperPath Insights</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        /* ─── MC Page Reset & Base ─────────────────────────── */
+        :root {
+            --mm-bg: #0d0e10;
+            --mm-surface: #141618;
+            --mm-border: #1e2023;
+            --mm-border-hi: #2e3035;
+            --mm-text: #e0e1e3;
+            --mm-muted: #5e626a;
+            --mm-gold: #a07c2e;
+            --mm-gold-dim: rgba(160, 124, 46, 0.14);
+            --mm-gold-line: rgba(160, 124, 46, 0.42);
+            --mm-gold-dot: #a07c2e;
+            --mm-radius: 6px;
+            --mm-transition: 160ms ease;
+        }
+
+        #ai-chat-fab,
+        .ai-fab-btn,
+        .floating-action-btn,
+        [class*="fab"],
+        [id*="fab"] {
+            display: none !important;
+        }
+
+        .mm-page {
+            background: var(--mm-bg);
+            color: var(--mm-text);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        .mm-container {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 0 1.25rem;
+        }
+
+        /* ─── Hero ──────────────────────────────────────────── */
+        .mm-hero {
+            padding: 4rem 1.25rem 2.25rem;
+            text-align: center;
+        }
+
+        .mm-hero-eyebrow {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--mm-muted);
+            margin-bottom: 0.6rem;
+        }
+
+        .mm-hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--mm-text);
+            margin: 0 0 0.6rem;
+        }
+
+        .mm-hero p {
+            font-size: 1rem;
+            color: var(--mm-muted);
+            letter-spacing: 0.03em;
+            margin: 0;
+        }
+
+        /* ─── Domain Status Bar ───────────────────────────── */
+        .mm-status-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 1.25rem 2rem;
+            border-bottom: 1px solid var(--mm-border);
+        }
+
+        .mm-status-chip {
+            font-size: 0.7rem;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            color: var(--mm-muted);
+            padding: 0.32rem 0.7rem;
+            border: 1px solid var(--mm-border);
+            border-radius: 3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .mm-status-chip strong {
+            font-weight: 600;
+            color: var(--mm-text);
+            letter-spacing: 0;
+        }
+
+        .mm-status-chip.gold {
+            border-color: var(--mm-gold-line);
+        }
+
+        .mm-status-chip.gold strong {
+            color: var(--mm-gold);
+        }
+
+        .mm-cert-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--mm-gold);
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        /* ─── Sections ───────────────────────────────────── */
+        .mm-section {
+            padding: 2.5rem 1.25rem;
+            border-bottom: 1px solid var(--mm-border);
+        }
+
+        .mm-card {
+            background: var(--mm-surface);
+            border: 1px solid var(--mm-border);
+            border-radius: var(--mm-radius);
+            padding: 1.75rem 1.5rem;
+        }
+
+        .mm-card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--mm-text);
+            margin: 0 0 0.4rem;
+        }
+
+        .mm-card-sub {
+            font-size: 0.85rem;
+            color: var(--mm-muted);
+            margin: 0 0 1.4rem;
+        }
+
+        /* ─── Buttons ─────────────────────────────────────── */
+        .mm-btn-primary {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid var(--mm-gold-line);
+            color: var(--mm-gold);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 0.62rem 1.4rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background var(--mm-transition), border-color var(--mm-transition);
+        }
+
+        .mm-btn-primary:hover {
+            background: var(--mm-gold-dim);
+            border-color: var(--mm-gold);
+        }
+
+        .mm-btn-primary:focus-visible {
+            outline: 2px solid var(--mm-gold);
+            outline-offset: 2px;
+        }
+
+        /* ─── Module List ────────────────────────────────── */
+        .mm-modules-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--mm-muted);
+            margin-bottom: 1.1rem;
+        }
+
+        .mm-modules-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .mm-module-card {
+            background: var(--mm-surface);
+            border: 1px solid var(--mm-border);
+            border-radius: var(--mm-radius);
+            border-left: 3px solid transparent;
+            padding: 1.1rem 1.25rem;
+            transition: border-color var(--mm-transition);
+        }
+
+        .mm-module-card:hover {
+            border-color: var(--mm-border-hi);
+        }
+
+        .mm-module-card.verified {
+            border-left-color: var(--mm-gold);
+        }
+
+        .mm-module-card.verified:hover {
+            border-color: var(--mm-gold-line);
+        }
+
+        .mm-module-mastery {
+            font-size: 0.7rem;
+            color: var(--mm-gold);
+            margin-top: 0.4rem;
+            letter-spacing: 0.03em;
+        }
+
+        .mm-module-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mm-module-num {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--mm-muted);
+        }
+
+        .mm-diff-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            padding: 0.18rem 0.55rem;
+            border-radius: 2px;
+        }
+
+        .mm-diff-badge.core {
+            background: rgba(100, 160, 255, 0.1);
+            color: #7eb3ff;
+        }
+
+        .mm-status-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            padding: 0.18rem 0.55rem;
+            border-radius: 2px;
+        }
+
+        .mm-status-badge.not-started {
+            background: rgba(107, 111, 118, 0.15);
+            color: var(--mm-muted);
+        }
+
+        .mm-status-badge.in-progress {
+            background: rgba(100, 160, 255, 0.12);
+            color: #8ec0ff;
+        }
+
+        .mm-status-badge.verified {
+            background: rgba(160, 124, 46, 0.14);
+            color: var(--mm-gold);
+        }
+
+        .mm-module-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--mm-text);
+            margin: 0 0 0.35rem;
+        }
+
+        .mm-module-footer {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.6rem;
+            margin-top: 0.85rem;
+        }
+
+        .mm-module-info {
+            font-size: 0.73rem;
+            color: var(--mm-muted);
+        }
+
+        .mm-module-info+.mm-module-info::before {
+            content: "·";
+            margin-right: 0.6rem;
+        }
+
+        .mm-module-cta {
+            margin-left: auto;
+        }
+
+        /* ─── Competency Summary ─────────────────────────── */
+        .mm-comp-header {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--mm-text);
+            margin: 0 0 0.25rem;
+        }
+
+        .mm-comp-count {
+            font-size: 0.85rem;
+            color: var(--mm-muted);
+            margin: 0 0 1rem;
+        }
+
+        .mm-progress-track {
+            height: 2px;
+            background: var(--mm-border);
+            border-radius: 1px;
+            overflow: hidden;
+            margin-bottom: 1.1rem;
+        }
+
+        .mm-progress-fill {
+            height: 100%;
+            background: var(--mm-gold);
+            border-radius: 1px;
+            transition: width 0.4s ease;
+        }
+
+        .mm-comp-guidance {
+            font-size: 0.8rem;
+            color: var(--mm-muted);
+        }
+
+        /* ─── Domain Back Link ───────────────────────────── */
+        .mm-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.78rem;
+            color: var(--mm-muted);
+            text-decoration: none;
+            padding: 1rem 1.25rem 0;
+            transition: color var(--mm-transition);
+        }
+
+        .mm-back-link:hover {
+            color: var(--mm-text);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ── Navbar ─────────────────────────────────────────── -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="app.html" class="logo">
+                    <div class="logo-icon">⚡</div>
+                    <span>ProsperPath</span>
+                </a>
+
+                <div class="nav-links" id="nav-links">
+                    <a href="clarity-box.html">Clarity Box</a>
+                    <a href="trade.html">Trade</a>
+                    <a href="market-mechanics.html" class="active">Market Mechanics</a>
+                    <a href="portfolio.html">Portfolio</a>
+                    <a href="wealth-guides.html">Wealth Guides</a>
+                    <a href="tool-reviews.html">Tool Reviews</a>
+                    <a href="ai-calculators.html">AI Calculators</a>
+                    <a href="blog.html">Blog</a>
+                </div>
+
+                <div class="nav-actions" style="display:flex;align-items:center;gap:var(--space-4);position:relative;">
+                    <div class="settings-wrapper" style="position:relative;">
+                        <button id="settings-btn" class="settings-icon-btn" aria-label="Settings"
+                            onclick="toggleAuthMenu()">
+                            <span class="icon">⚙️</span>
+                        </button>
+                        <div id="auth-wrapper" class="auth-rolldown-container">
+                            <div id="auth-container"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ── Main Page ─────────────────────────────────────── -->
+    <main class="mm-page">
+
+        <!-- Back to Market Mechanics -->
+        <a href="market-mechanics.html" class="mm-back-link">&#8592; Market Mechanics</a>
+
+        <!-- 1. Hero -->
+        <section class="mm-hero">
+            <div class="mm-container">
+                <p class="mm-hero-eyebrow">Domain II</p>
+                <h1>Market Context</h1>
+                <p>Understand price within scale.</p>
+            </div>
+        </section>
+
+        <!-- 2. Domain Status Bar -->
+        <div class="mm-status-bar" id="mm-status-bar">
+            <span class="mm-status-chip"><strong>Domain II</strong>&thinsp;— Market Context</span>
+            <span class="mm-status-chip" id="chip-competency"><strong>Competency:</strong>&thinsp;<span
+                    id="chip-comp-val">0 / 2</span> Verified</span>
+            <span class="mm-status-chip" id="chip-cert">Certification: <strong id="chip-cert-val">In
+                    Progress</strong></span>
+        </div>
+
+        <!-- 3. Module List -->
+        <section class="mm-section">
+            <div class="mm-container">
+                <p class="mm-modules-label">Domain II — 2 Modules</p>
+                <div class="mm-modules-list" id="modules-list">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Competency Summary -->
+        <section class="mm-section" style="border-bottom:none; padding-bottom: 4rem;">
+            <div class="mm-container">
+                <div class="mm-card">
+                    <p class="mm-comp-header">Contextual Competency</p>
+                    <p class="mm-comp-count" id="comp-count">Verified 0 / 2</p>
+                    <div class="mm-progress-track">
+                        <div class="mm-progress-fill" id="comp-bar" style="width:0%"></div>
+                    </div>
+                    <p class="mm-comp-guidance" id="comp-guidance">Complete the verified module to establish contextual
+                        competency.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ── Footer ────────────────────────────────────────── -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 ProsperPath Insights. AI-Powered Wealth Strategies.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ── Scripts ───────────────────────────────────────── -->
+    <script src="script.js?v=mc1"></script>
+    <script src="ai-widget.js"></script>
+    <script src="google-auth.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            if (typeof initGoogleAuth === 'function') initGoogleAuth();
+        });
+    </script>
+
+    <script>
+        /* ════════════════════════════════════════════════════════
+           MARKET CONTEXT — Page State & Logic
+        ════════════════════════════════════════════════════════ */
+
+        // ── Module Data ──────────────────────────────────────────
+        const MODULES = [
+            {
+                id: '2.1',
+                title: 'Timeframes',
+                difficulty: 'Core',
+                time: '20 minutes',
+                focus: 'Scale & Context',
+                mastery: 0,
+                progress: 0
+            },
+            {
+                id: '2.2',
+                title: 'Structure',
+                difficulty: 'Core',
+                time: '20 minutes',
+                focus: 'Expansion vs Balance',
+                mastery: 0,
+                progress: 0
+            }
+        ];
+
+        // ── Helpers ──────────────────────────────────────────────
+        function getStatus(mod) {
+            if (mod.mastery >= 70) return 'Verified';
+            if (mod.progress > 0 && mod.mastery < 70) return 'In Progress';
+            return 'Not Started';
+        }
+
+        function diffClass(d) {
+            return { 'Core': 'core', 'Intermediate': 'intermediate', 'Advanced': 'advanced' }[d] || 'core';
+        }
+
+        function statusClass(s) {
+            return { 'Verified': 'verified', 'In Progress': 'in-progress', 'Completed': 'completed', 'Not Started': 'not-started' }[s] || 'not-started';
+        }
+
+        function countVerified() {
+            return MODULES.filter(m => getStatus(m) === 'Verified').length;
+        }
+
+        // ── Render Modules ────────────────────────────────────────
+        function renderModules() {
+            const list = document.getElementById('modules-list');
+            list.innerHTML = '';
+            MODULES.forEach(mod => {
+                const status = getStatus(mod);
+                const isVerified = status === 'Verified';
+
+                let ctaLabel;
+                if (status === 'Verified') ctaLabel = 'Review';
+                else if (status === 'In Progress') ctaLabel = 'Continue';
+                else ctaLabel = 'Start Module';
+
+                const masteryLine = isVerified
+                    ? `<p class="mm-module-mastery">Mastery ${mod.mastery}%</p>`
+                    : '';
+
+                const card = document.createElement('div');
+                card.className = 'mm-module-card' + (isVerified ? ' verified' : '');
+                card.innerHTML = `
+                <div class="mm-module-meta">
+                    <span class="mm-module-num">MODULE ${mod.id}</span>
+                    <span class="mm-diff-badge ${diffClass(mod.difficulty)}">${mod.difficulty}</span>
+                    <span class="mm-status-badge ${statusClass(status)}">${status}</span>
+                </div>
+                <p class="mm-module-title">${mod.title}</p>
+                <div class="mm-module-footer">
+                    <span class="mm-module-info">${mod.time}</span>
+                    <span class="mm-module-info">${mod.focus}</span>
+                    <div class="mm-module-cta">
+                        <button class="mm-btn-primary" style="font-size:0.72rem; padding:0.46rem 0.95rem;" onclick="startModule('${mod.id}')">${ctaLabel}</button>
+                    </div>
+                </div>
+                ${masteryLine}
+            `;
+                list.appendChild(card);
+            });
+        }
+
+        // ── Render Status Bar ─────────────────────────────────────
+        function renderStatus() {
+            const verified = countVerified();
+            const total = MODULES.length;
+            const eligible = verified >= total;
+
+            document.getElementById('chip-comp-val').textContent = `${verified} / ${total}`;
+
+            const certValEl = document.getElementById('chip-cert-val');
+            const certChip = document.getElementById('chip-cert');
+            certValEl.textContent = eligible ? 'Available' : 'In Progress';
+            certChip.className = 'mm-status-chip' + (eligible ? ' gold' : '');
+
+            const existingDot = certChip.querySelector('.mm-cert-dot');
+            if (eligible && !existingDot) {
+                const dot = document.createElement('span');
+                dot.className = 'mm-cert-dot';
+                certChip.insertBefore(dot, certChip.firstChild);
+            } else if (!eligible && existingDot) {
+                existingDot.remove();
+            }
+
+            document.getElementById('comp-count').textContent = `${verified} / ${total} Verified`;
+            const pct = (verified / total) * 100;
+            document.getElementById('comp-bar').style.width = pct + '%';
+
+            const guidanceEl = document.getElementById('comp-guidance');
+            if (eligible) {
+                guidanceEl.textContent = 'Contextual Competency established.';
+            } else {
+                guidanceEl.textContent = 'Complete all verified modules to establish contextual competency.';
+            }
+        }
+
+        function startModule(id) {
+            if (id === '2.1') {
+                window.location.href = 'module-2-1.html';
+            } else if (id === '2.2') {
+                window.location.href = 'module-2-2.html';
+            } else {
+                alert(`Module ${id} is coming soon.`);
+            }
+        }
+
+        // ── Init ─────────────────────────────────────────────────
+        (function syncModuleProgress() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('pp_mc_modules') || '{}');
+                if (saved['2.1']) {
+                    const m = saved['2.1'];
+                    MODULES[0].mastery = m.mastery || 0;
+                    MODULES[0].progress = m.progress || 0;
+                }
+                if (saved['2.2']) {
+                    const m = saved['2.2'];
+                    MODULES[1].mastery = m.mastery || 0;
+                    MODULES[1].progress = m.progress || 0;
+                }
+            } catch (e) { }
+        })();
+        renderModules();
+        renderStatus();
+    </script>
+</body>
+
+</html>

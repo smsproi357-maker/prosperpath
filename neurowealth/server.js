@@ -11,10 +11,28 @@ const PORT = process.env.PORT || 3000;
 const SESSION_FILE = path.join(__dirname, 'plaid_session.json');
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: process.env.CORS_ORIGIN || false }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(__dirname));
+app.use(express.static(__dirname, { dotfiles: 'ignore', index: false }));
+
+function requireApiAuth(req, res, next) {
+    if (process.env.ALLOW_INSECURE_LOCAL_API === 'true') return next();
+
+    const expectedToken = process.env.SERVER_API_TOKEN;
+    if (!expectedToken) {
+        return res.status(503).json({ error: 'Server API token not configured' });
+    }
+
+    const authHeader = req.get('Authorization') || '';
+    if (authHeader !== `Bearer ${expectedToken}`) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    next();
+}
+
+app.use('/api', requireApiAuth);
 
 // Plaid Configuration
 const configuration = new Configuration({
@@ -93,15 +111,10 @@ app.post('/api/set_access_token', async (req, res) => {
             access_token: accessToken,
             item_id: itemId
         }, null, 2));
-
-        console.log('Access Token:', accessToken);
         console.log('Item ID:', itemId);
         console.log('💾 Session saved to file');
 
-        res.json({
-            access_token: accessToken,
-            item_id: itemId,
-        });
+        res.json({ item_id: itemId });
     } catch (error) {
         console.error('Error exchanging public token:', error);
         res.status(500).json({ error: error.message });
@@ -197,3 +210,4 @@ app.listen(PORT, () => {
     console.log(`✅ NeuroWealth Server running at http://localhost:${PORT}/`);
     console.log(`📊 Plaid Environment: ${process.env.PLAID_ENV}`);
 });
+

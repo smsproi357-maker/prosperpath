@@ -2,7 +2,7 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = 3001;
+const PORT = 3005;
 
 const MIME_TYPES = {
     '.html': 'text/html',
@@ -23,12 +23,38 @@ const MIME_TYPES = {
 };
 
 const server = http.createServer((req, res) => {
+    const isPrivateHost = (hostname) => {
+        if (!hostname) return true;
+        const host = hostname.toLowerCase();
+        if (host === 'localhost' || host === '127.0.0.1' || host === '::1' || host.endsWith('.local')) return true;
+        if (host.startsWith('10.') || host.startsWith('192.168.') || host.startsWith('169.254.')) return true;
+        if (/^172\.(1[6-9]|2\d|3[0-1])\./.test(host)) return true;
+        return false;
+    };
+
+    const isSafeProxyTarget = (rawUrl) => {
+        try {
+            const parsed = new URL(rawUrl);
+            if (!['http:', 'https:'].includes(parsed.protocol)) return false;
+            if (isPrivateHost(parsed.hostname)) return false;
+            return true;
+        } catch {
+            return false;
+        }
+    };
+
     let urlPath = req.url.split('?')[0];
     if (urlPath === '/proxy') {
         const queryUrl = new URL(req.url, `http://${req.headers.host}`).searchParams.get('url');
         if (!queryUrl) {
             res.writeHead(400, { 'Content-Type': 'text/plain', 'Access-Control-Allow-Origin': '*' });
             res.end('Missing "url" query parameter');
+            return;
+        }
+
+        if (!isSafeProxyTarget(queryUrl)) {
+            res.writeHead(403, { 'Content-Type': 'text/plain', 'Access-Control-Allow-Origin': '*' });
+            res.end('Blocked proxy target');
             return;
         }
 
@@ -51,9 +77,17 @@ const server = http.createServer((req, res) => {
         return; // Stop further processing
     }
 
-    let filePath = '.' + urlPath;
-    if (filePath === './' || filePath === '.') {
-        filePath = './index.html';
+    const baseDir = process.cwd();
+    const safeUrlPath = decodeURIComponent(urlPath);
+    let filePath = path.resolve(baseDir, '.' + safeUrlPath);
+    if (filePath === baseDir) {
+        filePath = path.join(baseDir, 'index.html');
+    }
+
+    if (!filePath.startsWith(baseDir + path.sep) && filePath !== baseDir) {
+        res.writeHead(403, { 'Content-Type': 'text/plain' });
+        res.end('Forbidden');
+        return;
     }
 
     const extname = String(path.extname(filePath)).toLowerCase();

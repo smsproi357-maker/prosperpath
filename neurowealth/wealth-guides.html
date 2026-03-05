@@ -4,24 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Comprehensive wealth guides for AI-powered investing, automated retirement planning, tax-loss harvesting strategies, and digital asset security. Expert guidance for modern investors.">
-    <meta name="keywords"
-        content="wealth guides, AI investing guide, automated retirement planning, robo advisor guide, digital asset security guide, tax-loss harvesting">
-
-    <!-- Open Graph -->
-    <meta property="og:title" content="Wealth Guides | ProsperPath Insights - AI Investing & Automation">
-    <meta property="og:description"
-        content="Comprehensive wealth guides for AI-powered investing, automated retirement planning, and digital asset security.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://prosperpathinsights.com/wealth-guides.html">
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Wealth Guides | ProsperPath Insights">
-    <meta name="twitter:description" content="Expert guides for AI-powered wealth management.">
-
-    <title>Wealth Guides | ProsperPath Insights - AI Investing & Automation Guides</title>
+    <meta name="description" content="ProsperPath Insights Guide">
+    <title>Wealth Guide | ProsperPath Insights</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,20 +26,18 @@
                 </a>
 
                 <div class="nav-links" id="nav-links">
-                    <a href="wealth-guides.html" class="active">Wealth Guides</a>
-                    <a href="trade.html">Trade</a>
-                    <a href="portfolio.html">Portfolio</a>
                     <a href="clarity-box.html">Clarity Box</a>
+                    <a href="trade.html">Trade</a>
+                    <a href="market-mechanics.html">Market Mechanics</a>
+                    <a href="portfolio.html">Portfolio</a>
+                    <a href="wealth-guides.html" class="active">Wealth Guides</a>
                     <a href="tool-reviews.html">Tool Reviews</a>
                     <a href="ai-calculators.html">AI Calculators</a>
                     <a href="blog.html">Blog</a>
-                    <a href="about.html">About</a>
                 </div>
 
                 <div class="nav-actions"
                     style="display: flex; align-items: center; gap: var(--space-4); position: relative;">
-                    <a href="index.html#get-started" class="btn btn-primary nav-cta">Get Started</a>
-
                     <div class="settings-wrapper" style="position: relative;">
                         <button id="settings-btn" class="settings-icon-btn" aria-label="Settings"
                             onclick="toggleAuthMenu()">
@@ -78,172 +60,70 @@
         </div>
     </header>
 
-    <!-- Page Header -->
-    <section class="page-header">
+    <!-- Guide Header (Detail View) -->
+    <section class="blog-post-header" id="guide-detail-header" style="display: none;">
         <div class="container">
-            <h1>Wealth Guides</h1>
-            <p>Comprehensive guides to mastering AI-powered investing, automated wealth management, and digital asset
-                security</p>
+            <span class="blog-category" id="guide-category">Loading...</span>
+            <h1 id="guide-title">Loading...</h1>
+            <div class="blog-meta" style="justify-content: center; margin-top: var(--space-6);">
+                <span id="guide-meta">Updated Jan 2026 • 5 min read</span>
+            </div>
         </div>
     </section>
 
-    <!-- Main Content -->
-    <section class="section">
+    <!-- Index Header (Grid View) -->
+    <section class="page-header" id="guide-index-header" style="display: none;">
+        <div class="container">
+            <h1>Wealth <i>Guides</i></h1>
+            <p>Institutional literature for long-term compounding and systematic wealth management.</p>
+        </div>
+    </section>
+
+    <!-- Guide Content (Detail View) -->
+    <section class="section" id="guide-detail-content" style="padding-top: 0; display: none;">
         <div class="container">
             <div class="main-layout">
-                <div class="main-content">
-                    <!-- Featured Guide -->
-                    <div class="card card-accent" style="margin-bottom: var(--space-10);" data-animate>
-                        <div class="flex-between" style="margin-bottom: var(--space-4);">
-                            <span class="blog-category">Featured Guide</span>
-                            <span style="color: var(--color-text-muted); font-size: var(--text-sm);">Updated Jan
-                                2026</span>
-                        </div>
-                        <h2 style="font-size: var(--text-3xl); margin-bottom: var(--space-4);">The Complete Guide to
-                            Automated Retirement Planning</h2>
-                        <p style="font-size: var(--text-lg); margin-bottom: var(--space-6);">Everything you need to know
-                            about leveraging AI and robo-advisors to build a retirement portfolio that grows
-                            automatically while minimizing taxes and maximizing returns.</p>
-                        <div style="display: flex; gap: var(--space-4); flex-wrap: wrap;">
-                            <a href="guide-template.html#id=automated-retirement" class="btn btn-primary">Read Full
-                                Guide</a>
-                            <a href="https://drive.google.com/uc?export=download&id=1MdP4SM86jd9zLTzTBP63qTSgqDpbn7Dh"
-                                class="btn btn-secondary">Save as
-                                PDF</a>
+                <article class="main-content blog-post-content">
+                    <p style="font-size: var(--text-xl); color: var(--color-text-primary); margin-bottom: var(--space-8);"
+                        id="guide-intro">
+                        ...
+                    </p>
+
+                    <div id="guide-body">
+                        <!-- Dynamic Content injected here -->
+                    </div>
+
+                    <!-- Call to Action -->
+                    <div class="card" style="margin: var(--space-8) 0; text-align: center;">
+                        <h4 style="margin-bottom: var(--space-3);">Ready to put this into practice?</h4>
+                        <div style="display: flex; gap: 10px; justify-content: center;">
+                            <a href="ai-calculators.html" class="btn btn-primary">Try AI Calculators</a>
+                            <a href="tool-reviews.html" class="btn btn-secondary">Find Tools</a>
                         </div>
                     </div>
 
-                    <!-- Guides Grid -->
-                    <div class="section-header" style="text-align: left; margin-top: var(--space-10);" data-animate>
-                        <h2>All Wealth Guides</h2>
-                        <p>Expert guides organized by topic to help you navigate AI-powered wealth management</p>
-                    </div>
-
-                    <div class="guides-grid" data-animate>
-                        <div class="card guide-card">
-                            <div class="guide-number">01</div>
-                            <div class="guide-content">
-                                <h3>Getting Started with Robo-Advisors</h3>
-                                <p>A beginner's guide to choosing and using AI-powered investment platforms.</p>
-                                <a href="guide-template.html#id=robo-advisors" class="btn btn-ghost"
-                                    style="padding-left: 0;">Read Guide →</a>
-                            </div>
-                        </div>
-
-                        <div class="card guide-card">
-                            <div class="guide-number">02</div>
-                            <div class="guide-content">
-                                <h3>Tax-Loss Harvesting Strategies</h3>
-                                <p>Maximize your after-tax returns with automated tax optimization.</p>
-                                <a href="guide-template.html#id=tax-harvesting" class="btn btn-ghost"
-                                    style="padding-left: 0;">Read Guide →</a>
-                            </div>
-                        </div>
-
-                        <div class="card guide-card">
-                            <div class="guide-number">03</div>
-                            <div class="guide-content">
-                                <h3>Digital Asset Security Fundamentals</h3>
-                                <p>Protecting your cryptocurrency and digital investments from threats.</p>
-                                <a href="guide-template.html#id=digital-security" class="btn btn-ghost"
-                                    style="padding-left: 0;">Read Guide →</a>
-                            </div>
-                        </div>
-
-                        <div class="card guide-card">
-                            <div class="guide-number">04</div>
-                            <div class="guide-content">
-                                <h3>AI Portfolio Diversification</h3>
-                                <p>How machine learning creates optimally diversified investment portfolios.</p>
-                                <a href="guide-template.html#id=portfolio-diversification" class="btn btn-ghost"
-                                    style="padding-left: 0;">Read Guide →</a>
-                            </div>
-                        </div>
-
-                        <div class="card guide-card">
-                            <div class="guide-number">05</div>
-                            <div class="guide-content">
-                                <h3>Automated Dollar-Cost Averaging</h3>
-                                <p>Set up intelligent recurring investments that adapt to market conditions.</p>
-                                <a href="guide-template.html#id=dca" class="btn btn-ghost" style="padding-left: 0;">Read
-                                    Guide →</a>
-                            </div>
-                        </div>
-
-                        <div class="card guide-card">
-                            <div class="guide-number">06</div>
-                            <div class="guide-content">
-                                <h3>Crypto Custody Solutions</h3>
-                                <p>Understanding hot wallets, cold storage, and institutional custody.</p>
-                                <a href="guide-template.html#id=crypto-custody" class="btn btn-ghost"
-                                    style="padding-left: 0;">Read Guide →</a>
-                            </div>
-                        </div>
-
-                        <div class="card guide-card">
-                            <div class="guide-number">07</div>
-                            <div class="guide-content">
-                                <h3>AI Tax Software Comparison</h3>
-                                <p>Complete guide to selecting the right AI tax software for your needs.</p>
-                                <a href="guide-template.html#id=tax-software" class="btn btn-ghost"
-                                    style="padding-left: 0;">Read Guide →</a>
-                            </div>
-                        </div>
-
-                        <div class="card guide-card">
-                            <div class="guide-number">08</div>
-                            <div class="guide-content">
-                                <h3>Building a 401(k) Optimization Strategy</h3>
-                                <p>Maximize employer matches and optimize asset allocation automatically.</p>
-                                <a href="guide-template.html#id=401k-optimization" class="btn btn-ghost"
-                                    style="padding-left: 0;">Read Guide →</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Quick Start Guides -->
-                    <div class="section-header" style="text-align: left; margin-top: var(--space-10);" data-animate>
-                        <h2>Quick Start Guides</h2>
-                        <p>Get up and running in minutes with these concise tutorials</p>
-                    </div>
-
-                    <div class="grid grid-3" data-animate>
-                        <div class="card" style="text-align: center; padding: var(--space-6);">
-                            <div class="card-icon" style="margin: 0 auto var(--space-4);">🚀</div>
-                            <h4 style="margin-bottom: var(--space-2);">5-Minute Setup</h4>
-                            <p style="font-size: var(--text-sm);">Open your first robo-advisor account</p>
-                        </div>
-
-                        <div class="card" style="text-align: center; padding: var(--space-6);">
-                            <div class="card-icon" style="margin: 0 auto var(--space-4);">📊</div>
-                            <h4 style="margin-bottom: var(--space-2);">Portfolio Basics</h4>
-                            <p style="font-size: var(--text-sm);">Understanding asset allocation</p>
-                        </div>
-
-                        <div class="card" style="text-align: center; padding: var(--space-6);">
-                            <div class="card-icon" style="margin: 0 auto var(--space-4);">🔐</div>
-                            <h4 style="margin-bottom: var(--space-2);">Security Checklist</h4>
-                            <p style="font-size: var(--text-sm);">Essential steps to protect your assets</p>
-                        </div>
-                    </div>
-                </div>
+                </article>
 
                 <!-- Sidebar -->
                 <aside class="sidebar">
                     <div class="card" style="padding: var(--space-5);">
-                        <h4 style="margin-bottom: var(--space-4); font-size: var(--text-base);">📚 Popular Guides</h4>
-                        <div style="display: flex; flex-direction: column; gap: var(--space-3);">
-                            <a href="#" style="font-size: var(--text-sm); color: var(--color-text-secondary);">→
-                                Beginner's Robo-Advisor Guide</a>
-                            <a href="#" style="font-size: var(--text-sm); color: var(--color-text-secondary);">→ Tax
-                                Optimization 101</a>
-                            <a href="#" style="font-size: var(--text-sm); color: var(--color-text-secondary);">→ Crypto
-                                Security Basics</a>
-                            <a href="#" style="font-size: var(--text-sm); color: var(--color-text-secondary);">→
-                                Retirement Planning Checklist</a>
+                        <h4 style="margin-bottom: var(--space-4); font-size: var(--text-base);">📚 More Guides</h4>
+                        <div style="display: flex; flex-direction: column; gap: var(--space-3);" id="more-guides-list">
+                            <a href="wealth-guides.html"
+                                style="font-size: var(--text-sm); color: var(--color-text-secondary);">← Back to All
+                                Guides</a>
                         </div>
                     </div>
                 </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- Guide Index (Grid View) -->
+    <section class="section" id="guide-index-content" style="display: none;">
+        <div class="container">
+            <div class="grid grid-3" id="wealth-guides-grid">
+                <!-- Dynamically populated by script.js -->
             </div>
         </div>
     </section>
@@ -260,45 +140,18 @@
                     <p>Your trusted source for AI-powered investing insights, automated wealth management strategies,
                         and digital asset security guidance.</p>
                 </div>
-
+                <!-- Simplified footer columns for template -->
                 <div class="footer-column">
                     <h4>Resources</h4>
                     <div class="footer-links">
                         <a href="wealth-guides.html">Wealth Guides</a>
-                        <a href="tool-reviews.html">Tool Reviews</a>
+                        <a href="trade.html">Trade</a>
                         <a href="ai-calculators.html">AI Calculators</a>
-                        <a href="blog.html">Blog</a>
-                    </div>
-                </div>
-
-                <div class="footer-column">
-                    <h4>Categories</h4>
-                    <div class="footer-links">
-                        <a href="blog.html">AI Portfolio Strategies</a>
-                        <a href="blog.html">Tax Automation</a>
-                        <a href="blog.html">Digital Asset Insurance</a>
-                        <a href="blog.html">Robo-Advisors</a>
-                    </div>
-                </div>
-
-                <div class="footer-column">
-                    <h4>Company</h4>
-                    <div class="footer-links">
-                        <a href="about.html">About Us</a>
-                        <a href="#">Contact</a>
-                        <a href="#">Privacy Policy</a>
-                        <a href="#">Terms of Service</a>
                     </div>
                 </div>
             </div>
-
             <div class="footer-bottom">
                 <p>© 2026 ProsperPath Insights. All rights reserved.</p>
-                <div class="social-links">
-                    <a href="#" class="social-link" aria-label="Twitter">𝕏</a>
-                    <a href="#" class="social-link" aria-label="LinkedIn">in</a>
-                    <a href="#" class="social-link" aria-label="YouTube">▶</a>
-                </div>
             </div>
         </div>
     </footer>

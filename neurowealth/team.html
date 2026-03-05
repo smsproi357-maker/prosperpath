@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team | ProsperPath</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">⚡</div>
+                    <span>ProsperPath</span>
+                </a>
+                <div class="nav-links" id="nav-links">
+                    <a href="features.html">Features</a>
+                    <a href="team.html" class="active">Team</a>
+                    <a href="about.html">About</a>
+                </div>
+                <div class="nav-actions"
+                    style="display: flex; align-items: center; gap: var(--space-4); position: relative;">
+                    <a href="app.html" class="btn btn-primary nav-cta">Get Started</a>
+                    <div class="settings-wrapper">
+                        <button id="settings-btn" class="settings-icon-btn" onclick="toggleAuthMenu()">
+                            <span class="icon">⚙️</span>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="page-header" style="padding-top: 140px; text-align: center;">
+        <div class="container">
+            <h1>Our <i>Team</i></h1>
+            <p>Veterans in systemic strategy and technical infrastructure.</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="grid grid-3">
+                <div class="card feature-card text-center"
+                    style="display:flex; flex-direction:column; align-items:center;">
+                    <div class="card-icon"
+                        style="width:80px; height:80px; font-size: 2rem; border-radius:50%; margin-bottom: 20px; color: var(--color-accent); border-color: var(--color-border-accent);">
+                        S</div>
+                    <h3>Sabeel</h3>
+                    <div
+                        style="font-size: var(--text-sm); color: var(--color-accent); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">
+                        Chief Executive Officer</div>
+                    <p>Driving quantitative execution and strategic vision for institutional operations.</p>
+                </div>
+                <div class="card feature-card text-center"
+                    style="display:flex; flex-direction:column; align-items:center;">
+                    <div class="card-icon"
+                        style="width:80px; height:80px; font-size: 2rem; border-radius:50%; margin-bottom: 20px; color: var(--color-accent); border-color: var(--color-border-accent);">
+                        N</div>
+                    <h3>Nishtha</h3>
+                    <div
+                        style="font-size: var(--text-sm); color: var(--color-accent); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">
+                        Chief Technology Officer</div>
+                    <p>Architecting the high-performance backtest environments and distributed deployment pipelines.</p>
+                </div>
+                <div class="card feature-card text-center"
+                    style="display:flex; flex-direction:column; align-items:center;">
+                    <div class="card-icon"
+                        style="width:80px; height:80px; font-size: 2rem; border-radius:50%; margin-bottom: 20px; color: var(--color-accent); border-color: var(--color-border-accent);">
+                        A</div>
+                    <h3>Abhi</h3>
+                    <div
+                        style="font-size: var(--text-sm); color: var(--color-accent); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">
+                        Managing Director</div>
+                    <p>Overseeing rigorous analytical procedures and operational resiliency across global markets.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo">
+                        <div class="logo-icon">⚡</div>
+                        <span>ProsperPath</span>
+                    </a>
+                    <p>Institutional-grade intelligence for quantitative and systematic allocation.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <div class="footer-links">
+                        <a href="app.html">App Platform</a>
+                        <a href="features.html">Features</a>
+                        <a href="team.html">Our Team</a>
+                        <a href="about.html">About Us</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 ProsperPath. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="ai-widget.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="google-auth.js"></script>
+</body>
+
+</html>

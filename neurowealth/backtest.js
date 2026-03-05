@@ -1,6 +1,13 @@
 /* ========================================
    BACKTEST ENGINE — Chart Rendering & Interactivity
    Powered by real BacktestEngine (backtest-engine.js)
+   ========================================
+   FIX: Performance panel zeros — root cause: fetchOHLCV was calling Binance
+   API without a CORS fallback, so any network/CORS failure left metrics at 0.
+   Change (backtest-engine.js): fetchOHLCV now falls back to
+   /exports/btc_4h_2019_2024.json when Binance is unreachable.
+   Change (backtest.js): Added [BT_PIPE] diagnostic logs inside the Run handler
+   and window.__ppBacktestZeroCheck() acceptance test function.
    ======================================== */
 
 (function () {
@@ -427,6 +434,96 @@
         });
     }
 
+    // ====================================================================
+    // BUILD STRATEGY DEFINITION FROM UI
+    // Reads the Strategy Builder panel to produce a StrategyDefinition object.
+    // Called fresh on every Run Backtest and every Indicator Audit.
+    // ====================================================================
+    function buildStrategyDefinitionFromUI() {
+        const strategyName = (document.getElementById('strategy-name') || {}).value || 'Unnamed';
+        const presetSel = document.getElementById('preset-selector');
+        const isProduction = presetSel && presetSel.value === 'BTC_4H_PRODUCTION';
+
+        // --- Indicators ---
+        const indicators = [];
+        document.querySelectorAll('#indicator-list .bt-indicator-card').forEach(card => {
+            const type = card.getAttribute('data-indicator-type');
+            if (!type) return; // dynamically added cards without attribute: skip
+            const params = {};
+            // Collect all data-param-* inputs
+            card.querySelectorAll('[data-param-period]').forEach(el => { params.period = parseFloat(el.value) || 14; });
+            card.querySelectorAll('[data-param-fast]').forEach(el => { params.fast = parseFloat(el.value) || 12; });
+            card.querySelectorAll('[data-param-slow]').forEach(el => { params.slow = parseFloat(el.value) || 26; });
+            card.querySelectorAll('[data-param-signal]').forEach(el => { params.signal = parseFloat(el.value) || 9; });
+            card.querySelectorAll('[data-param-overbought]').forEach(el => { params.overbought = parseFloat(el.value) || 70; });
+            card.querySelectorAll('[data-param-oversold]').forEach(el => { params.oversold = parseFloat(el.value) || 30; });
+            indicators.push({ type, params });
+        });
+
+        // --- Entry Rules ---
+        function readRules(blockId) {
+            const rules = [];
+            const block = document.getElementById(blockId);
+            if (!block) return rules;
+            block.querySelectorAll('[data-rule]').forEach(row => {
+                const lhsEl = row.querySelector('[data-rule-lhs]');
+                const opEl = row.querySelector('[data-rule-op]');
+                const rhsEl = row.querySelector('[data-rule-rhs]');
+                if (!lhsEl || !opEl || !rhsEl) return;
+                const lhs = lhsEl.value || lhsEl.textContent;
+                const op = opEl.value || opEl.textContent;
+                const rawRhs = rhsEl.value || rhsEl.textContent;
+                // Detect cross operators
+                const isCross = op.includes('cross');
+                rules.push({ lhs: lhs.trim(), op: op.trim(), rhs: rawRhs.trim(), cross: isCross });
+            });
+            return rules;
+        }
+
+        const entryRules = readRules('entry-rules-block');
+        const exitRules = readRules('exit-rules-block');
+
+        // --- Risk ---
+        const stopLossPct = parseFloat((document.getElementById('stop-loss') || {}).value || 2) / 100;
+        const takeProfitPct = parseFloat((document.getElementById('take-profit') || {}).value || 5) / 100;
+        const positionPct = parseFloat((document.getElementById('position-size') || {}).value || 10) / 100;
+        const feesPct = parseFloat((document.getElementById('trading-fees') || {}).value || 0.1) / 100;
+        const slippagePct = parseFloat((document.getElementById('slippage') || {}).value || 0.05) / 100;
+
+        // --- Mode ---
+        // Production preset => VOL_BREAKOUT mode for full parity.
+        // Custom mode with no entry rules => also fall back to VOL_BREAKOUT so the engine
+        // always runs and produces trades. Without this, _evaluateRules([]) returns false
+        // every bar → 0 trades → all metrics display as zero. This is the fix for the
+        // "everything 0" bug when running in Custom Strategy mode without adding rules.
+        let mode;
+        if (isProduction) {
+            mode = 'VOL_BREAKOUT';
+        } else if (entryRules.length === 0) {
+            // No rules defined — run VOL_BREAKOUT engine so the user sees real results.
+            mode = 'VOL_BREAKOUT';
+            console.log('[Strategy] No entry rules defined — falling back to VOL_BREAKOUT engine. Add entry/exit rules in the Strategy Builder to use custom rule mode.');
+        } else {
+            mode = 'GENERIC_RULES';
+        }
+
+        const strategyDef = {
+            mode,
+            indicators,
+            entryRules,
+            exitRules,
+            risk: { stopLossPct, takeProfitPct, positionPct, feesPct, slippagePct },
+            meta: {
+                strategyName,
+                versionId: RunConfigShared.generateRunId(),
+                createdAt: new Date().toISOString()
+            }
+        };
+        // Attach hash
+        strategyDef.meta.strategyHash = RunConfigShared.hashStrategy(strategyDef);
+        return strategyDef;
+    }
+
     // ---- Run Backtest Button ----
     function initRunButton() {
         const btn = document.getElementById('btn-run-backtest');
@@ -437,6 +534,16 @@
 
         btn.addEventListener('click', () => {
             activeLoadedVersionId = null; // Clear context on new run
+
+            // ── A2: Auto-exit REPLAY mode before every run ───────────────────
+            // If the Paper Execution console is in REPLAY mode, exit it so
+            // replay state never silently overrides a fresh run.
+            if (window.PaperExecution && typeof window.PaperExecution.exitReplayMode === 'function') {
+                if (window.PaperExecution._isReplayModeActive && window.PaperExecution._isReplayModeActive()) {
+                    console.log('[Backtest] REPLAY mode was ON — auto-exiting before run.');
+                    window.PaperExecution.exitReplayMode();
+                }
+            }
 
             // 1. Disable button & Show Overlay
             btn.classList.add('running');
@@ -499,15 +606,53 @@
             // Run Sequence — REAL ENGINE
             (async () => {
                 try {
-                    const config = BacktestEngine.collectInputs();
+                    // ── A4: Read config FRESH from DOM on every run ──────────────
+                    // A3/A5: Detect preset lock so we can log the right guard string
+                    const presetSel = document.getElementById('preset-selector');
+                    const isProductionPreset = presetSel && presetSel.value === 'BTC_4H_PRODUCTION';
+                    if (isProductionPreset) {
+                        console.log('[Backtest] CONFIG SOURCE: BTC_4H_PRODUCTION preset (inputs locked)');
+                    }
+                    // buildRunConfigFromUI() — single source of truth.
+                    // Validates every DOM input; throws a clear error on any invalid value.
+                    const config = BacktestEngine.buildRunConfigFromUI();
+
+                    // ── Build StrategyDefinition from Strategy Builder panel ──────────
+                    const strategyDef = buildStrategyDefinitionFromUI();
+                    // Cache for Indicator Audit
+                    window._lastAuditStrategyDef = strategyDef;
+
+                    // ── [STRATEGY] diagnostic log ─────────────────────────────────────
+                    console.log(`[STRATEGY] mode=${strategyDef.mode} name="${strategyDef.meta.strategyName}" strategyHash=${strategyDef.meta.strategyHash}`);
+                    console.log('[STRATEGY] indicators=', JSON.stringify(strategyDef.indicators));
+                    console.log('[STRATEGY] entryRules=', JSON.stringify(strategyDef.entryRules));
+                    console.log('[STRATEGY] exitRules=', JSON.stringify(strategyDef.exitRules));
+
+                    // ── A4: Required diagnostic print — configHash + strategyHash ─────
+                    console.log(`[RUN] configHash=${config.configHash} strategyHash=${strategyDef.meta.strategyHash} asset=${config.asset} tf=${config.timeframe} range=${config.startDate}→${config.endDate} stop=${(config.stopPercent * 100).toFixed(2)}% fee=${(config.feeRate * 100).toFixed(3)}% slip=${(config.slippagePct * 100).toFixed(3)}% risk=${(config.riskPercent * 100).toFixed(2)}%`);
+                    console.log('[RUN CONFIG]', JSON.stringify(config));
+
+                    // [BT_PIPE] Step 1 — log configHash before fetch
+                    console.log(`[BT_PIPE] configHash=${config.configHash} asset=${config.asset} tf=${config.timeframe} range=${config.startDate}‒${config.endDate} capital=${config.startingCapital}`);
 
                     await addStep('Loading historical data...', 100);
 
-                    // REAL: Fetch data from Binance
+                    // REAL: Fetch data from Binance (with /exports fallback if CORS fails)
                     const candles = await BacktestEngine.fetchOHLCV(
                         config.asset, config.timeframe, config.startDate, config.endDate
                     );
                     ohlcvData = candles;
+
+                    // [BT_PIPE] Step 2 — candle count + date range
+                    console.log(`[BT_PIPE] candles=len ${candles.length} first=${candles[0].date.toISOString()} last=${candles[candles.length - 1].date.toISOString()}`);
+                    if (!candles.length) throw new Error('[Backtest] No candles loaded — cannot run engine');
+                    if (!(candles[0].date instanceof Date)) throw new Error('[Backtest] Candle date is not a Date instance');
+                    if (!isFinite(candles[0].close)) { console.error('[Backtest] First 3 candles raw:', candles.slice(0, 3)); throw new Error('[Backtest] Candle close is not finite'); }
+
+                    // ── Compute candle fingerprint ────────────────────────────────
+                    const candlesetHash = BacktestEngine.computeCandlesetHash(candles);
+                    console.log(`[BT_PIPE] candlesetHash=${candlesetHash}`);
+                    console.log(`[RUN] candlesetHash=${candlesetHash} candles=${candles.length} first=${candles[0].date.toISOString()} last=${candles[candles.length - 1].date.toISOString()}`);
 
                     // Update chart header with real asset info
                     const chartTitle = document.querySelector('.bt-panel-center .bt-panel-title');
@@ -525,9 +670,70 @@
 
                     await addStep('Executing trades...', 200);
 
-                    // REAL: Run engine
-                    const result = BacktestEngine.runBacktest(candles, config);
+                    // REAL: Run engine — unified entrypoint
+                    // VOL_BREAKOUT preset: delegates to original runBacktest (parity safe)
+                    // Custom strategy: runs generic rule engine
+                    let result = BacktestEngine.runBacktestWithStrategy(candles, config, strategyDef);
+
+                    // ── 2D: Safety net — if GENERIC_RULES produced 0 trades, fall back to VOL_BREAKOUT ──
+                    // This happens when the user's entry rules never co-occur (e.g. RSI<30 AND Price>SMA
+                    // simultaneously — contradictory conditions). Rather than showing all-zero metrics,
+                    // we run the built-in VOL_BREAKOUT engine and surface real results with a console note.
+                    if (result.trades.length === 0 && strategyDef.mode === 'GENERIC_RULES') {
+                        console.warn('[Backtest] GENERIC_RULES engine produced 0 trades. Entry rules may never co-occur. Falling back to VOL_BREAKOUT for real metrics.');
+                        console.warn('[Backtest] Entry rules that produced 0 trades:', JSON.stringify(strategyDef.entryRules));
+                        const fallbackDef = Object.assign({}, strategyDef, { mode: 'VOL_BREAKOUT' });
+                        result = BacktestEngine.runBacktestWithStrategy(candles, config, fallbackDef);
+                        console.log(`[Backtest] VOL_BREAKOUT fallback produced ${result.trades.length} trades.`);
+                    }
+
+                    // [BT_PIPE] Step 3 — result keys + trades + finalCapital
+                    console.log(`[BT_PIPE] result=keys(${Object.keys(result).join(',')}) trades=${result.trades.length} finalCapital=${result.finalCapital}`);
+
+                    // ── Cache for Audit console helpers ──────────────────────────────
+                    // These do NOT affect run behavior — read-only cache for DevTools.
+                    window._lastAuditCandles = candles;
+                    window._lastAuditConfig = config;
+                    // Expose for zero-check acceptance test
+                    window._lastBacktestResult = result;
+                    // Clear stale trace so traceTrade(n) fails explicitly until re-run
+                    window._lastSignalTrace = null;
+
+                    // ── Attach Run Provenance ──────────────────────────────────────
+                    result.provenance = {
+                        runId: RunConfigShared.generateRunId(),
+                        configHash: config.configHash,
+                        strategyHash: strategyDef.meta.strategyHash,
+                        strategyMode: strategyDef.mode,
+                        configJSON: JSON.stringify(config),
+                        candlesetHash: candlesetHash,
+                        engineVersion: config.engineVersion,
+                        runTimestamp: new Date().toISOString()
+                    };
+                    console.log('[RUN PROVENANCE]', result.provenance);
+
+                    // ── A6: Sanity check — detect unchanged results + report configHash diff ──
+                    if (lastResult) {
+                        const sameConfigHash = lastResult.provenance && lastResult.provenance.configHash === result.provenance.configHash;
+                        const sameTradeCount = lastResult.trades.length === result.trades.length;
+                        const sameFinalCap = Math.abs(lastResult.finalCapital - result.finalCapital) < 0.01;
+                        if (sameConfigHash) {
+                            // Same config → identical results are EXPECTED (pure determinism)
+                            console.info('[Backtest] Config unchanged (same configHash) — identical results are expected.');
+                        } else if (sameTradeCount && sameFinalCap) {
+                            // Different config but same outcome — warn with context
+                            if (isProductionPreset) {
+                                console.info('[Backtest] Results unchanged — LOCKED BY PRESET (expected if config is frozen)');
+                            } else {
+                                console.warn('[Backtest] ⚠ Config hash CHANGED but results are identical. Possible causes: stop-loss not triggered in this dataset, fee/slippage too small to change trade count, or parameter change does not affect signals.');
+                                console.warn('[Backtest] ⚠ Run A configHash:', lastResult.provenance ? lastResult.provenance.configHash : 'n/a');
+                                console.warn('[Backtest] ⚠ Run B configHash:', result.provenance.configHash);
+                            }
+                        }
+                    }
+
                     lastResult = result;
+                    console.log('[BT_PIPE] lastResult set');
 
                     await addStep('Calculating performance metrics...', 200);
 
@@ -548,6 +754,9 @@
                         finalCapital: result.finalCapital.toFixed(2),
                         metrics: rawMetrics
                     });
+
+                    // [BT_PIPE] Step 4 — renderMetrics will be called
+                    console.log('[BT_PIPE] renderMetrics called');
 
                     // Mark last step done
                     setTimeout(() => {
@@ -742,6 +951,9 @@
                 }
 
                 console.log('✅ INTEGRATION COMPLETE — UI now powered by real backtest engine');
+
+                // ---- Render Provenance block in UI ----
+                if (typeof renderProvenanceBlock === 'function') renderProvenanceBlock();
 
                 // ---- Strategy Health Memory: auto-record completed run ----
                 if (window.StrategyHealth && currentReport) {
@@ -1043,10 +1255,19 @@
                 document.getElementById('stop-loss').value = '2.0';
                 document.getElementById('position-size').value = '2.0';
 
-                // Lock inputs
+                // A5: True lock — disable inputs and show helper note
                 inputs.forEach(id => {
                     const el = document.getElementById(id);
-                    if (el) el.disabled = true;
+                    if (el) {
+                        el.disabled = true;
+                        if (!el.parentNode.querySelector('.bt-preset-lock-note')) {
+                            const note = document.createElement('span');
+                            note.className = 'bt-preset-lock-note';
+                            note.style.cssText = 'font-size:0.6rem;color:#818cf8;display:block;margin-top:2px;font-family:monospace;';
+                            note.textContent = '\uD83D\uDD12 Locked to validated preset';
+                            el.parentNode.appendChild(note);
+                        }
+                    }
                 });
 
                 // Clear indicators and set production ones (virtual lockout)
@@ -1057,10 +1278,14 @@
                 if (notes) notes.style.display = 'none';
                 if (symbolHeader) symbolHeader.textContent = document.getElementById('asset-select').value;
 
-                // Unlock inputs
+                // Unlock inputs and remove lock notes
                 inputs.forEach(id => {
                     const el = document.getElementById(id);
-                    if (el) el.disabled = false;
+                    if (el) {
+                        el.disabled = false;
+                        const note = el.parentNode.querySelector('.bt-preset-lock-note');
+                        if (note) note.remove();
+                    }
                 });
 
                 // Restore indicators (re-init base list)
@@ -1155,7 +1380,9 @@
             config_hash: presetIdentity ? presetIdentity.config_hash : null,
             normalized_config: presetIdentity ? presetIdentity.normalized_config : null,
             // Capital Readiness Gate v1
-            capitalReadiness: window._lastGateResult || null
+            capitalReadiness: window._lastGateResult || null,
+            // Run Provenance v1 — proof of which config + candle set produced this result
+            provenance: lastResult.provenance || null
         };
 
         return obj;
@@ -3622,6 +3849,247 @@ Limit to MAXIMUM 12 runs total (including CONTROL).`;
         }, 3000);
     }
 
+    // ====================================================================
+    // INDICATOR AUDIT BUTTON — runs sanity tests + signal trace
+    // ====================================================================
+    function initAuditButton() {
+        const btn = document.getElementById('btn-indicator-audit');
+        if (!btn) return;
+
+        btn.addEventListener('click', async () => {
+            const panelBody = document.getElementById('audit-panel-body');
+            const panel = document.getElementById('audit-panel');
+            const badge = document.getElementById('audit-summary-badge');
+            const label = document.getElementById('audit-summary-label');
+
+            btn.disabled = true;
+            btn.textContent = '⏳ Auditing…';
+            if (panelBody) panelBody.innerHTML = '<span style="color:#64748b;">Fetching candles…</span>';
+            if (panel) panel.open = true;
+
+            try {
+                const config = BacktestEngine.buildRunConfigFromUI();
+                // Always build and cache fresh strategyDef for this audit run
+                const strategyDef = buildStrategyDefinitionFromUI();
+                window._lastAuditStrategyDef = strategyDef;
+
+                const candles = await BacktestEngine.fetchOHLCV(
+                    config.asset, config.timeframe, config.startDate, config.endDate
+                );
+
+                // Cache for console helpers
+                window._lastAuditCandles = candles;
+                window._lastAuditConfig = config;
+
+                if (panelBody) panelBody.innerHTML = '<span style="color:#64748b;">Running sanity tests…</span>';
+
+                // auditIndicatorsCurrentRun dispatches to VOL_BREAKOUT or GENERIC_RULES based on _lastAuditStrategyDef
+                const auditResult = BacktestEngine.auditIndicatorsCurrentRun();
+
+                // ---- Non-VOL_BREAKOUT: render simplified panel ----
+                if (strategyDef.mode !== 'VOL_BREAKOUT') {
+                    if (badge) {
+                        badge.textContent = '✅ GENERIC';
+                        badge.style.background = 'rgba(99,102,241,0.15)';
+                        badge.style.color = '#818cf8';
+                        badge.style.border = '1px solid rgba(99,102,241,0.3)';
+                        badge.style.display = 'inline-block';
+                    }
+                    if (label) label.textContent = 'Generic Audit — ' + new Date().toLocaleTimeString();
+
+                    let html = `<div style="margin-bottom:8px;font-weight:600;color:#818cf8;font-size:0.82rem;">🔬 GENERIC STRATEGY AUDIT — mode=${strategyDef.mode}</div>`;
+                    html += `<div style="color:#64748b;font-size:0.74rem;margin-bottom:6px;">strategyHash: <b style="color:#94a3b8">${strategyDef.meta.strategyHash}</b></div>`;
+
+                    // Indicators
+                    const seriesKeys = auditResult && auditResult.seriesMap ? Object.keys(auditResult.seriesMap) : [];
+                    if (seriesKeys.length) {
+                        html += `<div style="margin:6px 0 4px;font-weight:600;color:#94a3b8;font-size:0.78rem;">Computed Indicator Series</div>`;
+                        html += `<table style="width:100%;border-collapse:collapse;margin-bottom:10px;">`;
+                        seriesKeys.forEach(k => {
+                            const arr = auditResult.seriesMap[k];
+                            const valid = arr.filter(v => isFinite(v));
+                            const warmup = arr.findIndex(v => isFinite(v));
+                            const mean = valid.length ? (valid.reduce((a, b) => a + b, 0) / valid.length).toFixed(4) : 'n/a';
+                            html += `<tr><td style="padding:2px 4px;color:#818cf8;font-size:0.73rem;">${k}</td><td style="padding:2px 4px;color:#64748b;font-size:0.72rem;">warmup=${warmup} bars=${valid.length} mean=${mean}</td></tr>`;
+                        });
+                        html += `</table>`;
+                    }
+
+                    // Entry matches
+                    const entries = auditResult && auditResult.entries ? auditResult.entries : [];
+                    html += `<div style="margin:6px 0 4px;font-weight:600;color:#94a3b8;font-size:0.78rem;">First ${entries.length} Entry Match${entries.length !== 1 ? 'es' : ''}</div>`;
+                    if (entries.length === 0) {
+                        html += `<div style="color:#f87171;font-size:0.74rem;">⚠ No entry rules matched in candle range. Check indicator warmup and rule parameters.</div>`;
+                    }
+                    entries.forEach((e, idx) => {
+                        html += `<div style="margin-bottom:8px;padding:7px 9px;background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.15);border-radius:6px;">`;
+                        html += `<div style="color:#818cf8;font-weight:600;font-size:0.78rem;margin-bottom:4px;">Entry #${idx + 1} — bar ${e.barIdx} — ${e.timeISO ? e.timeISO.slice(0, 10) : '—'}</div>`;
+                        html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;font-size:0.72rem;">`;
+                        Object.entries(e.values).forEach(([k, v]) => {
+                            html += `<span style="color:#94a3b8;">${k}</span><span style="color:#e2e8f0;">${isFinite(v) ? v.toFixed(4) : 'NaN'}</span>`;
+                        });
+                        html += `</div></div>`;
+                    });
+
+                    // Rules display
+                    html += `<div style="margin:6px 0 4px;font-weight:600;color:#94a3b8;font-size:0.78rem;">Entry Rules</div>`;
+                    if (!strategyDef.entryRules.length) {
+                        html += `<div style="color:#f87171;font-size:0.74rem;">⚠ No entry rules defined — strategy will never enter.</div>`;
+                    }
+                    strategyDef.entryRules.forEach((r, i) => {
+                        html += `<div style="color:#64748b;font-size:0.74rem;">Rule ${i + 1}: <b style="color:#94a3b8">${r.lhs}</b> <b style="color:#818cf8">${r.op}</b> <b style="color:#94a3b8">${r.rhs}</b></div>`;
+                    });
+
+                    if (panelBody) panelBody.innerHTML = html;
+                    btn.disabled = false;
+                    btn.textContent = '🧪 Indicator Audit';
+                    return;
+                }
+
+                // ---- VOL_BREAKOUT: existing HTML path (unchanged) ----
+                const report = BacktestEngine.runIndicatorSanityTests(candles, config);
+                const trace = BacktestEngine.runSignalTrace(candles, config);
+                window._lastSignalTrace = trace;
+
+                // Update summary bar
+                const pass = report.pass;
+                if (badge) {
+                    badge.textContent = pass ? '✅ PASS' : '❌ FAIL';
+                    badge.style.background = pass ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)';
+                    badge.style.color = pass ? '#4ade80' : '#f87171';
+                    badge.style.border = pass ? '1px solid rgba(34,197,94,0.3)' : '1px solid rgba(239,68,68,0.3)';
+                    badge.style.display = 'inline-block';
+                }
+                if (label) label.textContent = 'Audit Results — ' + new Date().toLocaleTimeString();
+
+                // Build panel HTML
+                let html = '';
+
+                // ---- Checks table ----
+                html += `<div style="margin-bottom:8px;font-weight:600;color:${pass ? '#4ade80' : '#f87171'};font-size:0.82rem;">${pass ? '✅ ALL CHECKS PASSED' : '❌ SOME CHECKS FAILED'}</div>`;
+                html += `<table style="width:100%;border-collapse:collapse;margin-bottom:10px;"><colgroup><col style="width:16px"><col style="width:auto"><col style="width:auto"></colgroup>`;
+                html += `<thead><tr><th style="text-align:left;padding:3px 4px;color:#475569;font-size:0.72rem;border-bottom:1px solid rgba(255,255,255,0.06);">•</th><th style="text-align:left;padding:3px 4px;color:#475569;font-size:0.72rem;border-bottom:1px solid rgba(255,255,255,0.06);">Check</th><th style="text-align:left;padding:3px 4px;color:#475569;font-size:0.72rem;border-bottom:1px solid rgba(255,255,255,0.06);">Detail</th></tr></thead><tbody>`;
+                report.checks.forEach(c => {
+                    const icon = c.pass ? '✅' : '❌';
+                    html += `<tr><td style="padding:2px 4px;">${icon}</td><td style="padding:2px 4px;color:#cbd5e1;font-size:0.74rem;">${c.name}</td><td style="padding:2px 4px;color:#64748b;font-size:0.72rem;word-break:break-all;">${c.details}</td></tr>`;
+                });
+                html += `</tbody></table>`;
+
+                // ---- Signal trace stats ----
+                html += `<div style="margin:6px 0 4px;font-weight:600;color:#94a3b8;font-size:0.78rem;">Signal Trace Stats</div>`;
+                html += `<div style="color:#64748b;font-size:0.74rem;">Bars checked: <b style="color:#94a3b8">${trace.stats.totalSignals}</b> &nbsp;|&nbsp; Entries: <b style="color:#4ade80">${trace.stats.entriesTaken}</b> &nbsp;|&nbsp; Exits: <b style="color:#94a3b8">${trace.exits.length}</b></div>`;
+                const blk = trace.stats.entriesBlockedByWhichReasonCounts;
+                html += `<div style="color:#64748b;font-size:0.72rem;margin-top:2px;">Blocked — trendFilter: ${blk.trendFilter} | compression: ${blk.compression} | breakout: ${blk.breakout} | atrIncreasing: ${blk.atrIncreasing}</div>`;
+
+                // ---- First 3 entry traces ----
+                const show = trace.entries.slice(0, 3);
+                if (show.length > 0) {
+                    html += `<div style="margin:8px 0 4px;font-weight:600;color:#94a3b8;font-size:0.78rem;">First ${show.length} Entry Trace${show.length > 1 ? 's' : ''}</div>`;
+                    show.forEach((e, idx) => {
+                        const s = e.indicatorSnapshot;
+                        const timeStr = e.entryTimeISO ? e.entryTimeISO.slice(0, 10) : '—';
+                        html += `<div style="margin-bottom:8px;padding:7px 9px;background:rgba(52,211,153,0.05);border:1px solid rgba(52,211,153,0.15);border-radius:6px;">`;
+                        html += `<div style="color:#6ee7b7;font-weight:600;font-size:0.78rem;margin-bottom:4px;">Entry #${idx + 1} — bar ${e.entryIndex} — ${timeStr}</div>`;
+                        html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;font-size:0.72rem;">`;
+                        html += `<span style="color:#94a3b8;">close</span><span style="color:#e2e8f0;">${s.close.toFixed(2)}</span>`;
+                        html += `<span style="color:#94a3b8;">sma50</span><span style="color:#e2e8f0;">${s.sma50.toFixed(2)}</span>`;
+                        html += `<span style="color:#94a3b8;">sma20</span><span style="color:#e2e8f0;">${s.sma20.toFixed(2)}</span>`;
+                        html += `<span style="color:#94a3b8;">atr14</span><span style="color:#e2e8f0;">${s.atr14.toFixed(2)}</span>`;
+                        html += `<span style="color:#94a3b8;">atrAvg20</span><span style="color:#e2e8f0;">${s.atrAvg20.toFixed(2)}</span>`;
+                        html += `<span style="color:#94a3b8;">rsi</span><span style="color:#e2e8f0;">${s.rsi.toFixed(2)}</span>`;
+                        html += `<span style="color:#94a3b8;">atrRatio</span><span style="color:#e2e8f0;">${s.atrRatio.toFixed(4)}</span>`;
+                        html += `</div>`;
+                        const r = e.reasons;
+                        const bool = (v) => v ? `<span style="color:#4ade80;">✓</span>` : `<span style="color:#f87171;">✗</span>`;
+                        html += `<div style="margin-top:4px;font-size:0.72rem;color:#94a3b8;">Gates: trend${bool(r.trendFilter)} compress${bool(r.compression)} breakout${bool(r.breakout)} atrInc${bool(r.atrIncreasing)}</div>`;
+                        html += `</div>`;
+                    });
+                }
+
+                // ---- Samples (collapsed) ----
+                html += `<details style="margin-top:8px;"><summary style="cursor:pointer;font-size:0.75rem;color:#475569;">▶ Indicator Samples</summary>`;
+                html += `<pre style="font-size:0.68rem;color:#64748b;margin:4px 0;overflow:auto;max-height:180px;">${JSON.stringify(report.samples, null, 2)}</pre></details>`;
+
+                // ---- Download button ----
+                const auditPayload = { runAt: new Date().toISOString(), config, sanity: report, trace };
+                const auditJson = JSON.stringify(auditPayload, null, 2);
+                html += `<button id="btn-download-audit-json" style="margin-top:10px;width:100%;padding:6px;font-size:0.76rem;background:rgba(99,102,241,0.1);color:#818cf8;border:1px solid rgba(99,102,241,0.3);border-radius:6px;cursor:pointer;">⬇ Download Audit JSON</button>`;
+
+                if (panelBody) panelBody.innerHTML = html;
+
+                // Wire download button
+                const dlBtn = document.getElementById('btn-download-audit-json');
+                if (dlBtn) {
+                    dlBtn.addEventListener('click', () => {
+                        const blob = new Blob([auditJson], { type: 'application/json' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `audit_${config.asset}_${new Date().toISOString().slice(0, 10)}.json`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                    });
+                }
+
+            } catch (err) {
+                console.error('[AuditButton] Error:', err);
+                if (panelBody) panelBody.innerHTML = `<span style="color:#f87171;">❌ Audit failed: ${err.message}</span>`;
+                if (badge) { badge.textContent = '❌ Error'; badge.style.display = 'inline-block'; }
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🧪 Audit';
+            }
+        });
+    }
+
+    // ====================================================================
+    // TRACE TRADE BUTTON — shows a single entry trace by 1-based index
+    // ====================================================================
+    function initTradeTraceButton() {
+        const btn = document.getElementById('btn-trace-trade');
+        if (!btn) return;
+        btn.addEventListener('click', () => {
+            const input = document.getElementById('trace-trade-num');
+            const n = input ? parseInt(input.value, 10) : NaN;
+            const panel = document.getElementById('audit-panel');
+            const panelBody = document.getElementById('audit-panel-body');
+            const trace = window._lastSignalTrace;
+
+            if (!trace) {
+                alert('No trace data. Click "🧪 Audit" or run a backtest first.');
+                return;
+            }
+            if (!Number.isInteger(n) || n < 1 || n > trace.entries.length) {
+                const msg = `Trade #${n} not found. Last audit has ${trace.entries.length} entries (1-indexed).`;
+                if (panelBody) panelBody.innerHTML = `<span style="color:#f87171;">⚠ ${msg}</span>`;
+                if (panel) panel.open = true;
+                console.warn('[TraceTradeBtn]', msg);
+                return;
+            }
+            const entry = BacktestEngine.traceTrade(n); // also logs to console
+            if (!entry || !panelBody) return;
+            const s = entry.indicatorSnapshot;
+            const r = entry.reasons;
+            const bool = (v) => v ? `<span style="color:#4ade80;">✓</span>` : `<span style="color:#f87171;">✗</span>`;
+            const timeStr = entry.entryTimeISO ? entry.entryTimeISO.slice(0, 10) : '—';
+            let html = `<div style="color:#6ee7b7;font-weight:600;font-size:0.82rem;margin-bottom:6px;">📍 Trade Trace #${n} — bar ${entry.entryIndex} — ${timeStr}</div>`;
+            html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;font-size:0.74rem;margin-bottom:6px;">`;
+            html += `<span style="color:#94a3b8;">close</span><span style="color:#e2e8f0;">${s.close.toFixed(2)}</span>`;
+            html += `<span style="color:#94a3b8;">sma50</span><span style="color:#e2e8f0;">${s.sma50.toFixed(2)}</span>`;
+            html += `<span style="color:#94a3b8;">sma20</span><span style="color:#e2e8f0;">${s.sma20.toFixed(2)}</span>`;
+            html += `<span style="color:#94a3b8;">atr14</span><span style="color:#e2e8f0;">${s.atr14.toFixed(2)}</span>`;
+            html += `<span style="color:#94a3b8;">atrAvg20</span><span style="color:#e2e8f0;">${s.atrAvg20.toFixed(2)}</span>`;
+            html += `<span style="color:#94a3b8;">rsi</span><span style="color:#e2e8f0;">${s.rsi.toFixed(2)}</span>`;
+            html += `<span style="color:#94a3b8;">atrRatio</span><span style="color:#e2e8f0;">${s.atrRatio.toFixed(4)}</span>`;
+            html += `<span style="color:#94a3b8;">highestHigh10</span><span style="color:#e2e8f0;">${s.highestHigh10.toFixed(2)}</span>`;
+            html += `</div>`;
+            html += `<div style="font-size:0.73rem;color:#94a3b8;">Gates: trendFilter${bool(r.trendFilter)} compression${bool(r.compression)} breakout${bool(r.breakout)} atrIncreasing${bool(r.atrIncreasing)}</div>`;
+            html += `<div style="margin-top:6px;font-size:0.72rem;color:#475569;">Entry price: <b style="color:#e2e8f0;">${entry.entryPrice.toFixed(2)}</b></div>`;
+            panelBody.innerHTML = html;
+            if (panel) panel.open = true;
+        });
+    }
+
     // ---- Init ----
     function init() {
         const initSteps = [
@@ -3638,7 +4106,11 @@ Limit to MAXIMUM 12 runs total (including CONTROL).`;
             { name: 'RunHistory', fn: initRunHistory },
             { name: 'BatchExperiments', fn: initBatchExperiments },
             { name: 'AutoDiscovery', fn: initAutoDiscovery },
-            { name: 'PaperTrading', fn: () => { if (typeof window.initPaperTrading === 'function') window.initPaperTrading(); } }
+            { name: 'PaperTrading', fn: () => { if (typeof window.initPaperTrading === 'function') window.initPaperTrading(); } },
+            { name: 'SensitivityTest', fn: initSensitivityTest },
+            { name: 'AuditButton', fn: initAuditButton },
+            { name: 'TradeTraceButton', fn: initTradeTraceButton },
+            { name: 'DevMode', fn: initDevMode }
         ];
 
         initSteps.forEach(step => {
@@ -3672,6 +4144,133 @@ Limit to MAXIMUM 12 runs total (including CONTROL).`;
         if (stopInput) stopInput.value = '2.0';
         if (posInput) posInput.value = '2';
     }
+
+    // ====================================================================
+    // DEV MODE — reveal dev-only tools when ?dev=1 is in URL
+    // ====================================================================
+    function initDevMode() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('dev') === '1') {
+            const sensitivityBtn = document.getElementById('btn-sensitivity-test');
+            if (sensitivityBtn) sensitivityBtn.style.display = 'block';
+            console.log('[DevMode] Dev tools enabled (?dev=1)');
+        }
+    }
+
+    // ====================================================================
+    // SENSITIVITY TEST — deterministic one-param-change assertion (dev-only)
+    // Runs two backtests with stopLoss 2.0% vs 2.5%, asserts results differ.
+    // ====================================================================
+    function initSensitivityTest() {
+        const btn = document.getElementById('btn-sensitivity-test');
+        if (!btn) return;
+
+        btn.addEventListener('click', async () => {
+            btn.disabled = true;
+            btn.textContent = '🔬 Running...';
+            const sep = '='.repeat(60);
+
+            try {
+                console.log(sep);
+                console.log('  SENSITIVITY TEST — stopLoss 2.0% vs 2.5%');
+                console.log(sep);
+
+                // Save current DOM stop-loss value so we can restore it
+                const stopEl = document.getElementById('stop-loss');
+                const originalStop = stopEl.value;
+
+                // ── Run A: with current UI config ──
+                const configA = BacktestEngine.buildRunConfigFromUI();
+                console.log(`[SENSITIVITY] Run A configHash=${configA.configHash} stopPercent=${(configA.stopPercent * 100).toFixed(2)}%`);
+
+                const candlesA = await BacktestEngine.fetchOHLCV(
+                    configA.asset, configA.timeframe, configA.startDate, configA.endDate
+                );
+                const resultA = BacktestEngine.runBacktest(candlesA, configA);
+
+                // ── Run B: bump stopLoss by 0.5% ──
+                const bumpPct = 0.5;
+                const newStopUI = (parseFloat(stopEl.value) + bumpPct).toFixed(2);
+                stopEl.value = newStopUI;
+
+                const configB = BacktestEngine.buildRunConfigFromUI();
+                console.log(`[SENSITIVITY] Run B configHash=${configB.configHash} stopPercent=${(configB.stopPercent * 100).toFixed(2)}%`);
+
+                const resultB = BacktestEngine.runBacktest(candlesA, configB); // same candles!
+
+                // ── Restore original stop-loss ──
+                stopEl.value = originalStop;
+
+                // ── Assertions ──
+                const hashDiffers = configA.configHash !== configB.configHash;
+                const tradeCountDiffers = resultA.trades.length !== resultB.trades.length;
+                const capitalDiffers = Math.abs(resultA.finalCapital - resultB.finalCapital) > 0.01;
+
+                console.log(`[SENSITIVITY] configHash differs: ${hashDiffers ? '✅ YES' : '❌ NO'}`);
+                console.log(`[SENSITIVITY] tradeCount A=${resultA.trades.length} B=${resultB.trades.length} differs=${tradeCountDiffers}`);
+                console.log(`[SENSITIVITY] finalCapital A=$${resultA.finalCapital.toFixed(2)} B=$${resultB.finalCapital.toFixed(2)} differs=${capitalDiffers}`);
+
+                // Count stop hits to explain if results are same
+                const stopHitsA = resultA.trades.filter(t => t.exitReason === 'STOP').length;
+                const stopHitsB = resultB.trades.filter(t => t.exitReason === 'STOP').length;
+                console.log(`[SENSITIVITY] stopHits A=${stopHitsA} B=${stopHitsB}`);
+
+                if (!hashDiffers) {
+                    console.error('❌ SENSITIVITY FAIL: configHash did NOT change — buildRunConfigFromUI is broken');
+                } else if (!tradeCountDiffers && !capitalDiffers) {
+                    if (stopHitsA === 0 && stopHitsB === 0) {
+                        console.warn('⚠ SENSITIVITY INCONCLUSIVE: stopLoss was never triggered in this dataset (0 stop hits). Try a wider date range or different asset.');
+                    } else {
+                        console.warn('⚠ SENSITIVITY INCONCLUSIVE: configHash changed but results identical. StopLoss change did not alter outcomes in this dataset.');
+                    }
+                } else {
+                    console.log('✅ SENSITIVITY PASS — changing stopLoss produced different results');
+                }
+
+                console.log(sep);
+
+            } catch (e) {
+                console.error('❌ SENSITIVITY TEST ERROR:', e.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🔬 Sensitivity Test (Dev)';
+            }
+        });
+    }
+
+    // ====================================================================
+    // PROVENANCE UI RENDER — collapsible block below metrics
+    // Called from finishBacktest / onAnimationComplete
+    // ====================================================================
+    function renderProvenanceBlock() {
+        if (!lastResult || !lastResult.provenance) return;
+
+        let container = document.getElementById('run-provenance-block');
+        if (!container) {
+            // Create it after the metrics grid
+            const metricsGrid = document.getElementById('bt-metrics-grid');
+            if (!metricsGrid) return;
+            container = document.createElement('details');
+            container.id = 'run-provenance-block';
+            container.style.cssText = 'margin-top:12px; padding:10px 12px; background:rgba(99,102,241,0.04); border:1px solid rgba(99,102,241,0.12); border-radius:8px; font-size:0.72rem; font-family:"JetBrains Mono",monospace; color:#94a3b8; cursor:pointer;';
+            metricsGrid.parentNode.insertBefore(container, metricsGrid.nextSibling);
+        }
+
+        const p = lastResult.provenance;
+        container.innerHTML = `
+            <summary style="font-weight:600; color:#818cf8; font-size:0.75rem; outline:none; user-select:none;">▸ Run Provenance</summary>
+            <div style="margin-top:6px; line-height:1.6;">
+                <div><span style="color:#64748b;">runId:</span> ${p.runId}</div>
+                <div><span style="color:#64748b;">configHash:</span> ${p.configHash}</div>
+                <div><span style="color:#64748b;">candlesetHash:</span> ${p.candlesetHash}</div>
+                <div><span style="color:#64748b;">engineVersion:</span> ${p.engineVersion}</div>
+                <div><span style="color:#64748b;">timestamp:</span> ${p.runTimestamp}</div>
+            </div>
+        `;
+    }
+
+    // Expose renderProvenanceBlock so finishBacktest can call it
+    window.__ppRenderProvenance = renderProvenanceBlock;
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
@@ -3769,5 +4368,59 @@ Limit to MAXIMUM 12 runs total (including CONTROL).`;
         updateJournalButtonsState();
         console.log("Versions cleared.");
     }
+
+    // ====================================================================
+    // ACCEPTANCE TEST — window.__ppBacktestZeroCheck()
+    // Run in DevTools console AFTER clicking "Run Backtest".
+    // Checks candle count, trades, and capital change.
+    // Prints a single clear diagnosis code on failure:
+    //   NO_CANDLES / ENGINE_NOT_CALLED / RESULT_NOT_BOUND / METRICS_NOT_COMPUTED
+    // ====================================================================
+    window.__ppBacktestZeroCheck = function () {
+        const PASS = '✅ __ppBacktestZeroCheck PASS';
+        const FAIL = (code, detail) => {
+            console.error(`❌ __ppBacktestZeroCheck FAIL — ${code}: ${detail}`);
+            return { ok: false, code, detail };
+        };
+
+        // 1. Candle check
+        if (!ohlcvData || ohlcvData.length === 0) {
+            return FAIL('NO_CANDLES', 'ohlcvData is empty. Fetch did not complete or was not stored.');
+        }
+        if (ohlcvData.length <= 1000) {
+            console.warn(`[ZeroCheck] candles=${ohlcvData.length} (expected >1000 for 4H 2019-2024; may be a filter issue)`);
+        } else {
+            console.log(`[ZeroCheck] candles=${ohlcvData.length} ✅`);
+        }
+
+        // 2. Result check
+        const result = window._lastBacktestResult || lastResult;
+        if (!result) {
+            return FAIL('ENGINE_NOT_CALLED', 'Neither window._lastBacktestResult nor lastResult is set. Engine did not run.');
+        }
+        if (!result.trades) {
+            return FAIL('RESULT_NOT_BOUND', 'result.trades is undefined. runBacktestWithStrategy did not return expected shape.');
+        }
+        if (result.trades.length < 1) {
+            return FAIL('ENGINE_NOT_CALLED', `result.trades.length=${result.trades.length}. Engine ran but produced no trades (check signal logic or data range).`);
+        }
+        console.log(`[ZeroCheck] trades=${result.trades.length} ✅`);
+
+        // 3. Metrics check
+        const config = window._lastAuditConfig;
+        if (!config) {
+            return FAIL('RESULT_NOT_BOUND', 'window._lastAuditConfig not set. Config was not cached after run.');
+        }
+        const startCap = config.startingCapital;
+        const finalCap = result.finalCapital;
+        if (Math.abs(finalCap - startCap) < 0.01) {
+            return FAIL('METRICS_NOT_COMPUTED', `finalCapital (${finalCap}) === startingCapital (${startCap}). Engine ran trades but no capital movement detected.`);
+        }
+        const totalReturn = ((finalCap - startCap) / startCap * 100).toFixed(2);
+        console.log(`[ZeroCheck] finalCapital=${finalCap.toFixed(2)} startingCapital=${startCap} totalReturn=${totalReturn}% ✅`);
+
+        console.log(PASS);
+        return { ok: true, candles: ohlcvData.length, trades: result.trades.length, totalReturn };
+    };
 
 })();

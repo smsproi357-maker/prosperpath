@@ -8,16 +8,36 @@
 
 const fs = require('fs');
 const path = require('path');
+const RunConfigShared = require('./run-config-shared.js');
 
 // ============================================================================
-// ENGINE CONSTANTS (frozen from C++)
+// PARITY CONFIG BUILDER — mirrors buildRunConfigFromUI() for CLI use
+// Override any field via CLI args or programmatic `overrides` param.
 // ============================================================================
-const STARTING_CAPITAL = 10000;
-const FEE_RATE = 0.001;
-const RISK_PERCENT = 0.02;
-const STOP_PERCENT = 0.02;
-const SLIPPAGE_PCT = 0.001;
 
+function buildParityConfig(overrides = {}) {
+    const base = {
+        asset: 'BTC-USDT',
+        timeframe: '4h',
+        startDate: '2019-01-01',
+        endDate: '2024-12-31',
+        startingCapital: 10000,
+        riskPercent: 0.02,
+        stopPercent: 0.02,
+        slippagePct: 0.001,
+        feeRate: 0.001,
+        engineVersion: RunConfigShared.ENGINE_VERSION
+    };
+    const cfg = { ...base, ...overrides };
+    cfg.configHash = RunConfigShared.hashConfig(cfg);
+    return cfg;
+}
+
+
+
+// ============================================================================
+// STRATEGY CONSTANTS (frozen from C++ — used by signal generator, NOT engine config)
+// ============================================================================
 const VOL_TREND_PERIOD = 50;
 const VOL_ATR_PERIOD = 14;
 const VOL_ATR_AVG_PERIOD = 20;
@@ -124,11 +144,12 @@ function generateSignalVolBreakout(candles, i, inPosition) {
 // ============================================================================
 
 function runBacktest(candles, config) {
-    const startingCapital = config.startingCapital;
-    const riskPercent = config.riskPercent;
-    const stopPercent = config.stopPercent;
-    const slippagePct = config.slippagePct;
-    const feeRate = config.feeRate;
+    // Strict extraction — mirrors browser engine; throws on missing/NaN.
+    const startingCapital = RunConfigShared.requireNum(config, 'startingCapital');
+    const riskPercent = RunConfigShared.requireNum(config, 'riskPercent');
+    const stopPercent = RunConfigShared.requireNum(config, 'stopPercent');
+    const slippagePct = RunConfigShared.requireNum(config, 'slippagePct');
+    const feeRate = RunConfigShared.requireNum(config, 'feeRate');
 
     const trades = [];
     const equityCurve = [startingCapital];
@@ -379,21 +400,15 @@ function hashTrades(trades) {
 async function main() {
     const sep = '='.repeat(80);
     const dsep = '-'.repeat(80);
+    const config = buildParityConfig();
 
     console.log(sep);
     console.log('  PARITY AUDIT — JS Engine vs C++ Reference');
     console.log('  Config: BTC_4H_PRODUCTION (VOL_BREAKOUT, NO GATE)');
-    console.log(`  Capital: $${STARTING_CAPITAL} | Fee: ${FEE_RATE * 100}% | Slip: ${SLIPPAGE_PCT * 100}% | Stop: ${STOP_PERCENT * 100}% | Risk: ${RISK_PERCENT * 100}%`);
+    console.log(`  configHash: ${config.configHash}`);
+    console.log(`  engineVersion: ${config.engineVersion}`);
+    console.log(`  Capital: $${config.startingCapital} | Fee: ${config.feeRate * 100}% | Slip: ${config.slippagePct * 100}% | Stop: ${config.stopPercent * 100}% | Risk: ${config.riskPercent * 100}%`);
     console.log(sep);
-
-    const config = {
-        startingCapital: STARTING_CAPITAL,
-        riskPercent: RISK_PERCENT,
-        stopPercent: STOP_PERCENT,
-        slippagePct: SLIPPAGE_PCT,
-        feeRate: FEE_RATE,
-        timeframe: '4h'
-    };
 
     // --- STEP 1: Load or Fetch Golden Candleset ---
     const exportDir = path.join(__dirname, 'exports');
@@ -432,6 +447,10 @@ async function main() {
     console.log(`\n${dsep}`);
     console.log('  GOLDEN CANDLESET VALIDATION');
     console.log(dsep);
+
+    // Compute candleset hash using same function as browser engine
+    const candlesetHash = RunConfigShared.computeCandlesetHash(candles);
+    console.log(`  candlesetHash:   ${candlesetHash}`);
     console.log(`  Candle count:    ${candles.length}`);
     console.log(`  First timestamp: ${candles[0].date.toISOString()}`);
     console.log(`  Last timestamp:  ${candles[candles.length - 1].date.toISOString()}`);
@@ -507,6 +526,22 @@ async function main() {
     console.log(`  Equity hash:     ${eqHash2}`);
     console.log(`  Trade hash:      ${trHash2}`);
     console.log(`  Reproducibility: ${reproOk ? '✅ PASS (identical)' : '❌ FAIL'}`);
+
+    // --- STEP 3b: Config Sensitivity Test (Run 3 — stopLoss +0.5%) ---
+    console.log(`\n${dsep}`);
+    console.log('  ENGINE RUN 3 (SENSITIVITY — stopPercent +0.5%)');
+    console.log(dsep);
+
+    const configB = buildParityConfig({ stopPercent: config.stopPercent + 0.005 });
+    console.log(`  configB.configHash: ${configB.configHash}`);
+    console.log(`  configB.stopPercent: ${(configB.stopPercent * 100).toFixed(2)}%`);
+    const result3 = runBacktest(candles, configB);
+    const eqHash3 = hashEquityCurve(result3.equityCurve);
+    const hashDiffers = config.configHash !== configB.configHash;
+    const resultDiffers = result1.trades.length !== result3.trades.length || Math.abs(result1.finalCapital - result3.finalCapital) > 0.01;
+    console.log(`  configHash differs: ${hashDiffers ? '✅ YES' : '❌ NO'}`);
+    console.log(`  results differ:     ${resultDiffers ? '✅ YES' : '⚠ NO (stop may not be triggered in dataset)'}`);
+    console.log(`  Run3 trades:        ${result3.trades.length}  finalCap: $${result3.finalCapital.toFixed(2)}  eqHash: ${eqHash3}`);
 
     // --- STEP 4: Trade-Level Detail ---
     console.log(`\n${dsep}`);
@@ -613,11 +648,13 @@ async function main() {
     console.log('  C++ REFERENCE COMPARISON');
     console.log(dsep);
     console.log('  C++ constants (verified from source):');
-    console.log(`    STARTING_CAPITAL = ${STARTING_CAPITAL}`);
-    console.log(`    FEE_RATE         = ${FEE_RATE}`);
-    console.log(`    RISK_PERCENT     = ${RISK_PERCENT}`);
-    console.log(`    STOP_PERCENT     = ${STOP_PERCENT}`);
-    console.log(`    SLIPPAGE_PCT     = ${SLIPPAGE_PCT}`);
+    console.log(`    configHash       = ${config.configHash}`);
+    console.log(`    candlesetHash    = ${candlesetHash}`);
+    console.log(`    STARTING_CAPITAL = ${config.startingCapital}`);
+    console.log(`    FEE_RATE         = ${config.feeRate}`);
+    console.log(`    RISK_PERCENT     = ${config.riskPercent}`);
+    console.log(`    STOP_PERCENT     = ${config.stopPercent}`);
+    console.log(`    SLIPPAGE_PCT     = ${config.slippagePct}`);
     console.log('');
     console.log('  To achieve full C++/JS parity, run the C++ engine on');
     console.log('  btc_4h.csv and compare trade count, return, maxDD, PF.');

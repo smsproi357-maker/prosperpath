@@ -6,22 +6,22 @@
 /* -------------------- Design Tokens -------------------- */
 :root {
     /* Color Palette - Matching ProsperPath Main Theme */
-    --cb-bg-primary: #0a1628;
-    --cb-bg-secondary: #0d1a2d;
-    --cb-bg-elevated: #142135;
-    --cb-bg-card: #1e2a3a;
+    --cb-bg-primary: #050506;
+    --cb-bg-secondary: #0a0a0c;
+    --cb-bg-elevated: rgba(255, 255, 255, 0.05);
+    --cb-bg-card: rgba(255, 255, 255, 0.09);
 
-    --cb-text-primary: #ffffff;
-    --cb-text-secondary: #8b9bb4;
-    --cb-text-muted: #5a6a7e;
+    --cb-text-primary: #f4f4f5;
+    --cb-text-secondary: #a1a1aa;
+    --cb-text-muted: #71717a;
 
-    --cb-accent: #00d4aa;
-    --cb-accent-muted: rgba(0, 212, 170, 0.7);
-    --cb-accent-subtle: rgba(0, 212, 170, 0.15);
-    --cb-accent-glow: rgba(0, 212, 170, 0.2);
+    --cb-accent: #e4e4e7;
+    --cb-accent-muted: rgba(228, 228, 231, 0.7);
+    --cb-accent-subtle: rgba(228, 228, 231, 0.15);
+    --cb-accent-glow: rgba(228, 228, 231, 0.2);
 
-    --cb-border: rgba(255, 255, 255, 0.08);
-    --cb-border-light: rgba(255, 255, 255, 0.12);
+    --cb-border: rgba(255, 255, 255, 0.12);
+    --cb-border-light: rgba(255, 255, 255, 0.15);
 
     /* Typography */
     --cb-font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;

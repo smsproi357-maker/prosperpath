@@ -1,16 +1,56 @@
 import { Configuration, PlaidApi, PlaidEnvironments } from 'plaid';
 
-// In-memory storage for the session (Note: usage of KV is recommended for production persistence)
-let sessionData = {
-    accessToken: null,
-    itemId: null
-};
+function getAllowedOrigins(env) {
+    const configured = (env.ALLOWED_ORIGINS || '')
+        .split(',')
+        .map(v => v.trim())
+        .filter(Boolean);
 
-const corsHeaders = {
-    'Access-Control-Allow-Origin': '*', // Adjust this to your frontend domain in production
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, Plaid-Client-Id, Plaid-Secret',
-};
+    if (configured.length > 0) return configured;
+    return ['http://localhost:3000', 'http://localhost:3005', 'http://127.0.0.1:3000', 'http://127.0.0.1:3005'];
+}
+
+function getCorsHeaders(request, env) {
+    const origin = request.headers.get('Origin');
+    const allowedOrigins = getAllowedOrigins(env);
+    const allowOrigin = origin && allowedOrigins.includes(origin) ? origin : 'null';
+
+    return {
+        'Access-Control-Allow-Origin': allowOrigin,
+        'Vary': 'Origin',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    };
+}
+
+function isPrivateHost(hostname) {
+    const host = (hostname || '').toLowerCase();
+    if (!host) return true;
+    if (host === 'localhost' || host === '127.0.0.1' || host === '::1' || host.endsWith('.local')) return true;
+    if (host.startsWith('10.') || host.startsWith('192.168.') || host.startsWith('169.254.')) return true;
+    if (/^172\.(1[6-9]|2\d|3[0-1])\./.test(host)) return true;
+    return false;
+}
+
+function isSafeProxyTarget(rawUrl) {
+    try {
+        const parsed = new URL(rawUrl);
+        if (!['http:', 'https:'].includes(parsed.protocol)) return false;
+        if (isPrivateHost(parsed.hostname)) return false;
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+function isValidGoogleTokenPayload(payload, env) {
+    if (!payload) return false;
+    const issuer = payload.iss;
+    if (issuer !== 'https://accounts.google.com' && issuer !== 'accounts.google.com') return false;
+    if (payload.exp && Number(payload.exp) * 1000 < Date.now()) return false;
+    if (env.GOOGLE_CLIENT_ID && payload.aud !== env.GOOGLE_CLIENT_ID) return false;
+    return !!payload.sub;
+}
 
 // Helper: Get User from Authorization Header
 async function getAuthenticatedUser(request, env) {
@@ -29,7 +69,9 @@ async function getAuthenticatedUser(request, env) {
             console.error('Google Token Validation Failed:', errorBody);
             return { error: `Google validation failed: ${res.status} ${errorBody}` };
         }
-        return await res.json();
+        const payload = await res.json();
+        if (!isValidGoogleTokenPayload(payload, env)) return { error: 'Invalid token claims' };
+        return payload;
     } catch (e) {
         console.error('Auth Fetch Error:', e);
         return { error: `Internal auth check error: ${e.message}` };
@@ -38,6 +80,8 @@ async function getAuthenticatedUser(request, env) {
 
 export default {
     async fetch(request, env, ctx) {
+        const corsHeaders = getCorsHeaders(request, env);
+
         // Handle CORS preflight requests
         if (request.method === 'OPTIONS') {
             return new Response(null, {
@@ -73,6 +117,9 @@ export default {
                 }
 
                 const googleUser = await res.json();
+                if (!isValidGoogleTokenPayload(googleUser, env)) {
+                    return new Response(JSON.stringify({ error: 'Invalid token claims' }), { status: 401, headers: corsHeaders });
+                }
 
                 // Save/Update user profile in KV if needed
                 await env.USER_DATA.put(`user:${googleUser.sub}:profile`, JSON.stringify({
@@ -143,9 +190,11 @@ export default {
                 if (!targetUrl) {
                     return new Response('Missing url parameter', { status: 400, headers: corsHeaders });
                 }
+                if (!isSafeProxyTarget(targetUrl)) {
+                    return new Response('Blocked proxy target', { status: 403, headers: corsHeaders });
+                }
 
                 try {
-                    new URL(targetUrl);
                     const response = await fetch(targetUrl, {
                         headers: {
                             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'

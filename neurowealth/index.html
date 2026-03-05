@@ -35,6 +35,7 @@
 
   <!-- Styles -->
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="hero-mock.css">
 </head>
 
 <body>
@@ -51,18 +52,13 @@
         </a>
 
         <div class="nav-links" id="nav-links">
-          <a href="wealth-guides.html">Wealth Guides</a>
-          <a href="trade.html">Trade</a>
-          <a href="portfolio.html">Portfolio</a>
-          <a href="clarity-box.html">Clarity Box</a>
-          <a href="tool-reviews.html">Tool Reviews</a>
-          <a href="ai-calculators.html">AI Calculators</a>
-          <a href="blog.html">Blog</a>
+          <a href="features.html">Features</a>
+          <a href="team.html">Team</a>
           <a href="about.html">About</a>
         </div>
 
         <div class="nav-actions" style="display: flex; align-items: center; gap: var(--space-4); position: relative;">
-          <a href="#get-started" class="btn btn-primary nav-cta">Get Started</a>
+          <a href="app.html" class="btn btn-primary nav-cta">GET STARTED</a>
 
           <div class="settings-wrapper" style="position: relative;">
             <button id="settings-btn" class="settings-icon-btn" aria-label="Settings" onclick="toggleAuthMenu()">
@@ -88,40 +84,153 @@
   <!-- Hero Section -->
   <section class="hero" id="hero">
     <div class="container">
-      <div class="hero-content">
-        <div class="hero-badge">
-          <span>🚀</span>
-          <span>Trusted by 0 Investors</span>
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span>ProsperPath 2.0 is now live</span>
+          </div>
+
+          <h1>
+            <i>Clarity</i> in chaos.<br />
+            Precision at <i class="">scale.</i>
+          </h1>
+
+          <p>
+            Institutional-grade intelligent systems for advanced wealth management.
+            Gain rigorous transparency and uncompromising execution across global markets.
+          </p>
+
+          <div class="hero-buttons">
+            <a href="app.html" class="btn btn-primary btn-lg">GET STARTED &rarr;</a>
+            <button onclick="if(window.DemoController) window.DemoController.start();"
+              class="btn btn-lg btn-outline-gold">VIEW
+              DEMO</button>
+          </div>
+
+          <div class="hero-trust-elements">
+            <h3 class="trust-heading">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" class="">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <polyline points="9 12 11 14 15 10"></polyline>
+              </svg>
+              Built for long-term thinkers.
+            </h3>
+            <div class="trust-bullets">
+              <div class="trust-bullet">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Institutional-Grade Analytics
+              </div>
+              <div class="trust-bullet">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Advanced AI Tools
+              </div>
+              <div class="trust-bullet">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Strategic Wealth Insights
+              </div>
+            </div>
+          </div>
         </div>
 
-        <h1>
-          Transform Your Wealth with
-          <span class="text-gradient">AI-Powered</span>
-          Investing
-        </h1>
+        <div class="hero-visual">
+          <div class="mock-ui-container">
+            <!-- Backtest Card -->
+            <div class="mock-panel panel-backtest">
+              <div class="panel-header">
+                <div class="panel-title"><span class="icon" style="font-size: 16px;">⚡</span> Backtest</div>
+                <div class="panel-dots">•••</div>
+              </div>
+              <div class="panel-body">
+                <div class="panel-date">Apr 1, 2024 — May 1, 2024</div>
+                <div class="panel-chart-placeholder pattern-chart"><span
+                    style="position:absolute; bottom:10px; left:10%; font-size:10px; color:var(--color-text-secondary);">Entry</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                  <span
+                    style="font-size:10px; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:1px;">RETURN</span>
+                  <span style="font-size:13px; font-weight:700; color:#22c55e;">+18.4%</span>
+                </div>
+              </div>
+            </div>
 
-        <p>
-          Discover the future of automated wealth management. Expert reviews, cutting-edge tools,
-          and comprehensive guides for digital asset security and AI-driven portfolio strategies.
-        </p>
+            <!-- Pattern Hunter Card -->
+            <div class="mock-panel panel-pattern">
+              <div class="panel-header">
+                <div class="panel-title"><span class="icon" style="font-size: 16px;">◓</span> Pattern Hunter
+                </div>
+                <div class="panel-dots">•••</div>
+              </div>
+              <div class="panel-body">
+                <ul class="pattern-list">
+                  <li><span>Symmetrical Triangle</span> <span style="color:#22c55e; font-weight:600;">87%</span></li>
+                  <li><span>Ascending Triangle</span> <span style="color:#F5C842; font-weight:600;">72%</span></li>
+                  <li><span>Cup & Handle</span> <span style="color:var(--color-text-muted);">54%</span></li>
+                </ul>
+              </div>
+            </div>
 
-        <div class="hero-buttons">
-          <a href="#comparison" class="btn btn-primary btn-lg">Compare AI Tools</a>
-          <a href="wealth-guides.html" class="btn btn-secondary btn-lg">Explore Guides</a>
-        </div>
+            <!-- Clarity Box Card -->
+            <div class="mock-panel panel-clarity">
+              <div class="panel-header">
+                <div class="panel-title"><span class="icon" style="font-size: 16px;">◎</span> Clarity Box
+                </div>
+                <span
+                  style="display:inline-flex; align-items:center; gap:4px; font-size:9px; color:#22c55e; text-transform:uppercase; letter-spacing:1px;">
+                  <span
+                    style="width:6px; height:6px; border-radius:50%; background:#22c55e; display:inline-block; animation: pulse 2s infinite;"></span>
+                  LIVE
+                </span>
+              </div>
+              <div class="panel-body">
+                <div class="panel-ticker">BTC/USD</div>
+                <div class="panel-price">$42,518.27</div>
+                <div style="font-size:11px; color:#22c55e; margin-top:2px; font-weight:500;">▲ +2.34% today</div>
+                <div class="panel-chart-placeholder mini-chart"></div>
+              </div>
+            </div>
 
-        <div class="hero-stats">
-          <div class="stat">
-            <div class="stat-value">$0</div>
-            <div class="stat-label">Asset Coverage Reviewed</div>
-          </div>
-          <div class="stat">
-            <div class="stat-value">0</div>
-            <div class="stat-label">AI Tools Analyzed</div>
-          </div>
-          <div class="stat">
-            <div class="stat-value">0%</div>
-            <div class="stat-label">Reader Satisfaction</div>
+            <!-- Portfolio Card -->
+            <div class="mock-panel panel-portfolio">
+              <div class="panel-header">
+                <div class="panel-title"><span class="icon" style="font-size: 16px;">💳</span> Portfolio</div>
+                <div class="panel-dots">•••</div>
+              </div>
+              <div class="panel-body">
+                <div class="portfolio-row">
+                  <div class="portfolio-name">Short-Term Equities</div>
+                  <div class="portfolio-dots">.............</div>
+                </div>
+                <div class="portfolio-stats">
+                  <div class="portfolio-val">$748,970<span
+                      style="font-size: 16px; color: var(--color-text-secondary);">.24</span></div>
+                  <div class="portfolio-change text-success">▲ 5.23%<br /><span class="change-sub">in 30 days</span>
+                  </div>
+                </div>
+                <!-- Mini allocation bar -->
+                <div style="display:flex; gap:2px; margin-top:10px; height:4px; border-radius:4px; overflow:hidden;">
+                  <div style="flex:4; background:#22c55e; border-radius:2px;"></div>
+                  <div style="flex:3; background:#F5C842; border-radius:2px;"></div>
+                  <div style="flex:2; background:#3b82f6; border-radius:2px;"></div>
+                  <div style="flex:1; background:rgba(255,255,255,0.15); border-radius:2px;"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-top:4px;">
+                  <span style="font-size:8px; color:var(--color-text-muted);">Stocks</span>
+                  <span style="font-size:8px; color:var(--color-text-muted);">Crypto</span>
+                  <span style="font-size:8px; color:var(--color-text-muted);">Bonds</span>
+                  <span style="font-size:8px; color:var(--color-text-muted);">Cash</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -132,257 +241,60 @@
   <section class="features section" id="features">
     <div class="container">
       <div class="section-header" data-animate>
+        <div class="section-label"
+          style="font-size: 13px; font-weight: 700; color: var(--color-accent); letter-spacing: 0.15em; font-variant: small-caps; text-transform: uppercase; margin-bottom: var(--space-2); text-align: center;">
+          FEATURES</div>
         <h2>Our Core Focus Areas</h2>
         <p>Empowering your financial journey with intelligent insights and comprehensive analysis</p>
       </div>
 
-      <div class="grid grid-3">
-        <div class="card feature-card" data-animate>
-          <div class="card-icon">🤖</div>
-          <h3>AI-Powered Investing</h3>
-          <p>In-depth reviews and comparisons of the latest robo-advisors and AI trading platforms. Make informed
-            decisions with our expert analysis.</p>
+      <div class="focus-cards-grid" id="focus-area-cards"
+        style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-8); margin-top: var(--space-12);">
+        <!-- Card 1 -->
+        <div class="glass-panel focus-card focus-card-1 card"
+          style="border-radius: var(--radius-xl); padding: var(--space-10) var(--space-6); text-align: center; display: flex; flex-direction: column; align-items: center;">
+          <div class="focus-icon-box">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F5C842" stroke-width="1.5">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+            </svg>
+          </div>
+          <h3 class="focus-card-title">Algorithmic Clarity</h3>
+          <p class="focus-card-desc">Uncover structural
+            advantages with real-time analytics. Institutional data interpreted with unparalleled precision.</p>
+          <a href="clarity-box.html" class="focus-card-link">Explore Clarity Box →</a>
         </div>
 
-        <div class="card feature-card" data-animate>
-          <div class="card-icon">📊</div>
-          <h3>Automated Wealth Management</h3>
-          <p>Comprehensive guides on automating your portfolio, tax-loss harvesting, and retirement planning with
-            cutting-edge technology.</p>
+        <!-- Card 2 -->
+        <div class="glass-panel focus-card focus-card-2 card"
+          style="border-radius: var(--radius-xl); padding: var(--space-10) var(--space-6); text-align: center; display: flex; flex-direction: column; align-items: center;">
+          <div class="focus-icon-box">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F5C842" stroke-width="1.5">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="8" y1="12" x2="16" y2="12" />
+            </svg>
+          </div>
+          <h3 class="focus-card-title">Quantitative Execution</h3>
+          <p class="focus-card-desc">Deploy rule-based
+            portfolio allocations and structured hedging strategies tailored to complex capital requirements.</p>
+          <a href="trade.html" class="focus-card-link">View Trading Tools →</a>
         </div>
 
-        <div class="card feature-card" data-animate>
-          <div class="card-icon">🔐</div>
-          <h3>Digital Asset Security</h3>
-          <p>Expert insights on protecting your crypto and digital investments. Reviews of secure wallets, insurance,
-            and custody solutions.</p>
+        <!-- Card 3 -->
+        <div class="glass-panel focus-card focus-card-3 card"
+          style="border-radius: var(--radius-xl); padding: var(--space-10) var(--space-6); text-align: center; display: flex; flex-direction: column; align-items: center;">
+          <div class="focus-icon-box">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F5C842" stroke-width="1.5">
+              <line x1="4" y1="9" x2="20" y2="9" />
+              <line x1="4" y1="15" x2="20" y2="15" />
+              <line x1="9" y1="4" x2="9" y2="20" />
+              <line x1="15" y1="4" x2="15" y2="20" />
+            </svg>
+          </div>
+          <h3 class="focus-card-title">Asset Resilience</h3>
+          <p class="focus-card-desc">Rigorous security
+            architectures for digital asset custody. Mitigate counterparty risk with systemic oversight.</p>
+          <a href="portfolio.html" class="focus-card-link">Manage Portfolio →</a>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- AI Tool Comparison Section -->
-  <section class="section" id="comparison">
-    <div class="container">
-      <div class="main-layout">
-        <div class="main-content">
-          <div class="section-header" data-animate style="text-align: left; margin-bottom: var(--space-8);">
-            <h2>AI Tool Comparison</h2>
-            <p>Compare the top AI-powered financial tools side by side. Updated weekly with the latest data.</p>
-          </div>
-
-          <div class="comparison-table-wrapper" data-animate>
-            <table class="comparison-table">
-              <thead>
-                <tr>
-                  <th data-sortable>Tool</th>
-                  <th data-sortable>Type</th>
-                  <th data-sortable>Rating</th>
-                  <th data-sortable>Pricing</th>
-                  <th>Key Feature</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <div class="tool-info">
-                      <div class="tool-logo">🧠</div>
-                      <div>
-                        <div class="tool-name">WealthAI Pro</div>
-                        <div class="tool-type">Robo-Advisor</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>Portfolio</td>
-                  <td>
-                    <div class="rating">
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star empty">★</span>
-                    </div>
-                  </td>
-                  <td><span class="price">$14/mo</span></td>
-                  <td><span class="feature-tag">AI Search</span></td>
-                  <td>
-                    <a href="review-template.html#id=magnifi" class="btn btn-sm btn-ghost">Review</a>
-                    <a href="https://magnifi.com/" target="_blank" rel="noopener noreferrer"
-                      class="btn btn-sm btn-primary">Visit Site</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="tool-info">
-                      <div class="tool-logo">📋</div>
-                      <div>
-                        <div style="font-weight: 600;">CoinTracker</div>
-                        <div style="font-size: var(--text-xs); color: var(--color-text-muted);">Crypto Tax AI</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>Tax AI</td>
-                  <td>
-                    <div class="rating">
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star empty">★</span>
-                    </div>
-                  </td>
-                  <td><span class="price">$29/yr+</span></td>
-                  <td><span class="feature-tag">Auto-Audit</span></td>
-                  <td>
-                    <a href="review-template.html#id=cointracker" class="btn btn-sm btn-ghost">Review</a>
-                    <a href="https://www.cointracker.io/" target="_blank" rel="noopener noreferrer"
-                      class="btn btn-sm btn-primary">Visit Site</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div class="tool-info">
-                      <div class="tool-logo">🔒</div>
-                      <div>
-                        <div style="font-weight: 600;">Ledger</div>
-                        <div style="font-size: var(--text-xs); color: var(--color-text-muted);">Hardware Security</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>Crypto</td>
-                  <td>
-                    <div class="rating">
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                    </div>
-                  </td>
-                  <td><span class="price">$79+</span></td>
-                  <td><span class="feature-tag">Cold Storage</span></td>
-                  <td>
-                    <a href="review-template.html#id=ledger" class="btn btn-sm btn-ghost">Review</a>
-                    <a href="https://www.ledger.com/" target="_blank" rel="noopener noreferrer"
-                      class="btn btn-sm btn-primary">Visit Site</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div style="font-weight: 600;">NewRetirement</div>
-                    <div style="font-size: var(--text-xs); color: var(--color-text-muted);">Retirement Planning</div>
-                  </td>
-                  <td>Planning</td>
-                  <td>
-                    <div class="rating">
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star empty">★</span>
-                    </div>
-                  </td>
-                  <td><span class="price">$120/yr</span></td>
-                  <td><span class="feature-tag">Monte Carlo</span></td>
-                  <td>
-                    <a href="review-template.html#id=newretirement" class="btn btn-sm btn-ghost">Review</a>
-                    <a href="https://www.newretirement.com/" target="_blank" rel="noopener noreferrer"
-                      class="btn btn-sm btn-primary">Visit Site</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div style="font-weight: 600;">Betterment</div>
-                    <div style="font-size: var(--text-xs); color: var(--color-text-muted);">Robo-Advisor Pioneer</div>
-                  </td>
-                  <td>Investing</td>
-                  <td>
-                    <div class="rating">
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                    </div>
-                  </td>
-                  <td><span class="price">0.25%/yr</span></td>
-                  <td><span class="feature-tag">Tax Harvesting</span></td>
-                  <td>
-                    <a href="review-template.html#id=betterment" class="btn btn-sm btn-ghost">Review</a>
-                    <a href="https://www.betterment.com/" target="_blank" rel="noopener noreferrer"
-                      class="btn btn-sm btn-primary">Visit Site</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div style="font-weight: 600;">Q.ai</div>
-                    <div style="font-size: var(--text-xs); color: var(--color-text-muted);">Quant Investing AI</div>
-                  </td>
-                  <td>Wealth</td>
-                  <td>
-                    <div class="rating">
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star empty">★</span>
-                    </div>
-                  </td>
-                  <td><span class="price">Variable</span></td>
-                  <td><span class="feature-tag">Portfolio Protection</span></td>
-                  <td>
-                    <a href="review-template.html#id=q-ai" class="btn btn-sm btn-ghost">Review</a>
-                    <a href="https://q.ai/" target="_blank" rel="noopener noreferrer"
-                      class="btn btn-sm btn-primary">Visit Site</a>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div style="font-weight: 600;">Monarch Money</div>
-                    <div style="font-size: var(--text-xs); color: var(--color-text-muted);">AI Net Worth Tracker</div>
-                  </td>
-                  <td>Planning</td>
-                  <td>
-                    <div class="rating">
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                      <span class="rating-star">★</span>
-                    </div>
-                  </td>
-                  <td><span class="price">$14.99/mo</span></td>
-                  <td><span class="feature-tag">Smart Budgeting</span></td>
-                  <td>
-                    <a href="review-template.html#id=monarch-money" class="btn btn-sm btn-ghost">Review</a>
-                    <a href="https://www.monarchmoney.com/" target="_blank" rel="noopener noreferrer"
-                      class="btn btn-sm btn-primary">Visit Site</a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div style="text-align: center; margin-top: var(--space-8);">
-            <a href="tool-reviews.html" class="btn btn-secondary">View All Tool Reviews →</a>
-          </div>
-        </div>
-
-        <!-- Sidebar -->
-        <aside class="sidebar">
-          <div class="card" style="padding: var(--space-5);">
-            <h4 style="margin-bottom: var(--space-4); font-size: var(--text-base);">📬 Weekly Insights</h4>
-            <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Get AI investing tips and tool reviews
-              delivered to your inbox.</p>
-            <form class="newsletter-form">
-              <input type="hidden" name="access_key" value="1b466c63-74a3-48dc-a727-19ed779887b6">
-              <input type="email" name="email" placeholder="Enter your email" required
-                style="width: 100%; padding: var(--space-3); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); color: var(--color-text-primary); margin-bottom: var(--space-3);">
-              <button type="submit" class="btn btn-primary" style="width: 100%;">Subscribe</button>
-            </form>
-          </div>
-        </aside>
       </div>
     </div>
   </section>
@@ -391,6 +303,9 @@
   <section class="market-trends section" id="markets">
     <div class="container">
       <div class="section-header" data-animate>
+        <div class="section-label"
+          style="font-size: 13px; font-weight: 700; color: var(--color-accent); letter-spacing: 0.15em; font-variant: small-caps; text-transform: uppercase; margin-bottom: var(--space-2); text-align: center;">
+          MARKET DATA</div>
         <h2>Live Market Trends</h2>
         <p>Real-time insights into key market indicators and digital assets</p>
       </div>
@@ -403,14 +318,22 @@
             <span>↑</span>
             <span>+0.82%</span>
           </div>
-          <div class="trend-chart">
-            <div class="chart-bar" style="height: 30px;"></div>
-            <div class="chart-bar" style="height: 25px;"></div>
-            <div class="chart-bar" style="height: 35px;"></div>
-            <div class="chart-bar" style="height: 40px;"></div>
-            <div class="chart-bar" style="height: 32px;"></div>
-            <div class="chart-bar" style="height: 45px;"></div>
-            <div class="chart-bar" style="height: 38px;"></div>
+          <div class="trend-chart"
+            style="border-bottom: 1px solid rgba(255,255,255,0.2); display: flex; align-items: flex-end; height: 60px; gap: 4px; padding-bottom: 2px;">
+            <div class="chart-bar" style="height: 20px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
+            <div class="chart-bar" style="height: 35px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
+            <div class="chart-bar" style="height: 25px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
+            <div class="chart-bar" style="height: 45px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
+            <div class="chart-bar" style="height: 30px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
+            <div class="chart-bar" style="height: 55px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
+            <div class="chart-bar" style="height: 60px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
           </div>
         </div>
 
@@ -421,14 +344,22 @@
             <span>↑</span>
             <span>+1.24%</span>
           </div>
-          <div class="trend-chart">
-            <div class="chart-bar" style="height: 28px;"></div>
-            <div class="chart-bar" style="height: 32px;"></div>
-            <div class="chart-bar" style="height: 38px;"></div>
-            <div class="chart-bar" style="height: 35px;"></div>
-            <div class="chart-bar" style="height: 42px;"></div>
-            <div class="chart-bar" style="height: 48px;"></div>
-            <div class="chart-bar" style="height: 45px;"></div>
+          <div class="trend-chart"
+            style="border-bottom: 1px solid rgba(255,255,255,0.2); display: flex; align-items: flex-end; height: 60px; gap: 4px; padding-bottom: 2px;">
+            <div class="chart-bar" style="height: 15px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
+            <div class="chart-bar" style="height: 25px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
+            <div class="chart-bar" style="height: 20px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
+            <div class="chart-bar" style="height: 40px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
+            <div class="chart-bar" style="height: 35px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
+            <div class="chart-bar" style="height: 50px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
+            <div class="chart-bar" style="height: 60px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
           </div>
         </div>
 
@@ -441,15 +372,22 @@
           </div>
           <!-- Whale Feed -->
 
-          <div class="trend-chart">
-
-            <div class="chart-bar" style="height: 45px;"></div>
-            <div class="chart-bar" style="height: 42px;"></div>
-            <div class="chart-bar" style="height: 38px;"></div>
-            <div class="chart-bar" style="height: 35px;"></div>
-            <div class="chart-bar" style="height: 32px;"></div>
-            <div class="chart-bar" style="height: 28px;"></div>
-            <div class="chart-bar" style="height: 30px;"></div>
+          <div class="trend-chart"
+            style="border-bottom: 1px solid rgba(255,255,255,0.2); display: flex; align-items: flex-end; height: 60px; gap: 4px; padding-bottom: 2px;">
+            <div class="chart-bar"
+              style="height: 60px; width: 100%; background: var(--color-danger); border-radius: 2px 2px 0 0;"></div>
+            <div class="chart-bar"
+              style="height: 50px; width: 100%; background: var(--color-danger); border-radius: 2px 2px 0 0;"></div>
+            <div class="chart-bar"
+              style="height: 55px; width: 100%; background: var(--color-danger); border-radius: 2px 2px 0 0;"></div>
+            <div class="chart-bar"
+              style="height: 40px; width: 100%; background: var(--color-danger); border-radius: 2px 2px 0 0;"></div>
+            <div class="chart-bar"
+              style="height: 45px; width: 100%; background: var(--color-danger); border-radius: 2px 2px 0 0;"></div>
+            <div class="chart-bar"
+              style="height: 25px; width: 100%; background: var(--color-danger); border-radius: 2px 2px 0 0;"></div>
+            <div class="chart-bar"
+              style="height: 20px; width: 100%; background: var(--color-danger); border-radius: 2px 2px 0 0;"></div>
           </div>
         </div>
 
@@ -460,91 +398,93 @@
             <span>↑</span>
             <span>+2.15%</span>
           </div>
-          <div class="trend-chart">
-            <div class="chart-bar" style="height: 22px;"></div>
-            <div class="chart-bar" style="height: 28px;"></div>
-            <div class="chart-bar" style="height: 32px;"></div>
-            <div class="chart-bar" style="height: 38px;"></div>
-            <div class="chart-bar" style="height: 42px;"></div>
-            <div class="chart-bar" style="height: 45px;"></div>
-            <div class="chart-bar" style="height: 48px;"></div>
+          <div class="trend-chart"
+            style="border-bottom: 1px solid rgba(255,255,255,0.2); display: flex; align-items: flex-end; height: 60px; gap: 4px; padding-bottom: 2px;">
+            <div class="chart-bar" style="height: 20px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
+            <div class="chart-bar" style="height: 30px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
+            <div class="chart-bar" style="height: 40px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
+            <div class="chart-bar" style="height: 35px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
+            <div class="chart-bar" style="height: 50px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
+            <div class="chart-bar" style="height: 55px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
+            <div class="chart-bar" style="height: 60px; width: 100%; background: #22c55e; border-radius: 2px 2px 0 0;">
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Blog Preview Section -->
-  <section class="section" style="background: var(--color-surface);">
-    <div class="container">
-      <div class="section-header" data-animate>
-        <h2>Latest Insights</h2>
-        <p>Expert analysis on AI investing, tax automation, and digital asset protection</p>
-      </div>
 
-      <div class="blog-grid" data-animate>
-        <article class="card blog-card" data-category="portfolio">
-          <div class="blog-card-image">📈</div>
-          <span class="blog-category">AI Portfolio Strategies</span>
-          <h3><a href="blog-post.html#id=ai-revolution-2026">How AI Is Revolutionizing Automated Retirement Planning in
-              2026</a></h3>
-          <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Discover how machine learning algorithms
-            are optimizing retirement portfolios for maximum growth.</p>
-          <div class="blog-meta">
-            <span>Jan 3, 2026</span>
-            <span>•</span>
-            <span>8 min read</span>
-          </div>
-        </article>
+  <!-- CTA Section: Premium Institutional Motion Narrative -->
+  <section class="section cta-narrative-section" id="get-started"
+    style="position: relative; background: #000000; min-height: 80vh; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: var(--space-16) 0;">
 
-        <article class="card blog-card" data-category="tax">
-          <div class="blog-card-image">📋</div>
-          <span class="blog-category">Tax Automation</span>
-          <h3><a href="blog-post.html#id=top-10-tax-software">Top 10 AI Tax Software Reviews: Complete Comparison
-              Guide</a></h3>
-          <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Our comprehensive review of the best
-            AI-powered tax software for investors and traders.</p>
-          <div class="blog-meta">
-            <span>Jan 1, 2026</span>
-            <span>•</span>
-            <span>12 min read</span>
-          </div>
-        </article>
+    <div class="narrative-container"
+      style="position: relative; width: 100%; max-width: 800px; padding: var(--space-8); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px;">
 
-        <article class="card blog-card" data-category="insurance">
-          <div class="blog-card-image">🛡️</div>
-          <span class="blog-category">Digital Asset Insurance</span>
-          <h3><a href="blog-post.html#id=crypto-insurance-essentials">Essential Insurance Coverage for Your
-              Cryptocurrency Holdings</a></h3>
-          <p style="font-size: var(--text-sm); margin-bottom: var(--space-4);">Everything you need to know about
-            protecting your digital assets from theft and loss.</p>
-          <div class="blog-meta">
-            <span>Dec 28, 2025</span>
-            <span>•</span>
-            <span>6 min read</span>
-          </div>
-        </article>
-      </div>
+      <!-- Stacking context for the crossfade -->
+      <div
+        style="position: relative; width: 100%; display: flex; align-items: center; justify-content: center; min-height: 250px;">
 
-      <div style="text-align: center; margin-top: var(--space-10);">
-        <a href="blog.html" class="btn btn-secondary">View All Articles →</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA Section -->
-  <section class="section" id="get-started">
-    <div class="container">
-      <div class="card card-accent" style="text-align: center; padding: var(--space-12);" data-animate>
-        <h2 style="margin-bottom: var(--space-4);">Ready to Transform Your Wealth Strategy?</h2>
-        <p style="max-width: 600px; margin: 0 auto var(--space-8);">Join our early-access community using AI-powered
-          tools
-          to optimize their portfolios, minimize taxes, and secure their digital assets.</p>
-        <div class="hero-buttons" style="justify-content: center;">
-          <a href="ai-calculators.html" class="btn btn-primary btn-lg">Try AI Calculators</a>
-          <a href="wealth-guides.html" class="btn btn-secondary btn-lg">Read Our Guides</a>
+        <!-- Phase 1: Original Headline -->
+        <div class="cta-phase-1"
+          style="position: absolute; width: 100%; display: flex; flex-direction: column; align-items: center; z-index: 2;">
+          <div class="section-label"
+            style="font-size: 13px; font-weight: 700; color: var(--color-accent); letter-spacing: 0.15em; font-variant: small-caps; text-transform: uppercase; margin-bottom: var(--space-4); text-align: center;">
+            GET STARTED</div>
+          <h2 style="margin-bottom: 0; color: var(--color-text-primary); text-align: center; font-size: 2.5rem;">Ready
+            to Transform Your Wealth Strategy?</h2>
         </div>
+
+        <!-- Phase 2: Final Statement & Gold Line -->
+        <div class="cta-phase-2-container"
+          style="position: absolute; width: 100%; display: flex; flex-direction: column; align-items: center; pointer-events: none; z-index: 3;">
+          <div class="cta-statement"
+            style="opacity: 0; transform: translateY(18px); position: relative; padding-bottom: 12px; display: inline-flex; flex-direction: column; align-items: center; text-align: center;">
+            <div class="section-label"
+              style="font-size: 13px; font-weight: 700; color: var(--color-accent); letter-spacing: 0.15em; font-variant: small-caps; text-transform: uppercase; margin-bottom: var(--space-4);">
+              OUR PHILOSOPHY</div>
+            <h2
+              style="font-family: 'Times New Roman', Times, serif; font-size: clamp(2.5rem, 6vw, 3.5rem); font-weight: 400; color: #ffffff; margin: 0; letter-spacing: -0.01em; line-height: 1.1;">
+              Confusion is expensive.
+            </h2>
+            <!-- Gold Underline strictly bounded to statement width -->
+            <div class="cta-gold-line"
+              style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 0%; height: 2px; background: var(--color-accent);">
+            </div>
+          </div>
+        </div>
+
       </div>
+
+      <!-- Phase 3: Supporting Lines (below the stacking context) -->
+      <div class="cta-supporting-lines"
+        style="margin-top: var(--space-8); display: flex; flex-direction: column; gap: 0.8rem; align-items: center; z-index: 3;">
+        <div class="cta-line cta-line-1"
+          style="opacity: 0; transform: translateY(10px); font-size: 1.1rem; color: #a1a1aa; font-family: var(--font-sans); letter-spacing: 0.01em;">
+          Markets reward structure.</div>
+        <div class="cta-line cta-line-2"
+          style="opacity: 0; transform: translateY(10px); font-size: 1.1rem; color: #a1a1aa; font-family: var(--font-sans); letter-spacing: 0.01em;">
+          Systems outperform instinct.</div>
+        <div class="cta-line cta-line-3"
+          style="opacity: 0; transform: translateY(10px); font-size: 1.1rem; color: #ffffff; font-weight: 500; font-family: var(--font-sans); letter-spacing: 0.01em;">
+          ProsperPath makes precision scalable.</div>
+      </div>
+
+      <!-- CTA Buttons -->
+      <div class="cta-buttons"
+        style="margin-top: var(--space-10); display: flex; gap: var(--space-4); align-items: center; justify-content: center; z-index: 3; opacity: 0; transform: translateY(10px);">
+        <a href="app.html" class="btn btn-primary btn-lg">GET STARTED →</a>
+        <button onclick="if(window.DemoController) window.DemoController.start();"
+          class="btn btn-lg btn-outline-gold">VIEW DEMO</button>
+      </div>
+
     </div>
   </section>
 
@@ -557,8 +497,28 @@
             <div class="logo-icon">⚡</div>
             <span>ProsperPath</span>
           </a>
-          <p>Your trusted source for AI-powered investing insights, automated wealth management strategies, and digital
-            asset security guidance.</p>
+          <p>Institutional-grade intelligence for quantitative and systematic wealth management. Your trusted source for
+            AI-powered investing insights.</p>
+          <!-- Newsletter -->
+          <div class="footer-newsletter">
+            <h4
+              style="font-size: var(--text-sm); text-transform: uppercase; letter-spacing: 1px; color: var(--color-text-muted); margin-bottom: var(--space-3);">
+              Stay Updated</h4>
+            <form class="footer-newsletter-form">
+              <input type="email" placeholder="Enter your email" required>
+              <button type="submit" class="btn btn-primary">Subscribe</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h4>Platform</h4>
+          <div class="footer-links">
+            <a href="clarity-box.html">Clarity Box</a>
+            <a href="trade.html">Trade</a>
+            <a href="portfolio.html">Portfolio</a>
+            <a href="backtest.html">Backtest Engine</a>
+          </div>
         </div>
 
         <div class="footer-column">
@@ -572,20 +532,10 @@
         </div>
 
         <div class="footer-column">
-          <h4>Categories</h4>
-          <div class="footer-links">
-            <a href="blog.html">AI Portfolio Strategies</a>
-            <a href="blog.html">Tax Automation</a>
-            <a href="blog.html">Digital Asset Insurance</a>
-            <a href="blog.html">Robo-Advisors</a>
-          </div>
-        </div>
-
-        <div class="footer-column">
           <h4>Company</h4>
           <div class="footer-links">
             <a href="about.html">About Us</a>
-            <a href="#">Contact</a>
+            <a href="team.html">Our Team</a>
             <a href="#">Privacy Policy</a>
             <a href="#">Terms of Service</a>
           </div>
@@ -595,9 +545,24 @@
       <div class="footer-bottom">
         <p>© 2026 ProsperPath Insights. All rights reserved.</p>
         <div class="social-links">
-          <a href="#" class="social-link" aria-label="Twitter">𝕏</a>
-          <a href="#" class="social-link" aria-label="LinkedIn">in</a>
-          <a href="#" class="social-link" aria-label="YouTube">▶</a>
+          <a href="#" class="social-link" aria-label="Twitter">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+          </a>
+          <a href="#" class="social-link" aria-label="LinkedIn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+            </svg>
+          </a>
+          <a href="#" class="social-link" aria-label="YouTube">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+            </svg>
+          </a>
         </div>
       </div>
     </div>
@@ -605,6 +570,268 @@
 
   <script src="script.js?v=rx1"></script>
   <script src="ai-widget.js"></script>
+
+  <!-- Hero Card Scroll-Driven Scrub Animation (Framer Motion) -->
+  <script type="module">
+    import { animate, scroll, inView, stagger } from "https://cdn.jsdelivr.net/npm/framer-motion@11.11.11/dom/+esm";
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const panels = Array.from(document.querySelectorAll(".mock-panel"));
+    const hero = document.getElementById("hero");
+
+    if (hero && panels.length > 0) {
+      if (prefersReducedMotion) {
+        panels.forEach(p => p.style.opacity = "1");
+      } else {
+        // Set initial state immediately to avoid flashing
+        panels.forEach(panel => {
+          panel.style.opacity = "0";
+          panel.style.transform = "translate(60px, 40px) scale(0.95) rotateY(-8deg)"; // Initialize off-screen/rotated
+        });
+
+        // Trigger stagger on view, reset on leave
+        inView(hero, () => {
+          const controls = animate(panels, {
+            opacity: [0, 1],
+            x: [60, 0],
+            y: [40, 0],
+            scale: [0.95, 1],
+            rotateY: [-8, 0] // institutional 3D twist
+          }, {
+            delay: stagger(0.15, { startDelay: 0.1 }),
+            duration: 0.8,
+            ease: [0.22, 1, 0.36, 1] // Custom refined spring-like ease
+          });
+
+          return () => {
+            controls.stop();
+            panels.forEach(panel => {
+              panel.style.opacity = "0";
+              panel.style.transform = "translate(60px, 40px) scale(0.95) rotateY(-8deg)"; // Initialize off-screen/rotated
+            });
+          };
+        });
+      }
+    }
+
+    // Secondary Animation: Core Focus Cards (Bottom-left to Final Structure)
+    const focusCards = Array.from(document.querySelectorAll(".focus-card"));
+    const featuresSection = document.getElementById("features");
+
+    if (featuresSection && focusCards.length > 0) {
+      if (prefersReducedMotion) {
+        focusCards.forEach(c => c.style.opacity = "1");
+      } else {
+        focusCards.forEach(card => {
+          card.style.opacity = "0";
+          card.style.transform = "translate(-80px, 40px) scale(0.95)";
+        });
+
+        inView(featuresSection, () => {
+          const controls = animate(focusCards, {
+            opacity: [0, 1],
+            x: [-80, 0], // Enter from left
+            y: [40, 0],  // Enter from bottom
+            scale: [0.95, 1]
+          }, {
+            delay: stagger(0.15, { startDelay: 0.1 }),
+            duration: 0.8,
+            ease: [0.22, 1, 0.36, 1]
+          });
+
+          return () => {
+            controls.stop();
+            focusCards.forEach(card => {
+              card.style.opacity = "0";
+              card.style.transform = "translate(-80px, 40px) scale(0.95)";
+            });
+          };
+        }, { margin: "-20%" });
+      }
+    }
+
+    // Live Market Trends Animation (On-Load/In-View Sequence)
+    const trendsGrid = document.querySelector(".trends-grid");
+    const trendCards = Array.from(document.querySelectorAll(".trend-card"));
+    const marketsSection = document.getElementById("markets");
+
+    if (marketsSection && trendsGrid && trendCards.length > 0) {
+      if (!prefersReducedMotion) {
+        // Initial setup
+        trendCards.forEach(card => {
+          card.style.opacity = "0";
+          card.style.transform = "translateY(80px) scale(0.93) rotateX(8deg)";
+          card.style.willChange = "transform, opacity";
+        });
+
+        // Trigger animation when the section comes into view, stagger the cards
+        inView(marketsSection, () => {
+          const controls = animate(trendCards, {
+            opacity: [0, 1],
+            y: [80, 0],
+            scale: [0.93, 1],
+            rotateX: [8, 0]
+          }, {
+            delay: stagger(0.12, { startDelay: 0.1 }),
+            duration: 0.85,
+            ease: [0.22, 1, 0.36, 1]
+          });
+
+          return () => {
+            controls.stop();
+            trendCards.forEach(card => {
+              card.style.opacity = "0";
+              card.style.transform = "translateY(80px) scale(0.93) rotateX(8deg)";
+            });
+          };
+        }, { margin: "-10%" }); // Triggers slightly before fully visible
+      }
+    }
+
+    // Premium Institutional Timed Motion for CTA
+    const ctaSection = document.getElementById("get-started");
+    if (ctaSection) {
+      const phase1Text = ctaSection.querySelector(".cta-phase-1");
+      const statement = ctaSection.querySelector(".cta-statement");
+      const goldLine = ctaSection.querySelector(".cta-gold-line");
+      const lines = Array.from(ctaSection.querySelectorAll(".cta-line"));
+      const ctaButtons = ctaSection.querySelector(".cta-buttons");
+
+      // Remove global neon active classes to enforce pure black
+      document.body.classList.remove('demo-active');
+
+      if (!prefersReducedMotion) {
+        // Implement Apple-grade SCROLL-DRIVEN reversible animation
+
+        // Ensure Phase 1 initially overrides JS hidden state
+        if (phase1Text) phase1Text.style.display = "flex";
+
+        const updateScroll = () => {
+          // Calculate visibility progress: 0 when just entering view, 1 when fully passed
+          const rect = ctaSection.getBoundingClientRect();
+          const windowHeight = window.innerHeight;
+
+          let progress = (windowHeight - rect.top) / rect.height;
+          // Clamp progress between 0 and 1
+          progress = Math.max(0, Math.min(1, progress));
+
+          // Scrubbing orchestration
+
+          // PHASE 1 (Headline): Fades out from 0.70 to 0.85 progress
+          if (phase1Text) {
+            if (progress < 0.85) {
+              phase1Text.style.display = "flex";
+              // opacity 1 -> 0
+              const p1Opacity = Math.max(0, 1 - ((progress - 0.70) / 0.15));
+              const p1Scale = Math.max(0.98, 1 - ((progress - 0.70) * 0.133));
+              const p1Y = Math.max(-10, 0 - ((progress - 0.70) * 66.6));
+
+              if (progress <= 0.70) {
+                phase1Text.style.opacity = 1;
+                phase1Text.style.transform = "translateY(0px) scale(1)";
+              } else {
+                phase1Text.style.opacity = p1Opacity;
+                phase1Text.style.transform = `translateY(${p1Y}px) scale(${p1Scale})`;
+              }
+            } else {
+              phase1Text.style.display = "none";
+              phase1Text.style.opacity = 0;
+            }
+          }
+
+          // PHASE 2 (Statement Reveal): 0.80 to 0.90 progress
+          if (statement) {
+            if (progress < 0.80) {
+              statement.style.opacity = 0;
+              statement.style.transform = "translateY(18px)";
+            } else if (progress > 0.90) {
+              statement.style.opacity = 1;
+              statement.style.transform = "translateY(0px)";
+            } else {
+              const p2Progress = (progress - 0.80) / 0.10;
+              // Primitive ease-out approximation
+              const p2EaseOut = 1 - Math.pow(1 - p2Progress, 3);
+
+              statement.style.opacity = p2EaseOut;
+              statement.style.transform = `translateY(${18 - (18 * p2EaseOut)}px)`;
+            }
+          }
+
+          // PHASE 3 (Gold Underline): 0.85 to 0.95 progress
+          if (goldLine) {
+            if (progress < 0.85) {
+              goldLine.style.width = "0%";
+            } else if (progress > 0.95) {
+              goldLine.style.width = "100%";
+            } else {
+              const p3Progress = (progress - 0.85) / 0.10;
+              const p3EaseOut = 1 - Math.pow(1 - p3Progress, 3);
+              goldLine.style.width = `${p3EaseOut * 100}%`;
+            }
+          }
+
+          // PHASE 4 (Supporting Lines Stagger): 0.85 to 1.00 progress
+          lines.forEach((line, i) => {
+            const staggerStart = 0.85 + (i * 0.05); // Stagger by 5% scroll each
+            const staggerEnd = staggerStart + 0.10;
+
+            if (progress < staggerStart) {
+              line.style.opacity = 0;
+              line.style.transform = "translateY(10px)";
+            } else if (progress > staggerEnd) {
+              line.style.opacity = 1;
+              line.style.transform = "translateY(0px)";
+            } else {
+              const p4Progress = (progress - staggerStart) / 0.10;
+              const p4EaseOut = 1 - Math.pow(1 - p4Progress, 3);
+              line.style.opacity = p4EaseOut;
+              line.style.transform = `translateY(${10 - (10 * p4EaseOut)}px)`;
+            }
+          });
+
+          // PHASE 5 (CTA Buttons): 0.95 to 1.00 progress
+          if (ctaButtons) {
+            if (progress < 0.95) {
+              ctaButtons.style.opacity = 0;
+              ctaButtons.style.transform = "translateY(10px)";
+            } else {
+              const p5Progress = (progress - 0.95) / 0.05;
+              const p5EaseOut = 1 - Math.pow(1 - p5Progress, 3);
+              ctaButtons.style.opacity = p5EaseOut;
+              ctaButtons.style.transform = `translateY(${10 - (10 * p5EaseOut)}px)`;
+            }
+          }
+        };
+
+        // Attach native scroll listener with rAF for high performance scrubbing
+        window.addEventListener('scroll', () => {
+          requestAnimationFrame(updateScroll);
+        });
+
+        // Initial run
+        updateScroll();
+
+      } else {
+        // Reduced Motion: Force final state visibility
+        if (phase1Text) {
+          phase1Text.style.opacity = "0";
+          phase1Text.style.display = "none";
+        }
+
+        if (statement) {
+          statement.style.opacity = "1";
+          statement.style.transform = "translateY(0)";
+        }
+        if (goldLine) {
+          goldLine.style.width = "100%";
+        }
+        lines.forEach(line => {
+          line.style.opacity = "1";
+          line.style.transform = "translateY(0)";
+        });
+      }
+    }
+  </script>
 
   <!-- Google Identity Services -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -617,6 +844,9 @@
       }
     });
   </script>
+
+  <!-- Interactive Demo Machine -->
+  <script type="module" src="demo-controller.js"></script>
 </body>
 
 </html>

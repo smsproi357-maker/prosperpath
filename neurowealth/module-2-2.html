@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="description" content="Module 2.2 — Structure | ProsperPath Market Context">
+    <title>Structure | ProsperPath</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --m-bg: #0d0e10;
+            --m-surf: #141618;
+            --m-surf2: #18191c;
+            --m-bdr: #1e2023;
+            --m-bdrhi: #2e3035;
+            --m-txt: #e0e1e3;
+            --m-muted: #5e626a;
+            --m-muted2: #3a3d44;
+            --m-gold: #a07c2e;
+            --m-gold-dim: rgba(160, 124, 46, .13);
+            --m-gold-line: rgba(160, 124, 46, .38);
+            --m-green: rgba(120, 210, 160, .15);
+            --m-green-txt: #7ed8a8;
+            --m-red: rgba(220, 100, 80, .15);
+            --m-red-txt: #e08070;
+            --m-rad: 6px;
+            --m-tr: 150ms ease
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            background: var(--m-bg);
+            color: var(--m-txt);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh
+        }
+
+        #ai-chat-fab,
+        .ai-fab-btn,
+        .floating-action-btn,
+        [class*="fab"],
+        [id*="fab"] {
+            display: none !important
+        }
+
+        #module-shell {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden
+        }
+
+        #topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .75rem 1.25rem;
+            border-bottom: 1px solid var(--m-bdr);
+            background: var(--m-surf);
+            flex-shrink: 0;
+            gap: 1rem
+        }
+
+        #topbar-left {
+            display: flex;
+            align-items: center;
+            gap: .75rem
+        }
+
+        #back-btn {
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            font-size: .78rem;
+            padding: .38rem .85rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: border-color var(--m-tr), color var(--m-tr)
+        }
+
+        #back-btn:hover {
+            border-color: var(--m-bdrhi);
+            color: var(--m-txt)
+        }
+
+        #back-btn:focus-visible {
+            outline: 2px solid var(--m-bdrhi);
+            outline-offset: 2px
+        }
+
+        #topbar-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: .95rem;
+            font-weight: 600;
+            color: var(--m-txt)
+        }
+
+        #progress-label {
+            font-size: .75rem;
+            color: var(--m-muted);
+            letter-spacing: .04em;
+            white-space: nowrap
+        }
+
+        #progress-bar-wrap {
+            width: 80px;
+            height: 2px;
+            background: var(--m-bdr);
+            border-radius: 1px;
+            overflow: hidden
+        }
+
+        #progress-bar-fill {
+            height: 100%;
+            background: var(--m-gold);
+            border-radius: 1px;
+            transition: width .4s ease
+        }
+
+        #shell-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden
+        }
+
+        #section-nav {
+            width: 200px;
+            flex-shrink: 0;
+            border-right: 1px solid var(--m-bdr);
+            background: var(--m-surf);
+            overflow-y: auto;
+            padding: 1rem 0
+        }
+
+        .sn-item {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            padding: .6rem 1rem;
+            font-size: .75rem;
+            color: var(--m-muted);
+            cursor: pointer;
+            transition: color var(--m-tr), background var(--m-tr);
+            border-left: 2px solid transparent;
+            line-height: 1.3
+        }
+
+        .sn-item:hover {
+            color: var(--m-txt);
+            background: rgba(255, 255, 255, .025)
+        }
+
+        .sn-item:focus-visible {
+            outline: 2px solid var(--m-bdrhi);
+            outline-offset: -2px
+        }
+
+        .sn-item.visited {
+            color: var(--m-txt)
+        }
+
+        .sn-item.current {
+            color: var(--m-gold);
+            border-left-color: var(--m-gold);
+            background: var(--m-gold-dim)
+        }
+
+        .sn-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--m-muted2);
+            flex-shrink: 0;
+            transition: background var(--m-tr)
+        }
+
+        .sn-item.visited .sn-dot {
+            background: var(--m-muted)
+        }
+
+        .sn-item.current .sn-dot {
+            background: var(--m-gold)
+        }
+
+        #main-stage {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2.5rem 1.5rem
+        }
+
+        .screen {
+            width: 100%;
+            max-width: 640px;
+            animation: fadeIn .2s ease
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .scr-eyebrow {
+            font-size: .68rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--m-muted);
+            margin-bottom: 1.2rem
+        }
+
+        .scr-h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            font-weight: 700;
+            color: var(--m-txt);
+            letter-spacing: -.02em;
+            line-height: 1.15;
+            margin-bottom: .75rem
+        }
+
+        .scr-h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--m-txt);
+            margin-bottom: .9rem
+        }
+
+        .scr-meta {
+            font-size: .78rem;
+            color: var(--m-muted);
+            letter-spacing: .04em;
+            margin-bottom: 2rem
+        }
+
+        .scr-body {
+            font-size: .95rem;
+            color: var(--m-muted);
+            line-height: 1.7;
+            margin-bottom: 1.5rem
+        }
+
+        .scr-body p {
+            margin-bottom: .55rem
+        }
+
+        .scr-body p:last-child {
+            margin-bottom: 0
+        }
+
+        .anchor-line {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--m-txt);
+            padding: .7rem 1rem;
+            border-left: 2px solid var(--m-gold);
+            background: var(--m-gold-dim);
+            border-radius: 0 4px 4px 0;
+            margin: 1.5rem 0;
+            line-height: 1.5
+        }
+
+        .checklist-item {
+            font-size: .95rem;
+            color: var(--m-txt);
+            padding: .55rem .75rem;
+            border-left: 2px solid var(--m-bdr);
+            margin-bottom: .5rem;
+            transition: border-color .2s
+        }
+
+        .checklist-item:hover {
+            border-left-color: var(--m-gold)
+        }
+
+        /* ── Chart ── */
+        .tf-chart-outer {
+            position: relative;
+            margin: 1.25rem 0;
+            background: var(--m-surf2);
+            border: 1px solid var(--m-bdr);
+            border-radius: 4px;
+            overflow: hidden;
+            height: 200px
+        }
+
+        .tf-chart-viewport {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative
+        }
+
+        .tf-candle-row {
+            position: absolute;
+            inset: 0;
+            overflow: hidden
+        }
+
+        .tf-candle {
+            position: absolute;
+            bottom: 0;
+            border-radius: 1px
+        }
+
+        /* IMP-2.2-07: Stable overlay container — fixed min-height to prevent CLS on any text change */
+        .tf-overlay-text {
+            position: absolute;
+            top: .6rem;
+            left: 0;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            /* Reserve space for 2 lines at all times — no layout shift when line2 appears */
+            min-height: 2.6rem;
+            text-align: center;
+            font-size: .8rem;
+            color: var(--m-muted);
+            letter-spacing: .03em;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 500;
+            pointer-events: none;
+            line-height: 1.5;
+            padding: 0 .75rem;
+            box-sizing: border-box
+        }
+
+        /* IMP-2.2-01 / IMP-2.2-07: Two-beat stacked overlay lines */
+        .tf-ol-line1 {
+            /* IMP-2.2-06 applied to balance overlay: bump font-weight one step for readability */
+            opacity: .85;
+            color: var(--m-muted);
+            font-weight: 600
+        }
+
+        .tf-ol-line2 {
+            /* Starts invisible; space is pre-reserved to prevent CLS */
+            opacity: 0;
+            color: var(--m-gold);
+            transition: opacity 280ms ease
+        }
+
+        .tf-ol-line2.visible {
+            opacity: 1
+        }
+
+        /* IMP-2.2-02: Balance range guides — only rendered inside balance sim */
+        .tf-range-guide {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(180, 182, 188, 0.18);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 600ms ease
+        }
+
+        .tf-range-guide.visible {
+            opacity: 1
+        }
+
+        /* IMP-2.2-03: Expansion distance marker — only rendered inside expansion sim */
+        .tf-dist-marker {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: rgba(180, 182, 188, 0.15);
+            pointer-events: none;
+            transform-origin: bottom;
+            transition: transform 600ms ease, opacity 600ms ease;
+            opacity: 0
+        }
+
+        .tf-dist-marker.visible {
+            opacity: 1
+        }
+
+        /* IMP-2.2-08: Domain 2 framework card */
+        .d2-framework-card {
+            background: var(--m-surf2);
+            border: 1px solid var(--m-bdr);
+            border-radius: 6px;
+            padding: 1.5rem 1.75rem;
+            margin: 1.5rem 0;
+            text-align: left
+        }
+
+        .d2-framework-card .fc-label {
+            font-size: .65rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--m-muted);
+            margin-bottom: .85rem
+        }
+
+        .d2-framework-card .fc-steps {
+            list-style: none;
+            margin: 0 0 1rem;
+            padding: 0
+        }
+
+        .d2-framework-card .fc-steps li {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--m-txt);
+            font-family: 'Outfit', sans-serif;
+            padding: .22rem 0;
+            letter-spacing: -.01em
+        }
+
+        .d2-framework-card .fc-steps li span {
+            color: var(--m-muted);
+            font-size: .8rem;
+            font-weight: 500;
+            margin-right: .45rem;
+            font-family: 'Inter', sans-serif
+        }
+
+        .d2-framework-card .fc-footer {
+            font-size: .82rem;
+            color: var(--m-muted);
+            line-height: 1.6;
+            border-top: 1px solid var(--m-bdr);
+            padding-top: .85rem;
+            margin-top: .85rem
+        }
+
+        /* ── Buttons ── */
+        .btn-primary {
+            background: transparent;
+            border: 1px solid var(--m-gold-line);
+            color: var(--m-gold);
+            font-family: 'Inter', sans-serif;
+            font-size: .8rem;
+            font-weight: 600;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            padding: .65rem 1.5rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background var(--m-tr), border-color var(--m-tr);
+            margin-right: .6rem
+        }
+
+        .btn-primary:hover {
+            background: var(--m-gold-dim);
+            border-color: var(--m-gold)
+        }
+
+        .btn-primary:focus-visible {
+            outline: 2px solid var(--m-gold);
+            outline-offset: 2px
+        }
+
+        .btn-primary:disabled {
+            opacity: .42;
+            cursor: not-allowed
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: .8rem;
+            font-weight: 500;
+            letter-spacing: .04em;
+            padding: .62rem 1.2rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: border-color var(--m-tr), color var(--m-tr)
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--m-bdrhi);
+            color: var(--m-txt)
+        }
+
+        .btn-ghost:focus-visible {
+            outline: 2px solid var(--m-bdrhi);
+            outline-offset: 2px
+        }
+
+        .btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .6rem;
+            margin-top: 1.75rem
+        }
+
+        .clarify-btn {
+            background: none;
+            border: none;
+            color: var(--m-gold);
+            font-size: .78rem;
+            font-weight: 600;
+            letter-spacing: .04em;
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            padding: 0;
+            font-family: 'Inter', sans-serif
+        }
+
+        .clarify-btn:focus-visible {
+            outline: 2px solid var(--m-gold);
+            outline-offset: 2px
+        }
+
+        .opt-btn {
+            display: block;
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-txt);
+            font-family: 'Inter', sans-serif;
+            font-size: .875rem;
+            text-align: left;
+            padding: .75rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: .5rem;
+            transition: border-color var(--m-tr), background var(--m-tr)
+        }
+
+        .opt-btn:hover {
+            border-color: var(--m-bdrhi);
+            background: rgba(255, 255, 255, .025)
+        }
+
+        .opt-btn.selected {
+            border-color: var(--m-gold-line);
+            background: var(--m-gold-dim);
+            color: var(--m-gold)
+        }
+
+        .opt-btn:disabled {
+            cursor: default
+        }
+
+        .assessment-prog {
+            font-size: .72rem;
+            color: var(--m-muted);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem
+        }
+
+        .assessment-q {
+            font-size: 1rem;
+            color: var(--m-txt);
+            margin-bottom: 1.25rem;
+            line-height: 1.55
+        }
+
+        .result-box {
+            text-align: center;
+            padding: 2rem 1rem
+        }
+
+        .result-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--m-txt);
+            margin-bottom: .5rem
+        }
+
+        .result-gold {
+            color: var(--m-gold)
+        }
+
+        .result-body {
+            font-size: .9rem;
+            color: var(--m-muted);
+            line-height: 1.6;
+            margin-bottom: 1.75rem;
+            max-width: 360px;
+            margin-left: auto;
+            margin-right: auto
+        }
+
+        /* ── Clarify Panel ── */
+        #clarify-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .55);
+            z-index: 900;
+            display: none;
+            align-items: flex-start;
+            justify-content: flex-end
+        }
+
+        #clarify-overlay.open {
+            display: flex
+        }
+
+        #clarify-panel {
+            width: 340px;
+            max-width: 90vw;
+            height: 100%;
+            background: #16181b;
+            border-left: 1px solid var(--m-bdr);
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            animation: slideInRight .22s ease
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%)
+            }
+
+            to {
+                transform: translateX(0)
+            }
+        }
+
+        .cp-term {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--m-txt);
+            margin-bottom: .25rem
+        }
+
+        .cp-section {
+            margin-top: 1.25rem
+        }
+
+        .cp-label {
+            font-size: .65rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--m-muted);
+            margin-bottom: .4rem
+        }
+
+        .cp-text {
+            font-size: .85rem;
+            color: var(--m-muted);
+            line-height: 1.55
+        }
+
+        .cp-text strong {
+            color: var(--m-txt);
+            font-weight: 500
+        }
+
+        #cp-close {
+            margin-top: 2rem;
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: .78rem;
+            padding: .5rem 1rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: border-color var(--m-tr), color var(--m-tr)
+        }
+
+        #cp-close:hover {
+            border-color: var(--m-bdrhi);
+            color: var(--m-txt)
+        }
+
+        .nav-toggle {
+            display: none;
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            padding: .36rem .7rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: .75rem
+        }
+
+        @media(max-width:700px) {
+            #section-nav {
+                position: fixed;
+                inset: 0 auto 0 0;
+                z-index: 800;
+                transform: translateX(-100%);
+                transition: transform .3s ease;
+                width: 240px
+            }
+
+            #section-nav.open {
+                transform: translateX(0)
+            }
+
+            #nav-backdrop {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, .5);
+                z-index: 799;
+                display: none
+            }
+
+            #nav-backdrop.open {
+                display: block
+            }
+
+            #clarify-panel {
+                width: 100%;
+                height: 60vh;
+                border-left: none;
+                border-top: 1px solid var(--m-bdr);
+                position: fixed;
+                bottom: 0;
+                left: 0
+            }
+
+            #clarify-overlay {
+                align-items: flex-end;
+                justify-content: center
+            }
+
+            #main-stage {
+                padding: 1.5rem 1rem
+            }
+
+            .nav-toggle {
+                display: inline-flex;
+                align-items: center;
+                gap: .4rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="module-shell">
+        <div id="topbar">
+            <div id="topbar-left">
+                <button class="nav-toggle" id="nav-toggle-btn" onclick="toggleNavDrawer()"
+                    aria-label="Open section navigator">&#9776; Sections</button>
+                <button id="back-btn" onclick="goBack()">&#8592; Market Context</button>
+                <span id="topbar-title">Structure</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:.75rem">
+                <span id="progress-label">Progress 0%</span>
+                <div id="progress-bar-wrap">
+                    <div id="progress-bar-fill" style="width:0%"></div>
+                </div>
+            </div>
+        </div>
+        <div id="nav-backdrop" onclick="toggleNavDrawer()"></div>
+        <div id="shell-body">
+            <nav id="section-nav" aria-label="Module sections">
+                <div id="sn-items"></div>
+            </nav>
+            <main id="main-stage">
+                <div class="screen" id="screen-container"></div>
+            </main>
+        </div>
+    </div>
+    <div id="clarify-overlay" onclick="handleClarifyOverlayClick(event)" role="dialog" aria-modal="true"
+        aria-label="Clarify">
+        <div id="clarify-panel">
+            <div class="cp-term" id="cp-term"></div>
+            <div class="cp-section">
+                <div class="cp-label">Explanation</div>
+                <div class="cp-text" id="cp-explanation"></div>
+            </div>
+            <div class="cp-section">
+                <div class="cp-label">Example</div>
+                <div class="cp-text" id="cp-example"></div>
+            </div>
+            <div class="cp-section">
+                <div class="cp-label">Common Misconception</div>
+                <div class="cp-text" id="cp-misconception"></div>
+            </div>
+            <button id="cp-close" onclick="closeClarify()">Close</button>
+        </div>
+    </div>
+    <script src="script.js?v=m22"></script>
+    <script src="ai-widget.js"></script>
+    <script src="google-auth.js"></script>
+    <script>
+        window.addEventListener('load', () => { if (typeof initGoogleAuth === 'function') initGoogleAuth(); });
+
+        /* ═══════════════════════════ STATE ═══════════════════════════ */
+        const STATE = {
+            currentSectionId: 0, currentScreenIndex: 0,
+            visitedSections: new Set(), sectionLastScreenIndex: {},
+            navHistory: [],
+            assessment: { answers: [null, null, null, null, null], isSubmitted: false, scorePercent: null, passed: null, currentQ: 0 },
+            showReview: false, verified: false
+        };
+
+        const SECTIONS = [
+            { id: 0, label: 'Entry' },
+            { id: 1, label: 'Section I \u2014 Two States' },
+            { id: 2, label: 'Section II \u2014 Expansion' },
+            { id: 3, label: 'Section III \u2014 Balance' },
+            { id: 4, label: 'Section IV \u2014 Transitions' },
+            { id: 5, label: 'Section V \u2014 Competency Check' }
+        ];
+
+        /* ═══════════════════════════ PROGRESS ═══════════════════════════ */
+        function computeProgress() {
+            const TOTAL_SECTIONS = 5;
+            const visited = [...STATE.visitedSections].filter(id => id >= 1 && id <= 5);
+            const base = Math.min(visited.length, TOTAL_SECTIONS);
+            let pct = Math.round((base / TOTAL_SECTIONS) * 85);
+            if (STATE.assessment.scorePercent !== null && STATE.assessment.scorePercent > 0 && !STATE.assessment.passed)
+                pct = Math.max(pct, 90);
+            if (STATE.assessment.passed) pct = 100;
+            return pct;
+        }
+        function updateProgress() {
+            const pct = computeProgress();
+            document.getElementById('progress-label').textContent = 'Progress ' + pct + '%';
+            document.getElementById('progress-bar-fill').style.width = pct + '%';
+        }
+        function visit(sid) { if (!STATE.visitedSections.has(sid)) { STATE.visitedSections.add(sid); updateProgress(); } renderNav(); }
+
+        /* ═══════════════════════════ NAVIGATION ═══════════════════════════ */
+        function goToSection(sid, screenIndex, pushHistory) {
+            const maxVisited = STATE.visitedSections.size > 0 ? Math.max(...[...STATE.visitedSections]) : 0;
+            const allowed = STATE.visitedSections.has(sid) || sid <= maxVisited + 1 || sid === 0;
+            if (!allowed) return;
+            if (pushHistory !== false) STATE.navHistory.push({ sectionId: STATE.currentSectionId, screenIndex: STATE.currentScreenIndex });
+            STATE.sectionLastScreenIndex[STATE.currentSectionId] = STATE.currentScreenIndex;
+            STATE.currentSectionId = sid;
+            STATE.currentScreenIndex = (screenIndex !== undefined && screenIndex !== null) ? screenIndex : 0;
+            STATE.showReview = false;
+            visit(sid); renderNav(); renderScreen();
+            const nav = document.getElementById('section-nav');
+            if (nav.classList.contains('open')) toggleNavDrawer();
+        }
+        function goBack() {
+            if (STATE.showReview) { STATE.showReview = false; renderScreen(); return; }
+            if (STATE.navHistory.length > 0) {
+                const prev = STATE.navHistory.pop();
+                STATE.sectionLastScreenIndex[STATE.currentSectionId] = STATE.currentScreenIndex;
+                STATE.currentSectionId = prev.sectionId; STATE.currentScreenIndex = prev.screenIndex;
+                STATE.showReview = false; visit(prev.sectionId); renderNav(); renderScreen(); return;
+            }
+            window.location.href = 'market-context.html';
+        }
+        function toggleNavDrawer() {
+            document.getElementById('section-nav').classList.toggle('open');
+            document.getElementById('nav-backdrop').classList.toggle('open');
+        }
+
+        /* ═══════════════════════════ NAV RENDER ═══════════════════════════ */
+        function renderNav() {
+            const c = document.getElementById('sn-items'); c.innerHTML = '';
+            SECTIONS.forEach(s => {
+                if (s.id === 0) return;
+                const isCurrent = STATE.currentSectionId === s.id;
+                const isVisited = STATE.visitedSections.has(s.id);
+                const maxVisited = STATE.visitedSections.size > 0 ? Math.max(...[...STATE.visitedSections]) : 0;
+                const isAccessible = isVisited || s.id <= maxVisited + 1;
+                const div = document.createElement('div');
+                div.className = 'sn-item' + (isCurrent ? ' current' : '') + (isVisited ? ' visited' : '');
+                div.setAttribute('tabindex', isAccessible ? '0' : '-1');
+                div.setAttribute('role', 'button');
+                div.setAttribute('aria-label', s.label + (isCurrent ? ', current' : isVisited ? ', visited' : ', not visited'));
+                div.innerHTML = `<span class="sn-dot"></span><span>${s.label}</span>`;
+                if (isAccessible) {
+                    div.onclick = () => { const lsi = STATE.sectionLastScreenIndex[s.id]; goToSection(s.id, lsi !== undefined ? lsi : 0); };
+                    div.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { const lsi = STATE.sectionLastScreenIndex[s.id]; goToSection(s.id, lsi !== undefined ? lsi : 0); } };
+                } else { div.style.opacity = '.35'; div.style.cursor = 'not-allowed'; }
+                c.appendChild(div);
+            });
+        }
+
+        /* ═══════════════════════════ CLARIFY ═══════════════════════════ */
+        const CLARIFY_DATA = {
+            structure: {
+                term: 'Structure',
+                explanation: 'Structure is the market\'s state: expansion or balance. It tells you what kind of movement is most likely to appear.',
+                example: 'Directional movement (expansion) versus range rotation (balance) — both are structural states.',
+                misconception: '<strong>"Structure is a signal."</strong> It is not. Structure is context — it frames how you interpret a move, not what move to take.'
+            },
+            expansion: {
+                term: 'Expansion',
+                explanation: 'Directional movement that moves away from a prior price area with follow-through and distance.',
+                example: 'A sustained push higher where each pullback stays above the prior low — the market is expanding, not rotating.',
+                misconception: '<strong>"One candle is expansion."</strong> A single candle is not expansion; continuation and distance matter. Expansion implies follow-through.'
+            },
+            balance: {
+                term: 'Balance',
+                explanation: 'Consolidation where price trades within a defined band, rotating between highs and lows repeatedly.',
+                example: 'Repeated tests of a high and a low with no sustained breakout — the market is in agreement about value.',
+                misconception: '<strong>"Balance means inactivity."</strong> Balance is not inactivity — it is agreement. Both sides are transacting; neither side is winning decisively.'
+            },
+            state: {
+                term: 'State',
+                explanation: 'The current structural environment: expansion or balance. State must be identified before interpreting any individual move.',
+                example: 'The same pattern — a sharp push followed by a pause — means different things inside expansion versus inside balance.',
+                misconception: '<strong>"You don\'t need state to interpret a move."</strong> Without knowing state, interpretation is guesswork. The same candle formation carries different meaning in different states.'
+            }
+        };
+        function openClarify(topicId) {
+            const d = CLARIFY_DATA[topicId]; if (!d) return;
+            document.getElementById('cp-term').textContent = d.term;
+            document.getElementById('cp-explanation').textContent = d.explanation;
+            document.getElementById('cp-example').textContent = d.example;
+            document.getElementById('cp-misconception').innerHTML = d.misconception;
+            document.getElementById('clarify-overlay').classList.add('open');
+            document.getElementById('cp-close').focus();
+        }
+        function closeClarify() { document.getElementById('clarify-overlay').classList.remove('open'); }
+        function handleClarifyOverlayClick(e) { if (e.target === document.getElementById('clarify-overlay')) closeClarify(); }
+        function escHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+        function escAttr(s) { return String(s).replace(/"/g, '&quot;'); }
+
+        /* ═══════════════════════════ CHART — DETERMINISTIC CANDLE SETS ═══════════════════════════ */
+
+        // EXPANSION_DEMO: push → pullback → push (clear directional follow-through)
+        const CANDLES_EXPANSION = (() => {
+            const heights = [14, 18, 22, 20, 26, 28, 24, 30, 26, 32, 22, 20, 18, 16, 20, 24, 28, 34, 30, 36, 32, 38, 34, 40, 36, 38, 42, 40, 44, 46];
+            const greens = 'rgba(120,210,160,';
+            const reds = 'rgba(220,100,80,';
+            const isRed = [0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            return heights.map((h, i) => ({
+                h,
+                col: isRed[i] ? reds + '.18)' : greens + (0.18 + (i / heights.length) * 0.1).toFixed(2) + ')',
+                bdr: isRed[i] ? reds + '.35)' : greens + (0.38 + (i / heights.length) * 0.1).toFixed(2) + ')'
+            }));
+        })();
+
+        // BALANCE_DEMO: clear range rotation — oscillates between rangeHigh and rangeLow
+        const CANDLES_BALANCE = (() => {
+            const base = [28, 32, 26, 30, 34, 28, 32, 26, 30, 34, 28, 26, 32, 28, 30, 34, 26, 30, 28, 32, 26, 30, 34, 28, 30, 26, 32, 28, 30, 32];
+            const greens = 'rgba(120,210,160,';
+            const reds = 'rgba(220,100,80,';
+            const isRed = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1];
+            return base.map((h, i) => ({
+                h,
+                col: isRed[i] ? reds + '.18)' : greens + '.18)',
+                bdr: isRed[i] ? reds + '.35)' : greens + '.38)'
+            }));
+        })();
+
+        // IMP-2.2-04: BALANCE_FALSE_BREAKOUT_DEMO: range → brief break above → snap back → rotate
+        const CANDLES_FALSE_BREAKOUT = (() => {
+            // Phase 1 (0-11): rotation in range (heights 26-34)
+            // Phase 2 (12-14): spike above rangeHigh (heights 42-46)
+            // Phase 3 (15-17): rapid snap back into range (heights 30-26)
+            // Phase 4 (18-29): normal rotation resumed
+            const heights = [
+                28, 30, 26, 32, 28, 30, 26, 32, 28, 30, 26, 32,
+                42, 46, 43,
+                32, 28, 26,
+                30, 28, 32, 26, 30, 34, 28, 26, 32, 30, 28, 26
+            ];
+            const greens = 'rgba(120,210,160,';
+            const reds = 'rgba(220,100,80,';
+            const isRed = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1];
+            return heights.map((h, i) => ({
+                h,
+                col: isRed[i] ? reds + '.18)' : greens + '.18)',
+                bdr: isRed[i] ? reds + '.35)' : greens + '.38)'
+            }));
+        })();
+
+        // BALANCE_TO_EXPANSION_DEMO: first half = balance (range), second half = breakout + sustained expansion
+        const CANDLES_B2E = (() => {
+            const heights = [
+                28, 26, 30, 28, 26, 30, 28, 26, 30, 28, 26, 30, 28, 26, 29,
+                32, 36, 34, 38, 36, 40, 38, 44, 42, 46, 44, 48, 46, 50, 52
+            ];
+            const greens = 'rgba(120,210,160,';
+            const reds = 'rgba(220,100,80,';
+            const isRed = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0];
+            return heights.map((h, i) => ({
+                h,
+                col: isRed[i] ? reds + '.18)' : greens + (i >= 15 ? (0.18 + ((i - 15) / 15) * 0.1).toFixed(2) : '.16') + ')',
+                bdr: isRed[i] ? reds + '.35)' : greens + (i >= 15 ? (0.38 + ((i - 15) / 15) * 0.1).toFixed(2) : '.32') + ')'
+            }));
+        })();
+
+        /* ── Chart renderer (shared) ── */
+        // IMP-2.2-07: overlayHtml allows pre-built HTML for line1/line2 stacking (space always reserved)
+        function buildChart(overlayText, chartId, overlayHtml) {
+            // overlayHtml takes priority; overlayText is legacy fallback
+            const innerOverlay = overlayHtml !== undefined
+                ? overlayHtml
+                : (overlayText || '').split('\n').map(l => `<span class="tf-ol-line1">${l}</span>`).join('');
+            return `<div class="tf-chart-outer" id="tf-chart-outer-${chartId}">
+  <div class="tf-chart-viewport">
+    <div class="tf-candle-row" id="tf-candle-row-${chartId}"></div>
+  </div>
+  <div class="tf-overlay-text" id="tf-overlay-text-${chartId}">${innerOverlay}</div>
+</div>`;
+        }
+
+        function renderChart(candles, chartId) {
+            const outer = document.getElementById('tf-chart-outer-' + chartId);
+            const row = document.getElementById('tf-candle-row-' + chartId);
+            if (!outer || !row) return;
+
+            const outerW = outer.clientWidth || 600;
+            const outerH = outer.clientHeight || 200;
+            const topPad = 28;
+            const innerH = outerH - topPad;
+
+            const count = candles.length;
+            const slotW = outerW / count;
+            const gapW = Math.max(1, slotW * 0.18);
+            const bodyW = Math.max(1, slotW - gapW);
+
+            let maxH = 0;
+            candles.forEach(c => { if (c.h > maxH) maxH = c.h; });
+            const yScale = maxH > 0 ? innerH / maxH : 1;
+
+            let html = '';
+            candles.forEach((c, i) => {
+                const x = i * slotW;
+                const h = Math.max(2, c.h * yScale);
+                html += `<div style="position:absolute;left:${x.toFixed(1)}px;bottom:0;width:${bodyW.toFixed(1)}px;height:${h.toFixed(1)}px;background:${c.col};border:1px solid ${c.bdr};border-radius:1px"></div>`;
+            });
+            row.innerHTML = html;
+        }
+
+        /* ═══════════════════════════ SCREEN RENDERERS ═══════════════════════════ */
+        function renderScreen() {
+            const c = document.getElementById('screen-container');
+            c.innerHTML = '';
+            const s = STATE.currentSectionId;
+            let html = '';
+            if (s === 0) html = buildEntry();
+            else if (s === 1) html = buildS1(STATE.currentScreenIndex);
+            else if (s === 2) html = buildS2(STATE.currentScreenIndex);
+            else if (s === 3) html = buildS3(STATE.currentScreenIndex);
+            else if (s === 4) html = buildS4(STATE.currentScreenIndex);
+            else if (s === 5) { if (STATE.showReview) html = buildReviewAnswers(); else html = buildS5(); }
+            c.innerHTML = html;
+            c.scrollTop = 0;
+            document.getElementById('main-stage').scrollTop = 0;
+            attachHandlers();
+            // Initialize charts after DOM is ready
+            if (s === 2 && STATE.currentScreenIndex === 1) {
+                // IMP-2.2-03: Expansion distance marker rendered then faded in
+                requestAnimationFrame(() => {
+                    renderChart(CANDLES_EXPANSION, 'exp');
+                    const outer = document.getElementById('tf-chart-outer-exp');
+                    if (outer) {
+                        const marker = document.createElement('div');
+                        marker.className = 'tf-dist-marker';
+                        // Position marker near start of expansion (≈60% from left)
+                        marker.style.left = '60%';
+                        outer.appendChild(marker);
+                        setTimeout(() => marker.classList.add('visible'), 900);
+                    }
+                });
+            }
+            if (s === 3 && STATE.currentScreenIndex === 1) {
+                // IMP-2.2-02: Balance range guides — fade in after 1s
+                requestAnimationFrame(() => {
+                    renderChart(CANDLES_BALANCE, 'bal');
+                    const outer = document.getElementById('tf-chart-outer-bal');
+                    if (outer) {
+                        const outerH = outer.clientHeight || 200;
+                        const topPad = 28;
+                        const innerH = outerH - topPad;
+                        // rangeHigh ≈ 34 candle height; rangeLow ≈ 26 — normalize to chart
+                        const maxH = 34;
+                        const guideHigh = document.createElement('div');
+                        guideHigh.className = 'tf-range-guide';
+                        guideHigh.style.bottom = ((34 / maxH) * innerH) + 'px';
+                        const guideLow = document.createElement('div');
+                        guideLow.className = 'tf-range-guide';
+                        guideLow.style.bottom = ((26 / maxH) * innerH) + 'px';
+                        outer.appendChild(guideHigh);
+                        outer.appendChild(guideLow);
+                        setTimeout(() => { guideHigh.classList.add('visible'); guideLow.classList.add('visible'); }, 1200);
+                    }
+                });
+            }
+            if (s === 3 && STATE.currentScreenIndex === 3) {
+                // IMP-2.2-04: False breakout demo chart (screen index 3 in buildS3)
+                requestAnimationFrame(() => {
+                    renderChart(CANDLES_FALSE_BREAKOUT, 'fbo');
+                    const outer = document.getElementById('tf-chart-outer-fbo');
+                    if (outer) {
+                        const outerH = outer.clientHeight || 200;
+                        const topPad = 28;
+                        const innerH = outerH - topPad;
+                        const maxH = 46;
+                        // Show range boundary guides around the balance zone
+                        const guideHigh = document.createElement('div');
+                        guideHigh.className = 'tf-range-guide';
+                        guideHigh.style.bottom = ((34 / maxH) * innerH) + 'px';
+                        const guideLow = document.createElement('div');
+                        guideLow.className = 'tf-range-guide';
+                        guideLow.style.bottom = ((26 / maxH) * innerH) + 'px';
+                        outer.appendChild(guideHigh);
+                        outer.appendChild(guideLow);
+                        setTimeout(() => { guideHigh.classList.add('visible'); guideLow.classList.add('visible'); }, 800);
+                    }
+                });
+            }
+            if (s === 4 && STATE.currentScreenIndex === 1) {
+                // IMP-2.2-01: Two-beat stacked overlay — both lines rendered immediately, line2 fades in; line1 never disappears
+                requestAnimationFrame(() => {
+                    renderChart(CANDLES_B2E, 'b2e');
+                    const ol = document.getElementById('tf-overlay-text-b2e');
+                    if (ol) {
+                        ol.innerHTML =
+                            '<span class="tf-ol-line1">Balance holds…</span>' +
+                            '<span class="tf-ol-line2" id="tf-ol-line2-b2e">then expansion begins.</span>';
+                        // After 1400ms: fade line2 in — line1 remains fully visible
+                        setTimeout(() => {
+                            const line2 = document.getElementById('tf-ol-line2-b2e');
+                            if (line2) line2.classList.add('visible');
+                        }, 1400);
+                    }
+                });
+            }
+        }
+
+        /* ── Entry Screen ── */
+        function buildEntry() {
+            return `<div style="text-align:center;padding:2rem 0">
+<p class="scr-eyebrow">ProsperPath &mdash; Market Context</p>
+<h1 class="scr-h1">Structure</h1>
+<p class="scr-body" style="max-width:320px;margin:0 auto 1rem">Markets alternate between<br>expansion and balance.</p>
+<p class="scr-meta">Core &bull; 20 minutes &bull; Expansion vs Balance</p>
+<button class="btn-primary" id="begin-btn">Begin Module</button>
+</div>`;
+        }
+
+        /* ── Section I — Two States (3 screens) ── */
+        function buildS1(i) {
+            if (i === 0) {
+                return `<p class="scr-eyebrow">Section I &mdash; Two States</p>
+<div class="scr-body" style="margin-top:1.5rem">
+<p>Structure is the market's state.</p>
+<p>It tells you what kind of movement<br>is most likely to appear.</p>
+</div>
+<div class="btn-row"><button class="btn-primary" id="s1-next">Continue</button></div>`;
+            }
+            if (i === 1) {
+                return `<p class="scr-eyebrow">Section I &mdash; Two States</p>
+<div class="anchor-line" style="margin-top:1.75rem">Markets alternate between<br>expansion and balance.</div>
+<p style="font-size:.8rem;color:var(--m-muted);margin-bottom:1rem">Clarify: <button class="clarify-btn" data-topic="structure">Structure</button></p>
+<div class="btn-row"><button class="btn-primary" id="s1-next">Continue</button></div>`;
+            }
+            // i===2
+            return `<p class="scr-eyebrow">Section I &mdash; Two States</p>
+<div class="scr-body" style="margin-top:1.5rem">
+<p>Confusion happens when you treat<br>balance like expansion.</p>
+<p>Or expansion like balance.</p>
+</div>
+<div class="btn-row"><button class="btn-primary" id="s1-to-s2">Continue to Section II</button></div>`;
+        }
+
+        /* ── Section II — Expansion (4 screens) ── */
+        function buildS2(i) {
+            if (i === 0) {
+                return `<p class="scr-eyebrow">Section II &mdash; Expansion</p>
+<h2 class="scr-h2">Expansion</h2>
+<div class="scr-body">
+<p>Expansion is directional movement.</p>
+<p>It creates distance.</p>
+</div>
+<p style="font-size:.8rem;color:var(--m-muted);margin-bottom:1rem">Clarify: <button class="clarify-btn" data-topic="expansion">Expansion</button></p>
+<div class="btn-row"><button class="btn-primary" id="s2-next">Continue</button></div>`;
+            }
+            if (i === 1) {
+                return `<p class="scr-eyebrow">Section II &mdash; Expansion</p>
+${buildChart('Price expands away from balance.', 'exp')}
+<div class="btn-row"><button class="btn-primary" id="s2-next">Continue</button></div>`;
+            }
+            if (i === 2) {
+                return `<p class="scr-eyebrow">Section II &mdash; Expansion</p>
+<div class="scr-body" style="margin-top:1.5rem">
+<p>Pullbacks exist inside expansion.</p>
+<p>The state can remain expansion.</p>
+</div>
+<div class="btn-row"><button class="btn-primary" id="s2-next">Continue</button></div>`;
+            }
+            // i===3 — Process screen
+            return `<p class="scr-eyebrow">Section II &mdash; Expansion</p>
+<h2 class="scr-h2">Read Expansion</h2>
+<div style="margin:1.25rem 0">
+<div class="checklist-item">1 Identify direction</div>
+<div class="checklist-item">2 Check follow-through</div>
+<div class="checklist-item">3 Avoid forcing reversals</div>
+</div>
+<div class="btn-row"><button class="btn-primary" id="s2-to-s3">Continue to Section III</button></div>`;
+        }
+
+        /* ── Section III — Balance (5 screens: +false-breakout sim) ── */
+        function buildS3(i) {
+            if (i === 0) {
+                return `<p class="scr-eyebrow">Section III &mdash; Balance</p>
+<h2 class="scr-h2">Balance</h2>
+<div class="scr-body">
+<p>Balance is compression.</p>
+<p>Price rotates inside a range.</p>
+</div>
+<p style="font-size:.8rem;color:var(--m-muted);margin-bottom:1rem">Clarify: <button class="clarify-btn" data-topic="balance">Balance</button></p>
+<div class="btn-row"><button class="btn-primary" id="s3-next">Continue</button></div>`;
+            }
+            if (i === 1) {
+                // IMP-2.2-06: overlay text — font-weight bump applied via .tf-ol-line1 CSS (font-weight:600)
+                return `<p class="scr-eyebrow">Section III &mdash; Balance</p>
+${buildChart(null, 'bal', '<span class="tf-ol-line1">Price rotates.</span><span class="tf-ol-line2 visible" style="color:var(--m-muted);opacity:.7">Direction is not confirmed.</span>')}
+<div class="btn-row"><button class="btn-primary" id="s3-next">Continue</button></div>`;
+            }
+            if (i === 2) {
+                return `<p class="scr-eyebrow">Section III &mdash; Balance</p>
+<div class="scr-body" style="margin-top:1.5rem">
+<p>In balance, breakouts fail often.</p>
+<p>Because agreement still holds.</p>
+</div>
+<div class="btn-row"><button class="btn-primary" id="s3-next">Continue</button></div>`;
+            }
+            if (i === 3) {
+                // IMP-2.2-04: False Breakout micro-simulation screen (inserted after text screen about failed breakouts)
+                return `<p class="scr-eyebrow">Section III &mdash; Balance</p>
+${buildChart(null, 'fbo', '<span class="tf-ol-line1">Breakouts often fail inside balance.</span><span class="tf-ol-line2" style="opacity:0"></span>')}
+<div class="btn-row"><button class="btn-primary" id="s3-next">Continue</button></div>`;
+            }
+            // i===4 — Process (was i===3)
+            return `<p class="scr-eyebrow">Section III &mdash; Balance</p>
+<h2 class="scr-h2">Read Balance</h2>
+<div style="margin:1.25rem 0">
+<div class="checklist-item">1 Mark the range</div>
+<div class="checklist-item">2 Expect rotation</div>
+<div class="checklist-item">3 Wait for expansion</div>
+</div>
+<div class="btn-row"><button class="btn-primary" id="s3-to-s4">Continue to Section IV</button></div>`;
+        }
+
+        /* ── Section IV — Transitions (4 screens: +reinforcement screen) ── */
+        function buildS4(i) {
+            if (i === 0) {
+                return `<p class="scr-eyebrow">Section IV &mdash; Transitions</p>
+<h2 class="scr-h2">Transitions</h2>
+<div class="scr-body">
+<p>Balance can expand.</p>
+<p>Expansion can compress.</p>
+</div>
+<div class="btn-row"><button class="btn-primary" id="s4-next">Continue</button></div>`;
+            }
+            if (i === 1) {
+                // IMP-2.2-01: stacked overlay with both lines pre-rendered — line2 fades in via JS timer
+                return `<p class="scr-eyebrow">Section IV &mdash; Transitions</p>
+${buildChart(null, 'b2e',
+                    '<span class="tf-ol-line1">Balance holds…</span>' +
+                    '<span class="tf-ol-line2" id="tf-ol-line2-b2e">then expansion begins.</span>'
+                )}
+<div class="btn-row"><button class="btn-primary" id="s4-next">Continue</button></div>`;
+            }
+            if (i === 2) {
+                // IMP-2.2-05: Reinforcement screen inserted after transition sim, before anchor
+                return `<p class="scr-eyebrow">Section IV &mdash; Transitions</p>
+<div class="scr-body" style="margin-top:2rem;text-align:center">
+<p style="font-size:1.05rem;color:var(--m-txt);font-family:'Outfit',sans-serif;font-weight:500;line-height:1.6">Expansion begins<br>because balance broke.</p>
+</div>
+<div class="btn-row"><button class="btn-primary" id="s4-next">Continue</button></div>`;
+            }
+            // i===3 — Anchor (was i===2)
+            return `<p class="scr-eyebrow">Section IV &mdash; Transitions</p>
+<div class="anchor-line" style="margin-top:1.75rem">First identify the state.<br>Then interpret the movement.</div>
+<p style="font-size:.8rem;color:var(--m-muted);margin-bottom:1rem">Clarify: <button class="clarify-btn" data-topic="state">State</button></p>
+<div class="btn-row"><button class="btn-primary" id="s4-to-s5">Continue to Section V</button></div>`;
+        }
+
+        /* ── Section V — Competency Check ── */
+        const A_QUESTIONS = [
+            { q: 'What are the two primary structural states?', opts: ['Uptrend and downtrend', 'Expansion and balance', 'Support and resistance'], correct: 'Expansion and balance' },
+            { q: 'Balance is best described as:', opts: ['Directional acceleration', 'Compression and rotation', 'Guaranteed reversal'], correct: 'Compression and rotation' },
+            { q: 'Expansion is best described as:', opts: ['Compression inside a band', 'Directional movement with distance', 'Random volatility'], correct: 'Directional movement with distance' },
+            { q: 'Why do breakouts fail often in balance?', opts: ['Because agreement still holds', 'Because liquidity disappears', 'Because indicators lag'], correct: 'Because agreement still holds' },
+            { q: 'Correct order of interpretation:', opts: ['Predict direction, then find structure', 'Identify state, then interpret movement', 'Find a pattern, then assume expansion'], correct: 'Identify state, then interpret movement' }
+        ];
+
+        function buildS5() {
+            if (STATE.assessment.isSubmitted) return buildResultScreen();
+            const qi = STATE.assessment.currentQ;
+            const q = A_QUESTIONS[qi];
+            const userAns = STATE.assessment.answers[qi];
+            const hasAnswer = userAns !== null && userAns !== undefined;
+            const isLastQ = qi === A_QUESTIONS.length - 1;
+            return `<p class="scr-eyebrow">Section V &mdash; Competency Check</p>
+<div class="assessment-prog">Question ${qi + 1} of ${A_QUESTIONS.length}</div>
+<div class="assessment-q">${q.q}</div>
+<div id="assessment-opts">
+${q.opts.map(opt => `<button class="opt-btn${userAns === opt ? ' selected' : ''}" data-ans="${escAttr(opt)}">${escHtml(opt)}</button>`).join('')}
+</div>
+<div class="btn-row">
+  ${qi > 0 ? `<button class="btn-ghost" id="assess-back">Back</button>` : ''}
+  ${isLastQ
+                    ? `<button class="btn-primary" id="assess-submit" ${!hasAnswer ? 'disabled' : ''}>Submit Assessment</button>`
+                    : `<button class="btn-primary" id="assess-next" ${!hasAnswer ? 'disabled' : ''}>Next</button>`}
+</div>
+${!hasAnswer ? `<p style="font-size:.75rem;color:var(--m-muted);margin-top:.75rem">Select an answer to continue.</p>` : ''}`;
+        }
+
+        function buildResultScreen() {
+            const score = STATE.assessment.scorePercent;
+            const passed = STATE.assessment.passed;
+            const reviewBtn = `<button class="btn-ghost" id="result-review-answers" style="margin-top:.5rem">Review Answers</button>`;
+            if (passed) {
+                // IMP-2.2-08: Domain 2 framework card appended to pass result
+                return `<div class="result-box">
+<div style="font-size:2rem;color:var(--m-gold);margin-bottom:1rem">&#10003;</div>
+<div class="result-title">Competency <span class="result-gold">Verified</span></div>
+<div class="result-body">You can identify market state<br>before interpreting movement.<br><span style="color:var(--m-gold);font-size:.85rem">Score: ${score}%</span></div>
+<div class="d2-framework-card" style="text-align:left;max-width:320px;margin:0 auto 1.25rem">
+  <div class="fc-label">Market Context</div>
+  <ul class="fc-steps">
+    <li><span>1</span>Scale</li>
+    <li><span>2</span>State</li>
+    <li><span>3</span>Movement</li>
+  </ul>
+  <div class="fc-footer">First identify the scale.<br>Then identify the state.<br>Only then interpret movement.</div>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:.5rem">
+  <button class="btn-primary" id="result-return">Return to Market Context</button>
+  ${reviewBtn}
+</div>
+</div>`;
+            }
+            return `<div class="result-box">
+<div style="font-size:2rem;color:var(--m-muted);margin-bottom:1rem">&#8635;</div>
+<div class="result-title">Review Recommended</div>
+<div class="result-body"><span style="color:var(--m-red-txt);font-size:.85rem">Score: ${score}%</span></div>
+<div class="btn-row" style="justify-content:center">
+  <button class="btn-ghost" id="result-retry">Retry Assessment</button>
+</div>
+<div style="margin-top:.75rem;text-align:center">${reviewBtn}</div>
+</div>`;
+        }
+
+        const A_REVIEW_DATA = [
+            { explanation: 'The two structural states are expansion and balance. All market movement exists in one or the other.', clarifyTopic: 'structure' },
+            { explanation: 'Balance is compression where price rotates within a band — not a directional state.', clarifyTopic: 'balance' },
+            { explanation: 'Expansion implies directional movement with distance and follow-through, not noise.', clarifyTopic: 'expansion' },
+            { explanation: 'Breakouts fail in balance because both sides still hold agreement — until they don\'t.', clarifyTopic: 'balance' },
+            { explanation: 'Identifying state first gives context for interpreting any subsequent movement.', clarifyTopic: 'state' }
+        ];
+
+        function buildReviewAnswers() {
+            const rows = A_QUESTIONS.map((q, i) => {
+                const userAns = STATE.assessment.answers[i];
+                const correct = userAns === q.correct;
+                const rv = A_REVIEW_DATA[i];
+                const icon = correct ? '&#10003;' : '&#10007;';
+                const iconColor = correct ? 'var(--m-green-txt)' : 'var(--m-red-txt)';
+                return `<div style="background:var(--m-surf2);border:1px solid var(--m-bdr);border-radius:6px;padding:1rem 1.1rem;margin-bottom:.85rem">
+<p style="font-size:.8rem;font-weight:600;letter-spacing:.04em;color:var(--m-gold);margin-bottom:.6rem">Q${i + 1}</p>
+<p style="font-size:.9rem;color:var(--m-txt);margin-bottom:.75rem;line-height:1.5">${escHtml(q.q)}</p>
+<p style="font-size:.82rem;margin-bottom:.3rem"><span style="color:${iconColor};font-weight:700;margin-right:.35rem">${icon}</span><span style="color:var(--m-muted)">Your answer:</span> <span style="color:var(--m-txt)">${escHtml(userAns || '(no answer)')}</span></p>
+<p style="font-size:.82rem;color:var(--m-muted);margin-bottom:.75rem">Correct answer: <span style="color:var(--m-txt);font-weight:500">${escHtml(q.correct)}</span></p>
+<p style="font-size:.82rem;color:var(--m-muted);line-height:1.55;margin-bottom:.65rem">${rv.explanation}</p>
+<button class="clarify-btn" data-topic="${rv.clarifyTopic}">Clarify</button>
+</div>`;
+            }).join('');
+            return `<p class="scr-eyebrow">Section V &mdash; Review Answers</p>
+<h2 class="scr-h2">Assessment Breakdown</h2>
+${rows}
+<div class="btn-row"><button class="btn-ghost" id="review-back-results">Back to Results</button></div>`;
+        }
+
+        /* ═══════════════════════════ SCORE ═══════════════════════════ */
+        function computeScore() {
+            let correct = 0;
+            A_QUESTIONS.forEach((q, i) => { if (STATE.assessment.answers[i] === q.correct) correct++; });
+            const pct = Math.round((correct / A_QUESTIONS.length) * 100);
+            STATE.assessment.scorePercent = pct;
+            STATE.assessment.passed = pct >= 70;
+            STATE.assessment.isSubmitted = true;
+            if (STATE.assessment.passed) {
+                STATE.verified = true;
+                try {
+                    const saved = JSON.parse(localStorage.getItem('pp_mc_modules') || '{}');
+                    saved['2.2'] = { verified: true, mastery: pct, mastery_percent: pct, status: 'Verified', progress: 100 };
+                    localStorage.setItem('pp_mc_modules', JSON.stringify(saved));
+                } catch (e) { }
+            }
+            updateProgress();
+        }
+
+        /* ═══════════════════════════ HANDLERS ═══════════════════════════ */
+        function advanceScreen(sid) {
+            STATE.currentScreenIndex++;
+            STATE.sectionLastScreenIndex[sid] = STATE.currentScreenIndex;
+            renderScreen();
+        }
+        function attachHandlers() {
+            const $ = id => document.getElementById(id);
+            const on = (id, ev, fn) => { const el = $(id); if (el) el.addEventListener(ev, fn); };
+            // Entry
+            on('begin-btn', 'click', () => goToSection(1, 0));
+            // S1
+            on('s1-next', 'click', () => advanceScreen(1));
+            on('s1-to-s2', 'click', () => goToSection(2, 0));
+            // S2
+            on('s2-next', 'click', () => advanceScreen(2));
+            on('s2-to-s3', 'click', () => goToSection(3, 0));
+            // S3
+            on('s3-next', 'click', () => advanceScreen(3));
+            on('s3-to-s4', 'click', () => goToSection(4, 0));
+            // S4
+            on('s4-next', 'click', () => advanceScreen(4));
+            on('s4-to-s5', 'click', () => goToSection(5, 0));
+            // S5 assessment
+            document.querySelectorAll('[data-ans]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (STATE.assessment.isSubmitted) return;
+                    const qi = STATE.assessment.currentQ;
+                    if (STATE.assessment.answers[qi] === btn.dataset.ans) { STATE.assessment.answers[qi] = null; }
+                    else { STATE.assessment.answers[qi] = btn.dataset.ans; }
+                    renderScreen();
+                });
+            });
+            on('assess-back', 'click', () => { if (STATE.assessment.currentQ > 0) { STATE.assessment.currentQ--; renderScreen(); } });
+            on('assess-next', 'click', () => {
+                const qi = STATE.assessment.currentQ;
+                if (STATE.assessment.answers[qi] === null || STATE.assessment.answers[qi] === undefined) return;
+                STATE.assessment.currentQ++; renderScreen();
+            });
+            on('assess-submit', 'click', () => {
+                const qi = STATE.assessment.currentQ;
+                if (STATE.assessment.answers[qi] === null || STATE.assessment.answers[qi] === undefined) return;
+                computeScore(); renderScreen();
+            });
+            on('result-return', 'click', () => { window.location.href = 'market-context.html'; });
+            on('result-retry', 'click', () => {
+                STATE.assessment.answers = [null, null, null, null, null];
+                STATE.assessment.isSubmitted = false; STATE.assessment.scorePercent = null;
+                STATE.assessment.passed = null; STATE.assessment.currentQ = 0;
+                STATE.showReview = false; renderScreen();
+            });
+            on('result-review-answers', 'click', () => { if (STATE.assessment.isSubmitted) { STATE.showReview = true; renderScreen(); } });
+            on('review-back-results', 'click', () => { STATE.showReview = false; renderScreen(); });
+            // Clarify
+            document.querySelectorAll('.clarify-btn').forEach(btn => {
+                btn.addEventListener('click', () => openClarify(btn.dataset.topic));
+            });
+        }
+
+        /* ═══════════════════════════ INIT ═══════════════════════════ */
+        (function init() {
+            STATE.navHistory = []; STATE.currentSectionId = 0; STATE.currentScreenIndex = 0;
+            visit(0); renderNav(); renderScreen();
+        })();
+    </script>
+</body>
+
+</html>

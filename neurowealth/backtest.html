@@ -97,7 +97,7 @@
                         <div class="bt-field-group">
                             <label class="bt-label">Execution Mode</label>
                             <select class="bt-select" id="preset-selector"
-                                style="border-color: rgba(99, 102, 241, 0.3); background: rgba(99, 102, 241, 0.05);">
+                                style="border-color: rgba(99, 102, 241, 0.3);" class="glass-panel">
                                 <option value="custom" selected>Custom Strategy (Research)</option>
                                 <option value="BTC_4H_PRODUCTION">BTC_4H_PRODUCTION (Deployment-Grade)</option>
                             </select>
@@ -203,7 +203,7 @@
 
                         <div class="bt-indicator-list" id="indicator-list">
                             <!-- Indicator 1 -->
-                            <div class="bt-indicator-card">
+                            <div class="bt-indicator-card" data-indicator-type="SMA">
                                 <div class="bt-indicator-header">
                                     <span class="bt-indicator-badge sma">SMA</span>
                                     <span class="bt-indicator-name">Simple Moving Average</span>
@@ -212,7 +212,7 @@
                                 <div class="bt-indicator-params">
                                     <div class="bt-mini-field">
                                         <label>Period</label>
-                                        <input type="number" value="20" class="bt-input-mini">
+                                        <input type="number" value="20" class="bt-input-mini" data-param-period>
                                     </div>
                                     <div class="bt-mini-field">
                                         <label>Source</label>
@@ -227,7 +227,7 @@
                             </div>
 
                             <!-- Indicator 2 -->
-                            <div class="bt-indicator-card">
+                            <div class="bt-indicator-card" data-indicator-type="RSI">
                                 <div class="bt-indicator-header">
                                     <span class="bt-indicator-badge rsi">RSI</span>
                                     <span class="bt-indicator-name">Relative Strength Index</span>
@@ -236,21 +236,21 @@
                                 <div class="bt-indicator-params">
                                     <div class="bt-mini-field">
                                         <label>Period</label>
-                                        <input type="number" value="14" class="bt-input-mini">
+                                        <input type="number" value="14" class="bt-input-mini" data-param-period>
                                     </div>
                                     <div class="bt-mini-field">
                                         <label>Overbought</label>
-                                        <input type="number" value="70" class="bt-input-mini">
+                                        <input type="number" value="70" class="bt-input-mini" data-param-overbought>
                                     </div>
                                     <div class="bt-mini-field">
                                         <label>Oversold</label>
-                                        <input type="number" value="30" class="bt-input-mini">
+                                        <input type="number" value="30" class="bt-input-mini" data-param-oversold>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Indicator 3 -->
-                            <div class="bt-indicator-card">
+                            <div class="bt-indicator-card" data-indicator-type="MACD">
                                 <div class="bt-indicator-header">
                                     <span class="bt-indicator-badge macd">MACD</span>
                                     <span class="bt-indicator-name">MACD</span>
@@ -259,15 +259,15 @@
                                 <div class="bt-indicator-params">
                                     <div class="bt-mini-field">
                                         <label>Fast</label>
-                                        <input type="number" value="12" class="bt-input-mini">
+                                        <input type="number" value="12" class="bt-input-mini" data-param-fast>
                                     </div>
                                     <div class="bt-mini-field">
                                         <label>Slow</label>
-                                        <input type="number" value="26" class="bt-input-mini">
+                                        <input type="number" value="26" class="bt-input-mini" data-param-slow>
                                     </div>
                                     <div class="bt-mini-field">
                                         <label>Signal</label>
-                                        <input type="number" value="9" class="bt-input-mini">
+                                        <input type="number" value="9" class="bt-input-mini" data-param-signal>
                                     </div>
                                 </div>
                             </div>
@@ -277,38 +277,38 @@
 
                         <!-- Entry Conditions -->
                         <div class="bt-section-label">Entry Conditions</div>
-                        <div class="bt-condition-block">
-                            <div class="bt-condition-row">
-                                <select class="bt-select-sm">
+                        <div class="bt-condition-block" id="entry-rules-block">
+                            <div class="bt-condition-row" data-rule>
+                                <select class="bt-select-sm" data-rule-lhs>
                                     <option>RSI(14)</option>
                                     <option>SMA(20)</option>
                                     <option>MACD Signal</option>
                                     <option>Price</option>
                                 </select>
-                                <select class="bt-select-sm bt-select-op">
+                                <select class="bt-select-sm bt-select-op" data-rule-op>
                                     <option>crosses below</option>
                                     <option>crosses above</option>
                                     <option>&lt;</option>
                                     <option>&gt;</option>
                                     <option>=</option>
                                 </select>
-                                <input type="number" class="bt-input-sm" value="30">
+                                <input type="number" class="bt-input-sm" value="30" data-rule-rhs>
                             </div>
                             <div class="bt-condition-logic">AND</div>
-                            <div class="bt-condition-row">
-                                <select class="bt-select-sm">
+                            <div class="bt-condition-row" data-rule>
+                                <select class="bt-select-sm" data-rule-lhs>
                                     <option selected>Price</option>
                                     <option>RSI(14)</option>
                                     <option>SMA(20)</option>
                                     <option>MACD Signal</option>
                                 </select>
-                                <select class="bt-select-sm bt-select-op">
+                                <select class="bt-select-sm bt-select-op" data-rule-op>
                                     <option selected>crosses above</option>
                                     <option>crosses below</option>
                                     <option>&lt;</option>
                                     <option>&gt;</option>
                                 </select>
-                                <select class="bt-select-sm">
+                                <select class="bt-select-sm" data-rule-rhs>
                                     <option selected>SMA(20)</option>
                                     <option>EMA(20)</option>
                                     <option>VWAP</option>
@@ -318,21 +318,21 @@
 
                         <!-- Exit Conditions -->
                         <div class="bt-section-label">Exit Conditions</div>
-                        <div class="bt-condition-block">
-                            <div class="bt-condition-row">
-                                <select class="bt-select-sm">
+                        <div class="bt-condition-block" id="exit-rules-block">
+                            <div class="bt-condition-row" data-rule>
+                                <select class="bt-select-sm" data-rule-lhs>
                                     <option selected>RSI(14)</option>
                                     <option>SMA(20)</option>
                                     <option>MACD Signal</option>
                                     <option>Price</option>
                                 </select>
-                                <select class="bt-select-sm bt-select-op">
+                                <select class="bt-select-sm bt-select-op" data-rule-op>
                                     <option selected>crosses above</option>
                                     <option>crosses below</option>
                                     <option>&lt;</option>
                                     <option>&gt;</option>
                                 </select>
-                                <input type="number" class="bt-input-sm" value="70">
+                                <input type="number" class="bt-input-sm" value="70" data-rule-rhs>
                             </div>
                         </div>
 
@@ -361,15 +361,16 @@
 
                         <!-- Run Button Area -->
                         <div style="display: flex; gap: 8px; width: 100%;">
-                            <button class="bt-btn-run" id="btn-run-backtest" style="flex: 1; width: auto;">
+                            <button class="bt-btn-run" id="btn-run-backtest" data-demo-id="run-backtest"
+                                style="flex: 1; width: auto;">
                                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                                     <path d="M4 3l11 6-11 6V3z" fill="currentColor" />
                                 </svg>
                                 Run Backtest
                             </button>
                             <button class="bt-btn-run" id="btn-batch-experiments"
-                                style="flex: 0 0 auto; width: auto; padding: 0 16px; background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3);"
-                                title="Batch Experiments (Parameter Sweep)">
+                                style="flex: 0 0 auto; width: auto; padding: 0 16px;  color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3);"
+                                class="glass-panel" title="Batch Experiments (Parameter Sweep)">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                                     <path d="M4 6h16M4 12h16m-7 6h7" stroke="currentColor" stroke-width="2"
                                         stroke-linecap="round" stroke-linejoin="round" />
@@ -385,7 +386,48 @@
                                     <circle cx="12" cy="12" r="4" fill="currentColor" opacity="0.5" />
                                 </svg>
                             </button>
+                            <!-- Indicator Audit Button -->
+                            <button class="bt-btn-run" id="btn-indicator-audit"
+                                style="flex: 0 0 auto; width: auto; padding: 0 12px;  color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); font-size: 0.82rem;"
+                                class="glass-panel" title="Run Indicator Sanity Tests + Signal Trace">
+                                🧪 Audit
+                            </button>
                         </div>
+                        <!-- Trace a Specific Trade -->
+                        <div style="display: flex; gap: 6px; margin-top: 6px; align-items: center;">
+                            <input id="trace-trade-num" type="number" min="1" placeholder="Trade #" class="bt-input"
+                                style="width: 80px; padding: 6px 8px; font-size: 0.8rem; flex: 0 0 auto;">
+                            <button id="btn-trace-trade" class="bt-btn-sm"
+                                style="flex: 1; justify-content: center; padding: 7px 10px; font-size: 0.8rem;  color: #6ee7b7; border: 1px solid rgba(52,211,153,0.2);"
+                                class="glass-panel">
+                                🔍 Trace Trade
+                            </button>
+                        </div>
+                        <!-- Audit Results Panel (collapsed by default) -->
+                        <details id="audit-panel"
+                            style="margin-top: 8px; border: 1px solid rgba(52,211,153,0.2); border-radius: 8px; overflow: hidden;">
+                            <summary
+                                style="padding: 8px 12px; font-size: 0.8rem; font-weight: 600; color: #6ee7b7;  cursor: pointer; user-select: none; display: flex; align-items: center; gap: 6px; list-style: none;"
+                                class="glass-panel">
+                                <span id="audit-summary-icon">🧪</span>
+                                <span id="audit-summary-label">Audit Results</span>
+                                <span id="audit-summary-badge"
+                                    style="margin-left: auto; font-size: 0.72rem; padding: 2px 7px; border-radius: 4px; display: none;"></span>
+                            </summary>
+                            <div id="audit-panel-body"
+                                style="padding: 10px 12px; font-size: 0.76rem; line-height: 1.55; color: #94a3b8; max-height: 420px; overflow-y: auto;">
+                                <span style="color: #475569; font-style: italic;">Run 🧪 Audit to see results
+                                    here.</span>
+                            </div>
+                        </details>
+                        <!-- DEV-ONLY: Sensitivity Test Button (visible only with ?dev=1) -->
+                        <button id="btn-sensitivity-test"
+                            style="display:none; width:100%; margin-top:8px; padding:9px 16px;  color:#c084fc; border:1px solid rgba(168,85,247,0.3); border-radius:8px; font-size:0.78rem; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; transition:all 0.2s; text-align:center;"
+                            class="glass-panel" onmouseover="this.style.background='rgba(168,85,247,0.18)'"
+                            onmouseout="this.style.background='rgba(168,85,247,0.08)'"
+                            title="Runs two backtests with stopLoss 2.0% vs 2.5% and asserts results differ">
+                            🔬 Sensitivity Test (Dev)
+                        </button>
                         <!-- Replay Mode Banner Overlay -->
                         <div id="replay-mode-banner"
                             style="display: none; position: absolute; top: 0; left: 0; right: 0; background: linear-gradient(90deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.2) 50%, rgba(245, 158, 11, 0.1) 100%); border-bottom: 1px solid rgba(245, 158, 11, 0.5); padding: 8px 16px; align-items: center; justify-content: space-between; z-index: 20;">
@@ -402,7 +444,8 @@
                                     static run snapshot. Core engine is paused.</span>
                             </div>
                             <button id="btn-exit-replay" onclick="handleExitReplay()" class="bt-btn-sm"
-                                style="background: rgba(245, 158, 11, 0.2); color: #fde68a; border: 1px solid rgba(245, 158, 11, 0.4); padding: 4px 12px;">
+                                style="color: #fde68a; border: 1px solid rgba(245, 158, 11, 0.4); padding: 4px 12px;"
+                                class="glass-panel">
                                 Exit Replay
                             </button>
                         </div>
@@ -426,7 +469,8 @@
                                 Export Report
                             </button>
                             <button class="bt-btn-sm" id="btn-export-readiness"
-                                style="justify-content: center; padding: 8px; grid-column: span 2; background: rgba(34, 197, 94, 0.08); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.25);">
+                                style="justify-content: center; padding: 8px; grid-column: span 2;  color: #86efac; border: 1px solid rgba(34, 197, 94, 0.25);"
+                                class="glass-panel">
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="margin-right: 4px;">
                                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor"
                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -434,7 +478,8 @@
                                 Export Readiness Report
                             </button>
                             <button class="bt-btn-sm" id="btn-save-version" onclick="openSaveVersionModal()"
-                                style="justify-content: center; padding: 8px; grid-column: span 2; background: rgba(168, 85, 247, 0.08); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3);">
+                                style="justify-content: center; padding: 8px; grid-column: span 2;  color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3);"
+                                class="glass-panel">
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right: 4px;">
                                     <path
                                         d="M10 2H2C1.44772 2 1 2.44772 1 3V9C1 9.55228 1.44772 10 2 10H10C10.5523 10 11 9.55228 11 9V3C11 2.44772 10.5523 2 10 2Z"
@@ -448,7 +493,8 @@
                                 Save to Journal
                             </button>
                             <button class="bt-btn-sm" id="btn-save-run" onclick="openSaveRunModal()"
-                                style="justify-content: center; padding: 8px; grid-column: span 2; background: rgba(16, 185, 129, 0.08); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3);">
+                                style="justify-content: center; padding: 8px; grid-column: span 2;  color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3);"
+                                class="glass-panel">
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right: 4px;">
                                     <path
                                         d="M10 2H2C1.44772 2 1 2.44772 1 3V9C1 9.55228 1.44772 10 2 10H10C10.5523 10 11 9.55228 11 9V3C11 2.44772 10.5523 2 10 2Z"
@@ -464,7 +510,8 @@
                         <div class="bt-export-group" id="compare-group"
                             style="display: none; margin-top: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                             <button class="bt-btn-sm" id="btn-save-baseline"
-                                style="justify-content: center; padding: 8px; background: rgba(56, 189, 248, 0.08); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.2);">
+                                style="justify-content: center; padding: 8px;  color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.2);"
+                                class="glass-panel">
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right: 4px;">
                                     <path
                                         d="M10 2H2C1.44772 2 1 2.44772 1 3V9C1 9.55228 1.44772 10 2 10H10C10.5523 10 11 9.55228 11 9V3C11 2.44772 10.5523 2 10 2Z"
@@ -476,7 +523,8 @@
                                 Save Baseline
                             </button>
                             <button class="bt-btn-sm" id="btn-compare-runs" disabled
-                                style="justify-content: center; padding: 8px; opacity: 0.5; background: rgba(99, 102, 241, 0.08); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3);">
+                                style="justify-content: center; padding: 8px; opacity: 0.5;  color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3);"
+                                class="glass-panel">
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right: 4px;">
                                     <path d="M2.5 8L1.5 9L2.5 10" stroke="currentColor" stroke-width="1.5"
                                         stroke-linecap="round" stroke-linejoin="round" />
@@ -514,11 +562,13 @@
                                     Import Config
                                 </button>
                                 <button class="bt-btn-sm" id="btn-export-pack-full"
-                                    style="justify-content: center; padding: 6px; font-size: 0.75rem; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.2); color: #38bdf8;">
+                                    style="justify-content: center; padding: 6px; font-size: 0.75rem;  border: 1px solid rgba(56, 189, 248, 0.2); color: #38bdf8;"
+                                    class="glass-panel">
                                     Export Strategy Pack
                                 </button>
                                 <button class="bt-btn-sm" id="btn-import-pack-full"
-                                    style="justify-content: center; padding: 6px; font-size: 0.75rem; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.2); color: #38bdf8;">
+                                    style="justify-content: center; padding: 6px; font-size: 0.75rem;  border: 1px solid rgba(56, 189, 248, 0.2); color: #38bdf8;"
+                                    class="glass-panel">
                                     Import Strategy Pack
                                 </button>
                             </div>
@@ -550,10 +600,12 @@
                     <div class="bt-chart-container" id="main-chart">
                         <!-- Replay Mode Banner -->
                         <div id="replay-mode-banner"
-                            style="display: none; position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 100; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.5); padding: 8px 16px; border-radius: 6px; color: #fbbf24; font-size: 0.8rem; font-weight: 500; align-items: center; gap: 12px; backdrop-filter: blur(4px);">
+                            style="display: none; position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 100;  border: 1px solid rgba(245, 158, 11, 0.5); padding: 8px 16px; border-radius: 6px; color: #fbbf24; font-size: 0.8rem; font-weight: 500; align-items: center; gap: 12px; backdrop-filter: blur(4px);"
+                            class="glass-panel">
                             <span>REPLAY MODE — displaying saved run (no engine re-run)</span>
                             <button id="btn-exit-replay"
-                                style="background: rgba(251, 191, 36, 0.2); border: 1px solid rgba(251, 191, 36, 0.4); padding: 4px 10px; border-radius: 4px; color: #fbbf24; cursor: pointer; font-size: 0.75rem; font-weight: 600; transition: all 0.2s;">Exit
+                                style="border: 1px solid rgba(251, 191, 36, 0.4); padding: 4px 10px; border-radius: 4px; color: #fbbf24; cursor: pointer; font-size: 0.75rem; font-weight: 600; transition: all 0.2s;"
+                                class="glass-panel">Exit
                                 Replay</button>
                         </div>
                         <!-- Candlestick chart area -->
@@ -646,7 +698,8 @@
 
                         <!-- Production Notes Panel (Initially Hidden) -->
                         <div class="bt-production-notes" id="production-notes"
-                            style="display: none; margin-top: 16px; padding: 14px; background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.15); border-radius: 10px;">
+                            style="display: none; margin-top: 16px; padding: 14px;  border: 1px solid rgba(99, 102, 241, 0.15); border-radius: 10px;"
+                            class="glass-panel">
                             <div class="bt-section-label" style="color: #818cf8; margin-bottom: 8px;">Deployment Notes
                             </div>
                             <ul
@@ -791,7 +844,8 @@
 
                         <!-- Strategy Health Memory -->
                         <button class="bt-btn bt-btn-outline" id="btn-strategy-health"
-                            style="width:100%; margin-bottom:12px; display:flex; align-items:center; justify-content:center; gap:6px; padding:10px 16px; font-size:0.8rem; font-weight:500; color:#94a3b8; background:rgba(99,102,241,0.04); border:1px solid rgba(99,102,241,0.15); border-radius:8px; cursor:pointer; transition:all 0.2s; font-family:'Inter',sans-serif;"
+                            style="width:100%; margin-bottom:12px; display:flex; align-items:center; justify-content:center; gap:6px; padding:10px 16px; font-size:0.8rem; font-weight:500; color:#94a3b8;  border:1px solid rgba(99,102,241,0.15); border-radius:8px; cursor:pointer; transition:all 0.2s; font-family:'Inter',sans-serif;"
+                            class="glass-panel"
                             onmouseover="this.style.borderColor='rgba(99,102,241,0.35)';this.style.color='#c4b5fd';"
                             onmouseout="this.style.borderColor='rgba(99,102,241,0.15)';this.style.color='#94a3b8';">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
@@ -1057,11 +1111,13 @@
                             Load
                         </button>
                         <button class="bt-btn-sm" id="btn-journal-compare" onclick="handleJournalCompare()" disabled
-                            style="justify-content: center; padding: 6px; font-size: 0.75rem; background: rgba(99,102,241,0.05); color: #818cf8; border-color: rgba(99,102,241,0.2);">
+                            style="justify-content: center; padding: 6px; font-size: 0.75rem;  color: #818cf8; border-color: rgba(99,102,241,0.2);"
+                            class="glass-panel">
                             Compare
                         </button>
                         <button class="bt-btn-sm" id="btn-journal-delete" onclick="handleJournalDelete()" disabled
-                            style="justify-content: center; padding: 6px; font-size: 0.75rem; background: rgba(248,113,113,0.05); color: #f87171; border-color: rgba(248,113,113,0.2);">
+                            style="justify-content: center; padding: 6px; font-size: 0.75rem;  color: #f87171; border-color: rgba(248,113,113,0.2);"
+                            class="glass-panel">
                             Delete
                         </button>
                     </div>
@@ -1072,8 +1128,8 @@
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                         <h3 class="bt-section-title" style="margin: 0;">Run History</h3>
-                        <span class="bt-badge"
-                            style="background: rgba(16, 185, 129, 0.1); color: #34d399; border-color: rgba(16, 185, 129, 0.2);">Snapshots</span>
+                        <span class="bt-badge" style="color: #34d399; border-color: rgba(16, 185, 129, 0.2);"
+                            class="glass-panel">Snapshots</span>
                     </div>
 
                     <div id="runs-list"
@@ -1092,12 +1148,14 @@
                             Open Run
                         </button>
                         <button class="bt-btn-sm" id="btn-run-compare" disabled onclick="handleRunCompare()"
-                            style="justify-content: center; padding: 6px; font-size: 0.75rem; background: rgba(99,102,241,0.05); color: #818cf8; border-color: rgba(99,102,241,0.2);">
+                            style="justify-content: center; padding: 6px; font-size: 0.75rem;  color: #818cf8; border-color: rgba(99,102,241,0.2);"
+                            class="glass-panel">
                             Compare
                         </button>
                     </div>
                     <button class="bt-btn-sm" id="btn-run-delete" disabled onclick="handleRunDelete()"
-                        style="width: 100%; justify-content: center; padding: 6px; font-size: 0.75rem; background: rgba(248,113,113,0.05); color: #f87171; border-color: rgba(248,113,113,0.2);">
+                        style="width: 100%; justify-content: center; padding: 6px; font-size: 0.75rem;  color: #f87171; border-color: rgba(248,113,113,0.2);"
+                        class="glass-panel">
                         Delete Run
                     </button>
                 </div>
@@ -1265,7 +1323,8 @@
                         </div>
                     </div>
                     <div class="bt-chart-container"
-                        style="height: 300px; background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(226, 232, 240, 0.05); border-radius: 8px;">
+                        style="height: 300px;  border: 1px solid rgba(226, 232, 240, 0.05); border-radius: 8px;"
+                        class="glass-panel">
                         <canvas id="compare-chart-canvas"></canvas>
                     </div>
                 </div>
@@ -1308,7 +1367,8 @@
                         <div id="batch-params-list" style="display: flex; flex-direction: column; gap: 12px;">
                             <!-- Stop Loss -->
                             <div class="batch-param-row"
-                                style="background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(226, 232, 240, 0.1); border-radius: 6px; padding: 12px;">
+                                style="border: 1px solid rgba(226, 232, 240, 0.1); border-radius: 6px; padding: 12px;"
+                                class="glass-panel">
                                 <label
                                     style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #e2e8f0; margin-bottom: 12px; cursor: pointer;">
                                     <input type="checkbox" id="batch-use-sl" class="bt-checkbox">
@@ -1330,7 +1390,8 @@
 
                             <!-- Take Profit -->
                             <div class="batch-param-row"
-                                style="background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(226, 232, 240, 0.1); border-radius: 6px; padding: 12px;">
+                                style="border: 1px solid rgba(226, 232, 240, 0.1); border-radius: 6px; padding: 12px;"
+                                class="glass-panel">
                                 <label
                                     style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #e2e8f0; margin-bottom: 12px; cursor: pointer;">
                                     <input type="checkbox" id="batch-use-tp" class="bt-checkbox">
@@ -1352,7 +1413,8 @@
 
                             <!-- Position Size -->
                             <div class="batch-param-row"
-                                style="background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(226, 232, 240, 0.1); border-radius: 6px; padding: 12px;">
+                                style="border: 1px solid rgba(226, 232, 240, 0.1); border-radius: 6px; padding: 12px;"
+                                class="glass-panel">
                                 <label
                                     style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #e2e8f0; margin-bottom: 12px; cursor: pointer;">
                                     <input type="checkbox" id="batch-use-pos" class="bt-checkbox">
@@ -1374,8 +1436,8 @@
                         </div>
                     </div>
 
-                    <div
-                        style="background: rgba(99, 102, 241, 0.05); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 8px; padding: 16px;">
+                    <div style="border: 1px solid rgba(99, 102, 241, 0.2); border-radius: 8px; padding: 16px;"
+                        class="glass-panel">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
                             <span style="font-size: 0.85rem; color: #cbd5e1;">Total Combinations:</span>
                             <span id="batch-total-runs"
@@ -1407,15 +1469,15 @@
 
                     <!-- Progress Bar (Hidden initially) -->
                     <div id="batch-progress-container"
-                        style="display: none; margin-bottom: 24px; background: rgba(15, 23, 42, 0.6); padding: 16px; border-radius: 8px; border: 1px solid rgba(226, 232, 240, 0.05);">
+                        style="display: none; margin-bottom: 24px;  padding: 16px; border-radius: 8px; border: 1px solid rgba(226, 232, 240, 0.05);"
+                        class="glass-panel">
                         <div
                             style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem;">
                             <span id="batch-status-text" style="color: #e2e8f0;">Starting batch...</span>
                             <span id="batch-status-count" style="color: #818cf8; font-family: 'JetBrains Mono';">0 /
                                 0</span>
                         </div>
-                        <div
-                            style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+                        <div style="height: 6px;  border-radius: 3px; overflow: hidden;" class="glass-panel">
                             <div id="batch-progress-bar"
                                 style="height: 100%; width: 0%; background: #6366f1; transition: width 0.2s ease;">
                             </div>
@@ -1423,8 +1485,8 @@
                     </div>
 
                     <!-- Filters -->
-                    <div
-                        style="display: flex; gap: 16px; margin-bottom: 16px; padding: 12px; background: rgba(15, 23, 42, 0.4); border-radius: 6px; align-items: center;">
+                    <div style="display: flex; gap: 16px; margin-bottom: 16px; padding: 12px;  border-radius: 6px; align-items: center;"
+                        class="glass-panel">
                         <span
                             style="font-size: 0.75rem; color: #94a3b8; font-weight: 500; text-transform: uppercase;">Filters:</span>
                         <label
@@ -1541,8 +1603,8 @@
 
                 <!-- Run Pending Phase (AI JSON populated) -->
                 <div id="ad-propose-results" style="display: none; flex-direction: column; gap: 16px;">
-                    <div
-                        style="padding: 16px; background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(168, 85, 247, 0.2); border-radius: 8px;">
+                    <div style="padding: 16px;  border: 1px solid rgba(168, 85, 247, 0.2); border-radius: 8px;"
+                        class="glass-panel">
                         <div
                             style="color: #c084fc; font-weight: 600; font-size: 0.85rem; margin-bottom: 8px; display: flex; justify-content: space-between;">
                             <span>AI Sweep Plan Generated</span>
@@ -1556,15 +1618,15 @@
                     </div>
 
                     <div id="ad-progress-container"
-                        style="display: none; background: rgba(15, 23, 42, 0.6); padding: 16px; border-radius: 8px; border: 1px solid rgba(226, 232, 240, 0.05);">
+                        style="display: none;  padding: 16px; border-radius: 8px; border: 1px solid rgba(226, 232, 240, 0.05);"
+                        class="glass-panel">
                         <div
                             style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem;">
                             <span id="ad-status-text" style="color: #e2e8f0;">Running permutations...</span>
                             <span id="ad-status-count" style="color: #818cf8; font-family: 'JetBrains Mono';">0 /
                                 0</span>
                         </div>
-                        <div
-                            style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+                        <div style="height: 6px;  border-radius: 3px; overflow: hidden;" class="glass-panel">
                             <div id="ad-progress-bar"
                                 style="height: 100%; width: 0%; background: linear-gradient(90deg, #8b5cf6, #38bdf8); transition: width 0.2s ease;">
                             </div>
@@ -1579,10 +1641,10 @@
                 <!-- Final Summary Layout -->
                 <div id="ad-final-summary" style="display: none; flex-direction: column; gap: 20px;">
                     <!-- A) Winner vs Control delta table -->
-                    <div
-                        style="border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 8px; background: rgba(15, 23, 42, 0.4); overflow: hidden;">
-                        <div
-                            style="padding: 12px 16px; background: rgba(56, 189, 248, 0.1); border-bottom: 1px solid rgba(56, 189, 248, 0.2); font-weight: 600; font-size: 0.85rem; color: #38bdf8;">
+                    <div style="border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 8px;  overflow: hidden;"
+                        class="glass-panel">
+                        <div style="padding: 12px 16px;  border-bottom: 1px solid rgba(56, 189, 248, 0.2); font-weight: 600; font-size: 0.85rem; color: #38bdf8;"
+                            class="glass-panel">
                             Winner vs Control Delta
                         </div>
                         <table style="width: 100%; text-align: left; border-collapse: collapse; font-size: 0.8rem;">
@@ -1603,8 +1665,8 @@
                     <!-- B) Top 3 Configs + C) Stability Notes -->
                     <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px;">
                         <!-- Top 3 -->
-                        <div
-                            style="border: 1px solid rgba(226, 232, 240, 0.1); border-radius: 8px; background: rgba(15, 23, 42, 0.4); padding: 16px;">
+                        <div style="border: 1px solid rgba(226, 232, 240, 0.1); border-radius: 8px;  padding: 16px;"
+                            class="glass-panel">
                             <div style="font-size: 0.85rem; color: #e2e8f0; font-weight: 600; margin-bottom: 12px;">Top
                                 3 Parameter Sets</div>
                             <div id="ad-top-3-list"
@@ -1614,8 +1676,8 @@
                         </div>
 
                         <!-- Stability Notes -->
-                        <div
-                            style="border: 1px solid rgba(168, 85, 247, 0.2); border-radius: 8px; background: rgba(168, 85, 247, 0.05); padding: 16px;">
+                        <div style="border: 1px solid rgba(168, 85, 247, 0.2); border-radius: 8px;  padding: 16px;"
+                            class="glass-panel">
                             <div style="font-size: 0.85rem; color: #c084fc; font-weight: 600; margin-bottom: 12px;">
                                 Algorithmic Insights</div>
                             <ul id="ad-stability-notes"
@@ -1633,11 +1695,13 @@
                     <!-- D) Actions -->
                     <div style="display: flex; gap: 12px; margin-top: 8px;">
                         <button class="bt-btn-sm" id="btn-ad-open-winner"
-                            style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); padding: 8px 16px;">
+                            style="color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); padding: 8px 16px;"
+                            class="glass-panel">
                             Open Winner
                         </button>
                         <button class="bt-btn-sm" id="btn-ad-compare-winner"
-                            style="background: rgba(99, 102, 241, 0.1); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); padding: 8px 16px;">
+                            style="color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); padding: 8px 16px;"
+                            class="glass-panel">
                             Compare Winner vs Control
                         </button>
                     </div>
@@ -1655,7 +1719,7 @@
             <!-- Header -->
             <div class="bt-modal-header" style="flex-shrink: 0;">
                 <div class="bt-modal-title-group">
-                    <div class="bt-modal-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">
+                    <div class="bt-modal-icon" style="color: #34d399;" class="glass-panel">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                             <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5" fill="none" />
                             <path d="M7 7.5L13 10L7 12.5Z" fill="currentColor" />
@@ -1957,6 +2021,7 @@
     </div>
 
     <script src="script.js"></script>
+    <script src="run-config-shared.js"></script>
     <script src="backtest-engine.js"></script>
     <script src="strategy-health.js"></script>
     <script src="capital-readiness.js"></script>
@@ -1967,11 +2032,13 @@
     <script src="paper-trading.js"></script>
     <script src="data-feed.js"></script>
     <script src="paper-execution-engine.js"></script>
+    <script src="paper-execution-engine-instance.js"></script>
     <script src="live-execution-adapter.js"></script>
     <script src="paper-execution.js"></script>
     <script src="portfolio-manager.js"></script>
     <script src="portfolio-attribution.js"></script>
     <script src="portfolio-risk-overlay.js"></script>
+    <script type="module" src="demo-controller.js"></script>
 </body>
 
 </html>

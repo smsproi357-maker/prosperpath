@@ -193,7 +193,8 @@ async function handleCredentialResponse(response) {
 
         // Save Session
         window.currentUser = userData.user;
-        localStorage.setItem('auth_token', userData.session_token);
+        sessionStorage.setItem('auth_token', userData.session_token);
+        localStorage.removeItem('auth_token');
         localStorage.setItem('user_profile', JSON.stringify(userData.user));
 
         // Note: For simplicity, we might just store the User info returned from verification
@@ -219,6 +220,7 @@ async function handleCredentialResponse(response) {
 // Handle Sign Out
 function handleSignOut() {
     window.currentUser = null;
+    sessionStorage.removeItem('auth_token');
     localStorage.removeItem('auth_token');
     localStorage.removeItem('user_profile');
     google.accounts.id.disableAutoSelect(); // Prevent auto-relogin
@@ -234,7 +236,7 @@ async function loadUserData() {
     if (!window.currentUser) return;
 
     try {
-        const token = localStorage.getItem('auth_token');
+        const token = sessionStorage.getItem('auth_token') || localStorage.getItem('auth_token');
         const res = await fetch(`${WORKER_API_URL}/user/data`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -274,7 +276,7 @@ function parseJwt(token) {
 // Auto-Load on startup if token exists
 // (This requires validating token validity, typically done by trying to fetch user data)
 window.addEventListener('load', async () => {
-    const token = localStorage.getItem('auth_token');
+    const token = sessionStorage.getItem('auth_token') || localStorage.getItem('auth_token');
     const profile = localStorage.getItem('user_profile');
 
     if (token && profile) {
@@ -289,6 +291,7 @@ window.addEventListener('load', async () => {
             await loadUserData();
         } catch (e) {
             console.error('Failed to restore session:', e);
+            sessionStorage.removeItem('auth_token');
             localStorage.removeItem('auth_token');
             localStorage.removeItem('user_profile');
         }
