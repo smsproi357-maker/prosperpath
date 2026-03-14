@@ -3517,22 +3517,17 @@ Strict Override Boundaries (do not exceed):
 
 Limit to MAXIMUM 12 runs total (including CONTROL).`;
 
-            let apiKey = window.localStorage ? window.localStorage.getItem('prosporous_api_key') : null;
-            if (!apiKey || apiKey === 'null' || !apiKey.trim()) {
-                apiKey = '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';
-            }
+            // All AI calls go through the server-side Worker proxy.
+            // API keys (SARVAM_API_KEY / OPENROUTER_API_KEY) are managed exclusively as Worker env secrets.
+            const workerBase = window.WORKER_API_URL || 'https://neurowealth-worker.smsproi357.workers.dev/api';
 
             try {
-                const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                const response = await fetch(`${workerBase}/ai/chat`, {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${apiKey}`,
-                        'HTTP-Referer': window.location.origin || 'https://prosperpath.ai',
-                        'X-Title': 'ProsperPath Auto-Discovery',
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        model: 'z-ai/glm-4.5-air:free',
                         messages: [
                             { role: 'system', content: systemPrompt },
                             { role: 'user', content: 'Generate the structured JSON proposal now.' }

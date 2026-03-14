@@ -1,0 +1,269 @@
+<!-- ============================================================
+     Module 4.1 · Section III — Liquidity Forms
+     Self-contained fragment. Injected by module-shell.html.
+============================================================ -->
+
+<style>
+    .s3-screen {
+        width: 100%;
+        max-width: 640px;
+        animation: s3Fade .22s ease both
+    }
+
+    @keyframes s3Fade {
+        from { opacity: 0; transform: translateY(5px) }
+        to { opacity: 1; transform: translateY(0) }
+    }
+
+    .s3-eyebrow {
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--m-muted);
+        margin-bottom: 1.2rem
+    }
+
+    .s3-h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(1.5rem, 3.8vw, 2.1rem);
+        font-weight: 700;
+        color: var(--m-txt);
+        letter-spacing: -.02em;
+        line-height: 1.15;
+        margin-bottom: .85rem
+    }
+
+    .s3-body {
+        font-size: .95rem;
+        color: var(--m-txt);
+        line-height: 1.7;
+        margin-bottom: 1.3rem
+    }
+
+    .s3-body p { margin-bottom: .5rem }
+    .s3-body p:last-child { margin-bottom: 0 }
+
+    /* Source cards */
+    .s3-sources {
+        display: flex;
+        flex-direction: column;
+        gap: .6rem;
+        margin: 1.2rem 0 1.5rem
+    }
+
+    .s3-source-card {
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-left: 3px solid var(--m-gold-line);
+        border-radius: 4px;
+        padding: .9rem 1.1rem;
+        opacity: 0;
+        transform: translateX(-6px);
+        transition: opacity .28s ease, transform .28s ease
+    }
+
+    .s3-source-card.visible {
+        opacity: 1;
+        transform: translateX(0)
+    }
+
+    .s3-source-name {
+        font-size: .72rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: var(--m-gold);
+        margin-bottom: .3rem
+    }
+
+    .s3-source-desc {
+        font-size: .83rem;
+        color: var(--m-muted);
+        line-height: 1.45
+    }
+
+    /* Principle chain */
+    .s3-chain {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0;
+        margin: 1.5rem 0;
+        padding: 1.1rem 1.25rem;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdrhi);
+        border-radius: 5px
+    }
+
+    .s3-chain-node {
+        font-size: .78rem;
+        font-weight: 600;
+        color: var(--m-muted);
+        opacity: 0;
+        transition: opacity .3s ease, color .3s ease
+    }
+
+    .s3-chain-node.lit {
+        color: var(--m-gold);
+        opacity: 1
+    }
+
+    .s3-chain-arrow {
+        font-size: .65rem;
+        color: var(--m-muted);
+        opacity: .5;
+        padding: 0 .5rem;
+        user-select: none
+    }
+
+    /* Takeaway */
+    .s3-takeaway {
+        font-size: .8rem;
+        color: var(--m-muted);
+        text-align: center;
+        opacity: .85;
+        margin-bottom: 1.75rem;
+        letter-spacing: .01em
+    }
+
+    /* Button row */
+    .s3-btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem
+    }
+
+    .s3-btn-prev {
+        background: transparent;
+        border: 1px solid var(--m-bdr);
+        color: var(--m-muted);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 500;
+        letter-spacing: .04em;
+        padding: .62rem 1.2rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: border-color var(--m-tr), color var(--m-tr)
+    }
+
+    .s3-btn-prev:hover {
+        border-color: var(--m-bdrhi);
+        color: var(--m-txt)
+    }
+
+    .s3-btn-next {
+        background: transparent;
+        border: 1px solid var(--m-gold-line);
+        color: var(--m-gold);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        padding: .65rem 1.5rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background .2s, border-color .2s
+    }
+
+    .s3-btn-next:hover {
+        background: var(--m-gold-dim);
+        border-color: var(--m-gold)
+    }
+</style>
+
+<div class="s3-screen" id="s3-root">
+
+    <!-- Eyebrow -->
+    <p class="s3-eyebrow">Section III · Why Liquidity Exists</p>
+
+    <!-- Heading -->
+    <h2 class="s3-h1">Order Clusters Create
+        <button class="clarify-btn" onclick="openClarify('liquidity')" aria-label="Clarify: Liquidity">Liquidity</button>
+    </h2>
+
+    <!-- Body -->
+    <div class="s3-body">
+        <p>When many orders gather at the same level, that area becomes
+            <button class="clarify-btn" onclick="openClarify('liquidity')" aria-label="Clarify: Liquidity">liquidity.</button>
+        </p>
+        <p>These clusters form from different types of orders, all placed at similar price levels for different reasons.</p>
+    </div>
+
+    <!-- Source cards -->
+    <div class="s3-sources">
+        <div class="s3-source-card" id="s3-sc-0">
+            <p class="s3-source-name">Stop Losses</p>
+            <p class="s3-source-desc">Traders place stop losses just beyond obvious levels to limit their risk.</p>
+        </div>
+        <div class="s3-source-card" id="s3-sc-1">
+            <p class="s3-source-name">Breakout Orders</p>
+            <p class="s3-source-desc">Traders place buy or sell orders expecting price to break beyond key levels.</p>
+        </div>
+        <div class="s3-source-card" id="s3-sc-2">
+            <p class="s3-source-name">Pending Limit Orders</p>
+            <p class="s3-source-desc">Traders wait at specific price levels expecting a reaction or continuation.</p>
+        </div>
+    </div>
+
+    <!-- Chain visualization -->
+    <div class="s3-chain" id="s3-chain">
+        <span class="s3-chain-node" id="s3-cn-0">Many orders at same level</span>
+        <span class="s3-chain-arrow">→</span>
+        <span class="s3-chain-node" id="s3-cn-1">Order cluster forms</span>
+        <span class="s3-chain-arrow">→</span>
+        <span class="s3-chain-node" id="s3-cn-2">
+            <button class="clarify-btn" onclick="openClarify('liquidityPool')" aria-label="Clarify: Liquidity Pool">Liquidity pool</button>
+        </span>
+    </div>
+
+    <!-- Takeaway -->
+    <p class="s3-takeaway">Liquidity forms where many orders exist.</p>
+
+    <!-- Navigation -->
+    <div class="s3-btn-row">
+        <button class="s3-btn-prev" onclick="goTo(2, 0)">&larr; Previous</button>
+        <button class="s3-btn-next" onclick="goTo(4, 0)">Next Section &rarr;</button>
+    </div>
+
+</div>
+
+<script>
+    (function () {
+
+        /* ── Register Clarify terms ─────────────────────────── */
+        registerClarifyTerms({
+            liquidity: {
+                term: 'Liquidity',
+                explanation: 'Liquidity refers to an area on the chart where a concentration of orders exists. These order clusters are targets for price because executing large trades requires the orders to be there.',
+                example: 'Equal highs form on a chart. Many stop losses and breakout orders accumulate above those highs. That area becomes a liquidity pool.',
+                misc: '<strong>Liquidity is not a random feature.</strong> It forms at predictable, observable levels where traders naturally place their orders.'
+            },
+            liquidityPool: {
+                term: 'Liquidity Pool',
+                explanation: 'A liquidity pool is a concentrated area of orders. It forms when many market participants place stops, limit orders, or breakout orders at the same level.',
+                example: 'Above a series of equal highs, hundreds of stop losses accumulate — this forms a liquidity pool above those highs.',
+                misc: '<strong>A pool does not guarantee price will reach it.</strong> However, markets have a mechanical tendency to move toward where orders exist.'
+            }
+        });
+
+        /* ── Animate source cards ──────────────────────────── */
+        [0, 1, 2].forEach(function (i) {
+            setTimeout(function () {
+                var el = document.getElementById('s3-sc-' + i);
+                if (el) el.classList.add('visible');
+            }, 150 + i * 130);
+        });
+
+        /* ── Animate principle chain ───────────────────────── */
+        [0, 1, 2].forEach(function (i) {
+            setTimeout(function () {
+                var el = document.getElementById('s3-cn-' + i);
+                if (el) el.classList.add('lit');
+            }, 650 + i * 250);
+        });
+
+    })();
+</script>

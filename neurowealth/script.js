@@ -1,7 +1,26 @@
 // -------------------- Global Config --------------------
-const FINNHUB_API_KEY = 'd5kk25pr01qt47mdmqdgd5kk25pr01qt47mdmqe0';
+const FINNHUB_API_KEY = window.FINNHUB_API_KEY || '';
 window.WORKER_BASE_URL = 'https://neurowealth-worker.smsproi357.workers.dev';
 window.WORKER_API_URL = `${window.WORKER_BASE_URL}/api`;
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function sanitizeUrl(raw) {
+    try {
+        const parsed = new URL(raw, window.location.origin);
+        if (parsed.protocol === 'http:' || parsed.protocol === 'https:') return parsed.href;
+    } catch (e) {
+        // invalid URL
+    }
+    return '#';
+}
 
 // -------------------- Global News Data --------------------
 window.aiAnalysis = {
@@ -139,7 +158,7 @@ window.Watchlist = {
     },
     sync: async (list) => {
         try {
-            const token = localStorage.getItem('auth_token');
+            const token = sessionStorage.getItem('auth_token') || localStorage.getItem('auth_token');
             if (!token) return;
 
             await fetch(`${window.WORKER_API_URL}/user/watchlist`, {
@@ -2684,9 +2703,9 @@ function initCryptoDetail() {
         const newsFeed = document.getElementById('ai-news-feed');
         if (newsFeed) {
             newsFeed.innerHTML = analysis.news.map((n) => `
-                <a href="${n.url || '#'}" target="_blank" class="news-item" style="text-decoration: none; display: block; cursor: pointer;">
-                    <div style="font-weight: 500; color: var(--color-text-primary); transition: color 0.2s;">${n.title}</div>
-                    <div class="news-date">${n.date} • ${n.source}</div>
+                <a href="${sanitizeUrl(n.url || '#')}" target="_blank" rel="noopener noreferrer" class="news-item" style="text-decoration: none; display: block; cursor: pointer;">
+                    <div style="font-weight: 500; color: var(--color-text-primary); transition: color 0.2s;">${escapeHtml(n.title)}</div>
+                    <div class="news-date">${escapeHtml(n.date)} • ${escapeHtml(n.source)}</div>
                 </a>
             `).join('');
         }
@@ -2857,23 +2876,28 @@ async function showReaderModal(article) {
     `;
     modal.classList.add('active');
 
+    const safeArticleUrl = sanitizeUrl(article.url);
+    const safeTitle = escapeHtml(article.title);
+    const safeSource = escapeHtml(article.source || 'Unknown Source');
+    const safeDate = escapeHtml(article.date || 'Recent');
+
     // Fetch and Extract
-    const rawHtml = await fetchArticleContent(article.url);
+    const rawHtml = await fetchArticleContent(safeArticleUrl);
 
     if (rawHtml && rawHtml.length > 500) {
         const cleanHtml = extractContent(rawHtml);
 
         contentContainer.innerHTML = `
             <article>
-                <h1>${article.title}</h1>
+                <h1>${safeTitle}</h1>
                 <div class="meta">
-                    <span>${article.source || 'Unknown Source'}</span>
+                    <span>${safeSource}</span>
                     <span>•</span>
-                    <span>${article.date || 'Recent'}</span>
+                    <span>${safeDate}</span>
                 </div>
                 ${cleanHtml}
                 <div class="reader-original-link">
-                    <a href="${article.url}" target="_blank">View Original Source</a>
+                    <a href="${safeArticleUrl}" target="_blank" rel="noopener noreferrer">View Original Source</a>
                 </div>
             </article>
         `;
@@ -2882,7 +2906,7 @@ async function showReaderModal(article) {
         contentContainer.innerHTML = `
             <div class="reader-loading">
                 <p>Could not load full content for this site (Security Blocks or Empty).</p>
-                <a href="${article.url}" target="_blank" class="btn btn-primary" style="margin-top:1rem;">Open on Source Site</a>
+                <a href="${safeArticleUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="margin-top:1rem;">Open on Source Site</a>
             </div>
         `;
     }
@@ -2911,7 +2935,8 @@ async function initCryptoNews() {
 
     // Safety check if news fetch failed or index out of bounds
     if (!newsItems || newsItems.length === 0 || !newsItems[articleIndex]) {
-        container.innerHTML = `<div class="article-header"><h1>Article Unavailable</h1><p>Could not retrieve this news item. It may have expired.</p><a href="crypto-detail.html#id=${coinId}" class="btn btn-primary">Return to ${coinId}</a></div>`;
+        const safeCoinFallback = escapeHtml(coinId);
+        container.innerHTML = `<div class="article-header"><h1>Article Unavailable</h1><p>Could not retrieve this news item. It may have expired.</p><a href="crypto-detail.html#id=${encodeURIComponent(coinId)}" class="btn btn-primary">Return to ${safeCoinFallback}</a></div>`;
         return;
     }
 
@@ -2919,15 +2944,21 @@ async function initCryptoNews() {
 
     // Store article on the element for the Reader View click handler to access
     container.articleData = article;
+    const safeCoin = escapeHtml(coinId.toUpperCase());
+    const safeSource = escapeHtml(article.source);
+    const safeTitle = escapeHtml(article.title);
+    const safeDate = escapeHtml(article.date);
+    const safeBody = escapeHtml(article.body || 'Click the link above to read the full details of this market-moving event.');
+    const safeUrl = sanitizeUrl(article.url || '');
 
     setTimeout(() => {
         container.innerHTML = `
             <article>
                 <header class="article-header">
-                    <span class="source-badge">${article.source}</span>
-                    <h1 data-animate>${article.title}</h1>
+                    <span class="source-badge">${safeSource}</span>
+                    <h1 data-animate>${safeTitle}</h1>
                     <div class="article-meta">
-                        <span>${article.date}</span>
+                        <span>${safeDate}</span>
                         <span>•</span>
                         <span>2 min read</span>
                         <span>•</span>
@@ -2936,20 +2967,20 @@ async function initCryptoNews() {
                 </header>
                 
                 <div class="article-content" data-animate>
-                    <p><strong>(AI Summary)</strong> This update on ${coinId.toUpperCase()} is brought to you by ${article.source}. Below is the latest development affecting the price action and sentiment.</p>
+                    <p><strong>(AI Summary)</strong> This update on ${safeCoin} is brought to you by ${safeSource}. Below is the latest development affecting the price action and sentiment.</p>
                     
                     <div class="card" style="border-left: 4px solid var(--color-accent); margin: 2rem 0; display:flex; flex-direction:column; gap:1rem;">
                        <div style="font-weight:600;">Read the full story:</div>
                        <div style="display:flex; gap:1rem; flex-wrap:wrap;">
                            <button onclick="showReaderModal(this.closest('#news-container').articleData)" class="btn btn-primary">📖 Read Here (Reader View)</button>
-                           <a href="${article.url}" target="_blank" class="btn btn-secondary">External Link ↗</a>
+                           <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">External Link ↗</a>
                        </div>
                     </div>
                     
-                    <p>${article.body || 'Click the link above to read the full details of this market-moving event.'}</p>
+                    <p>${safeBody}</p>
 
                     <h2>Market Context</h2>
-                    <p>Traders are monitoring ${coinId} closely following this news. Live sentiment analysis suggests this could be a pivot point for short-term price action.</p>
+                    <p>Traders are monitoring ${safeCoin} closely following this news. Live sentiment analysis suggests this could be a pivot point for short-term price action.</p>
                 </div>
             </article>
         `;
@@ -3834,25 +3865,76 @@ function initGuideLoader() {
         guideId = window.location.hash.split('id=')[1].split('&')[0];
     }
 
-    if (!guideId || !guideData[guideId]) return;
+    // Elements
+    const gridEl = document.getElementById('wealth-guides-grid');
+    const indexHeader = document.getElementById('guide-index-header');
+    const indexContent = document.getElementById('guide-index-content');
+    const detailHeader = document.getElementById('guide-detail-header');
+    const detailContent = document.getElementById('guide-detail-content');
 
+    // Default: Show Index
+    if (!guideId || !guideData[guideId]) {
+        if (indexHeader) indexHeader.style.display = 'block';
+        if (indexContent) indexContent.style.display = 'block';
+        if (detailHeader) detailHeader.style.display = 'none';
+        if (detailContent) detailContent.style.display = 'none';
+
+        if (gridEl) {
+            gridEl.innerHTML = '';
+            Object.entries(guideData).forEach(([id, data]) => {
+                const card = document.createElement('div');
+                card.className = 'card guide-card';
+                card.innerHTML = `
+                    <div class="guide-content">
+                        <span class="blog-category" style="margin-bottom: var(--space-3); display: block;">${data.category}</span>
+                        <h3>${data.title}</h3>
+                        <p>${data.intro.substring(0, 120)}...</p>
+                        <a href="wealth-guides.html?id=${id}" class="btn btn-secondary btn-sm" style="margin-top: var(--space-4);">Read Guide</a>
+                    </div>
+                `;
+                gridEl.appendChild(card);
+            });
+        }
+        return;
+    }
+
+    // Detail View
     const data = guideData[guideId];
+    if (indexHeader) indexHeader.style.display = 'none';
+    if (indexContent) indexContent.style.display = 'none';
+    if (detailHeader) detailHeader.style.display = 'block';
+    if (detailContent) detailContent.style.display = 'block';
 
-    // Check if we are on a page that can display a guide
     const titleEl = document.getElementById('guide-title');
-    if (!titleEl) return;
-
     const categoryEl = document.getElementById('guide-category');
     const introEl = document.getElementById('guide-intro');
     const bodyEl = document.getElementById('guide-body');
     const metaEl = document.getElementById('guide-meta');
+    const moreGuidesList = document.getElementById('more-guides-list');
 
     if (categoryEl) categoryEl.textContent = data.category;
-    titleEl.textContent = data.title;
+    if (titleEl) titleEl.textContent = data.title;
     if (introEl) introEl.textContent = data.intro;
     if (bodyEl) bodyEl.innerHTML = data.body;
     if (metaEl && data.date && data.readTime) {
         metaEl.textContent = `Updated ${data.date} • ${data.readTime}`;
+    }
+
+    // Sidebar - More Guides
+    if (moreGuidesList) {
+        // Keep the back button
+        const backBtn = moreGuidesList.querySelector('a');
+        moreGuidesList.innerHTML = '';
+        if (backBtn) moreGuidesList.appendChild(backBtn);
+
+        Object.entries(guideData).forEach(([id, item]) => {
+            if (id === guideId) return;
+            const link = document.createElement('a');
+            link.href = `wealth-guides.html?id=${id}`;
+            link.style.cssText = 'font-size: var(--text-sm); font-weight: 500; color: var(--color-text-primary); text-decoration: none; padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border);';
+            link.textContent = item.title;
+            moreGuidesList.appendChild(link);
+        });
     }
 
     document.title = data.title + " | ProsperPath Insights";
@@ -9198,9 +9280,9 @@ async function initMarketNews(symbol) {
 
     if (newsItems.length > 0) {
         container.innerHTML = newsItems.map((news, index) => `
-            <a href="market-news.html?symbol=${symbol}&article=${index}" class="news-item" style="text-decoration: none; display: block; margin-bottom: var(--space-4);">
-                <p style="font-weight:600; font-size: 0.95rem; margin-bottom: 4px; color: var(--color-text-primary);">${news.title}</p>
-                <div class="news-date">${news.date} • ${news.source}</div>
+            <a href="market-news.html?symbol=${encodeURIComponent(symbol)}&article=${index}" class="news-item" style="text-decoration: none; display: block; margin-bottom: var(--space-4);">
+                <p style="font-weight:600; font-size: 0.95rem; margin-bottom: 4px; color: var(--color-text-primary);">${escapeHtml(news.title)}</p>
+                <div class="news-date">${escapeHtml(news.date)} • ${escapeHtml(news.source)}</div>
             </a>
         `).join('');
     } else {
@@ -9229,43 +9311,51 @@ async function initMarketNewsArticle() {
     const newsItems = await fetchFinnhubNews(symbol);
 
     if (!newsItems || newsItems.length === 0 || !newsItems[articleIndex]) {
-        container.innerHTML = `<div class="article-header"><h1>Article Unavailable</h1><p>Could not retrieve this news item.</p><a href="market-detail.html?symbol=${symbol}" class="btn">Return to ${symbol}</a></div>`;
+        const safeSymbolFallback = escapeHtml(symbol);
+        container.innerHTML = `<div class="article-header"><h1>Article Unavailable</h1><p>Could not retrieve this news item.</p><a href="market-detail.html?symbol=${encodeURIComponent(symbol)}" class="btn">Return to ${safeSymbolFallback}</a></div>`;
         return;
     }
 
     const article = newsItems[articleIndex];
     container.articleData = article;
+    const safeSymbol = escapeHtml(symbol);
+    const safeSource = escapeHtml(article.source);
+    const safeTitle = escapeHtml(article.title);
+    const safeDate = escapeHtml(article.date);
+    const safeBody = escapeHtml(article.body || 'Financial markets are reacting to these recent developments. Click the link above to read the full details of this market event.');
+    const safeImage = sanitizeUrl(article.image || '');
+    const safeUrl = sanitizeUrl(article.url || '');
 
     setTimeout(() => {
         container.innerHTML = `
             <article>
                 <header class="article-header">
-                    <span class="source-badge">${article.source}</span>
-                    <h1 data-animate style="margin: var(--space-4) 0;">${article.title}</h1>
+                    <span class="source-badge">${safeSource}</span>
+                    <h1 data-animate style="margin: var(--space-4) 0;">${safeTitle}</h1>
                     <div class="article-meta">
-                        <span>${article.date}</span>
+                        <span>${safeDate}</span>
                         <span>•</span>
                         <span>AI Curated</span>
                     </div>
                 </header>
                 
                 <div class="article-content" data-animate>
-                    ${article.image ? `<img src="${article.image}" style="width: 100%; border-radius: 12px; margin-bottom: var(--space-6); box-shadow: var(--shadow-lg);">` : ''}
+                    ${article.image ? `<img src="${safeImage}" style="width: 100%; border-radius: 12px; margin-bottom: var(--space-6); box-shadow: var(--shadow-lg);">` : ''}
                     
-                    <p><strong>(AI Analysis)</strong> Market data indicates this news regarding ${symbol} is highly relevant for short-term sentiment. Our analysis suggests monitoring volume profiles for institutional confirmation.</p>
+                    <p><strong>(AI Analysis)</strong> Market data indicates this news regarding ${safeSymbol} is highly relevant for short-term sentiment. Our analysis suggests monitoring volume profiles for institutional confirmation.</p>
                     
                     <div class="card" style="border-left: 4px solid var(--color-accent); margin: 2rem 0; padding: var(--space-4); background: rgba(var(--color-accent-rgb), 0.05); display: flex; flex-direction: column; gap: 1rem;">
                        <div style="font-weight:600;">Read the full story:</div>
                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                            <button id="market-read-btn" class="btn btn-primary">📖 Read Here</button>
-                           <a href="${article.url}" target="_blank" class="btn btn-secondary">External Link ↗</a>
+                           <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">External Link ↗</a>
                        </div>
                     </div>
                     
-                    <p>${article.body || 'Financial markets are reacting to these recent developments. Click the link above to read the full details of this market event.'}</p>
+                    <p>${safeBody}</p>
 
                     <h2>Technical Context</h2>
-                    <p>Traders typically look for support and resistance confirmation following news of this magnitude. ProsperPath AI identifies this as a potential ${symbol} catalyst.</p>
+                    <p>Traders typically look for support and resistance confirmation following news of this magnitude. ProsperPath AI identifies this as a potential ${safeSymbol} catalyst.</p>
                 </div>
             </article>
         `;

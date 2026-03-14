@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProsperPath | Guided Demo Starting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background-color: #000000;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: var(--space-4);
+      background-image: radial-gradient(circle at 50% 0%, rgba(34, 197, 94, 0.05) 0%, transparent 50%);
+    }
+    
+    .placeholder-card {
+      background: rgba(20, 20, 22, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-2xl, 24px);
+      padding: var(--space-10) var(--space-8);
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .icon-container {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(245, 200, 66, 0.1);
+      color: var(--color-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--space-6);
+    }
+    
+    .placeholder-title {
+      font-size: 1.5rem;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      margin-bottom: var(--space-4);
+      letter-spacing: -0.01em;
+    }
+    
+    .placeholder-desc {
+      color: var(--color-text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: var(--space-8);
+    }
+    
+    .btn-return {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-3) var(--space-6);
+      border-radius: var(--radius-md, 8px);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--color-text-primary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+    
+    .btn-return:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="placeholder-card">
+    <div class="icon-container">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    <h1 class="placeholder-title">Demo Preparation</h1>
+    <p class="placeholder-desc">Guided demo steps will begin here in the next phase. The system is ready for guided tour implementation.</p>
+    <a href="index.html" class="btn-return">Return to Homepage</a>
+  </div>
+</body>
+</html>

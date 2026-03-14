@@ -1,0 +1,337 @@
+<!-- ============================================================
+     Module 4.1 · Section II — Orders Cluster
+     Self-contained fragment. Injected by module-shell.html.
+============================================================ -->
+
+<style>
+    .s2-screen {
+        width: 100%;
+        max-width: 640px;
+        animation: s2Fade .22s ease both
+    }
+
+    @keyframes s2Fade {
+        from { opacity: 0; transform: translateY(5px) }
+        to { opacity: 1; transform: translateY(0) }
+    }
+
+    .s2-eyebrow {
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--m-muted);
+        margin-bottom: 1.2rem
+    }
+
+    .s2-h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(1.5rem, 3.8vw, 2.1rem);
+        font-weight: 700;
+        color: var(--m-txt);
+        letter-spacing: -.02em;
+        line-height: 1.15;
+        margin-bottom: .85rem
+    }
+
+    .s2-body {
+        font-size: .95rem;
+        color: var(--m-txt);
+        line-height: 1.7;
+        margin-bottom: 1.4rem
+    }
+
+    .s2-body p { margin-bottom: .5rem }
+    .s2-body p:last-child { margin-bottom: 0 }
+
+    /* Level list */
+    .s2-levels {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        margin: 1.2rem 0 1.5rem
+    }
+
+    .s2-level-item {
+        display: flex;
+        align-items: center;
+        gap: .8rem;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-radius: 4px;
+        padding: .62rem 1rem;
+        opacity: 0;
+        transform: translateX(-6px);
+        transition: opacity .28s ease, transform .28s ease
+    }
+
+    .s2-level-item.visible {
+        opacity: 1;
+        transform: translateX(0)
+    }
+
+    .s2-level-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--m-gold);
+        flex-shrink: 0
+    }
+
+    .s2-level-txt {
+        font-size: .85rem;
+        color: var(--m-muted)
+    }
+
+    /* Chart */
+    .s2-chart {
+        position: relative;
+        margin: 1.25rem 0;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-radius: 4px;
+        overflow: hidden;
+        height: 220px
+    }
+
+    .s2-chart svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%
+    }
+
+    /* Takeaway */
+    .s2-takeaway {
+        font-size: .8rem;
+        color: var(--m-muted);
+        text-align: center;
+        opacity: .85;
+        margin-bottom: 1.75rem;
+        letter-spacing: .01em
+    }
+
+    /* Button row */
+    .s2-btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem
+    }
+
+    .s2-btn-prev {
+        background: transparent;
+        border: 1px solid var(--m-bdr);
+        color: var(--m-muted);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 500;
+        letter-spacing: .04em;
+        padding: .62rem 1.2rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: border-color var(--m-tr), color var(--m-tr)
+    }
+
+    .s2-btn-prev:hover {
+        border-color: var(--m-bdrhi);
+        color: var(--m-txt)
+    }
+
+    .s2-btn-next {
+        background: transparent;
+        border: 1px solid var(--m-gold-line);
+        color: var(--m-gold);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        padding: .65rem 1.5rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background .2s, border-color .2s
+    }
+
+    .s2-btn-next:hover {
+        background: var(--m-gold-dim);
+        border-color: var(--m-gold)
+    }
+
+    @keyframes s2DrawPath {
+        to { stroke-dashoffset: 0 }
+    }
+</style>
+
+<div class="s2-screen" id="s2-root">
+
+    <!-- Eyebrow -->
+    <p class="s2-eyebrow">Section II · Why Liquidity Exists</p>
+
+    <!-- Heading -->
+    <h2 class="s2-h1">Orders Tend to Gather</h2>
+
+    <!-- Body -->
+    <div class="s2-body">
+        <p>Orders rarely appear randomly across a chart.</p>
+        <p>Many traders place orders around the same obvious levels — levels that are easy to notice and reference.</p>
+    </div>
+
+    <!-- Level examples -->
+    <div class="s2-levels" id="s2-levels">
+        <div class="s2-level-item" id="s2-li-0">
+            <span class="s2-level-dot"></span>
+            <span class="s2-level-txt">Previous highs</span>
+        </div>
+        <div class="s2-level-item" id="s2-li-1">
+            <span class="s2-level-dot"></span>
+            <span class="s2-level-txt">Previous lows</span>
+        </div>
+        <div class="s2-level-item" id="s2-li-2">
+            <span class="s2-level-dot"></span>
+            <span class="s2-level-txt">Equal highs</span>
+        </div>
+        <div class="s2-level-item" id="s2-li-3">
+            <span class="s2-level-dot"></span>
+            <span class="s2-level-txt">Equal lows</span>
+        </div>
+        <div class="s2-level-item" id="s2-li-4">
+            <span class="s2-level-dot"></span>
+            <span class="s2-level-txt">Range boundaries</span>
+        </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="s2-chart" id="s2-chart" role="img"
+        aria-label="Chart showing equal highs forming with orders clustering above them">
+        <svg id="s2-svg" viewBox="0 0 580 220" preserveAspectRatio="none"></svg>
+    </div>
+
+    <!-- Takeaway -->
+    <p class="s2-takeaway">Obvious levels attract many orders.</p>
+
+    <!-- Navigation -->
+    <div class="s2-btn-row">
+        <button class="s2-btn-prev" onclick="goTo(1, 0)">&larr; Previous</button>
+        <button class="s2-btn-next" onclick="goTo(3, 0)">Next Section &rarr;</button>
+    </div>
+
+</div>
+
+<script>
+    (function () {
+
+        /* ── Animate level items ───────────────────────────── */
+        [0, 1, 2, 3, 4].forEach(function (i) {
+            setTimeout(function () {
+                var el = document.getElementById('s2-li-' + i);
+                if (el) el.classList.add('visible');
+            }, 100 + i * 100);
+        });
+
+        /* ── Chart ─────────────────────────────────────────── */
+        var W = 580, H = 220;
+        var PAD = { l: 36, r: 32, t: 24, b: 24 };
+        var UW = W - PAD.l - PAD.r;
+        var UH = H - PAD.t - PAD.b;
+
+        function px(fx) { return PAD.l + fx * UW; }
+        function py(fy) { return PAD.t + (1 - fy) * UH; }
+
+        var GLD = 'rgba(195,162,70,1.0)';
+        var NDO = 'rgba(200,185,130,0.92)';
+        var GLD2 = 'rgba(195,162,70,0.38)';
+        var GLDZ = 'rgba(195,162,70,0.08)';
+        var GRID = 'rgba(255,255,255,0.025)';
+        var GUIDE = 'rgba(195,162,70,0.22)';
+
+        /* Price path with two equal highs forming */
+        var priceNodes = [
+            { fx: 0.03, fy: 0.15 },
+            { fx: 0.15, fy: 0.58, lbl: 'EQH' },
+            { fx: 0.26, fy: 0.32 },
+            { fx: 0.38, fy: 0.58, lbl: 'EQH' },
+            { fx: 0.50, fy: 0.30 },
+            { fx: 0.63, fy: 0.42 }
+        ];
+
+        var eqhY = py(0.58);
+
+        function build() {
+            var svg = document.getElementById('s2-svg');
+            var out = [];
+
+            /* Grid */
+            [50, 100, 150].forEach(function (gy) {
+                out.push('<line x1="0" y1="' + gy + '" x2="' + W + '" y2="' + gy +
+                    '" stroke="' + GRID + '" stroke-width="1"/>');
+            });
+
+            /* Equal highs guide line */
+            out.push('<line x1="' + PAD.l + '" y1="' + eqhY +
+                '" x2="' + (W - PAD.r) + '" y2="' + eqhY +
+                '" stroke="' + GUIDE + '" stroke-width="1" stroke-dasharray="5,4"/>');
+
+            /* Order cluster zone above equal highs */
+            out.push('<rect x="' + PAD.l + '" y="' + (eqhY - 20) +
+                '" width="' + UW + '" height="18"' +
+                ' fill="' + GLDZ + '" opacity="0" id="s2-cluster-zone"/>');
+            out.push('<text x="' + (W - PAD.r - 4) + '" y="' + (eqhY - 8) +
+                '" text-anchor="end" font-size="8.5" font-family="Inter,sans-serif"' +
+                ' fill="' + GLD2 + '" font-weight="600" opacity="0" id="s2-cluster-lbl">orders cluster here</text>');
+
+            /* Price path */
+            var pts = priceNodes.map(function (n) { return { x: px(n.fx), y: py(n.fy) }; });
+            var pathD = 'M' + pts.map(function (p) { return p.x + ',' + p.y; }).join(' L');
+
+            var len = 0;
+            for (var i = 1; i < pts.length; i++) {
+                var dx = pts[i].x - pts[i - 1].x;
+                var dy = pts[i].y - pts[i - 1].y;
+                len += Math.sqrt(dx * dx + dy * dy);
+            }
+
+            out.push('<path d="' + pathD + '" stroke="' + GLD + '" stroke-width="2.2" fill="none"' +
+                ' stroke-linecap="round" stroke-linejoin="round"' +
+                ' stroke-dasharray="' + (len + 10) + '" stroke-dashoffset="' + (len + 10) + '"' +
+                ' style="animation: s2DrawPath .95s ease .1s forwards"/>');
+
+            /* EQH dots and labels */
+            priceNodes.forEach(function (n) {
+                if (!n.lbl) return;
+                var x = px(n.fx), y = py(n.fy);
+                out.push('<circle cx="' + x + '" cy="' + y +
+                    '" r="5" fill="' + GLD + '" opacity="0" class="s2-eqh-dot"/>');
+                out.push('<text x="' + x + '" y="' + (y - 10) +
+                    '" text-anchor="middle" font-size="9" font-family="Inter,sans-serif"' +
+                    ' fill="' + NDO + '" font-weight="700" letter-spacing="0.06em"' +
+                    ' opacity="0" class="s2-eqh-lbl">' + n.lbl + '</text>');
+            });
+
+            /* EQL label */
+            out.push('<text x="' + (PAD.l - 4) + '" y="' + (eqhY + 4) +
+                '" text-anchor="end" font-size="8" font-family="Inter,sans-serif"' +
+                ' fill="' + GUIDE + '" letter-spacing="0.05em" font-weight="600">EQH</text>');
+
+            svg.innerHTML = out.join('');
+
+            /* Animate EQH dots */
+            setTimeout(function () {
+                svg.querySelectorAll('.s2-eqh-dot, .s2-eqh-lbl').forEach(function (el) {
+                    el.style.transition = 'opacity .35s ease';
+                    el.style.opacity = '1';
+                });
+            }, 1000);
+
+            /* Animate cluster zone */
+            setTimeout(function () {
+                ['s2-cluster-zone', 's2-cluster-lbl'].forEach(function (id) {
+                    var el = document.getElementById(id);
+                    if (el) { el.style.transition = 'opacity .4s ease'; el.style.opacity = '1'; }
+                });
+            }, 1600);
+        }
+
+        build();
+
+    })();
+</script>

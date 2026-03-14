@@ -1,0 +1,330 @@
+<!-- ============================================================
+     Module 3.7 · Section IV — Lower High Forms
+     Self-contained fragment. Injected by module-shell.html.
+============================================================ -->
+
+<style>
+    .s4-screen {
+        width: 100%;
+        max-width: 640px;
+        animation: s4Fade .22s ease both
+    }
+
+    @keyframes s4Fade {
+        from {
+            opacity: 0;
+            transform: translateY(5px)
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0)
+        }
+    }
+
+    .s4-eyebrow {
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--m-muted);
+        margin-bottom: 1.2rem
+    }
+
+    .s4-h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(1.5rem, 3.8vw, 2.1rem);
+        font-weight: 700;
+        color: var(--m-txt);
+        letter-spacing: -.02em;
+        line-height: 1.15;
+        margin-bottom: .85rem
+    }
+
+    .s4-body {
+        font-size: .95rem;
+        color: var(--m-txt);
+        line-height: 1.7;
+        margin-bottom: 1.5rem
+    }
+
+    .s4-body p {
+        margin-bottom: .5rem
+    }
+
+    .s4-body p:last-child {
+        margin-bottom: 0
+    }
+
+    .s4-chart {
+        position: relative;
+        margin: 1.5rem 0;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-radius: 4px;
+        overflow: hidden;
+        height: 220px
+    }
+
+    .s4-chart svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%
+    }
+
+    .s4-takeaway {
+        font-size: .8rem;
+        color: var(--m-muted);
+        text-align: center;
+        opacity: .85;
+        margin-bottom: 1.75rem;
+        letter-spacing: .01em
+    }
+
+    .s4-btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem;
+        margin-top: .25rem
+    }
+
+    .s4-btn-prev {
+        background: transparent;
+        border: 1px solid var(--m-bdr);
+        color: var(--m-muted);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 500;
+        letter-spacing: .04em;
+        padding: .62rem 1.2rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: border-color var(--m-tr), color var(--m-tr)
+    }
+
+    .s4-btn-prev:hover {
+        border-color: var(--m-bdrhi);
+        color: var(--m-txt)
+    }
+
+    .s4-btn-next {
+        background: transparent;
+        border: 1px solid var(--m-gold-line);
+        color: var(--m-gold);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        padding: .65rem 1.5rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background .2s, border-color .2s
+    }
+
+    .s4-btn-next:hover {
+        background: var(--m-gold-dim);
+        border-color: var(--m-gold)
+    }
+
+    @keyframes s4DrawPath {
+        to {
+            stroke-dashoffset: 0
+        }
+    }
+</style>
+
+<div class="s4-screen" id="s4-root">
+
+    <!-- Eyebrow -->
+    <p class="s4-eyebrow">Section IV · Reversal Structure</p>
+
+    <!-- Heading -->
+    <h2 class="s4-h1">Lower High Forms</h2>
+
+    <!-- Body -->
+    <div class="s4-body">
+        <p>The pullback completes as a
+            <button class="clarify-btn" onclick="openClarify('lowerHigh')" aria-label="Clarify: Lower High">Lower
+                High.</button>
+        </p>
+        <p>The market is beginning to form opposite structure.</p>
+    </div>
+
+    <!-- Chart -->
+    <div class="s4-chart" id="s4-chart" role="img"
+        aria-label="Lower Low forms, then pullback completes as Lower High — opposite structure beginning">
+        <svg id="s4-svg" viewBox="0 0 600 220" preserveAspectRatio="none"></svg>
+    </div>
+
+    <!-- Takeaway -->
+    <p class="s4-takeaway">Lower Low + Lower High begins the structure of a new downtrend.</p>
+
+    <!-- Navigation -->
+    <div class="s4-btn-row">
+        <button class="s4-btn-prev" onclick="goTo(3, 0)">&larr; Previous</button>
+        <button class="s4-btn-next" onclick="goTo(5, 0)">Next Section &rarr;</button>
+    </div>
+
+</div>
+
+<script>
+    (function () {
+
+        /* ── Register Clarify terms ─────────────────────────── */
+        registerClarifyTerms({
+            lowerHigh: {
+                term: 'Lower High',
+                explanation: 'A Lower High forms when a pullback fails below the previous important high.',
+                example: 'After the first Lower Low, the pullback may rise but fail to reclaim the old high, forming a Lower High.',
+                misc: '<strong>A Lower High is not a sign of strength.</strong> It is often part of new bearish structure.'
+            }
+        });
+
+        var W = 600, H = 220;
+        var PAD = { l: 32, r: 28, t: 24, b: 24 };
+        var UW = W - PAD.l - PAD.r;
+        var UH = H - PAD.t - PAD.b;
+
+        function px(fx) { return PAD.l + fx * UW; }
+        function py(fy) { return PAD.t + (1 - fy) * UH; }
+
+        var GLD = 'rgba(195,162,70,1.0)';
+        var NDO = 'rgba(200,185,130,0.92)';
+        var RED = 'rgba(224,128,112,0.85)';
+        var REDZ = 'rgba(224,128,112,0.08)';
+        var GUIDE = 'rgba(195,162,70,0.18)';
+        var GRID = 'rgba(255,255,255,0.025)';
+
+        /* Prior uptrend (faded reference) */
+        var HH_r = { fx: 0.06, fy: 0.78, lbl: 'HH' };
+        var HL_r = { fx: 0.20, fy: 0.48, lbl: 'HL' };
+        var HH2_r = { fx: 0.35, fy: 0.90, lbl: 'HH' };
+        var HL2_brk = { fx: 0.47, fy: 0.58, lbl: 'HL' };
+
+        /* New structure */
+        var LL1 = { fx: 0.62, fy: 0.14, lbl: 'LL' };
+        var LH1 = { fx: 0.84, fy: 0.44, lbl: 'LH' };
+
+        var hl2Y = py(HL2_brk.fy);
+        /* LH must be below the last HH reference — show it's a lower high */
+
+        function build() {
+            var svg = document.getElementById('s4-svg');
+            var out = [];
+
+            /* Grid */
+            var gy = 40;
+            while (gy < H) {
+                out.push('<line x1="0" y1="' + gy + '" x2="' + W + '" y2="' + gy +
+                    '" stroke="' + GRID + '" stroke-width="1"/>');
+                gy += 40;
+            }
+
+            /* Previous HH reference line (the old HH that LH fails to reach) */
+            var hh2Y = py(HH2_r.fy);
+            out.push(
+                '<line x1="' + px(HH2_r.fx) + '" y1="' + hh2Y +
+                '" x2="' + (W - PAD.r) + '" y2="' + hh2Y +
+                '" stroke="' + GUIDE + '" stroke-width="1" stroke-dasharray="5,5"/>'
+            );
+            out.push(
+                '<text x="' + (W - PAD.r + 3) + '" y="' + (hh2Y + 1) +
+                '" text-anchor="start" font-size="7.5" font-family="Inter,sans-serif"' +
+                ' fill="' + GUIDE + '" font-weight="600">prev HH</text>'
+            );
+
+            /* Break zone (below old HL) */
+            out.push(
+                '<rect x="' + px(HL2_brk.fx) + '" y="' + hl2Y +
+                '" width="' + (W - PAD.r - px(HL2_brk.fx) + 4) + '"' +
+                ' height="' + (H - PAD.b - hl2Y + 4) + '"' +
+                ' fill="' + REDZ + '" opacity="0.7"/>'
+            );
+
+            /* Prior uptrend path — faded */
+            var uPts = [{ fx: 0.01, fy: 0.14 }, HH_r, HL_r, HH2_r, HL2_brk].map(
+                function (n) { return { x: px(n.fx), y: py(n.fy) }; }
+            );
+            out.push(
+                '<path d="M' + uPts.map(function (p) { return p.x + ',' + p.y; }).join(' L') + '"' +
+                ' stroke="' + GLD + '" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.35"/>'
+            );
+
+            /* Break → LL path — red */
+            var bPts = [HL2_brk, { fx: 0.55, fy: 0.30 }, LL1].map(
+                function (n) { return { x: px(n.fx), y: py(n.fy) }; }
+            );
+            var bLen = 0;
+            for (var i = 1; i < bPts.length; i++) {
+                var dx = bPts[i].x - bPts[i - 1].x;
+                var dy = bPts[i].y - bPts[i - 1].y;
+                bLen += Math.sqrt(dx * dx + dy * dy);
+            }
+            out.push(
+                '<path d="M' + bPts.map(function (p) { return p.x + ',' + p.y; }).join(' L') + '"' +
+                ' stroke="' + RED + '" stroke-width="2.0" fill="none" stroke-linecap="round"/>'
+            );
+
+            /* LL → LH pullback path — gold animated */
+            var pbPts = [LL1, { fx: 0.73, fy: 0.32 }, LH1].map(
+                function (n) { return { x: px(n.fx), y: py(n.fy) }; }
+            );
+            var pbLen = 0;
+            for (var j = 1; j < pbPts.length; j++) {
+                var ddx = pbPts[j].x - pbPts[j - 1].x;
+                var ddy = pbPts[j].y - pbPts[j - 1].y;
+                pbLen += Math.sqrt(ddx * ddx + ddy * ddy);
+            }
+            out.push(
+                '<path d="M' + pbPts.map(function (p) { return p.x + ',' + p.y; }).join(' L') + '"' +
+                ' stroke="' + GLD + '" stroke-width="2.2" fill="none" stroke-linecap="round"' +
+                ' stroke-dasharray="' + (pbLen + 10) + '" stroke-dashoffset="' + (pbLen + 10) + '"' +
+                ' style="animation: s4DrawPath .65s ease .2s forwards"/>'
+            );
+
+            /* LL node */
+            var llX = px(LL1.fx), llY = py(LL1.fy);
+            out.push('<circle cx="' + llX + '" cy="' + llY + '" r="5" fill="' + RED + '"/>');
+            out.push('<text x="' + llX + '" y="' + (llY + 17) +
+                '" text-anchor="middle" font-size="9.5" font-family="Inter,sans-serif"' +
+                ' fill="' + RED + '" font-weight="700" letter-spacing="0.06em">LL</text>');
+
+            /* LH node — animated in */
+            var lhX = px(LH1.fx), lhY = py(LH1.fy);
+            out.push(
+                '<circle cx="' + lhX + '" cy="' + lhY + '" r="5.5" fill="' + GLD + '"' +
+                ' opacity="0" id="s4-lh-dot"/>'
+            );
+            out.push(
+                '<text x="' + lhX + '" y="' + (lhY - 12) +
+                '" text-anchor="middle" font-size="9.5" font-family="Inter,sans-serif"' +
+                ' fill="' + NDO + '" font-weight="700" letter-spacing="0.06em"' +
+                ' opacity="0" id="s4-lh-lbl">LH</text>'
+            );
+
+            /* Prior node labels (faded) */
+            [HH_r, HL_r, HH2_r].forEach(function (n) {
+                var x = px(n.fx), y = py(n.fy);
+                out.push('<text x="' + x + '" y="' + (y - 9) +
+                    '" text-anchor="middle" font-size="8" font-family="Inter,sans-serif"' +
+                    ' fill="' + NDO + '" font-weight="600" opacity="0.4">' + n.lbl + '</text>');
+            });
+
+            svg.innerHTML = out.join('');
+
+            requestAnimationFrame(function () {
+                setTimeout(function () {
+                    var dot = document.getElementById('s4-lh-dot');
+                    var lbl = document.getElementById('s4-lh-lbl');
+                    if (dot) { dot.style.transition = 'opacity .4s ease'; dot.style.opacity = '1'; }
+                    if (lbl) { lbl.style.transition = 'opacity .4s ease'; lbl.style.opacity = '1'; }
+                }, 800);
+            });
+        }
+
+        build();
+
+    })();
+</script>

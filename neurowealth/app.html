@@ -14,6 +14,28 @@
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <style>
+        body {
+            background-color: #0B0B0C;
+        }
+
+        .accent {
+            color: #EAB308;
+            font-style: italic;
+        }
+
+        .hub-section-label {
+            font-family: var(--font-primary);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(234, 179, 8, 0.65);
+            margin-top: 24px;
+            margin-bottom: 32px;
+            display: block;
+            text-align: center;
+        }
+
         /* ============ APPLICATION HUB — INSTITUTIONAL GRADE ============ */
         /* Design philosophy: confident restraint, typographic hierarchy,
            generous negative space, near-zero ornamentation.
@@ -21,7 +43,7 @@
 
         .hub-hero {
             position: relative;
-            padding: 180px 0 80px;
+            padding: 180px 0 0;
             text-align: center;
             overflow: hidden;
         }
@@ -30,13 +52,15 @@
         .hub-hero::before {
             content: '';
             position: absolute;
-            top: -200px;
+            top: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 1200px;
-            height: 1200px;
-            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.015) 0%, transparent 50%);
+            width: 100vw;
+            height: 800px;
+            /* Ellipse gradient centered near the title to avoid spotlight effect */
+            background: radial-gradient(ellipse 70% 50% at 50% 35%, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.005) 50%, transparent 100%);
             pointer-events: none;
+            z-index: 0;
         }
 
         .hub-hero .container {
@@ -82,17 +106,54 @@
             letter-spacing: 0.01em;
         }
 
+        /* -------- Capability Pills -------- */
+        .hub-pills {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 40px;
+            margin-bottom: 80px;
+            flex-wrap: wrap;
+        }
+
+        .hub-pill {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 100px;
+            color: #ffffff;
+            font-family: var(--font-primary);
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .hub-pill:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.15);
+            /* Slightly brighter border */
+            transform: translateY(-1.5px);
+            /* Slight lift */
+            box-shadow: none;
+            /* No bright glow */
+        }
+
         /* Thin horizontal rule — institutional divider */
         .hub-divider {
-            width: 60px;
+            width: 100%;
             height: 1px;
-            background: rgba(255, 255, 255, 0.12);
-            margin: 48px auto 0;
+            background: rgba(255, 255, 255, 0.06);
+            margin: 0;
+            /* Spacing handled by the surrounding elements */
         }
 
         /* -------- Cards Section -------- */
         .hub-section {
-            padding: 80px 0 120px;
+            padding: 0;
         }
 
         .hub-grid {
@@ -102,24 +163,28 @@
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.04);
             border-radius: 2px;
-            overflow: hidden;
+            /* overflow removed */
         }
 
         /* Each card is a cell in a unified table — no floating card look */
         .hub-card {
             position: relative;
-            background: rgba(5, 5, 6, 0.95);
+            background: #111214;
             padding: 48px 36px 44px;
             display: flex;
             flex-direction: column;
-            transition: background 0.5s ease;
+            transition: all 0.2s ease;
             cursor: pointer;
             text-decoration: none;
-            color: inherit;
+            color: #EDEDED;
+            border: 1px solid transparent;
         }
 
         .hub-card:hover {
             background: rgba(255, 255, 255, 0.025);
+            transform: translateY(-4px);
+            border-color: rgba(234, 179, 8, 0.25);
+            z-index: 10;
         }
 
         /* Subtle top-edge highlight on hover */
@@ -144,12 +209,12 @@
             width: 40px;
             height: 40px;
             margin-bottom: 28px;
-            color: rgba(255, 255, 255, 0.3);
+            color: #9CA3AF;
             transition: color 0.4s ease;
         }
 
         .hub-card:hover .hub-icon {
-            color: rgba(255, 255, 255, 0.6);
+            color: #EAB308;
         }
 
         .hub-card-title {
@@ -157,27 +222,27 @@
             font-size: 1.35rem;
             font-weight: 400;
             letter-spacing: -0.01em;
-            color: rgba(255, 255, 255, 0.9);
+            color: #EDEDED;
             margin-bottom: 12px;
             transition: color 0.4s ease;
         }
 
         .hub-card:hover .hub-card-title {
-            color: #ffffff;
+            color: #EAB308;
         }
 
         .hub-card-desc {
             font-family: var(--font-primary);
             font-size: 0.82rem;
             line-height: 1.65;
-            color: rgba(255, 255, 255, 0.3);
+            color: #9CA3AF;
             margin: 0 0 auto;
             max-width: 280px;
             transition: color 0.4s ease;
         }
 
         .hub-card:hover .hub-card-desc {
-            color: rgba(255, 255, 255, 0.45);
+            color: #EDEDED;
         }
 
         /* Arrow indicator — appears on hover */
@@ -191,7 +256,7 @@
             font-weight: 500;
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.2);
+            color: #9CA3AF;
             opacity: 0;
             transform: translateX(-8px);
             transition: opacity 0.4s ease, transform 0.4s ease, color 0.4s ease;
@@ -200,7 +265,7 @@
         .hub-card:hover .hub-arrow {
             opacity: 1;
             transform: translateX(0);
-            color: rgba(255, 255, 255, 0.5);
+            color: #EAB308;
         }
 
         .hub-arrow svg {
@@ -234,7 +299,7 @@
 
         .hub-bottom-line a:hover {
             color: rgba(255, 255, 255, 0.7);
-            border-color: rgba(255, 255, 255, 0.3);
+            border-color: #9CA3AF;
         }
 
         /* -------- Responsive -------- */
@@ -273,10 +338,48 @@
                     <a href="trade.html">Trade</a>
                     <a href="market-mechanics.html">Market Mechanics</a>
                     <a href="portfolio.html">Portfolio</a>
-                    <a href="wealth-guides.html">Wealth Guides</a>
-                    <a href="tool-reviews.html">Tool Reviews</a>
-                    <a href="ai-calculators.html">AI Calculators</a>
-                    <a href="blog.html">Blog</a>
+                    <div class="nav-item-dropdown">
+
+                        <a href="resources.html">Resources</a>
+
+                        <div class="dropdown-panel">
+
+                            <a href="wealth-guides.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">Wealth Guides</span>
+
+                                <span class="dropdown-item-desc">Structured frameworks for building financial
+                                    understanding.</span>
+
+                            </a>
+
+                            <a href="tool-reviews.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">Tool Reviews</span>
+
+                                <span class="dropdown-item-desc">Reviews of platforms and financial tools.</span>
+
+                            </a>
+
+                            <a href="ai-calculators.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">AI Calculators</span>
+
+                                <span class="dropdown-item-desc">Interactive tools for financial modelling.</span>
+
+                            </a>
+
+                            <a href="blog.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">Insights</span>
+
+                                <span class="dropdown-item-desc">Market analysis and commentary.</span>
+
+                            </a>
+
+                        </div>
+
+                    </div>
                 </div>
                 <div class="nav-actions"
                     style="display: flex; align-items: center; gap: var(--space-4); position: relative;">
@@ -302,16 +405,25 @@
     <section class="hub-hero" id="hub-hero">
         <div class="container">
             <span class="hub-eyebrow">ProsperPath Terminal</span>
-            <h1>Application <i>Hub</i></h1>
+            <h1>Application <span class="accent">Hub</span></h1>
             <p class="hub-subtitle">Secure quantitative dashboard. Institutional-grade tools for systematic
                 allocation, analysis, and execution.</p>
-            <div class="hub-divider"></div>
+
+            <div class="hub-pills">
+                <span class="hub-pill">Signal Intelligence</span>
+                <span class="hub-pill">Strategy Execution</span>
+                <span class="hub-pill">Market Structure</span>
+                <span class="hub-pill">Portfolio Systems</span>
+            </div>
         </div>
     </section>
 
     <!-- ============ APP MODULES ============ -->
     <section class="hub-section" id="hub-section">
         <div class="container">
+            <div class="hub-divider"></div>
+            <div class="hub-section-label">SYSTEM MODULES</div>
+
             <div class="hub-grid" id="hub-grid">
 
                 <!-- Clarity Box -->
@@ -525,8 +637,7 @@
             <!-- Minimal bottom note -->
             <div class="hub-bottom" style="margin-top: 64px;">
                 <p class="hub-bottom-line">
-                    Need guidance? Start with the <a href="wealth-guides.html">Wealth Guides</a> or explore the <a
-                        href="ai-calculators.html">AI Calculators</a>.
+                    href="ai-calculators.html">AI Calculators</a>.
                 </p>
             </div>
         </div>
@@ -549,16 +660,13 @@
                         <a href="clarity-box.html">Clarity Box</a>
                         <a href="trade.html">Trade</a>
                         <a href="portfolio.html">Portfolio</a>
+                        <a href="resources.html">Resources</a>
                         <a href="backtest.html">Backtest Engine</a>
                     </div>
                 </div>
                 <div class="footer-column">
                     <h4>Resources</h4>
                     <div class="footer-links">
-                        <a href="wealth-guides.html">Wealth Guides</a>
-                        <a href="tool-reviews.html">Tool Reviews</a>
-                        <a href="ai-calculators.html">AI Calculators</a>
-                        <a href="blog.html">Blog</a>
                     </div>
                 </div>
             </div>
@@ -587,7 +695,8 @@
             const h1 = heroEl.querySelector("h1");
             const sub = heroEl.querySelector(".hub-subtitle");
             const divider = heroEl.querySelector(".hub-divider");
-            const sequence = [eyebrow, h1, sub, divider].filter(Boolean);
+            const pills = heroEl.querySelector(".hub-pills");
+            const sequence = [eyebrow, h1, sub, pills].filter(Boolean);
 
             sequence.forEach(el => {
                 el.style.opacity = "0";

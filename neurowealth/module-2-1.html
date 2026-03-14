@@ -405,13 +405,15 @@
             padding: .65rem 1.5rem;
             border-radius: 3px;
             cursor: pointer;
-            transition: background var(--m-tr), border-color var(--m-tr);
+            box-shadow: none;
+            transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
             margin-right: .6rem
         }
 
         .btn-primary:hover {
             background: var(--m-gold-dim);
-            border-color: var(--m-gold)
+            border-color: var(--m-gold);
+            box-shadow: 0 0 10px rgba(160, 124, 46, 0.22)
         }
 
         .btn-primary:focus-visible {
@@ -1106,9 +1108,11 @@
                     // Task 5: Large view; animate focus window in — label shows on this instructional step
                     renderChartViewport(VP_FULL, 0);
                     setTimeout(() => animateFocusWindow(null), 80);
-                } else if (si === 3) {
-                    // Task 5: Task 3: Show focus box, THEN trigger zoom with micro-copy leading by 200ms
-                    // The focus label is suppressed here (not instructional), only the highlight box shows
+                }
+                // si===3 is now the text-only pre-zoom explanation screen — no chart init needed
+                else if (si === 4) {
+                    // IMPROVEMENT 1: Zoom fires on THIS screen (after user read pre-zoom text at si===3)
+                    // Show focus box, THEN trigger zoom with micro-copy leading by 200ms
                     renderChartViewport(VP_FULL, 1);
                     // Hide the focus label on this step (we only want box, not label)
                     const focusLabel = document.getElementById('tf-focus-label');
@@ -1124,9 +1128,9 @@
                             overlayText.style.opacity = '1';
                         }
                     }), REDUCED_MOTION ? 0 : 200);
-                } else if (si === 4) {
-                    renderChartViewport(VP_ZOOM, 0);
                 } else if (si === 5) {
+                    renderChartViewport(VP_ZOOM, 0);
+                } else if (si === 6) {
                     renderChartViewport(VP_ZOOM, 0);
                     triggerZoomOut();
                     // Anchor pause — 900ms after zoom begins before Continue is active
@@ -1190,9 +1194,10 @@
 <p style="font-size:.8rem;color:var(--m-muted);margin-bottom:1rem">Clarify: <button class="clarify-btn" data-topic="scale">Scale</button></p>
 <div class="btn-row"><button class="btn-primary" id="s1-next2">Continue</button></div>`;
             }
-            // i===2 anchor
+            // i===2 anchor + core scale rule
             return `<p class="scr-eyebrow">Section I &mdash; The Illusion</p>
 <div class="anchor-line" style="margin-top:1.75rem">Direction did not change.<br>Scale changed.</div>
+<p style="font-size:.88rem;color:var(--m-muted);line-height:1.65;margin:1.25rem 0 0;border-left:2px solid var(--m-bdrhi);padding-left:.85rem">The timeframe you choose defines the structure you see.<br><span style="font-size:.78rem;opacity:.75">Before analyzing a market, the scale must be defined.</span></p>
 <div class="btn-row"><button class="btn-primary" id="s1-to-s2">Continue to Section II</button></div>`;
         }
 
@@ -1227,19 +1232,29 @@ ${buildChart('')}
 <div class="btn-row"><button class="btn-primary" id="s2-decision-next"${sel === null ? ' disabled' : ''}>Continue</button></div>
 ${sel === null ? '<p style="font-size:.75rem;color:var(--m-muted);margin-top:.75rem">Select an option to continue.</p>' : ''}`;
             }
-            // i===3 — focus box visible → zoom-in fires: VP_FULL → VP_ZOOM (HL fades during zoom)
+            // i===3 — PRE-ZOOM explanation text (IMPROVEMENT 1: text appears BEFORE zoom animation)
             if (i === 3) {
+                return `<p class="scr-eyebrow">Section II &mdash; Nested Movements</p>
+<div class="scr-body" style="margin-top:1.5rem;max-width:620px;margin-left:auto;margin-right:auto;text-align:center;line-height:1.6">
+<p>The same market can look very different depending on the scale you observe.</p>
+<p>Let's zoom in to view the same market on a smaller timeframe.</p>
+<p>Observe how the structure changes.</p>
+</div>
+<div class="btn-row"><button class="btn-primary" id="s2-next">Zoom In</button></div>`;
+            }
+            // i===4 — focus box visible → zoom-in fires: VP_FULL → VP_ZOOM (HL fades during zoom)
+            if (i === 4) {
                 return `<p class="scr-eyebrow">Section II &mdash; Nested Movements</p>
 ${buildChart('Price appears to reverse.\nBut you are only seeing part of the move.')}
 <div class="btn-row"><button class="btn-primary" id="s2-next">Continue</button></div>`;
             }
-            // i===4 — static zoomed view (VP_ZOOM)
-            if (i === 4) {
+            // i===5 — static zoomed view (VP_ZOOM)
+            if (i === 5) {
                 return `<p class="scr-eyebrow">Section II &mdash; Nested Movements</p>
 ${buildChart('The larger movement continues.')}
 <div class="btn-row"><button class="btn-primary" id="s2-next">Continue</button></div>`;
             }
-            // i===5 — zoom-out reveal: animates VP_ZOOM → VP_FULL, anchor pause on button
+            // i===6 — zoom-out reveal: animates VP_ZOOM → VP_FULL, anchor pause on button
             return `<p class="scr-eyebrow">Section II &mdash; Nested Movements</p>
 ${buildChart('')}
 <div class="anchor-line" style="margin-top:1.25rem">Direction did not change.<br>You changed scale.</div>
@@ -1262,12 +1277,12 @@ ${buildChart('')}
 <div class="scr-body" style="margin-top:.9rem"><p>But it's only part of something larger.</p></div>
 <div class="btn-row"><button class="btn-primary" id="s3-next">Continue</button></div>`;
             }
-            // S3-3: Zoom out more — "And that move lives inside another."
+            // S3-3: Zoom out more — "That move exists inside a larger one."
             if (i === 2) {
                 return `<p class="scr-eyebrow">Section III &mdash; Zooming Out</p>
 ${buildChart('')}
 <div class="scr-body" style="margin-top:.9rem">
-<p>And that move lives inside another.</p>
+<p>That move exists inside a larger one.</p>
 <p style="font-size:.8rem;color:var(--m-muted);margin-top:.6rem">Clarify: <button class="clarify-btn" data-topic="nestedmovements">Nested Movements</button></p>
 </div>
 <div class="btn-row"><button class="btn-primary" id="s3-next">Continue</button></div>`;
@@ -1275,40 +1290,54 @@ ${buildChart('')}
             // S3-4: Full view — "Timeframes don't change the market. They change what you can see."
             return `<p class="scr-eyebrow">Section III &mdash; Zooming Out</p>
 ${buildChart('')}
-<div class="anchor-line" style="margin-top:.9rem">Timeframes don't change the market.<br>They change what you can see.</div>
+<div class="anchor-line" style="margin-top:.9rem">Timeframes don't change the market.<br><br>They change what you can see.</div>
 <div class="btn-row"><button class="btn-primary" id="s3-to-s4">Continue to Section IV</button></div>`;
         }
 
-        /* ── Section IV — Structural Hierarchy (2 screens) ── */
+        /* ── Section IV — Structural Hierarchy (3 screens: 0, 1, 2) ── */
         function buildS4(i) {
             if (i === 0) {
                 return `<p class="scr-eyebrow">Section IV &mdash; Structural Hierarchy</p>
-<h2 class="scr-h2">A Cleaner Lens</h2>
+<h2 class="scr-h2">A Clearer Lens</h2>
 <div class="scr-body">
 <p>When analyzing price, ask:</p>
-<p>What movement am I inside?</p>
+<p>What larger movement am I inside?</p>
 <p>Is this expansion<br>or a pullback?</p>
 </div>
 <div class="btn-row"><button class="btn-primary" id="s4-next">Continue</button></div>`;
             }
-            return `<p class="scr-eyebrow">Section IV &mdash; Structural Hierarchy</p>
+            if (i === 1) {
+                return `<p class="scr-eyebrow">Section IV &mdash; Structural Hierarchy</p>
 <h2 class="scr-h2">A Simple Process</h2>
 <div style="margin:1.25rem 0">
 <div class="checklist-item">1) Identify the larger movement</div>
 <div class="checklist-item">2) Observe the current movement</div>
-<div class="checklist-item">3) Compare their direction</div>
+<div class="checklist-item">3) Compare their direction and alignment</div>
 </div>
 <p style="font-size:.8rem;color:var(--m-muted);margin-top:.75rem;font-style:italic">Scale prevents false conclusions.</p>
-<div class="btn-row"><button class="btn-primary" id="s4-to-s5">Continue to Section V</button></div>`;
+<div class="btn-row"><button class="btn-primary" id="s4-next">Continue</button></div>`;
+            }
+            // i===2 — IMPROVEMENT 3: Pre-assessment recap block
+            return `<p class="scr-eyebrow">Section IV &mdash; Structural Hierarchy</p>
+<h2 class="scr-h2" style="margin-bottom:1.25rem">Before You Continue</h2>
+<div style="background:var(--m-surf2);border:1px solid var(--m-bdrhi);border-radius:6px;padding:1.25rem 1.4rem;margin-bottom:1.5rem">
+  <p style="font-size:.9rem;color:var(--m-txt);font-weight:500;margin-bottom:1rem;line-height:1.6">Scale defines the environment you are analyzing.</p>
+  <div style="display:flex;flex-direction:column;gap:.55rem;margin-bottom:1rem">
+    <p style="font-size:.85rem;color:var(--m-muted);line-height:1.55;padding-left:.75rem;border-left:2px solid var(--m-gold-line)">Higher timeframes show broader structure.</p>
+    <p style="font-size:.85rem;color:var(--m-muted);line-height:1.55;padding-left:.75rem;border-left:2px solid var(--m-gold-line)">Lower timeframes show finer detail.</p>
+  </div>
+  <p style="font-size:.85rem;color:var(--m-muted);font-style:italic;line-height:1.55">Analysis always begins by defining the scale.</p>
+</div>
+<div class="btn-row"><button class="btn-primary" id="s4-to-s5">Continue to Competency Check</button></div>`;
         }
 
         /* ── Section V — Assessment ── */
         const A_QUESTIONS = [
-            { q: 'A strong downward move appears. What should be considered first?', opts: ['Pattern strength', 'Indicator signal', 'Scale of the movement'], correct: 'Scale of the movement' },
+            { q: 'A strong downward move appears.\n\nWhat should be considered first before drawing conclusions?', opts: ['Pattern strength', 'Indicator signal', 'Scale of the movement'], correct: 'Scale of the movement' },
             { q: 'A pullback inside an uptrend appears bearish. What might be happening?', opts: ['Trend reversal', 'Movement within a larger move', 'Market manipulation'], correct: 'Movement within a larger move' },
-            { q: 'Markets move in:', opts: ['Straight lines', 'Random noise', 'Nested movements'], correct: 'Nested movements' },
+            { q: 'Markets typically move as:', opts: ['Straight lines', 'Random noise', 'Nested movements'], correct: 'Nested movements' },
             { q: 'Changing timeframes changes:', opts: ['Market structure', 'Your perspective', 'Liquidity'], correct: 'Your perspective' },
-            { q: 'Understanding scale helps you:', opts: ['Predict direction', 'Interpret context', 'Avoid losses'], correct: 'Interpret context' }
+            { q: 'Understanding scale primarily helps you:', opts: ['Predict direction', 'Interpret context', 'Avoid losses'], correct: 'Interpret context' }
         ];
 
         function buildS5() {

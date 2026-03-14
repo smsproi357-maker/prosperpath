@@ -1,0 +1,687 @@
+<!-- ============================================================
+     Module 3.6 · Section V — Identify Structure Failure
+     Self-contained fragment. Injected by module-shell.html.
+     Shell provides: goTo, VW, VH, CHART globals.
+============================================================ -->
+
+<style>
+    .s5-screen {
+        width: 100%;
+        max-width: 640px;
+        animation: s5Fade .22s ease both
+    }
+
+    @keyframes s5Fade {
+        from {
+            opacity: 0;
+            transform: translateY(5px)
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0)
+        }
+    }
+
+    .s5-eyebrow {
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--m-muted);
+        margin-bottom: 1.2rem
+    }
+
+    .s5-h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(1.5rem, 3.8vw, 2.1rem);
+        font-weight: 700;
+        color: var(--m-txt);
+        letter-spacing: -.02em;
+        line-height: 1.15;
+        margin-bottom: .85rem
+    }
+
+    /* ── Chart area ───────────────────────────────────────── */
+    .s5-chart-wrap {
+        position: relative;
+        margin-bottom: .55rem
+    }
+
+    .s5-chart {
+        position: relative;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-radius: 4px;
+        overflow: hidden;
+        height: 240px
+    }
+
+    .s5-chart svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%
+    }
+
+    /* Pause badge — shown while chart is paused */
+    .s5-pause-badge {
+        position: absolute;
+        top: .7rem;
+        right: .8rem;
+        font-size: .62rem;
+        font-weight: 700;
+        letter-spacing: .09em;
+        text-transform: uppercase;
+        color: var(--m-gold);
+        background: rgba(13, 14, 16, .82);
+        border: 1px solid var(--m-gold-line);
+        border-radius: 3px;
+        padding: .22rem .65rem;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity .3s ease
+    }
+
+    .s5-pause-badge.visible {
+        opacity: 1
+    }
+
+    .s5-caption {
+        font-size: .72rem;
+        color: var(--m-muted);
+        letter-spacing: .04em;
+        margin-bottom: 1.5rem;
+        opacity: .8
+    }
+
+    /* ── Question ─────────────────────────────────────────── */
+    .s5-q-wrap {
+        opacity: 0;
+        transform: translateY(6px);
+        transition: opacity .32s ease, transform .32s ease
+    }
+
+    .s5-q-wrap.revealed {
+        opacity: 1;
+        transform: translateY(0)
+    }
+
+    .s5-question {
+        font-size: .95rem;
+        font-weight: 600;
+        color: var(--m-txt);
+        line-height: 1.5;
+        margin-bottom: 1.1rem
+    }
+
+    /* ── Options ──────────────────────────────────────────── */
+    .s5-options {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        margin-bottom: 1.4rem
+    }
+
+    .s5-opt {
+        display: flex;
+        align-items: center;
+        gap: .85rem;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-radius: 4px;
+        padding: .72rem 1rem;
+        cursor: pointer;
+        transition: border-color .18s, background .18s;
+        text-align: left;
+        width: 100%;
+        font-family: 'Inter', sans-serif
+    }
+
+    .s5-opt:hover:not([disabled]) {
+        border-color: var(--m-bdrhi);
+        background: rgba(255, 255, 255, .03)
+    }
+
+    .s5-opt-key {
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: .07em;
+        color: var(--m-muted);
+        min-width: 1.3rem;
+        flex-shrink: 0
+    }
+
+    .s5-opt-txt {
+        font-size: .88rem;
+        color: var(--m-muted);
+        line-height: 1.45
+    }
+
+    /* States after answer */
+    .s5-opt.correct {
+        border-color: var(--m-gold-line);
+        background: var(--m-gold-dim)
+    }
+
+    .s5-opt.correct .s5-opt-key,
+    .s5-opt.correct .s5-opt-txt {
+        color: var(--m-gold)
+    }
+
+    .s5-opt.wrong {
+        border-color: rgba(224, 128, 112, .35);
+        background: rgba(224, 128, 112, .06)
+    }
+
+    .s5-opt.wrong .s5-opt-key,
+    .s5-opt.wrong .s5-opt-txt {
+        color: var(--m-red-txt)
+    }
+
+    .s5-opt.dim {
+        opacity: .4
+    }
+
+    /* ── Feedback box ─────────────────────────────────────── */
+    .s5-feedback {
+        display: none;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdrhi);
+        border-radius: 4px;
+        padding: .9rem 1.15rem;
+        margin-bottom: 1.6rem
+    }
+
+    .s5-feedback.show {
+        display: block;
+        animation: s5FbIn .28s ease both
+    }
+
+    @keyframes s5FbIn {
+        from {
+            opacity: 0;
+            transform: translateY(4px)
+        }
+
+        to {
+            opacity: 1;
+            transform: none
+        }
+    }
+
+    .s5-feedback.correct-fb {
+        border-left: 3px solid var(--m-gold-line)
+    }
+
+    .s5-feedback.wrong-fb {
+        border-left: 3px solid rgba(224, 128, 112, .45)
+    }
+
+    .s5-fb-label {
+        font-size: .62rem;
+        font-weight: 700;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        margin-bottom: .42rem
+    }
+
+    .s5-feedback.correct-fb .s5-fb-label {
+        color: var(--m-gold)
+    }
+
+    .s5-feedback.wrong-fb .s5-fb-label {
+        color: var(--m-red-txt);
+        opacity: .85
+    }
+
+    .s5-fb-body {
+        font-size: .88rem;
+        color: var(--m-muted);
+        line-height: 1.6
+    }
+
+    .s5-fb-body strong {
+        color: var(--m-txt);
+        font-weight: 500
+    }
+
+    /* ── Button row ───────────────────────────────────────── */
+    .s5-btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem
+    }
+
+    .s5-btn-prev {
+        background: transparent;
+        border: 1px solid var(--m-bdr);
+        color: var(--m-muted);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 500;
+        letter-spacing: .04em;
+        padding: .62rem 1.2rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: border-color var(--m-tr), color var(--m-tr)
+    }
+
+    .s5-btn-prev:hover {
+        border-color: var(--m-bdrhi);
+        color: var(--m-txt)
+    }
+
+    .s5-btn-next {
+        background: transparent;
+        border: 1px solid var(--m-gold-line);
+        color: var(--m-gold);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        padding: .65rem 1.5rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background .2s, border-color .2s;
+        display: none
+    }
+
+    .s5-btn-next.show {
+        display: inline-flex
+    }
+
+    .s5-btn-next:hover {
+        background: var(--m-gold-dim);
+        border-color: var(--m-gold)
+    }
+
+    /* Path draw animation */
+    @keyframes s5DrawPath {
+        to {
+            stroke-dashoffset: 0
+        }
+    }
+
+    /* Break zone fade */
+    @keyframes s5ZoneFade {
+        from {
+            opacity: 0
+        }
+
+        to {
+            opacity: 1
+        }
+    }
+</style>
+
+<div class="s5-screen" id="s5-root">
+
+    <!-- Eyebrow -->
+    <p class="s5-eyebrow">Section V · Structure Failure</p>
+
+    <!-- Heading -->
+    <h2 class="s5-h1">Identify Structure Failure</h2>
+
+    <!-- Chart -->
+    <div class="s5-chart-wrap">
+        <div class="s5-chart" id="s5-chart" role="img"
+            aria-label="Uptrend sequence HH HL HH followed by pullback that pauses above the Higher Low">
+            <svg id="s5-svg" viewBox="0 0 600 240" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="s5-pause-badge" id="s5-badge">Chart paused — what happens next?</div>
+    </div>
+
+    <!-- Caption -->
+    <p class="s5-caption" id="s5-caption">
+        Uptrend in progress. Price has pulled back. The Higher Low level is visible.
+    </p>
+
+    <!-- Question + Options + Feedback — revealed after pause -->
+    <div class="s5-q-wrap" id="s5-q-wrap">
+
+        <p class="s5-question">What confirms that the trend structure has failed?</p>
+
+        <div class="s5-options" id="s5-options">
+            <button class="s5-opt" id="s5-opt-a" onclick="s5Answer('a')">
+                <span class="s5-opt-key">A</span>
+                <span class="s5-opt-txt">Price pulls back</span>
+            </button>
+            <button class="s5-opt" id="s5-opt-b" onclick="s5Answer('b')">
+                <span class="s5-opt-key">B</span>
+                <span class="s5-opt-txt">Price forms a small lower candle</span>
+            </button>
+            <button class="s5-opt" id="s5-opt-c" onclick="s5Answer('c')">
+                <span class="s5-opt-key">C</span>
+                <span class="s5-opt-txt">Price breaks below the Higher Low</span>
+            </button>
+            <button class="s5-opt" id="s5-opt-d" onclick="s5Answer('d')">
+                <span class="s5-opt-key">D</span>
+                <span class="s5-opt-txt">Price pauses</span>
+            </button>
+        </div>
+
+
+
+        <!-- Incorrect feedback -->
+        <div class="s5-feedback wrong-fb" id="s5-fb-wrong">
+            <p class="s5-fb-label">Not quite</p>
+            <p class="s5-fb-body">
+                Pullbacks and pauses happen inside healthy trends.<br>
+                Structure failure only occurs when the <strong>structural level is violated</strong>.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Navigation -->
+    <div class="s5-btn-row">
+        <button class="s5-btn-prev" onclick="goTo(4, 0)">← Previous</button>
+        <button class="s5-btn-next" id="s5-btn-next" style="display:none" onclick="goTo(6, 0)">Next Section →</button>
+    </div>
+
+</div>
+
+<script>
+    /* ── Reset state on section (re-)entry ──────────────── */
+    window._s5Done = false;
+
+    /* ── global answer handler (exposed to onclick) ─────── */
+    function s5Answer(chosen) {
+        if (window._s5Done) return;
+        window._s5Done = true;
+
+        var correct = 'c';
+        var opts = ['a', 'b', 'c', 'd'];
+
+        opts.forEach(function (k) {
+            var el = document.getElementById('s5-opt-' + k);
+            el.disabled = true;
+
+            if (k === correct) {
+                el.classList.add('correct');
+            } else if (k === chosen && k !== correct) {
+                el.classList.add('wrong');
+            } else {
+                el.classList.add('dim');
+            }
+        });
+
+        if (chosen === correct) {
+            /* Trigger the break animation on the chart */
+            if (window._s5DrawBreak) window._s5DrawBreak();
+
+        } else {
+            document.getElementById('s5-fb-wrong').classList.add('show');
+        }
+
+        /* Show next button */
+        setTimeout(function () {
+            var btn = document.getElementById('s5-btn-next');
+            btn.style.display = 'inline-flex';
+        }, 400);
+    }
+
+    /* ── chart + logic IIFE ─────────────────────────────── */
+    (function () {
+
+        var GLD = 'rgba(195,162,70,1.0)';
+        var GLD2 = 'rgba(195,162,70,0.30)';
+        var NDO = 'rgba(200,185,130,0.92)';
+        var RED = 'rgba(224,128,112,0.85)';
+        var RED2 = 'rgba(224,128,112,0.45)';
+        var REDZ = 'rgba(224,128,112,0.07)';
+        var GRID = 'rgba(255,255,255,0.025)';
+        var GUIDE = 'rgba(195,162,70,0.22)';
+
+        var W = 600, H = 240;
+        var PAD = { l: 32, r: 28, t: 28, b: 28 };
+        var UW = W - PAD.l - PAD.r;
+        var UH = H - PAD.t - PAD.b;
+
+        function px(fx) { return PAD.l + fx * UW; }
+        function py(fy) { return PAD.t + (1 - fy) * UH; }
+
+        /*
+          Structure:
+            anchor → HH1 → HL1 → HH2 → pullback (stops at HL1 level, pauses)
+          
+          HL1 is the critical level.
+          Chart pauses with price hovering just above HL1.
+          Break line drawn only after correct answer.
+        */
+        var anchor = { fx: 0.03, fy: 0.12 };
+        var HH1 = { fx: 0.20, fy: 0.74, lbl: 'HH' };
+        var HL1 = { fx: 0.40, fy: 0.43, lbl: 'HL' };  /* ← CRITICAL */
+        var HH2 = { fx: 0.60, fy: 0.89, lbl: 'HH' };
+        var pullMid = { fx: 0.74, fy: 0.62 };              /* pullback midpoint */
+        var pausePt = { fx: 0.84, fy: 0.50 };              /* pauses above HL */
+
+        var breakEnd = { fx: 0.96, fy: 0.20 };             /* break — hidden initially */
+
+        var hlY = py(HL1.fy);
+        var pauseY = py(pausePt.fy);
+
+        function build() {
+            var svg = document.getElementById('s5-svg');
+            var out = [];
+
+            /* Grid */
+            var gy = 40;
+            while (gy < H) {
+                out.push('<line x1="0" y1="' + gy + '" x2="' + W + '" y2="' + gy +
+                    '" stroke="' + GRID + '" stroke-width="1"/>');
+                gy += 40;
+            }
+
+            /* HL guide line */
+            out.push(
+                '<line x1="' + PAD.l + '" y1="' + hlY +
+                '" x2="' + (W - PAD.r) + '" y2="' + hlY +
+                '" stroke="' + GUIDE + '" stroke-width="1" stroke-dasharray="5,5"/>'
+            );
+            out.push(
+                '<text x="' + (PAD.l - 4) + '" y="' + (hlY + 1) +
+                '" text-anchor="end" font-size="8.5" font-family="Inter,sans-serif"' +
+                ' fill="' + GUIDE + '" letter-spacing="0.04em" font-weight="600">HL</text>'
+            );
+
+            /* Healthy structure path: anchor → HH1 → HL1 → HH2 */
+            var nodes = [anchor, HH1, HL1, HH2];
+            var pts = nodes.map(function (n) { return { x: px(n.fx), y: py(n.fy) }; });
+            var len = 0;
+            for (var i = 1; i < pts.length; i++) {
+                var dx = pts[i].x - pts[i - 1].x;
+                var dy = pts[i].y - pts[i - 1].y;
+                len += Math.sqrt(dx * dx + dy * dy);
+            }
+            out.push(
+                '<path id="s5-main-path"' +
+                ' d="M' + pts.map(function (p) { return p.x + ',' + p.y; }).join(' L') + '"' +
+                ' stroke="' + GLD + '" stroke-width="2.2" fill="none"' +
+                ' stroke-linecap="round" stroke-linejoin="round"' +
+                ' stroke-dasharray="' + (len + 10) + '" stroke-dashoffset="' + (len + 10) + '"' +
+                ' style="animation: s5DrawPath .9s ease .1s forwards"/>'
+            );
+
+            /* Pullback + pause path: HH2 → pullMid → pausePt  */
+            var pb = [HH2, pullMid, pausePt];
+            var pbPts = pb.map(function (n) { return { x: px(n.fx), y: py(n.fy) }; });
+            var pbLen = 0;
+            for (var j = 1; j < pbPts.length; j++) {
+                var ddx = pbPts[j].x - pbPts[j - 1].x;
+                var ddy = pbPts[j].y - pbPts[j - 1].y;
+                pbLen += Math.sqrt(ddx * ddx + ddy * ddy);
+            }
+            out.push(
+                '<path id="s5-pb-path"' +
+                ' d="M' + pbPts.map(function (p) { return p.x + ',' + p.y; }).join(' L') + '"' +
+                ' stroke="' + GLD + '" stroke-width="2.0" fill="none"' +
+                ' stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4,3"' +
+                ' style="opacity:0;transition:opacity .3s ease 1.1s"' +
+                ' id="s5-pb-el"/>'
+            );
+
+            /* Pause dot — pulsing */
+            out.push(
+                '<circle id="s5-pause-ring" cx="' + px(pausePt.fx) + '" cy="' + pauseY +
+                '" r="8" fill="none" stroke="' + GLD2 + '" stroke-width="1.2"' +
+                ' style="opacity:0;transition:opacity .3s ease 1.4s"/>'
+            );
+            out.push(
+                '<circle id="s5-pause-dot" cx="' + px(pausePt.fx) + '" cy="' + pauseY +
+                '" r="4.5" fill="' + NDO + '" stroke="none"' +
+                ' style="opacity:0;transition:opacity .3s ease 1.4s"/>'
+            );
+            out.push(
+                '<text id="s5-pause-lbl" x="' + px(pausePt.fx) + '" y="' + (pauseY - 13) +
+                '" text-anchor="middle" font-size="8.5" font-family="Inter,sans-serif"' +
+                ' fill="' + GLD2 + '" font-weight="600" letter-spacing="0.05em"' +
+                ' style="opacity:0;transition:opacity .3s ease 1.4s">…pause…</text>'
+            );
+
+            /* Break zone + line — hidden, revealed on correct answer */
+            out.push(
+                '<rect id="s5-break-zone" x="' + px(pausePt.fx - 0.01) + '" y="' + hlY +
+                '" width="' + (W - PAD.r - px(pausePt.fx - 0.01) + 4) + '"' +
+                ' height="' + (H - PAD.b - hlY + 4) + '"' +
+                ' fill="' + REDZ + '" rx="0" opacity="0"/>'
+            );
+
+            var bx1 = px(pausePt.fx), by1 = pauseY;
+            var bx2 = px(breakEnd.fx), by2 = py(breakEnd.fy);
+            var breakLen = Math.sqrt(Math.pow(bx2 - bx1, 2) + Math.pow(by2 - by1, 2)) + 20;
+            out.push(
+                '<path id="s5-break-path"' +
+                ' d="M' + bx1 + ',' + by1 + ' L' + bx2 + ',' + by2 + '"' +
+                ' stroke="' + RED + '" stroke-width="2.2" fill="none"' +
+                ' stroke-linecap="round" stroke-linejoin="round"' +
+                ' stroke-dasharray="' + breakLen + '" stroke-dashoffset="' + breakLen + '" opacity="0"/>'
+            );
+
+            /* Break end dot */
+            out.push(
+                '<circle id="s5-break-dot" cx="' + bx2 + '" cy="' + by2 +
+                '" r="4.5" fill="none" stroke="' + RED + '" stroke-width="1.6" opacity="0"/>'
+            );
+            out.push(
+                '<text id="s5-break-lbl" x="' + bx2 + '" y="' + (by2 + 16) +
+                '" text-anchor="middle" font-size="8.5" font-family="Inter,sans-serif"' +
+                ' fill="' + RED + '" font-weight="700" letter-spacing="0.05em" opacity="0">break</text>'
+            );
+
+            /* Vertical drop dashed */
+            out.push(
+                '<line id="s5-drop-line"' +
+                ' x1="' + px(pausePt.fx) + '" y1="' + hlY +
+                '" x2="' + px(pausePt.fx) + '" y2="' + pauseY +
+                '" stroke="' + RED2 + '" stroke-width="1" stroke-dasharray="3,3" opacity="0"/>'
+            );
+
+            /* Node dots for HH1, HL1, HH2 */
+            [HH1, HL1, HH2].forEach(function (n) {
+                var x = px(n.fx), y = py(n.fy);
+                var isHL = n.lbl === 'HL';
+                if (isHL) {
+                    out.push('<circle cx="' + x + '" cy="' + y +
+                        '" r="6" fill="none" stroke="' + GLD2 + '" stroke-width="1.2"' +
+                        ' style="opacity:0;transition:opacity .3s ease 1s"/>');
+                }
+                out.push('<circle cx="' + x + '" cy="' + y +
+                    '" r="4.5" fill="' + NDO + '" stroke="none"' +
+                    ' style="opacity:0;transition:opacity .3s ease 1s"/>');
+                out.push('<text x="' + x + '" y="' + (y - 11) +
+                    '" text-anchor="middle" font-size="9" font-family="Inter,sans-serif"' +
+                    ' fill="' + NDO + '" font-weight="700" letter-spacing="0.06em"' +
+                    ' style="opacity:0;transition:opacity .3s ease 1s">' + n.lbl + '</text>');
+                if (isHL) {
+                    out.push('<text x="' + (x + 14) + '" y="' + (y + 1) +
+                        '" font-size="7.5" font-family="Inter,sans-serif"' +
+                        ' fill="' + GUIDE + '" letter-spacing="0.05em"' +
+                        ' style="opacity:0;transition:opacity .3s ease 1.1s">← must hold</text>');
+                }
+            });
+
+            svg.innerHTML = out.join('');
+
+            /* Staggered reveal sequence */
+            requestAnimationFrame(function () {
+                /* Show structural dot labels after path draws */
+                setTimeout(function () {
+                    svg.querySelectorAll('circle, text').forEach(function (el) {
+                        if (!el.id.startsWith('s5-')) {
+                            el.style.opacity = '1';
+                        }
+                    });
+                }, 1000);
+
+                /* Reveal pullback path */
+                setTimeout(function () {
+                    var pb = document.getElementById('s5-pb-el');
+                    if (pb) pb.style.opacity = '1';
+                }, 1100);
+
+                /* Reveal pause dot + label */
+                setTimeout(function () {
+                    ['s5-pause-ring', 's5-pause-dot', 's5-pause-lbl'].forEach(function (id) {
+                        var el = document.getElementById(id);
+                        if (el) el.style.opacity = '1';
+                    });
+                }, 1400);
+
+                /* Show pause badge and question  */
+                setTimeout(function () {
+                    var badge = document.getElementById('s5-badge');
+                    if (badge) badge.classList.add('visible');
+
+                    var qWrap = document.getElementById('s5-q-wrap');
+                    if (qWrap) qWrap.classList.add('revealed');
+                }, 1800);
+            });
+        }
+
+        /* ── Break animation — called on correct answer ─── */
+        window._s5DrawBreak = function () {
+            /* hide pause elements */
+            ['s5-pause-ring', 's5-pause-lbl', 's5-badge'].forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el) { el.style.opacity = '0'; }
+            });
+
+            /* Update caption */
+            var cap = document.getElementById('s5-caption');
+            if (cap) cap.textContent = 'Price breaks below the Higher Low. Structure has failed.';
+
+            /* Show break zone */
+            var zone = document.getElementById('s5-break-zone');
+            if (zone) {
+                zone.style.transition = 'opacity .5s ease';
+                zone.style.opacity = '1';
+            }
+
+            /* Animate break path */
+            var bp = document.getElementById('s5-break-path');
+            if (bp) {
+                var len = parseFloat(bp.getAttribute('stroke-dasharray')) || 200;
+                bp.style.opacity = '1';
+                bp.style.transition = 'opacity .1s ease';
+                bp.style.animation = 's5DrawPath .65s ease .1s forwards';
+            }
+
+            /* Show break dot + label */
+            setTimeout(function () {
+                ['s5-break-dot', 's5-break-lbl', 's5-drop-line'].forEach(function (id) {
+                    var el = document.getElementById(id);
+                    if (el) {
+                        el.style.transition = 'opacity .3s ease';
+                        el.style.opacity = '1';
+                    }
+                });
+            }, 650);
+        };
+
+        build();
+
+    })();
+</script>

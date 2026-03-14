@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+.venv/
+venv/
+
+# Environment
+.env
+.env.*
+
+# IDEs and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Root artifacts (binaries, backtest outputs, data dumps)
+*.exe
+*.pdf
+*.csv
+*.txt
+
+# Exclude specific binaries/scripts
+backtest_engine.exe
+update
+
+# Keep documentation
+!*.md
+
+# Python caches
+__pycache__/
+*.pyc

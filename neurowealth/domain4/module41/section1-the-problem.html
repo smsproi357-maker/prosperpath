@@ -1,0 +1,368 @@
+<!-- ============================================================
+     Module 4.1 · Section I — The Problem
+     Self-contained fragment. Injected by module-shell.html.
+     No <html>, <head>, or <body> tags needed.
+     Shell provides: registerClarifyTerms, openClarify, goTo globals.
+============================================================ -->
+
+<style>
+    .s1-screen {
+        width: 100%;
+        max-width: 640px;
+        animation: s1Fade .22s ease both
+    }
+
+    @keyframes s1Fade {
+        from {
+            opacity: 0;
+            transform: translateY(5px)
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0)
+        }
+    }
+
+    .s1-eyebrow {
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--m-muted);
+        margin-bottom: 1.2rem
+    }
+
+    .s1-h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(1.5rem, 3.8vw, 2.1rem);
+        font-weight: 700;
+        color: var(--m-txt);
+        letter-spacing: -.02em;
+        line-height: 1.15;
+        margin-bottom: .85rem
+    }
+
+    .s1-body {
+        font-size: .95rem;
+        color: var(--m-txt);
+        line-height: 1.7;
+        margin-bottom: 1.5rem
+    }
+
+    .s1-body p {
+        margin-bottom: .5rem
+    }
+
+    .s1-body p:last-child {
+        margin-bottom: 0
+    }
+
+    /* Order example box */
+    .s1-order-box {
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-radius: 5px;
+        padding: 1.4rem 1.5rem;
+        margin: 1.5rem 0;
+        animation: s1BoxIn .35s ease .12s both
+    }
+
+    @keyframes s1BoxIn {
+        from { opacity: 0; transform: translateY(6px) }
+        to { opacity: 1; transform: translateY(0) }
+    }
+
+    .s1-order-label {
+        font-size: .62rem;
+        font-weight: 700;
+        letter-spacing: .13em;
+        text-transform: uppercase;
+        color: var(--m-gold);
+        opacity: .75;
+        margin-bottom: 1rem
+    }
+
+    .s1-order-row {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        margin-bottom: .75rem;
+        font-size: .88rem
+    }
+
+    .s1-order-row:last-child {
+        margin-bottom: 0
+    }
+
+    .s1-order-key {
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: .07em;
+        color: var(--m-muted);
+        min-width: 4.5rem;
+        flex-shrink: 0
+    }
+
+    .s1-order-val {
+        color: var(--m-txt);
+        font-weight: 500
+    }
+
+    .s1-order-deficit {
+        color: var(--m-red-txt);
+        font-size: .78rem;
+        font-weight: 600;
+        padding: .22rem .7rem;
+        border: 1px solid rgba(224, 128, 112, .3);
+        border-radius: 3px;
+        background: rgba(224, 128, 112, .07);
+        white-space: nowrap
+    }
+
+    .s1-arrow-row {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        margin: .75rem 0;
+        padding: .6rem 0;
+        border-top: 1px solid var(--m-bdr)
+    }
+
+    .s1-arrow-icon {
+        font-size: 1rem;
+        color: var(--m-gold);
+        opacity: .8
+    }
+
+    .s1-arrow-txt {
+        font-size: .83rem;
+        color: var(--m-muted);
+        line-height: 1.45
+    }
+
+    /* Chart */
+    .s1-chart {
+        position: relative;
+        margin: 1.5rem 0;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-radius: 4px;
+        overflow: hidden;
+        height: 180px
+    }
+
+    .s1-chart svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%
+    }
+
+    /* Takeaway */
+    .s1-takeaway {
+        font-size: .8rem;
+        color: var(--m-muted);
+        text-align: center;
+        opacity: .85;
+        margin-bottom: 1.75rem;
+        letter-spacing: .01em
+    }
+
+    /* Button row */
+    .s1-btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem;
+        margin-top: .25rem
+    }
+
+    .s1-btn {
+        background: transparent;
+        border: 1px solid var(--m-gold-line);
+        color: var(--m-gold);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        padding: .65rem 1.5rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background .2s, border-color .2s
+    }
+
+    .s1-btn:hover {
+        background: var(--m-gold-dim);
+        border-color: var(--m-gold)
+    }
+
+    @keyframes s1DrawPath {
+        to { stroke-dashoffset: 0 }
+    }
+</style>
+
+<div class="s1-screen" id="s1-root">
+
+    <!-- Eyebrow -->
+    <p class="s1-eyebrow">Section I · Why Liquidity Exists</p>
+
+    <!-- Heading -->
+    <h2 class="s1-h1">Every Trade Needs Two Sides</h2>
+
+    <!-- Body -->
+    <div class="s1-body">
+        <p>Every trade requires both a buyer and a seller.</p>
+        <p>
+            If someone wants to buy a large amount, there must be enough
+            <button class="clarify-btn" onclick="openClarify('orders')" aria-label="Clarify: Orders">sellers willing to take the other side.</button>
+        </p>
+        <p>If there are not enough sellers at the current price, price must move to find them.</p>
+    </div>
+
+    <!-- Order example -->
+    <div class="s1-order-box" id="s1-order-box">
+        <p class="s1-order-label">Order Example</p>
+        <div class="s1-order-row">
+            <span class="s1-order-key">Buyer wants</span>
+            <span class="s1-order-val">100 BTC</span>
+        </div>
+        <div class="s1-order-row">
+            <span class="s1-order-key">Available now</span>
+            <span class="s1-order-val">20 BTC</span>
+            <span class="s1-order-deficit">Deficit: 80 BTC</span>
+        </div>
+        <div class="s1-arrow-row">
+            <span class="s1-arrow-icon">↑</span>
+            <span class="s1-arrow-txt">Price must move <strong>higher</strong> to find more sellers.</span>
+        </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="s1-chart" id="s1-chart" role="img"
+        aria-label="Price moves upward searching for sellers">
+        <svg id="s1-svg" viewBox="0 0 540 180" preserveAspectRatio="none"></svg>
+    </div>
+
+    <!-- Takeaway -->
+    <p class="s1-takeaway">Markets move in search of orders.</p>
+
+    <!-- Navigation -->
+    <div class="s1-btn-row">
+        <button class="s1-btn" onclick="goTo(2, 0)">Next Section &rarr;</button>
+    </div>
+
+</div>
+
+<script>
+    (function () {
+
+        /* ── Register Clarify terms ─────────────────────────── */
+        registerClarifyTerms({
+            orders: {
+                term: 'Orders',
+                explanation: 'Orders are instructions placed by market participants to buy or sell at a specified price. They represent intent to trade.',
+                example: 'A trader places a sell order at $50,000. If price reaches that level, their sell order is filled.',
+                misc: '<strong>Orders are not just market activity.</strong> They are clustered at predictable levels, which is what creates liquidity.'
+            }
+        });
+
+        /* ── Chart ───────────────────────────────────────── */
+        var W = 540, H = 180;
+        var PAD = { l: 36, r: 32, t: 22, b: 22 };
+        var UW = W - PAD.l - PAD.r;
+        var UH = H - PAD.t - PAD.b;
+
+        function px(fx) { return PAD.l + fx * UW; }
+        function py(fy) { return PAD.t + (1 - fy) * UH; }
+
+        var GLD = 'rgba(195,162,70,1.0)';
+        var NDO = 'rgba(200,185,130,0.92)';
+        var GRID = 'rgba(255,255,255,0.025)';
+        var GUIDE = 'rgba(195,162,70,0.22)';
+
+        /* Price path: starts flat, then rises toward seller zone */
+        var nodes = [
+            { fx: 0.03, fy: 0.18 },
+            { fx: 0.18, fy: 0.22 },
+            { fx: 0.32, fy: 0.19 },
+            { fx: 0.46, fy: 0.25 },
+            { fx: 0.60, fy: 0.38 },
+            { fx: 0.74, fy: 0.55 },
+            { fx: 0.88, fy: 0.74 }
+        ];
+
+        /* Seller zone at top */
+        var sellerZoneY = py(0.82);
+
+        function build() {
+            var svg = document.getElementById('s1-svg');
+            var out = [];
+
+            /* Grid */
+            [40, 80, 120].forEach(function (gy) {
+                out.push('<line x1="0" y1="' + gy + '" x2="' + W + '" y2="' + gy +
+                    '" stroke="' + GRID + '" stroke-width="1"/>');
+            });
+
+            /* Seller zone bar at top */
+            out.push('<rect x="' + PAD.l + '" y="' + (sellerZoneY - 2) +
+                '" width="' + UW + '" height="18"' +
+                ' fill="rgba(195,162,70,0.08)" opacity="0" id="s1-seller-zone"/>');
+            out.push('<text x="' + (W - PAD.r - 4) + '" y="' + (sellerZoneY + 10) +
+                '" text-anchor="end" font-size="8.5" font-family="Inter,sans-serif"' +
+                ' fill="' + GUIDE + '" font-weight="600" opacity="0" id="s1-seller-lbl">sellers exist here</text>');
+
+            /* Guide line at seller zone */
+            out.push('<line x1="' + PAD.l + '" y1="' + sellerZoneY +
+                '" x2="' + (W - PAD.r) + '" y2="' + sellerZoneY +
+                '" stroke="' + GUIDE + '" stroke-width="1" stroke-dasharray="5,4" opacity="0" id="s1-guide"/>');
+
+            /* Price path */
+            var pts = nodes.map(function (n) { return { x: px(n.fx), y: py(n.fy) }; });
+            var pathD = 'M' + pts.map(function (p) { return p.x + ',' + p.y; }).join(' L');
+
+            var len = 0;
+            for (var i = 1; i < pts.length; i++) {
+                var dx = pts[i].x - pts[i - 1].x;
+                var dy = pts[i].y - pts[i - 1].y;
+                len += Math.sqrt(dx * dx + dy * dy);
+            }
+
+            out.push('<path d="' + pathD + '" stroke="' + GLD + '" stroke-width="2.2" fill="none"' +
+                ' stroke-linecap="round" stroke-linejoin="round"' +
+                ' stroke-dasharray="' + (len + 10) + '" stroke-dashoffset="' + (len + 10) + '"' +
+                ' style="animation: s1DrawPath 1.0s ease .1s forwards"/>');
+
+            /* Arrow tip at end */
+            var last = pts[pts.length - 1];
+            out.push('<circle cx="' + last.x + '" cy="' + last.y +
+                '" r="4.5" fill="' + GLD + '" opacity="0" id="s1-tip"/>');
+
+            /* Label "price searching" */
+            out.push('<text x="' + (last.x - 6) + '" y="' + (last.y - 12) +
+                '" text-anchor="end" font-size="8.5" font-family="Inter,sans-serif"' +
+                ' fill="' + NDO + '" font-weight="600" opacity="0" id="s1-price-lbl">price moving up</text>');
+
+            svg.innerHTML = out.join('');
+
+            /* Animate labels */
+            setTimeout(function () {
+                var tip = document.getElementById('s1-tip');
+                var lbl = document.getElementById('s1-price-lbl');
+                if (tip) { tip.style.transition = 'opacity .35s ease'; tip.style.opacity = '1'; }
+                if (lbl) { lbl.style.transition = 'opacity .35s ease'; lbl.style.opacity = '1'; }
+            }, 1100);
+
+            setTimeout(function () {
+                ['s1-guide', 's1-seller-zone', 's1-seller-lbl'].forEach(function (id) {
+                    var el = document.getElementById(id);
+                    if (el) { el.style.transition = 'opacity .4s ease'; el.style.opacity = '1'; }
+                });
+            }, 1600);
+        }
+
+        build();
+
+    })();
+</script>

@@ -1,0 +1,304 @@
+/* guided-demo.css */
+
+/* --- 1. OVERLAY --- */
+.guided-demo-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(10, 10, 12, 0.85); /* Dark translucent */
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 9998;
+  opacity: 0;
+  transition: opacity 300ms ease-in-out;
+  pointer-events: none; /* Let clicks pass to the underlying target when necessary */
+}
+
+.guided-demo-overlay.active {
+  opacity: 1;
+  pointer-events: auto; /* Block all clicks on background */
+}
+
+/* --- 2. SPOTLIGHT HIGHLIGHT --- */
+/* The target element needs relative position to attach pseudo elements or wrap properly */
+.guided-demo-target {
+  position: relative;
+  z-index: 9999 !important; /* Above overlay */
+  /* Remove pointer-events none from here, target must be clickable if desired */
+}
+
+/* Create the spotlight ring */
+.guided-demo-target::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  border: 2px solid var(--color-accent, #F5C842);
+  border-radius: var(--radius-lg, 12px);
+  pointer-events: none; /* Crucial: clicks must pass through the ring */
+  box-shadow: 0 0 0 9999px rgba(10, 10, 12, 0.85); /* Alternative dimming method if overlay div isn't used */
+  z-index: -1;
+  opacity: 0;
+  animation: pulse-ring 2s infinite;
+}
+
+/* We will use the explicit overlay div for dimming instead of the box-shadow hack above for better control. */
+.guided-demo-target::after {
+  box-shadow: none; 
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.98); opacity: 0.8; box-shadow: 0 0 0 0 rgba(245, 200, 66, 0.4); }
+  70% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 10px rgba(245, 200, 66, 0); }
+  100% { transform: scale(0.98); opacity: 0.8; box-shadow: 0 0 0 0 rgba(245, 200, 66, 0); }
+}
+
+
+/* --- 3. TOOLTIP PANEL --- */
+.guided-demo-tooltip {
+  position: absolute;
+  z-index: 10000;
+  width: 320px;
+  background: rgba(20, 20, 22, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl, 16px);
+  padding: var(--space-6, 1.5rem);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transform: translateY(8px);
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+  pointer-events: none; /* Ignore until active */
+}
+
+.guided-demo-tooltip.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.tooltip-animate {
+  animation: tooltip-appear 220ms cubic-bezier(.2,.8,.2,1) forwards;
+}
+
+@keyframes tooltip-appear {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tooltip Arrow */
+.guided-demo-tooltip::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: #141416;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transform: rotate(45deg);
+  z-index: -1;
+}
+
+.tooltip-pos-bottom::after {
+  top: -6px;
+  left: 50%;
+  margin-left: -6px;
+  border-bottom: none;
+  border-right: none;
+}
+
+.tooltip-pos-top::after {
+  bottom: -6px;
+  left: 50%;
+  margin-left: -6px;
+  border-top: none;
+  border-left: none;
+}
+
+.tooltip-pos-right::after {
+  top: 50%;
+  left: -6px;
+  margin-top: -6px;
+  border-top: none;
+  border-right: none;
+}
+
+.tooltip-pos-left::after {
+  top: 50%;
+  right: -6px;
+  margin-top: -6px;
+  border-bottom: none;
+  border-left: none;
+}
+
+.guided-demo-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 var(--space-2, 0.5rem) 0;
+  color: #fff;
+}
+
+.guided-demo-desc {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary, #a1a1aa); /* Fallback color */
+  margin: 0 0 var(--space-6, 1.5rem) 0;
+}
+
+/* Tooltip Buttons */
+.guided-demo-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: var(--space-4, 1rem);
+}
+
+.guided-demo-btn-group {
+  display: flex;
+  gap: var(--space-2, 0.5rem);
+}
+
+.guided-demo-btn {
+  background: transparent;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+  border-radius: var(--radius-md, 8px);
+  transition: all 0.2s ease;
+}
+
+.guided-demo-btn-primary {
+  background: var(--color-accent, #F5C842);
+  color: #000;
+  font-weight: 600;
+}
+
+.guided-demo-btn-primary:hover {
+  background: #fff;
+}
+
+.guided-demo-btn-secondary {
+  color: var(--color-text-primary, #fff);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.guided-demo-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.guided-demo-btn-skip {
+  color: var(--color-text-muted, #71717a);
+  padding-left: 0;
+}
+
+.guided-demo-btn-skip:hover {
+  color: #fff;
+}
+
+
+/* --- 4. PROGRESS INDICATOR --- */
+.guided-demo-progress-container {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  background: rgba(20, 20, 22, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+
+.guided-demo-progress-container.active {
+  opacity: 1;
+}
+
+.guided-demo-step-text {
+  font-size: 0.85rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  color: var(--color-text-primary, #fff);
+}
+
+.guided-demo-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.guided-demo-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: background-color 200ms ease;
+}
+
+.guided-demo-dot.active {
+  background: var(--color-accent, #F5C842);
+}
+
+
+/* --- 5. EXIT CONTROL --- */
+.guided-demo-exit-btn {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 10000;
+  background: rgba(20, 20, 22, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--color-text-secondary, #a1a1aa);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.guided-demo-exit-btn.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.guided-demo-exit-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+
+/* --- RESPONSIVE BEHAVIOR --- */
+@media (max-width: 768px) {
+  .guided-demo-tooltip {
+    width: calc(100vw - 32px);
+    left: 16px !important;
+    /* Force bottom positioning on mobile usually, managed by JS */
+  }
+}

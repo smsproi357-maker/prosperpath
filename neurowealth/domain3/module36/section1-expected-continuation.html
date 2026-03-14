@@ -1,0 +1,360 @@
+<!-- ============================================================
+     Module 3.6 · Section I — Expected Continuation
+     Self-contained fragment. Injected by module-shell.html.
+     No <html>, <head>, or <body> tags needed.
+     Shared helpers (ln, dot, lbl, grid, VW, VH, CHART, goTo)
+     are provided by the parent shell.
+============================================================ -->
+
+<style>
+    /* Scoped styles — only for this section */
+    .s1-screen {
+        width: 100%;
+        max-width: 640px;
+        animation: s1Fade .22s ease both
+    }
+
+    @keyframes s1Fade {
+        from {
+            opacity: 0;
+            transform: translateY(5px)
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0)
+        }
+    }
+
+    .s1-eyebrow {
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--m-muted);
+        margin-bottom: 1.2rem
+    }
+
+    .s1-h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(1.5rem, 3.8vw, 2.1rem);
+        font-weight: 700;
+        color: var(--m-txt);
+        letter-spacing: -.02em;
+        line-height: 1.15;
+        margin-bottom: .85rem
+    }
+
+    .s1-body {
+        font-size: .95rem;
+        color: var(--m-txt);
+        line-height: 1.7;
+        margin-bottom: 1.5rem
+    }
+
+    .s1-body p {
+        margin-bottom: .5rem
+    }
+
+    .s1-body p:last-child {
+        margin-bottom: 0
+    }
+
+    /* Chart container */
+    .s1-chart {
+        position: relative;
+        margin: 1.5rem 0;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-radius: 4px;
+        overflow: hidden;
+        height: 220px
+    }
+
+    .s1-chart svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%
+    }
+
+    /* Sequence label strip */
+    .s1-seq-strip {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        margin: 1rem 0 1.5rem;
+        flex-wrap: wrap
+    }
+
+    /* Confirmed structure nodes — solid gold */
+    .s1-seq-node {
+        font-size: .72rem;
+        font-weight: 700;
+        letter-spacing: .06em;
+        color: var(--m-gold);
+        padding: .28rem .6rem;
+        border: 1px solid var(--m-gold-line);
+        border-radius: 3px;
+        background: var(--m-gold-dim);
+        opacity: 1
+    }
+
+    .s1-seq-arrow {
+        font-size: .7rem;
+        color: var(--m-muted);
+        opacity: .55;
+        padding: 0 .35rem;
+        user-select: none
+    }
+
+    /* Projected node — dashed outline, faded gold, reduced opacity */
+    .s1-seq-node.projected {
+        color: rgba(160, 124, 46, 0.7);
+        border-color: rgba(160, 124, 46, 0.35);
+        background: transparent;
+        border-style: dashed;
+        opacity: 0.7
+    }
+
+    /* Subtle takeaway line */
+    .s1-takeaway {
+        font-size: .8rem;
+        color: var(--m-muted);
+        text-align: center;
+        opacity: .85;
+        margin-bottom: 1.75rem;
+        letter-spacing: .01em
+    }
+
+    /* Button row */
+    .s1-btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem;
+        margin-top: .25rem
+    }
+
+    .s1-btn {
+        background: transparent;
+        border: 1px solid var(--m-gold-line);
+        color: var(--m-gold);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        padding: .65rem 1.5rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background .2s, border-color .2s
+    }
+
+    .s1-btn:hover {
+        background: var(--m-gold-dim);
+        border-color: var(--m-gold)
+    }
+</style>
+
+<div class="s1-screen" id="s1-root">
+
+    <!-- Eyebrow -->
+    <p class="s1-eyebrow">Section I · Structure Failure</p>
+
+    <!-- Heading -->
+    <h2 class="s1-h1">Expected Continuation</h2>
+
+    <!-- Body — with Clarify links on first appearance -->
+    <div class="s1-body">
+        <p>Healthy structure creates an
+            <button class="clarify-btn" onclick="openClarify('expectedContinuation')"
+                aria-label="Clarify: Expected Continuation">Expected Continuation.</button>
+        </p>
+        <p>When structure forms
+            <button class="clarify-btn" onclick="openClarify('higherHigh')" aria-label="Clarify: Higher High">Higher
+                Highs</button>
+            and
+            <button class="clarify-btn" onclick="openClarify('higherLow')" aria-label="Clarify: Higher Low">Higher
+                Lows,</button>
+            continuation remains likely.
+        </p>
+    </div>
+
+    <!-- Sequence label strip -->
+    <div class="s1-seq-strip" aria-label="Structure sequence">
+        <span class="s1-seq-node">HH</span>
+        <span class="s1-seq-arrow">→</span>
+        <span class="s1-seq-node">HL</span>
+        <span class="s1-seq-arrow">→</span>
+        <span class="s1-seq-node">HH</span>
+        <span class="s1-seq-arrow">→</span>
+        <span class="s1-seq-node">HL</span>
+        <span class="s1-seq-arrow">→</span>
+        <span class="s1-seq-node projected" aria-label="Projected Higher High">HH ?</span>
+    </div>
+
+    <!-- Chart -->
+    <div class="s1-chart" id="s1-chart" role="img"
+        aria-label="Uptrend structure chart showing HH HL sequence with projected continuation">
+        <svg id="s1-svg" viewBox="0 0 600 220" preserveAspectRatio="none"></svg>
+    </div>
+
+    <!-- Subtle takeaway line -->
+    <p class="s1-takeaway">Healthy structure makes the next structural step likely.</p>
+
+    <!-- Navigation -->
+    <div class="s1-btn-row">
+        <button class="s1-btn" onclick="goTo(2, 0)">Next Section →</button>
+    </div>
+
+</div>
+
+<script>
+    (function () {
+
+        /* ── Register Clarify terms with the shared panel ───────── */
+        registerClarifyTerms({
+            expectedContinuation: {
+                term: 'Expected Continuation',
+                explanation: 'Expected continuation is the next structural move that normally follows a healthy trend sequence.',
+                example: 'In an uptrend with Higher Highs and Higher Lows, the next expected move is another Higher High.',
+                misc: 'Expected continuation does not guarantee the move will happen. It only describes the most likely structural outcome.'
+            },
+            higherHigh: {
+                term: 'Higher High',
+                explanation: 'A Higher High occurs when price pushes above the previous swing high.',
+                example: 'If price rises above the last peak in an uptrend, that new peak is a Higher High.',
+                misc: 'Not every candle high is a Higher High. The term refers to meaningful structural turning points.'
+            },
+            higherLow: {
+                term: 'Higher Low',
+                explanation: 'A Higher Low is a low that forms above the previous important low in an uptrend.',
+                example: 'Price pulls back but stops above the previous low before moving upward again.',
+                misc: 'A Higher Low is not every small dip. It represents a structural turning point.'
+            }
+        });
+
+        /* ── Chart constants ────────────────────────────────────── */
+        var W = 600, H = 220;
+        var PAD = { l: 30, r: 30, t: 24, b: 24 };
+
+        /* ── Structural nodes (x as fraction of usable width) ──── */
+        var UW = W - PAD.l - PAD.r;
+        var UH = H - PAD.t - PAD.b;
+
+        function px(fx) { return PAD.l + fx * UW; }
+        function py(fy) { return PAD.t + (1 - fy) * UH; }
+
+        // Confirmed nodes: [fractional-x, fractional-y, label]
+        var nodes = [
+            { fx: 0.04, fy: 0.08, lbl: '' },       // anchor start
+            { fx: 0.22, fy: 0.70, lbl: 'HH' },     // HH1
+            { fx: 0.38, fy: 0.38, lbl: 'HL' },     // HL1
+            { fx: 0.56, fy: 0.90, lbl: 'HH' },     // HH2
+            { fx: 0.72, fy: 0.56, lbl: 'HL' },     // HL2
+        ];
+
+        // Projected node — dashed outline, faded gold (~70% opacity)
+        var proj = { fx: 0.92, fy: 0.96, lbl: 'HH?' };
+
+        /* ── Colour helpers ─────────────────────────────────────── */
+        var GLD = 'rgba(195,162,70,1.0)';   // solid gold — confirmed lines
+        var GLD2 = 'rgba(195,162,70,0.42)';  // arrow head
+        var PROJ_LN = 'rgba(195,162,70,0.28)';  // projection dashed line
+        var PROJ_DOT = 'rgba(195,162,70,0.7)';   // projected node stroke (≈70%)
+        var PROJ_LBL = 'rgba(195,162,70,0.6)';   // projected label
+        var NDO = 'rgba(200,185,130,0.92)'; // confirmed node fill
+        var GRID_C = 'rgba(255,255,255,0.025)';
+
+        /* ── Build SVG ──────────────────────────────────────────── */
+        function buildChart() {
+            var svg = document.getElementById('s1-svg');
+            var out = [];
+
+            // Grid
+            var gy = 40;
+            while (gy < H) {
+                out.push('<line x1="0" y1="' + gy + '" x2="' + W + '" y2="' + gy +
+                    '" stroke="' + GRID_C + '" stroke-width="1"/>');
+                gy += 40;
+            }
+
+            // Solid structure line through confirmed nodes
+            var solidPts = nodes.map(function (n) {
+                return { x: px(n.fx), y: py(n.fy) };
+            });
+            var solidD = 'M' + solidPts.map(function (p) { return p.x + ',' + p.y; }).join(' L');
+            out.push('<path d="' + solidD + '" stroke="' + GLD + '" stroke-width="2.2" fill="none" ' +
+                'stroke-linejoin="round" stroke-linecap="round"/>');
+
+            // Dashed projection line: last confirmed node → projected HH
+            var last = nodes[nodes.length - 1];
+            out.push(
+                '<line x1="' + px(last.fx) + '" y1="' + py(last.fy) + '"' +
+                ' x2="' + px(proj.fx) + '" y2="' + py(proj.fy) + '"' +
+                ' stroke="' + PROJ_LN + '" stroke-width="1.6" stroke-dasharray="5,5"' +
+                ' stroke-linecap="round"/>'
+            );
+
+            // Confirmed node dots + labels — solid gold, normal opacity
+            nodes.forEach(function (n, i) {
+                if (i === 0) return; // skip invisible anchor
+                var x = px(n.fx), y = py(n.fy);
+                out.push('<circle cx="' + x + '" cy="' + y + '" r="4.5" fill="' + NDO + '" stroke="none"/>');
+                out.push(
+                    '<text x="' + x + '" y="' + (y - 10) + '"' +
+                    ' text-anchor="middle" font-size="9" font-family="Inter,sans-serif"' +
+                    ' fill="' + NDO + '" font-weight="700" letter-spacing="0.06em">' + n.lbl + '</text>'
+                );
+            });
+
+            // Projected node — dashed outline, faded gold, ~70% opacity
+            var px2 = px(proj.fx), py2 = py(proj.fy);
+            out.push(
+                '<circle cx="' + px2 + '" cy="' + py2 + '" r="4.5" fill="none"' +
+                ' stroke="' + PROJ_DOT + '" stroke-width="1.5" stroke-dasharray="2,2"/>'
+            );
+            out.push(
+                '<text x="' + px2 + '" y="' + (py2 - 10) + '"' +
+                ' text-anchor="middle" font-size="9" font-family="Inter,sans-serif"' +
+                ' fill="' + PROJ_LBL + '" font-weight="700" letter-spacing="0.06em">' + proj.lbl + '</text>'
+            );
+
+            // Arrow head on projection end
+            out.push(arrowHead(px2, py2, GLD2));
+
+            svg.innerHTML = out.join('');
+        }
+
+        function arrowHead(x, y, color) {
+            var size = 5;
+            return (
+                '<polyline points="' +
+                (x - size) + ',' + (y + size) + ' ' +
+                x + ',' + y + ' ' +
+                (x + size) + ',' + (y + size) +
+                '" fill="none" stroke="' + color + '" stroke-width="1.4"' +
+                ' stroke-linecap="round" stroke-linejoin="round"/>'
+            );
+        }
+
+        /* ── Animate sequence nodes in ─────────────────────────── */
+        function animateNodes() {
+            var items = document.querySelectorAll('.s1-seq-node');
+            items.forEach(function (el, i) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(4px)';
+                el.style.transition = 'opacity .25s ease, transform .25s ease';
+                setTimeout(function () {
+                    el.style.opacity = '';
+                    el.style.transform = '';
+                }, 80 + i * 90);
+            });
+        }
+
+        /* ── Init ───────────────────────────────────────────────── */
+        buildChart();
+        animateNodes();
+
+    })();
+</script>

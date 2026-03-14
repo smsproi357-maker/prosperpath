@@ -259,6 +259,11 @@
             color: #7eb3ff;
         }
 
+        .mm-diff-badge.integration {
+            background: rgba(160, 124, 46, 0.12);
+            color: #a07c2e;
+        }
+
         .mm-status-badge {
             font-size: 0.65rem;
             font-weight: 600;
@@ -363,6 +368,108 @@
         .mm-back-link:hover {
             color: var(--mm-text);
         }
+
+        /* ─── Market Context Framework Bar ──────────────── */
+        .mm-framework {
+            padding: 1.6rem 1.25rem 2.25rem;
+            border-bottom: 1px solid var(--mm-border);
+        }
+
+        .mm-framework-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--mm-muted);
+            opacity: 0.7;
+            margin-bottom: 0.9rem;
+            text-align: center;
+        }
+
+        .mm-framework-track {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0;
+        }
+
+        .mm-fw-step {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            opacity: 0;
+            /* animated in by JS */
+        }
+
+        .mm-fw-step.fw-visible {
+            animation: fw-fadein 0.3s ease forwards;
+        }
+
+        @keyframes fw-fadein {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .mm-fw-word {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            color: var(--mm-muted);
+            opacity: 0.5;
+            padding: 0.3rem 0.5rem;
+            border-radius: 3px;
+            transition: color 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+            position: relative;
+        }
+
+        /* completed step */
+        .mm-fw-step.fw-done .mm-fw-word {
+            color: var(--mm-gold);
+            opacity: 0.9;
+        }
+
+        .mm-fw-step.fw-done .mm-fw-word::after {
+            content: ' ✓';
+            font-size: 0.68rem;
+            opacity: 0.9;
+        }
+
+        /* current step */
+        .mm-fw-step.fw-current .mm-fw-word {
+            color: var(--mm-text);
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .mm-fw-step.fw-current .mm-fw-word::after {
+            content: ' ●';
+            font-size: 0.55rem;
+            opacity: 0.9;
+            vertical-align: middle;
+        }
+
+        /* upcoming / not started */
+        .mm-fw-step.fw-upcoming .mm-fw-word {
+            color: var(--mm-muted);
+            opacity: 0.6;
+        }
+
+        /* arrow between steps */
+        .mm-fw-arrow {
+            font-size: 0.7rem;
+            color: var(--mm-muted);
+            opacity: 0.6;
+            padding: 0 0.15rem;
+            user-select: none;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 
@@ -381,10 +488,47 @@
                     <a href="trade.html">Trade</a>
                     <a href="market-mechanics.html" class="active">Market Mechanics</a>
                     <a href="portfolio.html">Portfolio</a>
-                    <a href="wealth-guides.html">Wealth Guides</a>
-                    <a href="tool-reviews.html">Tool Reviews</a>
-                    <a href="ai-calculators.html">AI Calculators</a>
-                    <a href="blog.html">Blog</a>
+                    <div class="nav-item-dropdown">
+
+                        <a href="resources.html">Resources</a>
+
+                        <div class="dropdown-panel">
+
+                            <a href="wealth-guides.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">Wealth Guides</span>
+
+                                <span class="dropdown-item-desc">Structured frameworks for building financial understanding.</span>
+
+                            </a>
+
+                            <a href="tool-reviews.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">Tool Reviews</span>
+
+                                <span class="dropdown-item-desc">Reviews of platforms and financial tools.</span>
+
+                            </a>
+
+                            <a href="ai-calculators.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">AI Calculators</span>
+
+                                <span class="dropdown-item-desc">Interactive tools for financial modelling.</span>
+
+                            </a>
+
+                            <a href="blog.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">Insights</span>
+
+                                <span class="dropdown-item-desc">Market analysis and commentary.</span>
+
+                            </a>
+
+                        </div>
+
+                    </div>
                 </div>
 
                 <div class="nav-actions" style="display:flex;align-items:center;gap:var(--space-4);position:relative;">
@@ -417,7 +561,10 @@
             <div class="mm-container">
                 <p class="mm-hero-eyebrow">Domain II</p>
                 <h1>Market Context</h1>
-                <p>Understand price within scale.</p>
+                <p>Markets are interpreted through structure.</p>
+                <p
+                    style="font-size:0.78rem; color:var(--mm-muted); opacity:0.55; margin-top:0.35rem; letter-spacing:0.02em;">
+                    Follow the sequence to classify what you're seeing.</p>
             </div>
         </section>
 
@@ -425,15 +572,25 @@
         <div class="mm-status-bar" id="mm-status-bar">
             <span class="mm-status-chip"><strong>Domain II</strong>&thinsp;— Market Context</span>
             <span class="mm-status-chip" id="chip-competency"><strong>Competency:</strong>&thinsp;<span
-                    id="chip-comp-val">0 / 2</span> Verified</span>
+                    id="chip-comp-val">0 / 4</span> Verified</span>
             <span class="mm-status-chip" id="chip-cert">Certification: <strong id="chip-cert-val">In
                     Progress</strong></span>
         </div>
 
-        <!-- 3. Module List -->
+        <!-- 3. Market Context Framework Bar -->
+        <div class="mm-framework" id="mm-framework">
+            <div class="mm-container">
+                <p class="mm-framework-label">Market Context Framework</p>
+                <div class="mm-framework-track" id="framework-track" role="list" aria-label="Framework steps">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Module List -->
         <section class="mm-section">
             <div class="mm-container">
-                <p class="mm-modules-label">Domain II — 2 Modules</p>
+                <p class="mm-modules-label">Domain II — 5 Modules</p>
                 <div class="mm-modules-list" id="modules-list">
                     <!-- Rendered by JS -->
                 </div>
@@ -445,7 +602,7 @@
             <div class="mm-container">
                 <div class="mm-card">
                     <p class="mm-comp-header">Contextual Competency</p>
-                    <p class="mm-comp-count" id="comp-count">Verified 0 / 2</p>
+                    <p class="mm-comp-count" id="comp-count">Verified 0 / 4</p>
                     <div class="mm-progress-track">
                         <div class="mm-progress-fill" id="comp-bar" style="width:0%"></div>
                     </div>
@@ -500,6 +657,33 @@
                 focus: 'Expansion vs Balance',
                 mastery: 0,
                 progress: 0
+            },
+            {
+                id: '2.3',
+                title: 'Liquidity',
+                difficulty: 'Core',
+                time: '20 minutes',
+                focus: 'Pools & Sweeps',
+                mastery: 0,
+                progress: 0
+            },
+            {
+                id: '2.4',
+                title: 'Movement',
+                difficulty: 'Core',
+                time: '20 minutes',
+                focus: 'Continuation • Rejection • Structure Shift',
+                mastery: 0,
+                progress: 0
+            },
+            {
+                id: '2.5',
+                title: 'Context Integration',
+                difficulty: 'Integration',
+                time: '12 minutes',
+                focus: 'Interpreting Market Context',
+                mastery: 0,
+                progress: 0
             }
         ];
 
@@ -511,7 +695,7 @@
         }
 
         function diffClass(d) {
-            return { 'Core': 'core', 'Intermediate': 'intermediate', 'Advanced': 'advanced' }[d] || 'core';
+            return { 'Core': 'core', 'Intermediate': 'intermediate', 'Advanced': 'advanced', 'Integration': 'integration' }[d] || 'core';
         }
 
         function statusClass(s) {
@@ -600,9 +784,77 @@
                 window.location.href = 'module-2-1.html';
             } else if (id === '2.2') {
                 window.location.href = 'module-2-2.html';
+            } else if (id === '2.3') {
+                window.location.href = 'module-2-3.html';
+            } else if (id === '2.4') {
+                window.location.href = 'module-2-4.html';
+            } else if (id === '2.5') {
+                window.location.href = 'module-2-5.html';
             } else {
                 alert(`Module ${id} is coming soon.`);
             }
+        }
+
+        // ── Framework Step Definitions ────────────────────────────
+        const FRAMEWORK_STEPS = [
+            { label: 'Scale', moduleIndex: 0 },
+            { label: 'State', moduleIndex: 1 },
+            { label: 'Liquidity', moduleIndex: 2 },
+            { label: 'Movement', moduleIndex: 3 }
+        ];
+
+        // ── Render Framework Bar ──────────────────────────────────
+        function renderFramework() {
+            const track = document.getElementById('framework-track');
+            if (!track) return;
+            track.innerHTML = '';
+
+            // Determine state for each step
+            // Infer current = first incomplete module if none explicitly in-progress
+            const anyInProgress = FRAMEWORK_STEPS.some(s => getStatus(MODULES[s.moduleIndex]) === 'In Progress');
+            const firstIncompleteIdx = FRAMEWORK_STEPS.findIndex(s => getStatus(MODULES[s.moduleIndex]) !== 'Verified');
+
+            FRAMEWORK_STEPS.forEach((step, i) => {
+                const mod = MODULES[step.moduleIndex];
+                const status = getStatus(mod);
+                const isVerified = status === 'Verified';
+                const isInProgress = status === 'In Progress';
+                const isInferred = !anyInProgress && i === firstIncompleteIdx;
+
+                let stateClass;
+                if (isVerified) stateClass = 'fw-done';
+                else if (isInProgress || isInferred) stateClass = 'fw-current';
+                else stateClass = 'fw-upcoming';
+
+                // Step element
+                const stepEl = document.createElement('div');
+                stepEl.className = `mm-fw-step ${stateClass}`;
+                stepEl.setAttribute('role', 'listitem');
+                stepEl.setAttribute('aria-label', `${step.label}: ${status}`);
+
+                const wordEl = document.createElement('span');
+                wordEl.className = 'mm-fw-word';
+                wordEl.textContent = step.label;
+                stepEl.appendChild(wordEl);
+                track.appendChild(stepEl);
+
+                // Arrow between steps (not after last)
+                if (i < FRAMEWORK_STEPS.length - 1) {
+                    const arrowEl = document.createElement('span');
+                    arrowEl.className = 'mm-fw-arrow';
+                    arrowEl.setAttribute('aria-hidden', 'true');
+                    arrowEl.textContent = '→';
+                    track.appendChild(arrowEl);
+                }
+            });
+
+            // Staggered fade-in animation
+            const steps = track.querySelectorAll('.mm-fw-step');
+            steps.forEach((el, i) => {
+                setTimeout(() => {
+                    el.classList.add('fw-visible');
+                }, i * 120);
+            });
         }
 
         // ── Init ─────────────────────────────────────────────────
@@ -619,10 +871,26 @@
                     MODULES[1].mastery = m.mastery || 0;
                     MODULES[1].progress = m.progress || 0;
                 }
+                if (saved['2.3']) {
+                    const m = saved['2.3'];
+                    MODULES[2].mastery = m.mastery || 0;
+                    MODULES[2].progress = m.progress || 0;
+                }
+                if (saved['2.4']) {
+                    const m = saved['2.4'];
+                    MODULES[3].mastery = m.mastery || 0;
+                    MODULES[3].progress = m.progress || 0;
+                }
+                if (saved['2.5']) {
+                    const m = saved['2.5'];
+                    MODULES[4].mastery = m.mastery || 0;
+                    MODULES[4].progress = m.progress || 0;
+                }
             } catch (e) { }
         })();
         renderModules();
         renderStatus();
+        renderFramework();
     </script>
 </body>
 

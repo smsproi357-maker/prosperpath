@@ -316,7 +316,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--cb-space-3xl) var(--cb-space-lg);
+    padding: calc(var(--cb-space-3xl) + 50px) var(--cb-space-lg) var(--cb-space-3xl);
 }
 
 .clarity-landing {
@@ -340,7 +340,7 @@ body {
 
 .clarity-headline {
     font-family: var(--cb-font-display);
-    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-size: clamp(2.2rem, 5.25vw, 3.5rem);
     font-weight: 600;
     letter-spacing: -0.03em;
     color: var(--cb-text-primary);
@@ -382,8 +382,12 @@ body {
 }
 
 .clarity-input:focus {
-    border-color: var(--cb-accent-muted);
-    box-shadow: 0 0 0 4px var(--cb-accent-subtle);
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 0 16px rgba(255, 255, 255, 0.08), 0 0 0 4px var(--cb-accent-subtle);
+}
+
+.clarity-input-wrapper:focus-within .clarity-submit {
+    filter: brightness(1.15);
 }
 
 .clarity-submit {
@@ -401,12 +405,13 @@ body {
     border-radius: var(--cb-radius-lg);
     color: var(--cb-bg-primary);
     cursor: pointer;
-    transition: all var(--cb-transition-fast);
+    transition: all 200ms ease;
 }
 
 .clarity-submit:hover {
-    background: var(--cb-accent-muted);
-    transform: translateY(-50%) scale(1.05);
+    background: var(--cb-accent);
+    filter: brightness(1.15);
+    transform: translateY(-50%) scale(1.03);
 }
 
 /* -------------------- Web Toggle Icon -------------------- */
@@ -464,13 +469,14 @@ body {
     border-radius: var(--cb-radius-md);
     cursor: pointer;
     text-align: left;
-    transition: all var(--cb-transition-fast);
+    transition: all 200ms ease;
 }
 
 .suggestion-item:hover {
-    background: var(--cb-bg-elevated);
-    border-color: var(--cb-accent-subtle);
-    transform: translateX(4px);
+    background: rgba(255, 255, 255, 0.08); /* slightly brighter */
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.05); /* increase border glow */
+    transform: translateY(-2px);
 }
 
 .suggestion-icon {

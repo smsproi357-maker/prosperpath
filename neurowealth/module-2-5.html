@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="description" content="Module 2.5 — Context Integration | ProsperPath Market Context">
+    <title>Context Integration | ProsperPath</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --m-bg: #0d0e10;
+            --m-surf: #141618;
+            --m-surf2: #18191c;
+            --m-bdr: #1e2023;
+            --m-bdrhi: #2e3035;
+            --m-txt: #e0e1e3;
+            --m-muted: #5e626a;
+            --m-muted2: #3a3d44;
+            --m-gold: #a07c2e;
+            --m-gold-dim: rgba(160, 124, 46, .13);
+            --m-gold-line: rgba(160, 124, 46, .38);
+            --m-green: rgba(120, 210, 160, .15);
+            --m-green-txt: #7ed8a8;
+            --m-red: rgba(220, 100, 80, .15);
+            --m-red-txt: #e08070;
+            --m-rad: 6px;
+            --m-tr: 150ms ease
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            background: var(--m-bg);
+            color: var(--m-txt);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh
+        }
+
+        #ai-chat-fab,
+        .ai-fab-btn,
+        .floating-action-btn,
+        [class*="fab"],
+        [id*="fab"] {
+            display: none !important
+        }
+
+        #module-shell {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden
+        }
+
+        #topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .75rem 1.25rem;
+            border-bottom: 1px solid var(--m-bdr);
+            background: var(--m-surf);
+            flex-shrink: 0;
+            gap: 1rem
+        }
+
+        #topbar-left {
+            display: flex;
+            align-items: center;
+            gap: .75rem
+        }
+
+        #back-btn {
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            font-size: .78rem;
+            padding: .38rem .85rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: border-color var(--m-tr), color var(--m-tr)
+        }
+
+        #back-btn:hover {
+            border-color: var(--m-bdrhi);
+            color: var(--m-txt)
+        }
+
+        #back-btn:focus-visible {
+            outline: 2px solid var(--m-bdrhi);
+            outline-offset: 2px
+        }
+
+        #topbar-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: .95rem;
+            font-weight: 600;
+            color: var(--m-txt)
+        }
+
+        #progress-label {
+            font-size: .75rem;
+            color: var(--m-muted);
+            letter-spacing: .04em;
+            white-space: nowrap
+        }
+
+        #progress-bar-wrap {
+            width: 80px;
+            height: 2px;
+            background: var(--m-bdr);
+            border-radius: 1px;
+            overflow: hidden
+        }
+
+        #progress-bar-fill {
+            height: 100%;
+            background: var(--m-gold);
+            border-radius: 1px;
+            transition: width .4s ease
+        }
+
+        #shell-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden
+        }
+
+        #section-nav {
+            width: 200px;
+            flex-shrink: 0;
+            border-right: 1px solid var(--m-bdr);
+            background: var(--m-surf);
+            overflow-y: auto;
+            padding: 1rem 0
+        }
+
+        .sn-item {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            padding: .6rem 1rem;
+            font-size: .75rem;
+            color: var(--m-muted);
+            cursor: pointer;
+            transition: color var(--m-tr), background var(--m-tr);
+            border-left: 2px solid transparent;
+            line-height: 1.3
+        }
+
+        .sn-item:hover {
+            color: var(--m-txt);
+            background: rgba(255, 255, 255, .025)
+        }
+
+        .sn-item:focus-visible {
+            outline: 2px solid var(--m-bdrhi);
+            outline-offset: -2px
+        }
+
+        .sn-item.visited {
+            color: var(--m-txt)
+        }
+
+        .sn-item.current {
+            color: var(--m-gold);
+            border-left-color: var(--m-gold);
+            background: var(--m-gold-dim)
+        }
+
+        .sn-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--m-muted2);
+            flex-shrink: 0;
+            transition: background var(--m-tr)
+        }
+
+        .sn-item.visited .sn-dot {
+            background: var(--m-muted)
+        }
+
+        .sn-item.current .sn-dot {
+            background: var(--m-gold)
+        }
+
+        #main-stage {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2.5rem 1.5rem
+        }
+
+        .screen {
+            width: 100%;
+            max-width: 640px;
+            animation: fadeIn .2s ease
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .scr-eyebrow {
+            font-size: .68rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--m-muted);
+            margin-bottom: 1.2rem
+        }
+
+        .scr-h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            font-weight: 700;
+            color: var(--m-txt);
+            letter-spacing: -.02em;
+            line-height: 1.15;
+            margin-bottom: .75rem
+        }
+
+        .scr-h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--m-txt);
+            margin-bottom: .9rem
+        }
+
+        .scr-meta {
+            font-size: .78rem;
+            color: var(--m-muted);
+            letter-spacing: .04em;
+            margin-bottom: 2rem
+        }
+
+        .scr-body {
+            font-size: .95rem;
+            color: var(--m-muted);
+            line-height: 1.7;
+            margin-bottom: 1.5rem
+        }
+
+        .scr-body p {
+            margin-bottom: .55rem
+        }
+
+        .scr-body p:last-child {
+            margin-bottom: 0
+        }
+
+        .anchor-line {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--m-txt);
+            padding: .7rem 1rem;
+            border-left: 2px solid var(--m-gold);
+            background: var(--m-gold-dim);
+            border-radius: 0 4px 4px 0;
+            margin: 1.5rem 0;
+            line-height: 1.5
+        }
+
+        .tf-chart-outer {
+            position: relative;
+            margin: 1.25rem 0;
+            background: var(--m-surf2);
+            border: 1px solid var(--m-bdr);
+            border-radius: 4px;
+            overflow: hidden;
+            height: 200px
+        }
+
+        .tf-chart-viewport {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative
+        }
+
+        .tf-candle-row {
+            position: absolute;
+            inset: 0;
+            overflow: hidden
+        }
+
+        .tf-overlay-text {
+            position: absolute;
+            top: .6rem;
+            left: 0;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            min-height: 2.6rem;
+            text-align: center;
+            font-size: .8rem;
+            color: var(--m-muted);
+            letter-spacing: .03em;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 500;
+            pointer-events: none;
+            line-height: 1.5;
+            padding: 0 .75rem;
+            box-sizing: border-box
+        }
+
+        .tf-ol-line1 {
+            opacity: .85;
+            color: var(--m-muted);
+            font-weight: 600
+        }
+
+        .tf-ol-line2 {
+            opacity: 0;
+            color: var(--m-gold);
+            transition: opacity 280ms ease
+        }
+
+        .tf-ol-line2.visible {
+            opacity: 1
+        }
+
+        .btn-primary {
+            background: transparent;
+            border: 1px solid var(--m-gold-line);
+            color: var(--m-gold);
+            font-family: 'Inter', sans-serif;
+            font-size: .8rem;
+            font-weight: 600;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            padding: .65rem 1.5rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background var(--m-tr), border-color var(--m-tr);
+            margin-right: .6rem
+        }
+
+        .btn-primary:hover {
+            background: var(--m-gold-dim);
+            border-color: var(--m-gold)
+        }
+
+        .btn-primary:focus-visible {
+            outline: 2px solid var(--m-gold);
+            outline-offset: 2px
+        }
+
+        .btn-primary:disabled {
+            opacity: .42;
+            cursor: not-allowed
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: .8rem;
+            font-weight: 500;
+            letter-spacing: .04em;
+            padding: .62rem 1.2rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: border-color var(--m-tr), color var(--m-tr)
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--m-bdrhi);
+            color: var(--m-txt)
+        }
+
+        .btn-ghost:focus-visible {
+            outline: 2px solid var(--m-bdrhi);
+            outline-offset: 2px
+        }
+
+        .btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .6rem;
+            margin-top: 1.75rem
+        }
+
+        .clarify-btn {
+            background: none;
+            border: none;
+            color: var(--m-gold);
+            font-size: .78rem;
+            font-weight: 600;
+            letter-spacing: .04em;
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            padding: 0;
+            font-family: 'Inter', sans-serif
+        }
+
+        .clarify-btn:focus-visible {
+            outline: 2px solid var(--m-gold);
+            outline-offset: 2px
+        }
+
+        .opt-btn {
+            display: block;
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-txt);
+            font-family: 'Inter', sans-serif;
+            font-size: .875rem;
+            text-align: left;
+            padding: .75rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: .5rem;
+            transition: border-color var(--m-tr), background var(--m-tr)
+        }
+
+        .opt-btn:hover {
+            border-color: var(--m-bdrhi);
+            background: rgba(255, 255, 255, .025)
+        }
+
+        .opt-btn.selected {
+            border-color: var(--m-gold-line);
+            background: var(--m-gold-dim);
+            color: var(--m-gold)
+        }
+
+        .opt-btn:disabled {
+            cursor: default
+        }
+
+        .assessment-prog {
+            font-size: .72rem;
+            color: var(--m-muted);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem
+        }
+
+        .assessment-q {
+            font-size: 1rem;
+            color: var(--m-txt);
+            margin-bottom: 1.25rem;
+            line-height: 1.55
+        }
+
+        .result-box {
+            text-align: center;
+            padding: 2rem 1rem
+        }
+
+        .result-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--m-txt);
+            margin-bottom: .5rem
+        }
+
+        .result-gold {
+            color: var(--m-gold)
+        }
+
+        .result-body {
+            font-size: .9rem;
+            color: var(--m-muted);
+            line-height: 1.6;
+            margin-bottom: 1.75rem;
+            max-width: 360px;
+            margin-left: auto;
+            margin-right: auto
+        }
+
+        .framework-box {
+            border: 1px solid var(--m-bdr);
+            border-radius: 6px;
+            background: var(--m-surf2);
+            padding: 2rem 1.5rem;
+            margin-top: 1.5rem;
+            text-align: center
+        }
+
+        .framework-chain {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .35rem;
+            margin: 1.25rem 0
+        }
+
+        .fw-step {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--m-txt);
+            padding: .45rem 1.2rem;
+            border: 1px solid var(--m-bdr);
+            border-radius: 4px;
+            background: var(--m-surf)
+        }
+
+        .fw-step.active {
+            border-color: var(--m-gold-line);
+            background: var(--m-gold-dim);
+            color: var(--m-gold)
+        }
+
+        .fw-arrow {
+            color: var(--m-muted);
+            font-size: .85rem
+        }
+
+        .fw-footer {
+            font-size: .8rem;
+            color: var(--m-muted);
+            line-height: 1.7;
+            margin-top: 1.25rem
+        }
+
+        /* Scenario overlay labels */
+        .sim-label-row {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            margin-bottom: .35rem;
+            opacity: 0;
+            transition: opacity .35s ease
+        }
+
+        .sim-label-row.visible {
+            opacity: 1
+        }
+
+        .sim-label-key {
+            font-size: .68rem;
+            font-weight: 600;
+            letter-spacing: .07em;
+            text-transform: uppercase;
+            color: var(--m-muted);
+            min-width: 60px
+        }
+
+        .sim-label-val {
+            font-size: .78rem;
+            font-weight: 600;
+            color: var(--m-gold)
+        }
+
+        .sim-final-msg {
+            font-size: .85rem;
+            color: var(--m-muted);
+            line-height: 1.6;
+            margin-top: .75rem;
+            padding: .65rem 1rem;
+            border-left: 2px solid var(--m-bdr);
+            opacity: 0;
+            transition: opacity .4s ease
+        }
+
+        .sim-final-msg.visible {
+            opacity: 1
+        }
+
+        /* Context panel */
+        .ctx-panel {
+            border: 1px solid var(--m-bdr);
+            border-radius: 6px;
+            background: var(--m-surf2);
+            padding: 1.1rem 1.25rem;
+            margin-bottom: 1.5rem
+        }
+
+        .ctx-panel-title {
+            font-size: .65rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--m-muted);
+            margin-bottom: .85rem
+        }
+
+        .ctx-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .4rem 0;
+            border-bottom: 1px solid var(--m-bdr)
+        }
+
+        .ctx-row:last-child {
+            border-bottom: none
+        }
+
+        .ctx-key {
+            font-size: .78rem;
+            color: var(--m-muted)
+        }
+
+        .ctx-val {
+            font-size: .78rem;
+            font-weight: 600;
+            color: var(--m-muted2);
+            transition: color .3s ease
+        }
+
+        .ctx-val.filled {
+            color: var(--m-gold)
+        }
+
+        /* Interactive prompt */
+        .int-prompt {
+            font-size: .95rem;
+            color: var(--m-txt);
+            margin-bottom: 1rem;
+            line-height: 1.55
+        }
+
+        /* Clarify overlay */
+        #clarify-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .55);
+            z-index: 900;
+            display: none;
+            align-items: flex-start;
+            justify-content: flex-end
+        }
+
+        #clarify-overlay.open {
+            display: flex
+        }
+
+        #clarify-panel {
+            width: 340px;
+            max-width: 90vw;
+            height: 100%;
+            background: #16181b;
+            border-left: 1px solid var(--m-bdr);
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            animation: slideInRight .22s ease
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%)
+            }
+
+            to {
+                transform: translateX(0)
+            }
+        }
+
+        .cp-term {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--m-txt);
+            margin-bottom: .25rem
+        }
+
+        .cp-section {
+            margin-top: 1.25rem
+        }
+
+        .cp-label {
+            font-size: .65rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--m-muted);
+            margin-bottom: .4rem
+        }
+
+        .cp-text {
+            font-size: .85rem;
+            color: var(--m-muted);
+            line-height: 1.55
+        }
+
+        .cp-text strong {
+            color: var(--m-txt);
+            font-weight: 500
+        }
+
+        #cp-close {
+            margin-top: 2rem;
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: .78rem;
+            padding: .5rem 1rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: border-color var(--m-tr), color var(--m-tr)
+        }
+
+        #cp-close:hover {
+            border-color: var(--m-bdrhi);
+            color: var(--m-txt)
+        }
+
+        /* Example Interpretation card */
+        .ei-section-label {
+            font-size: .65rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--m-muted);
+            margin: 1.5rem 0 .7rem
+        }
+
+        .ei-card {
+            border: 1px solid var(--m-bdr);
+            border-radius: 6px;
+            background: var(--m-surf2);
+            padding: 1rem 1.2rem;
+            text-align: left;
+            animation: fadeIn .28s ease forwards
+        }
+
+        .ei-card-label {
+            font-size: .63rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--m-muted);
+            margin-bottom: .75rem
+        }
+
+        .ei-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .35rem 0;
+            border-bottom: 1px solid var(--m-bdr)
+        }
+
+        .ei-row:last-of-type {
+            border-bottom: none
+        }
+
+        .ei-key {
+            font-size: .78rem;
+            color: var(--m-gold);
+            font-weight: 600;
+            letter-spacing: .02em
+        }
+
+        .ei-val {
+            font-size: .78rem;
+            color: var(--m-txt);
+            font-weight: 500
+        }
+
+        .ei-interp {
+            font-size: .82rem;
+            color: var(--m-muted);
+            line-height: 1.6;
+            margin-top: .8rem;
+            padding-top: .7rem;
+            border-top: 1px solid var(--m-bdr);
+            opacity: .85
+        }
+
+        .nav-toggle {
+            display: none;
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            padding: .36rem .7rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: .75rem
+        }
+
+        @media(max-width:700px) {
+            #section-nav {
+                position: fixed;
+                inset: 0 auto 0 0;
+                z-index: 800;
+                transform: translateX(-100%);
+                transition: transform .3s ease;
+                width: 240px
+            }
+
+            #section-nav.open {
+                transform: translateX(0)
+            }
+
+            #nav-backdrop {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, .5);
+                z-index: 799;
+                display: none
+            }
+
+            #nav-backdrop.open {
+                display: block
+            }
+
+            #clarify-panel {
+                width: 100%;
+                height: 60vh;
+                border-left: none;
+                border-top: 1px solid var(--m-bdr);
+                position: fixed;
+                bottom: 0;
+                left: 0
+            }
+
+            #clarify-overlay {
+                align-items: flex-end;
+                justify-content: center
+            }
+
+            #main-stage {
+                padding: 1.5rem 1rem
+            }
+
+            .nav-toggle {
+                display: inline-flex;
+                align-items: center;
+                gap: .4rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="module-shell">
+        <div id="topbar">
+            <div id="topbar-left">
+                <button class="nav-toggle" id="nav-toggle-btn" onclick="toggleNavDrawer()"
+                    aria-label="Open section navigator">&#9776; Sections</button>
+                <button id="back-btn" onclick="goBack()">&#8592; Market Context</button>
+                <span id="topbar-title">Context Integration</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:.75rem">
+                <span id="progress-label">Progress 0%</span>
+                <div id="progress-bar-wrap">
+                    <div id="progress-bar-fill" style="width:0%"></div>
+                </div>
+            </div>
+        </div>
+        <div id="nav-backdrop" onclick="toggleNavDrawer()"></div>
+        <div id="shell-body">
+            <nav id="section-nav" aria-label="Module sections">
+                <div id="sn-items"></div>
+            </nav>
+            <main id="main-stage">
+                <div class="screen" id="screen-container"></div>
+            </main>
+        </div>
+    </div>
+    <div id="clarify-overlay" onclick="handleClarifyOverlayClick(event)" role="dialog" aria-modal="true"
+        aria-label="Clarify">
+        <div id="clarify-panel">
+            <div class="cp-term" id="cp-term"></div>
+            <div class="cp-section">
+                <div class="cp-label">Definition</div>
+                <div class="cp-text" id="cp-explanation"></div>
+            </div>
+            <div class="cp-section">
+                <div class="cp-label" id="cp-label2">Steps</div>
+                <div class="cp-text" id="cp-example"></div>
+            </div>
+            <div class="cp-section">
+                <div class="cp-label">Example</div>
+                <div class="cp-text" id="cp-misconception"></div>
+            </div>
+            <button id="cp-close" onclick="closeClarify()">Close</button>
+        </div>
+    </div>
+    <script src="script.js?v=m25"></script>
+    <script src="ai-widget.js"></script>
+    <script src="google-auth.js"></script>
+    <script>
+        window.addEventListener('load', () => { if (typeof initGoogleAuth === 'function') initGoogleAuth(); });
+
+        /* ═══ STATE ═══ */
+        const STATE = {
+            currentSectionId: 0, currentScreenIndex: 0,
+            visitedSections: new Set(), sectionLastScreenIndex: {},
+            navHistory: [],
+            assessment: { answers: [null, null, null, null], isSubmitted: false, scorePercent: null, passed: null, currentQ: 0 },
+            showReview: false, verified: false,
+            /* Scenario playback */
+            s2SimDone: false, s3SimDone: false,
+            /* Guided analysis */
+            ctxAnswers: [null, null, null, null], ctxPrompt: 0, ctxDone: false
+        };
+
+        const SECTIONS = [
+            { id: 0, label: 'Entry' },
+            { id: 1, label: 'Section I \u2014 Context Framework' },
+            { id: 2, label: 'Section II \u2014 Scenario One' },
+            { id: 3, label: 'Section III \u2014 Scenario Two' },
+            { id: 4, label: 'Section IV \u2014 Guided Analysis' },
+            { id: 5, label: 'Section V \u2014 Final Competency' }
+        ];
+
+        /* ═══ PROGRESS ═══ */
+        function computeProgress() {
+            const TOTAL = 5;
+            const visited = [...STATE.visitedSections].filter(id => id >= 1 && id <= 5);
+            const base = Math.min(visited.length, TOTAL);
+            let pct = Math.round((base / TOTAL) * 85);
+            if (STATE.assessment.scorePercent !== null && STATE.assessment.scorePercent > 0 && !STATE.assessment.passed) pct = Math.max(pct, 90);
+            if (STATE.assessment.passed) pct = 100;
+            return pct;
+        }
+        function updateProgress() {
+            const pct = computeProgress();
+            document.getElementById('progress-label').textContent = 'Progress ' + pct + '%';
+            document.getElementById('progress-bar-fill').style.width = pct + '%';
+        }
+        function visit(sid) { if (!STATE.visitedSections.has(sid)) { STATE.visitedSections.add(sid); updateProgress(); } renderNav(); }
+
+        /* ═══ NAVIGATION ═══ */
+        function goToSection(sid, screenIndex, pushHistory) {
+            const maxVisited = STATE.visitedSections.size > 0 ? Math.max(...[...STATE.visitedSections]) : 0;
+            const allowed = STATE.visitedSections.has(sid) || sid <= maxVisited + 1 || sid === 0;
+            if (!allowed) return;
+            if (pushHistory !== false) STATE.navHistory.push({ sectionId: STATE.currentSectionId, screenIndex: STATE.currentScreenIndex });
+            STATE.sectionLastScreenIndex[STATE.currentSectionId] = STATE.currentScreenIndex;
+            STATE.currentSectionId = sid;
+            STATE.currentScreenIndex = (screenIndex !== undefined && screenIndex !== null) ? screenIndex : 0;
+            STATE.showReview = false;
+            visit(sid); renderNav(); renderScreen();
+            const nav = document.getElementById('section-nav');
+            if (nav.classList.contains('open')) toggleNavDrawer();
+        }
+        function goBack() {
+            if (STATE.showReview) { STATE.showReview = false; renderScreen(); return; }
+            if (STATE.navHistory.length > 0) {
+                const prev = STATE.navHistory.pop();
+                STATE.sectionLastScreenIndex[STATE.currentSectionId] = STATE.currentScreenIndex;
+                STATE.currentSectionId = prev.sectionId; STATE.currentScreenIndex = prev.screenIndex;
+                STATE.showReview = false; visit(prev.sectionId); renderNav(); renderScreen(); return;
+            }
+            window.location.href = 'market-context.html';
+        }
+        function toggleNavDrawer() {
+            document.getElementById('section-nav').classList.toggle('open');
+            document.getElementById('nav-backdrop').classList.toggle('open');
+        }
+
+        /* ═══ NAV RENDER ═══ */
+        function renderNav() {
+            const c = document.getElementById('sn-items'); c.innerHTML = '';
+            SECTIONS.forEach(s => {
+                if (s.id === 0) return;
+                const isCurrent = STATE.currentSectionId === s.id;
+                const isVisited = STATE.visitedSections.has(s.id);
+                const maxVisited = STATE.visitedSections.size > 0 ? Math.max(...[...STATE.visitedSections]) : 0;
+                const isAccessible = isVisited || s.id <= maxVisited + 1;
+                const div = document.createElement('div');
+                div.className = 'sn-item' + (isCurrent ? ' current' : '') + (isVisited ? ' visited' : '');
+                div.setAttribute('tabindex', isAccessible ? '0' : '-1');
+                div.setAttribute('role', 'button');
+                div.setAttribute('aria-label', s.label + (isCurrent ? ', current' : isVisited ? ', visited' : ', not visited'));
+                div.innerHTML = `<span class="sn-dot"></span><span>${s.label}</span>`;
+                if (isAccessible) {
+                    div.onclick = () => { const lsi = STATE.sectionLastScreenIndex[s.id]; goToSection(s.id, lsi !== undefined ? lsi : 0); };
+                    div.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { const lsi = STATE.sectionLastScreenIndex[s.id]; goToSection(s.id, lsi !== undefined ? lsi : 0); } };
+                } else { div.style.opacity = '.35'; div.style.cursor = 'not-allowed'; }
+                c.appendChild(div);
+            });
+        }
+
+        /* ═══ CLARIFY ═══ */
+        const CLARIFY_DATA = {
+            mcf: {
+                term: 'Market Context Framework',
+                explanation: 'A structured process used to interpret market behavior.',
+                steps: 'Scale \u2192 State \u2192 Liquidity \u2192 Movement',
+                example: 'Analyzing a chart by identifying timeframe, state, liquidity, and price reaction.'
+            }
+        };
+        function openClarify(topicId) {
+            const d = CLARIFY_DATA[topicId]; if (!d) return;
+            document.getElementById('cp-term').textContent = d.term;
+            document.getElementById('cp-explanation').textContent = d.explanation;
+            document.getElementById('cp-label2').textContent = d.steps ? 'Steps' : 'Context';
+            document.getElementById('cp-example').textContent = d.steps || '';
+            document.getElementById('cp-misconception').textContent = d.example || '';
+            document.getElementById('clarify-overlay').classList.add('open');
+            document.getElementById('cp-close').focus();
+        }
+        function closeClarify() { document.getElementById('clarify-overlay').classList.remove('open'); }
+        function handleClarifyOverlayClick(e) { if (e.target === document.getElementById('clarify-overlay')) closeClarify(); }
+        function escHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+        function escAttr(s) { return String(s).replace(/"/g, '&quot;'); }
+
+        /* ═══ CANDLE SETS (DETERMINISTIC) ═══ */
+
+        /* CTX_SCENARIO_BALANCE_REJECTION: range → equal highs → sweep → strong rejection down */
+        const CANDLES_BALANCE_REJ = (() => {
+            const heights = [22, 25, 28, 24, 20, 25, 28, 22, 18, 24, 28, 25, 34, 38, 36, 30, 24, 20, 16, 12, 10, 14, 12, 10, 12, 10, 8, 10, 8, 6];
+            const isRed = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1];
+            const g = 'rgba(120,210,160,', r = 'rgba(220,100,80,';
+            return heights.map((h, i) => ({
+                h, col: isRed[i] ? r + (i >= 15 ? (0.18 + ((i - 15) / 15) * 0.1).toFixed(2) + ')' : '.18)') : g + '.18)',
+                bdr: isRed[i] ? r + (i >= 15 ? (0.35 + ((i - 15) / 15) * 0.1).toFixed(2) + ')' : '.35)') : g + '.38)'
+            }));
+        })();
+
+        /* CTX_SCENARIO_EXPANSION_CONTINUATION: uptrend → pullback → break prev high → continuation */
+        const CANDLES_EXPANSION_CONT = (() => {
+            const heights = [14, 18, 22, 20, 16, 20, 24, 22, 18, 22, 26, 24, 20, 18, 16, 22, 26, 30, 28, 32, 30, 34, 32, 36, 34, 38, 36, 40, 38, 42];
+            const isRed = [0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0];
+            const g = 'rgba(120,210,160,', r = 'rgba(220,100,80,';
+            return heights.map((h, i) => ({
+                h, col: isRed[i] ? r + '.18)' : g + (i >= 15 ? (0.18 + ((i - 15) / 15) * 0.1).toFixed(2) + ')' : '.18)'),
+                bdr: isRed[i] ? r + '.35)' : g + (i >= 15 ? (0.38 + ((i - 15) / 15) * 0.1).toFixed(2) + ')' : '.38)')
+            }));
+        })();
+
+        /* CTX_INTERACTIVE_ANALYSIS: same shape as balance rejection (no labels initially) */
+        const CANDLES_INTERACTIVE = CANDLES_BALANCE_REJ;
+
+        /* ═══ CHART RENDERER ═══ */
+        function buildChart(overlayHtml, chartId) {
+            return `<div class="tf-chart-outer" id="tf-chart-outer-${chartId}">
+  <div class="tf-chart-viewport"><div class="tf-candle-row" id="tf-candle-row-${chartId}"></div></div>
+  <div class="tf-overlay-text" id="tf-overlay-text-${chartId}">${overlayHtml}</div>
+</div>`;
+        }
+        function renderChart(candles, chartId) {
+            const outer = document.getElementById('tf-chart-outer-' + chartId);
+            const row = document.getElementById('tf-candle-row-' + chartId);
+            if (!outer || !row) return;
+            const outerW = outer.clientWidth || 600;
+            const outerH = outer.clientHeight || 200;
+            const topPad = 28; const innerH = outerH - topPad;
+            const count = candles.length;
+            const slotW = outerW / count;
+            const gapW = Math.max(1, slotW * 0.18);
+            const bodyW = Math.max(1, slotW - gapW);
+            let maxH = 0; candles.forEach(c => { if (c.h > maxH) maxH = c.h; });
+            const yScale = maxH > 0 ? innerH / maxH : 1;
+            let html = '';
+            candles.forEach((c, i) => {
+                const x = i * slotW; const h = Math.max(2, c.h * yScale);
+                html += `<div style="position:absolute;left:${x.toFixed(1)}px;bottom:0;width:${bodyW.toFixed(1)}px;height:${h.toFixed(1)}px;background:${c.col};border:1px solid ${c.bdr};border-radius:1px"></div>`;
+            });
+            row.innerHTML = html;
+        }
+
+        /* ═══ SCENARIO SIMULATION PLAYBACK ═══ */
+        function runScenarioSim(candles, chartId, overlays, finalMsg, doneFlag, replayBtnId) {
+            renderChart(candles, chartId);
+            const olEl = document.getElementById('tf-overlay-text-' + chartId);
+            olEl.innerHTML = '';
+            const rows = overlays.map(o => {
+                const d = document.createElement('div');
+                d.className = 'sim-label-row';
+                d.innerHTML = `<span class="sim-label-key">${o.key}</span><span class="sim-label-val">${o.val}</span>`;
+                olEl.appendChild(d);
+                return d;
+            });
+            // Add final message below chart
+            const msgEl = document.querySelector('.sim-final-msg');
+            if (msgEl) msgEl.classList.remove('visible');
+
+            rows.forEach((r, i) => {
+                setTimeout(() => {
+                    r.classList.add('visible');
+                    if (i === rows.length - 1) {
+                        setTimeout(() => {
+                            if (msgEl) msgEl.classList.add('visible');
+                            STATE[doneFlag] = true;
+                            const rb = document.getElementById(replayBtnId);
+                            if (rb) rb.disabled = false;
+                        }, 600);
+                    }
+                }, 800 + i * 1000);
+            });
+        }
+
+        /* ═══ SCREEN RENDER ═══ */
+        function renderScreen() {
+            const c = document.getElementById('screen-container');
+            c.innerHTML = '';
+            const s = STATE.currentSectionId;
+            let html = '';
+            if (s === 0) html = buildEntry();
+            else if (s === 1) html = buildS1(STATE.currentScreenIndex);
+            else if (s === 2) html = buildS2(STATE.currentScreenIndex);
+            else if (s === 3) html = buildS3(STATE.currentScreenIndex);
+            else if (s === 4) html = buildS4();
+            else if (s === 5) { if (STATE.showReview) html = buildReviewAnswers(); else html = buildS5(); }
+            c.innerHTML = html;
+            c.scrollTop = 0; document.getElementById('main-stage').scrollTop = 0;
+            attachHandlers();
+
+            /* Chart init after DOM */
+            if (s === 2 && STATE.currentScreenIndex === 1) {
+                requestAnimationFrame(() => {
+                    STATE.s2SimDone = false;
+                    const rb = document.getElementById('s2-replay');
+                    if (rb) rb.disabled = true;
+                    runScenarioSim(
+                        CANDLES_BALANCE_REJ, 'sim1',
+                        [
+                            { key: 'Scale:', val: '4H' },
+                            { key: 'State:', val: 'Balance' },
+                            { key: 'Liquidity:', val: 'Equal highs' },
+                            { key: 'Movement:', val: 'Rejection' }
+                        ],
+                        'The market rejected liquidity.\nBalance may continue.',
+                        's2SimDone', 's2-replay'
+                    );
+                });
+            }
+            if (s === 3 && STATE.currentScreenIndex === 1) {
+                requestAnimationFrame(() => {
+                    STATE.s3SimDone = false;
+                    const rb = document.getElementById('s3-replay');
+                    if (rb) rb.disabled = true;
+                    runScenarioSim(
+                        CANDLES_EXPANSION_CONT, 'sim2',
+                        [
+                            { key: 'Scale:', val: 'Daily' },
+                            { key: 'State:', val: 'Expansion' },
+                            { key: 'Liquidity:', val: 'Previous high' },
+                            { key: 'Movement:', val: 'Continuation' }
+                        ],
+                        'Momentum remains strong.\nExpansion continues.',
+                        's3SimDone', 's3-replay'
+                    );
+                });
+            }
+            if (s === 4) {
+                requestAnimationFrame(() => {
+                    renderChart(CANDLES_INTERACTIVE, 'sim3');
+                });
+            }
+        }
+
+        /* ── Entry ── */
+        function buildEntry() {
+            return `<div style="text-align:center;padding:2rem 0">
+<p class="scr-eyebrow">ProsperPath &mdash; Market Context</p>
+<h1 class="scr-h1">Context Integration</h1>
+<p class="scr-body" style="max-width:320px;margin:0 auto 1rem">Apply the Market Context Framework<br>to interpret real market scenarios.</p>
+<p class="scr-meta">Integration &bull; 12 minutes &bull; Synthesis &bull; Application</p>
+<button class="btn-primary" id="begin-btn">Begin Module</button>
+</div>`;
+        }
+
+        /* ── Section I — Context Framework (2 screens) ── */
+        function buildS1(i) {
+            if (i === 0) {
+                return `<p class="scr-eyebrow">Section I &mdash; Context Framework</p>
+<div class="scr-body" style="margin-top:1.5rem">
+<p>Markets are interpreted<br>through a process.</p>
+</div>
+<div class="framework-box">
+  <div class="framework-chain">
+    <div class="fw-step active">Scale</div>
+    <div class="fw-arrow">&#8595;</div>
+    <div class="fw-step active">State</div>
+    <div class="fw-arrow">&#8595;</div>
+    <div class="fw-step active">Liquidity</div>
+    <div class="fw-arrow">&#8595;</div>
+    <div class="fw-step active">Movement</div>
+  </div>
+</div>
+<div class="btn-row"><button class="btn-primary" id="s1-next">Continue</button></div>`;
+            }
+            return `<p class="scr-eyebrow">Section I &mdash; Context Framework</p>
+<div class="anchor-line" style="margin-top:1.75rem">This is the<br>Market Context Framework.</div>
+<p style="font-size:.8rem;color:var(--m-muted);margin-bottom:1rem">Clarify: <button class="clarify-btn" data-topic="mcf">Market Context Framework</button></p>
+<div class="scr-body">
+<p>A structured process used to interpret market behavior.</p>
+</div>
+<div class="btn-row"><button class="btn-primary" id="s1-to-s2">Continue to Section II</button></div>`;
+        }
+
+        /* ── Section II — Scenario One (2 screens) ── */
+        function buildS2(i) {
+            if (i === 0) {
+                return `<p class="scr-eyebrow">Section II &mdash; Scenario One</p>
+<h2 class="scr-h2">Balance Rejection</h2>
+<div class="scr-body">
+<p>A range forms with equal highs.<br>Price sweeps above them,<br>then rejects strongly downward.</p>
+</div>
+<div class="btn-row"><button class="btn-primary" id="s2-next">View Simulation</button></div>`;
+            }
+            return `<p class="scr-eyebrow">Section II &mdash; Scenario One</p>
+${buildChart('', 'sim1')}
+<div class="sim-final-msg" id="sim1-msg">The market rejected liquidity.<br>Balance may continue.</div>
+<div class="btn-row">
+  <button class="btn-ghost" id="s2-replay" disabled>&#8635; Replay</button>
+  <button class="btn-primary" id="s2-to-s3">Continue to Section III</button>
+</div>`;
+        }
+
+        /* ── Section III — Scenario Two (2 screens) ── */
+        function buildS3(i) {
+            if (i === 0) {
+                return `<p class="scr-eyebrow">Section III &mdash; Scenario Two</p>
+<h2 class="scr-h2">Expansion Continuation</h2>
+<div class="scr-body">
+<p>An uptrend forms, pulls back,<br>then breaks the previous high<br>and continues upward.</p>
+</div>
+<div class="btn-row"><button class="btn-primary" id="s3-next">View Simulation</button></div>`;
+            }
+            return `<p class="scr-eyebrow">Section III &mdash; Scenario Two</p>
+${buildChart('', 'sim2')}
+<div class="sim-final-msg" id="sim2-msg">Momentum remains strong.<br>Expansion continues.</div>
+<div class="btn-row">
+  <button class="btn-ghost" id="s3-replay" disabled>&#8635; Replay</button>
+  <button class="btn-primary" id="s3-to-s4">Continue to Section IV</button>
+</div>`;
+        }
+
+        /* ── Section IV — Guided Analysis ── */
+        const CTX_PROMPTS = [
+            { q: 'What scale are you observing?', opts: ['15m', '1H', '4H'], correct: '4H', ctxKey: 'Scale', ctxVal: '4H' },
+            { q: 'What state is the market in?', opts: ['Balance', 'Expansion'], correct: 'Balance', ctxKey: 'State', ctxVal: 'Balance' },
+            { q: 'Where is liquidity located?', opts: ['Equal highs', 'Mid-range'], correct: 'Equal highs', ctxKey: 'Liquidity', ctxVal: 'Equal highs' },
+            { q: 'What does the movement reveal?', opts: ['Rejection', 'Continuation'], correct: 'Rejection', ctxKey: 'Movement', ctxVal: 'Rejection' }
+        ];
+
+        function buildS4() {
+            const ctx = STATE.ctxAnswers;
+            const answered = ctx.filter(a => a !== null).length;
+            const allAnswered = answered === 4;
+
+            const ctxPanel = `<div class="ctx-panel">
+  <div class="ctx-panel-title">Market Context</div>
+  <div class="ctx-row"><span class="ctx-key">Scale</span><span class="ctx-val${ctx[0] ? ' filled' : ''}" id="ctx-scale">${ctx[0] || '—'}</span></div>
+  <div class="ctx-row"><span class="ctx-key">State</span><span class="ctx-val${ctx[1] ? ' filled' : ''}" id="ctx-state">${ctx[1] || '—'}</span></div>
+  <div class="ctx-row"><span class="ctx-key">Liquidity</span><span class="ctx-val${ctx[2] ? ' filled' : ''}" id="ctx-liq">${ctx[2] || '—'}</span></div>
+  <div class="ctx-row"><span class="ctx-key">Movement</span><span class="ctx-val${ctx[3] ? ' filled' : ''}" id="ctx-move">${ctx[3] || '—'}</span></div>
+</div>`;
+
+            let promptHtml = '';
+            if (!allAnswered) {
+                const pi = STATE.ctxPrompt;
+                const p = CTX_PROMPTS[pi];
+                const userAns = ctx[pi];
+                promptHtml = `<div class="int-prompt">${p.q}</div>
+<div id="int-opts">
+${p.opts.map(o => `<button class="opt-btn${userAns === o ? ' selected' : ''}" data-int-ans="${escAttr(o)}">${escHtml(o)}</button>`).join('')}
+</div>`;
+            } else {
+                promptHtml = `<div style="padding:.75rem 1rem;border:1px solid var(--m-bdr);border-radius:6px;background:var(--m-surf2);text-align:center">
+  <div style="font-size:.8rem;color:var(--m-gold);font-weight:600;margin-bottom:.35rem">Analysis Complete</div>
+  <div style="font-size:.85rem;color:var(--m-muted)">The framework is applied.</div>
+</div>`;
+            }
+
+            return `<p class="scr-eyebrow">Section IV &mdash; Guided Analysis</p>
+${buildChart('', 'sim3')}
+${ctxPanel}
+${promptHtml}
+${allAnswered ? `<div class="btn-row"><button class="btn-primary" id="s4-to-s5">Continue to Section V</button></div>` : ''}`;
+        }
+
+        /* ── Section V — Final Competency ── */
+        const A_QUESTIONS = [
+            { q: 'Which step comes first when interpreting markets?', opts: ['Scale', 'Liquidity', 'Movement'], correct: 'Scale' },
+            { q: 'What follows identifying the scale?', opts: ['State', 'Liquidity', 'Indicators'], correct: 'State' },
+            { q: 'Where do traders identify potential orders?', opts: ['Liquidity', 'Indicators', 'Volume'], correct: 'Liquidity' },
+            { q: 'What reveals market intent?', opts: ['Movement', 'Volume', 'Indicators'], correct: 'Movement' }
+        ];
+
+        function buildS5() {
+            if (STATE.assessment.isSubmitted) return buildResultScreen();
+            const qi = STATE.assessment.currentQ;
+            const q = A_QUESTIONS[qi];
+            const userAns = STATE.assessment.answers[qi];
+            const hasAnswer = userAns !== null && userAns !== undefined;
+            const isLastQ = qi === A_QUESTIONS.length - 1;
+            return `<p class="scr-eyebrow">Section V &mdash; Final Competency</p>
+<div class="assessment-prog">Question ${qi + 1} of ${A_QUESTIONS.length}</div>
+<div class="assessment-q">${q.q}</div>
+<div id="assessment-opts">
+${q.opts.map(opt => `<button class="opt-btn${userAns === opt ? ' selected' : ''}" data-ans="${escAttr(opt)}">${escHtml(opt)}</button>`).join('')}
+</div>
+<div class="btn-row">
+  ${qi > 0 ? `<button class="btn-ghost" id="assess-back">Back</button>` : ''}
+  ${isLastQ
+                    ? `<button class="btn-primary" id="assess-submit" ${!hasAnswer ? 'disabled' : ''}>Submit Assessment</button>`
+                    : `<button class="btn-primary" id="assess-next" ${!hasAnswer ? 'disabled' : ''}>Next</button>`}
+</div>
+${!hasAnswer ? `<p style="font-size:.75rem;color:var(--m-muted);margin-top:.75rem">Select an answer to continue.</p>` : ''}`;
+        }
+
+        function buildResultScreen() {
+            const score = STATE.assessment.scorePercent;
+            const passed = STATE.assessment.passed;
+            const reviewBtn = `<button class="btn-ghost" id="result-review-answers" style="margin-top:.5rem">Review Answers</button>`;
+            if (passed) {
+                return `<div class="result-box">
+<div style="font-size:2rem;color:var(--m-gold);margin-bottom:1rem">&#10003;</div>
+<div class="result-title">Competency <span class="result-gold">Verified</span></div>
+<div class="result-body">You can now interpret market context.<br><span style="color:var(--m-gold);font-size:.85rem">Score: ${score}%</span></div>
+<div class="framework-box">
+  <div style="font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--m-muted);margin-bottom:.75rem">Market Context Framework</div>
+  <div class="framework-chain">
+    <div class="fw-step active">Scale</div>
+    <div class="fw-arrow">&#8595;</div>
+    <div class="fw-step active">State</div>
+    <div class="fw-arrow">&#8595;</div>
+    <div class="fw-step active">Liquidity</div>
+    <div class="fw-arrow">&#8595;</div>
+    <div class="fw-step active">Movement</div>
+  </div>
+</div>
+<p class="ei-section-label">Example Interpretation</p>
+<div class="ei-card">
+  <div class="ei-card-label">Example Market Context</div>
+  <div class="ei-row"><span class="ei-key">Scale</span><span class="ei-val">15m</span></div>
+  <div class="ei-row"><span class="ei-key">State</span><span class="ei-val">Balance</span></div>
+  <div class="ei-row"><span class="ei-key">Liquidity</span><span class="ei-val">Equal highs</span></div>
+  <div class="ei-row"><span class="ei-key">Movement</span><span class="ei-val">Rejection</span></div>
+  <p class="ei-interp">Price attempted to access liquidity above the range, but rejected and returned into balance.</p>
+</div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:.5rem;margin-top:1.5rem">
+  <button class="btn-primary" id="result-complete-domain">Complete Domain 2</button>
+  ${reviewBtn}
+</div>
+</div>`;
+            }
+            return `<div class="result-box">
+<div style="font-size:2rem;color:var(--m-muted);margin-bottom:1rem">&#8635;</div>
+<div class="result-title">Review Recommended</div>
+<div class="result-body"><span style="color:var(--m-red-txt);font-size:.85rem">Score: ${score}%</span></div>
+<div class="btn-row" style="justify-content:center">
+  <button class="btn-ghost" id="result-retry">Retry Assessment</button>
+</div>
+<div style="margin-top:.75rem;text-align:center">${reviewBtn}</div>
+</div>`;
+        }
+
+        function buildReviewAnswers() {
+            const explanations = [
+                'Scale is always identified first — it sets the context for all subsequent analysis.',
+                'After identifying scale, traders determine market state (Balance or Expansion).',
+                'Liquidity pools are where orders accumulate — traders identify these to anticipate price reactions.',
+                'Movement reveals whether price is continuing, rejecting, or shifting structure after reaching liquidity.'
+            ];
+            const rows = A_QUESTIONS.map((q, i) => {
+                const userAns = STATE.assessment.answers[i];
+                const correct = userAns === q.correct;
+                const icon = correct ? '&#10003;' : '&#10007;';
+                const iconColor = correct ? 'var(--m-green-txt)' : 'var(--m-red-txt)';
+                return `<div style="background:var(--m-surf2);border:1px solid var(--m-bdr);border-radius:6px;padding:1rem 1.1rem;margin-bottom:.85rem">
+<p style="font-size:.8rem;font-weight:600;letter-spacing:.04em;color:var(--m-gold);margin-bottom:.6rem">Q${i + 1}</p>
+<p style="font-size:.9rem;color:var(--m-txt);margin-bottom:.75rem;line-height:1.5">${escHtml(q.q)}</p>
+<p style="font-size:.82rem;margin-bottom:.3rem"><span style="color:${iconColor};font-weight:700;margin-right:.35rem">${icon}</span><span style="color:var(--m-muted)">Your answer:</span> <span style="color:var(--m-txt)">${escHtml(userAns || '(no answer)')}</span></p>
+<p style="font-size:.82rem;color:var(--m-muted);margin-bottom:.75rem">Correct answer: <span style="color:var(--m-txt);font-weight:500">${escHtml(q.correct)}</span></p>
+<p style="font-size:.82rem;color:var(--m-muted);line-height:1.55">${explanations[i]}</p>
+</div>`;
+            }).join('');
+            return `<p class="scr-eyebrow">Section V &mdash; Review Answers</p>
+<h2 class="scr-h2">Assessment Breakdown</h2>
+${rows}
+<div class="btn-row"><button class="btn-ghost" id="review-back-results">Back to Results</button></div>`;
+        }
+
+        /* ═══ SCORE ═══ */
+        function computeScore() {
+            let correct = 0;
+            A_QUESTIONS.forEach((q, i) => { if (STATE.assessment.answers[i] === q.correct) correct++; });
+            const pct = Math.round((correct / A_QUESTIONS.length) * 100);
+            STATE.assessment.scorePercent = pct;
+            STATE.assessment.passed = pct >= 70;
+            STATE.assessment.isSubmitted = true;
+            if (STATE.assessment.passed) {
+                STATE.verified = true;
+                try {
+                    const saved = JSON.parse(localStorage.getItem('pp_mc_modules') || '{}');
+                    saved['2.5'] = { verified: true, mastery: pct, mastery_percent: pct, status: 'Verified', progress: 100 };
+                    localStorage.setItem('pp_mc_modules', JSON.stringify(saved));
+                    /* Check if all 5 modules verified → award badge */
+                    const allVerified = ['2.1', '2.2', '2.3', '2.4', '2.5'].every(k => saved[k] && saved[k].verified);
+                    if (allVerified) {
+                        const badges = JSON.parse(localStorage.getItem('pp_badges') || '{}');
+                        badges['market_context'] = true;
+                        localStorage.setItem('pp_badges', JSON.stringify(badges));
+                    }
+                } catch (e) { }
+            }
+            updateProgress();
+        }
+
+        /* ═══ HANDLERS ═══ */
+        function advanceScreen(sid) { STATE.currentScreenIndex++; STATE.sectionLastScreenIndex[sid] = STATE.currentScreenIndex; renderScreen(); }
+        function attachHandlers() {
+            const $ = id => document.getElementById(id);
+            const on = (id, ev, fn) => { const el = $(id); if (el) el.addEventListener(ev, fn); };
+
+            on('begin-btn', 'click', () => goToSection(1, 0));
+            on('s1-next', 'click', () => advanceScreen(1));
+            on('s1-to-s2', 'click', () => goToSection(2, 0));
+            on('s2-next', 'click', () => advanceScreen(2));
+            on('s2-replay', 'click', () => {
+                STATE.s2SimDone = false;
+                const rb = $('s2-replay');
+                if (rb) rb.disabled = true;
+                const msgEl = document.querySelector('.sim-final-msg');
+                if (msgEl) msgEl.classList.remove('visible');
+                runScenarioSim(CANDLES_BALANCE_REJ, 'sim1',
+                    [{ key: 'Scale:', val: '4H' }, { key: 'State:', val: 'Balance' }, { key: 'Liquidity:', val: 'Equal highs' }, { key: 'Movement:', val: 'Rejection' }],
+                    '', 's2SimDone', 's2-replay');
+            });
+            on('s2-to-s3', 'click', () => goToSection(3, 0));
+            on('s3-next', 'click', () => advanceScreen(3));
+            on('s3-replay', 'click', () => {
+                STATE.s3SimDone = false;
+                const rb = $('s3-replay');
+                if (rb) rb.disabled = true;
+                const msgEl = document.querySelector('.sim-final-msg');
+                if (msgEl) msgEl.classList.remove('visible');
+                runScenarioSim(CANDLES_EXPANSION_CONT, 'sim2',
+                    [{ key: 'Scale:', val: 'Daily' }, { key: 'State:', val: 'Expansion' }, { key: 'Liquidity:', val: 'Previous high' }, { key: 'Movement:', val: 'Continuation' }],
+                    '', 's3SimDone', 's3-replay');
+            });
+            on('s3-to-s4', 'click', () => { STATE.ctxAnswers = [null, null, null, null]; STATE.ctxPrompt = 0; STATE.ctxDone = false; goToSection(4, 0); });
+            on('s4-to-s5', 'click', () => goToSection(5, 0));
+
+            /* Interactive analysis prompts */
+            document.querySelectorAll('[data-int-ans]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const pi = STATE.ctxPrompt;
+                    const ans = btn.dataset.intAns;
+                    STATE.ctxAnswers[pi] = ans;
+                    if (pi < 3) { STATE.ctxPrompt++; }
+                    renderScreen();
+                    /* Re-init chart after re-render */
+                    requestAnimationFrame(() => { renderChart(CANDLES_INTERACTIVE, 'sim3'); });
+                });
+            });
+
+            /* Assessment */
+            document.querySelectorAll('[data-ans]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (STATE.assessment.isSubmitted) return;
+                    const qi = STATE.assessment.currentQ;
+                    if (STATE.assessment.answers[qi] === btn.dataset.ans) { STATE.assessment.answers[qi] = null; }
+                    else { STATE.assessment.answers[qi] = btn.dataset.ans; }
+                    renderScreen();
+                });
+            });
+            on('assess-back', 'click', () => { if (STATE.assessment.currentQ > 0) { STATE.assessment.currentQ--; renderScreen(); } });
+            on('assess-next', 'click', () => {
+                const qi = STATE.assessment.currentQ;
+                if (STATE.assessment.answers[qi] === null || STATE.assessment.answers[qi] === undefined) return;
+                STATE.assessment.currentQ++; renderScreen();
+            });
+            on('assess-submit', 'click', () => {
+                const qi = STATE.assessment.currentQ;
+                if (STATE.assessment.answers[qi] === null || STATE.assessment.answers[qi] === undefined) return;
+                computeScore(); renderScreen();
+            });
+            on('result-complete-domain', 'click', () => { window.location.href = 'domain2-complete.html'; });
+            on('result-retry', 'click', () => {
+                STATE.assessment.answers = [null, null, null, null];
+                STATE.assessment.isSubmitted = false; STATE.assessment.scorePercent = null;
+                STATE.assessment.passed = null; STATE.assessment.currentQ = 0;
+                STATE.showReview = false; renderScreen();
+            });
+            on('result-review-answers', 'click', () => { if (STATE.assessment.isSubmitted) { STATE.showReview = true; renderScreen(); } });
+            on('review-back-results', 'click', () => { STATE.showReview = false; renderScreen(); });
+            document.querySelectorAll('.clarify-btn').forEach(btn => {
+                btn.addEventListener('click', () => openClarify(btn.dataset.topic));
+            });
+        }
+
+        /* ═══ INIT ═══ */
+        (function init() {
+            STATE.navHistory = []; STATE.currentSectionId = 0; STATE.currentScreenIndex = 0;
+            visit(0); renderNav(); renderScreen();
+        })();
+    </script>
+</body>
+
+</html>

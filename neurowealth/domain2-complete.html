@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Domain 2 Complete — Market Context | ProsperPath">
+    <title>Market Context Complete | ProsperPath</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --dc-bg: #0d0e10;
+            --dc-surf: #141618;
+            --dc-surf2: #18191c;
+            --dc-bdr: #1e2023;
+            --dc-bdrhi: #2e3035;
+            --dc-txt: #e0e1e3;
+            --dc-muted: #5e626a;
+            --dc-muted2: #3a3d44;
+            --dc-gold: #a07c2e;
+            --dc-gold-dim: rgba(160, 124, 46, .13);
+            --dc-gold-line: rgba(160, 124, 46, .38);
+            --dc-tr: 150ms ease
+        }
+
+        #ai-chat-fab,
+        .ai-fab-btn,
+        .floating-action-btn,
+        [class*="fab"],
+        [id*="fab"] {
+            display: none !important
+        }
+
+        .dc-page {
+            background: var(--dc-bg);
+            color: var(--dc-txt);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            padding-bottom: 4rem
+        }
+
+        .dc-container {
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 0 1.25rem
+        }
+
+        .dc-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            font-size: .78rem;
+            color: var(--dc-muted);
+            text-decoration: none;
+            padding: 1rem 1.25rem 0;
+            transition: color var(--dc-tr)
+        }
+
+        .dc-back-link:hover {
+            color: var(--dc-txt)
+        }
+
+        .dc-hero {
+            padding: 3.5rem 1.25rem 2rem;
+            text-align: center
+        }
+
+        .dc-eyebrow {
+            font-size: .68rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--dc-muted);
+            margin-bottom: .85rem
+        }
+
+        .dc-h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.8rem, 5vw, 2.6rem);
+            font-weight: 700;
+            letter-spacing: -.02em;
+            color: var(--dc-txt);
+            line-height: 1.15;
+            margin-bottom: .75rem
+        }
+
+        .dc-body {
+            font-size: .95rem;
+            color: var(--dc-muted);
+            line-height: 1.7;
+            margin-bottom: 0
+        }
+
+        /* Badge */
+        .dc-badge-wrap {
+            display: flex;
+            justify-content: center;
+            margin: 2.5rem 0
+        }
+
+        .dc-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .65rem;
+            padding: 1.75rem 2rem;
+            border: 1px solid var(--dc-gold-line);
+            border-radius: 8px;
+            background: var(--dc-gold-dim);
+            width: 200px
+        }
+
+        .dc-badge-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            border: 2px solid var(--dc-gold-line);
+            background: var(--dc-surf2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--dc-gold)
+        }
+
+        .dc-badge-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: .95rem;
+            font-weight: 700;
+            color: var(--dc-gold);
+            letter-spacing: .01em
+        }
+
+        .dc-badge-desc {
+            font-size: .72rem;
+            color: var(--dc-muted);
+            text-align: center;
+            line-height: 1.4
+        }
+
+        /* Framework box */
+        .dc-framework {
+            border: 1px solid var(--dc-bdr);
+            border-radius: 8px;
+            background: var(--dc-surf2);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem
+        }
+
+        .dc-fw-label {
+            font-size: .65rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--dc-muted);
+            margin-bottom: 1.1rem
+        }
+
+        .dc-fw-chain {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .35rem;
+            margin-bottom: 1.25rem
+        }
+
+        .dc-fw-step {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dc-gold);
+            padding: .45rem 1.4rem;
+            border: 1px solid var(--dc-gold-line);
+            border-radius: 4px;
+            background: var(--dc-gold-dim)
+        }
+
+        .dc-fw-arrow {
+            color: var(--dc-muted);
+            font-size: .85rem
+        }
+
+        .dc-fw-msg {
+            font-size: .85rem;
+            color: var(--dc-muted);
+            line-height: 1.65
+        }
+
+        /* Buttons */
+        .dc-btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .75rem;
+            justify-content: center;
+            margin-top: 2rem
+        }
+
+        .dc-btn-primary {
+            background: transparent;
+            border: 1px solid var(--dc-gold-line);
+            color: var(--dc-gold);
+            font-family: 'Inter', sans-serif;
+            font-size: .8rem;
+            font-weight: 600;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            padding: .7rem 1.6rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background var(--dc-tr), border-color var(--dc-tr);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center
+        }
+
+        .dc-btn-primary:hover {
+            background: var(--dc-gold-dim);
+            border-color: var(--dc-gold)
+        }
+
+        .dc-btn-primary:focus-visible {
+            outline: 2px solid var(--dc-gold);
+            outline-offset: 2px
+        }
+
+        .dc-btn-ghost {
+            background: transparent;
+            border: 1px solid var(--dc-bdr);
+            color: var(--dc-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: .8rem;
+            font-weight: 500;
+            letter-spacing: .04em;
+            padding: .68rem 1.4rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: border-color var(--dc-tr), color var(--dc-tr);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center
+        }
+
+        .dc-btn-ghost:hover {
+            border-color: var(--dc-bdrhi);
+            color: var(--dc-txt)
+        }
+
+        .dc-btn-ghost:focus-visible {
+            outline: 2px solid var(--dc-bdrhi);
+            outline-offset: 2px
+        }
+
+        /* Divider */
+        .dc-divider {
+            height: 1px;
+            background: var(--dc-bdr);
+            margin: 2rem 0
+        }
+
+        /* Example Interpretation card */
+        .dc-example-section-label {
+            font-size: .65rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--dc-muted);
+            margin-bottom: .85rem;
+            margin-top: 2rem
+        }
+
+        .dc-example-card {
+            border: 1px solid var(--dc-bdr);
+            border-radius: 8px;
+            background: var(--dc-surf2);
+            padding: 1.1rem 1.25rem;
+            margin-bottom: 1.75rem
+        }
+
+        .dc-example-card-label {
+            font-size: .63rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--dc-muted);
+            margin-bottom: .8rem
+        }
+
+        .dc-example-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .38rem 0;
+            border-bottom: 1px solid var(--dc-bdr)
+        }
+
+        .dc-example-row:last-of-type {
+            border-bottom: none
+        }
+
+        .dc-example-key {
+            font-size: .78rem;
+            color: var(--dc-gold);
+            font-weight: 600;
+            letter-spacing: .02em
+        }
+
+        .dc-example-val {
+            font-size: .78rem;
+            color: var(--dc-txt);
+            font-weight: 500
+        }
+
+        .dc-example-interp {
+            font-size: .82rem;
+            color: var(--dc-muted);
+            line-height: 1.6;
+            margin-top: .85rem;
+            padding-top: .75rem;
+            border-top: 1px solid var(--dc-bdr);
+            opacity: .85
+        }
+
+        /* Animate in */
+        @keyframes dcFadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .dc-animate {
+            animation: dcFadeUp .4s ease forwards
+        }
+
+        .dc-animate-d1 {
+            animation-delay: .1s;
+            opacity: 0
+        }
+
+        .dc-animate-d2 {
+            animation-delay: .25s;
+            opacity: 0
+        }
+
+        .dc-animate-d3 {
+            animation-delay: .4s;
+            opacity: 0
+        }
+
+        .dc-animate-d4 {
+            animation-delay: .55s;
+            opacity: 0
+        }
+
+        .dc-animate-d5 {
+            animation-delay: .7s;
+            opacity: 0
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="app.html" class="logo">
+                    <div class="logo-icon">⚡</div>
+                    <span>ProsperPath</span>
+                </a>
+                <div class="nav-links" id="nav-links">
+                    <a href="clarity-box.html">Clarity Box</a>
+                    <a href="trade.html">Trade</a>
+                    <a href="market-mechanics.html" class="active">Market Mechanics</a>
+                    <a href="portfolio.html">Portfolio</a>
+                    <div class="nav-item-dropdown">
+
+                        <a href="resources.html">Resources</a>
+
+                        <div class="dropdown-panel">
+
+                            <a href="wealth-guides.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">Wealth Guides</span>
+
+                                <span class="dropdown-item-desc">Structured frameworks for building financial understanding.</span>
+
+                            </a>
+
+                            <a href="tool-reviews.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">Tool Reviews</span>
+
+                                <span class="dropdown-item-desc">Reviews of platforms and financial tools.</span>
+
+                            </a>
+
+                            <a href="ai-calculators.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">AI Calculators</span>
+
+                                <span class="dropdown-item-desc">Interactive tools for financial modelling.</span>
+
+                            </a>
+
+                            <a href="blog.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">Insights</span>
+
+                                <span class="dropdown-item-desc">Market analysis and commentary.</span>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="nav-actions" style="display:flex;align-items:center;gap:var(--space-4);position:relative;">
+                    <div class="settings-wrapper" style="position:relative;">
+                        <button id="settings-btn" class="settings-icon-btn" aria-label="Settings"
+                            onclick="toggleAuthMenu()">
+                            <span class="icon">⚙️</span>
+                        </button>
+                        <div id="auth-wrapper" class="auth-rolldown-container">
+                            <div id="auth-container"></div>
+                        </div>
+                    </div>
+                </div>
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="dc-page">
+        <a href="market-context.html" class="dc-back-link">&#8592; Market Context</a>
+
+        <section class="dc-hero">
+            <div class="dc-container">
+                <p class="dc-eyebrow dc-animate dc-animate-d1">Domain II — Complete</p>
+                <h1 class="dc-h1 dc-animate dc-animate-d2">Market Context<br>Complete</h1>
+                <p class="dc-body dc-animate dc-animate-d3">You now understand<br>how markets are interpreted.</p>
+            </div>
+        </section>
+
+        <div class="dc-container">
+
+            <!-- Badge -->
+            <div class="dc-badge-wrap dc-animate dc-animate-d3">
+                <div class="dc-badge" id="badge-box">
+                    <div class="dc-badge-icon">&#9670;</div>
+                    <div class="dc-badge-name">Market Context</div>
+                    <div class="dc-badge-desc">Completed the Market Context domain.</div>
+                </div>
+            </div>
+
+            <div class="dc-divider"></div>
+
+            <!-- Framework -->
+            <div class="dc-framework dc-animate dc-animate-d4">
+                <div class="dc-fw-label">Market Context Framework</div>
+                <div class="dc-fw-chain">
+                    <div class="dc-fw-step">Scale</div>
+                    <div class="dc-fw-arrow">&#8595;</div>
+                    <div class="dc-fw-step">State</div>
+                    <div class="dc-fw-arrow">&#8595;</div>
+                    <div class="dc-fw-step">Liquidity</div>
+                    <div class="dc-fw-arrow">&#8595;</div>
+                    <div class="dc-fw-step">Movement</div>
+                </div>
+                <p class="dc-fw-msg">This framework will guide<br>all future analysis.</p>
+            </div>
+
+            <!-- Example Interpretation -->
+            <div class="dc-animate dc-animate-d5">
+                <p class="dc-example-section-label">Example Interpretation</p>
+                <div class="dc-example-card">
+                    <div class="dc-example-card-label">Example Market Context</div>
+                    <div class="dc-example-row">
+                        <span class="dc-example-key">Scale</span>
+                        <span class="dc-example-val">15m</span>
+                    </div>
+                    <div class="dc-example-row">
+                        <span class="dc-example-key">State</span>
+                        <span class="dc-example-val">Balance</span>
+                    </div>
+                    <div class="dc-example-row">
+                        <span class="dc-example-key">Liquidity</span>
+                        <span class="dc-example-val">Equal highs</span>
+                    </div>
+                    <div class="dc-example-row">
+                        <span class="dc-example-key">Movement</span>
+                        <span class="dc-example-val">Rejection</span>
+                    </div>
+                    <p class="dc-example-interp">Price attempted to access liquidity above the range, but rejected and
+                        returned into balance.</p>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="dc-btn-row dc-animate dc-animate-d4">
+                <a href="market-context.html" class="dc-btn-ghost">Review Domain 2</a>
+                <a href="#" class="dc-btn-primary" id="d3-btn">Continue to Domain 3</a>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 ProsperPath Insights. AI-Powered Wealth Strategies.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js?v=d2c1"></script>
+    <script src="ai-widget.js"></script>
+    <script src="google-auth.js"></script>
+    <script>
+        window.addEventListener('load', () => { if (typeof initGoogleAuth === 'function') initGoogleAuth(); });
+
+        /* Award badge on load (belt-and-suspenders) */
+        (function awardBadge() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('pp_mc_modules') || '{}');
+                const allVerified = ['2.1', '2.2', '2.3', '2.4', '2.5'].every(k => saved[k] && saved[k].verified);
+                if (allVerified) {
+                    const badges = JSON.parse(localStorage.getItem('pp_badges') || '{}');
+                    if (!badges['market_context']) {
+                        badges['market_context'] = true;
+                        localStorage.setItem('pp_badges', JSON.stringify(badges));
+                    }
+                }
+            } catch (e) { }
+        })();
+
+        /* Domain 3 placeholder */
+        document.getElementById('d3-btn').addEventListener('click', function (e) {
+            e.preventDefault();
+            alert('Domain 3 is coming soon. Your progress has been saved.');
+        });
+    </script>
+</body>
+
+</html>

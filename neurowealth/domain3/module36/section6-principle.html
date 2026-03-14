@@ -1,0 +1,153 @@
+<!-- ============================================================
+     Module 3.6 · Section VI — Principle
+     Self-contained fragment. Injected by module-shell.html.
+     Shell provides: goTo, VW, VH, CHART globals.
+============================================================ -->
+
+<style>
+    .s6-screen {
+        width: 100%;
+        max-width: 560px;
+        animation: s6Fade .24s ease both
+    }
+
+    @keyframes s6Fade {
+        from {
+            opacity: 0;
+            transform: translateY(6px)
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0)
+        }
+    }
+
+    .s6-eyebrow {
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--m-muted);
+        margin-bottom: 1.2rem
+    }
+
+    .s6-h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+        font-weight: 700;
+        color: var(--m-txt);
+        letter-spacing: -.025em;
+        line-height: 1.12;
+        margin-bottom: 2.2rem
+    }
+
+    /* Principle card */
+    .s6-card {
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdrhi);
+        border-left: 3px solid var(--m-gold-line);
+        border-radius: 5px;
+        padding: 1.5rem 1.6rem;
+        margin-bottom: 2.4rem;
+        animation: s6CardIn .38s ease .12s both
+    }
+
+    @keyframes s6CardIn {
+        from {
+            opacity: 0;
+            transform: translateY(8px)
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0)
+        }
+    }
+
+    .s6-card-label {
+        font-size: .6rem;
+        font-weight: 700;
+        letter-spacing: .13em;
+        text-transform: uppercase;
+        color: var(--m-gold);
+        opacity: .75;
+        margin-bottom: .9rem
+    }
+
+    .s6-card-text {
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(1.08rem, 2.6vw, 1.22rem);
+        font-weight: 500;
+        color: var(--m-txt);
+        line-height: 1.55;
+        letter-spacing: -.01em
+    }
+
+    /* Next button */
+    .s6-btn-row {
+        display: flex;
+        gap: .6rem
+    }
+
+    .s6-btn-prev {
+        background: transparent;
+        border: 1px solid var(--m-bdr);
+        color: var(--m-muted);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 500;
+        letter-spacing: .04em;
+        padding: .62rem 1.2rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: border-color var(--m-tr), color var(--m-tr)
+    }
+
+    .s6-btn-prev:hover {
+        border-color: var(--m-bdrhi);
+        color: var(--m-txt)
+    }
+
+    .s6-btn-next {
+        background: transparent;
+        border: 1px solid var(--m-gold-line);
+        color: var(--m-gold);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        padding: .65rem 1.5rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background .2s, border-color .2s
+    }
+
+    .s6-btn-next:hover {
+        background: var(--m-gold-dim);
+        border-color: var(--m-gold)
+    }
+</style>
+
+<div class="s6-screen" id="s6-root">
+
+    <!-- Eyebrow -->
+    <p class="s6-eyebrow">Section VI · Structure Failure</p>
+
+    <!-- Heading -->
+    <h2 class="s6-h1">Principle</h2>
+
+    <!-- Principle card -->
+    <div class="s6-card" id="s6-principle-card">
+        <p class="s6-card-label">Core Principle</p>
+        <p class="s6-card-text">A trend fails when the structure that defines it is broken.</p>
+    </div>
+
+    <!-- Navigation -->
+    <div class="s6-btn-row">
+        <button class="s6-btn-prev" onclick="goTo(5, 0)">← Previous</button>
+        <button class="s6-btn-next" id="s6-btn-next" onclick="goTo(7, 0)">Next Section →</button>
+    </div>
+
+</div>

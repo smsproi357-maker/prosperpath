@@ -1,0 +1,385 @@
+<!-- ============================================================
+     Module 3.7 · Section I — After Structure Failure
+     Self-contained fragment. Injected by module-shell.html.
+     No <html>, <head>, or <body> tags needed.
+     Shell provides: registerClarifyTerms, openClarify, goTo globals.
+============================================================ -->
+
+<style>
+    .s1-screen {
+        width: 100%;
+        max-width: 640px;
+        animation: s1Fade .22s ease both
+    }
+
+    @keyframes s1Fade {
+        from {
+            opacity: 0;
+            transform: translateY(5px)
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0)
+        }
+    }
+
+    .s1-eyebrow {
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--m-muted);
+        margin-bottom: 1.2rem
+    }
+
+    .s1-h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(1.5rem, 3.8vw, 2.1rem);
+        font-weight: 700;
+        color: var(--m-txt);
+        letter-spacing: -.02em;
+        line-height: 1.15;
+        margin-bottom: .85rem
+    }
+
+    .s1-body {
+        font-size: .95rem;
+        color: var(--m-txt);
+        line-height: 1.7;
+        margin-bottom: 1.5rem
+    }
+
+    .s1-body p {
+        margin-bottom: .5rem
+    }
+
+    .s1-body p:last-child {
+        margin-bottom: 0
+    }
+
+    /* Sequence label strip */
+    .s1-seq-strip {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        margin: 1rem 0 1.5rem;
+        flex-wrap: wrap
+    }
+
+    .s1-seq-node {
+        font-size: .72rem;
+        font-weight: 700;
+        letter-spacing: .06em;
+        color: var(--m-gold);
+        padding: .28rem .6rem;
+        border: 1px solid var(--m-gold-line);
+        border-radius: 3px;
+        background: var(--m-gold-dim)
+    }
+
+    .s1-seq-node.broken {
+        color: var(--m-red-txt);
+        border-color: rgba(224, 128, 112, .35);
+        background: rgba(224, 128, 112, .08)
+    }
+
+    .s1-seq-arrow {
+        font-size: .7rem;
+        color: var(--m-muted);
+        opacity: .55;
+        padding: 0 .35rem;
+        user-select: none
+    }
+
+    /* Chart container */
+    .s1-chart {
+        position: relative;
+        margin: 1.5rem 0;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-radius: 4px;
+        overflow: hidden;
+        height: 220px
+    }
+
+    .s1-chart svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%
+    }
+
+    /* Takeaway */
+    .s1-takeaway {
+        font-size: .8rem;
+        color: var(--m-muted);
+        text-align: center;
+        opacity: .85;
+        margin-bottom: 1.75rem;
+        letter-spacing: .01em
+    }
+
+    /* Button row */
+    .s1-btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem;
+        margin-top: .25rem
+    }
+
+    .s1-btn {
+        background: transparent;
+        border: 1px solid var(--m-gold-line);
+        color: var(--m-gold);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        padding: .65rem 1.5rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background .2s, border-color .2s
+    }
+
+    .s1-btn:hover {
+        background: var(--m-gold-dim);
+        border-color: var(--m-gold)
+    }
+</style>
+
+<div class="s1-screen" id="s1-root">
+
+    <!-- Eyebrow -->
+    <p class="s1-eyebrow">Section I · Reversal Structure</p>
+
+    <!-- Heading -->
+    <h2 class="s1-h1">After Structure Failure</h2>
+
+    <!-- Body -->
+    <div class="s1-body">
+        <p>The previous uptrend structure has failed.</p>
+        <p>A
+            <button class="clarify-btn" onclick="openClarify('breakOfStructure')"
+                aria-label="Clarify: Break of Structure">Break of Structure</button>
+            has occurred below the Higher Low. But failure alone does not confirm a
+            <button class="clarify-btn" onclick="openClarify('reversal')"
+                aria-label="Clarify: Reversal">reversal.</button>
+        </p>
+    </div>
+
+    <!-- Sequence strip -->
+    <div class="s1-seq-strip" aria-label="Structure sequence">
+        <span class="s1-seq-node">HH</span>
+        <span class="s1-seq-arrow">→</span>
+        <span class="s1-seq-node">HL</span>
+        <span class="s1-seq-arrow">→</span>
+        <span class="s1-seq-node">HH</span>
+        <span class="s1-seq-arrow">→</span>
+        <span class="s1-seq-node broken">break below HL</span>
+    </div>
+
+    <!-- Chart -->
+    <div class="s1-chart" id="s1-chart" role="img"
+        aria-label="Uptrend structure with break below Higher Low — no reversal confirmed yet">
+        <svg id="s1-svg" viewBox="0 0 600 220" preserveAspectRatio="none"></svg>
+    </div>
+
+    <!-- Takeaway -->
+    <p class="s1-takeaway">The old trend is broken, but the new one has not fully formed yet.</p>
+
+    <!-- Navigation -->
+    <div class="s1-btn-row">
+        <button class="s1-btn" onclick="goTo(2, 0)">Next Section &rarr;</button>
+    </div>
+
+</div>
+
+<script>
+    (function () {
+
+        /* ── Register Clarify terms ─────────────────────────── */
+        registerClarifyTerms({
+            breakOfStructure: {
+                term: 'Break of Structure',
+                explanation: 'Break of Structure happens when price breaks the key structural level that should hold if the current trend is intact.',
+                example: 'In an uptrend, a break below the Higher Low is a break of structure.',
+                misc: '<strong>Break of structure alone does not confirm reversal.</strong> It only removes the previous trend structure.'
+            },
+            reversal: {
+                term: 'Reversal',
+                explanation: 'A reversal is the formation of opposite structure after the previous trend fails.',
+                example: 'An uptrend breaks, then a Lower Low and Lower High begin forming.',
+                misc: '<strong>Break of structure alone is not a full reversal.</strong> Opposite structure must begin forming too.'
+            }
+        });
+
+        /* ── Chart constants ────────────────────────────────── */
+        var W = 600, H = 220;
+        var PAD = { l: 32, r: 28, t: 24, b: 24 };
+        var UW = W - PAD.l - PAD.r;
+        var UH = H - PAD.t - PAD.b;
+
+        function px(fx) { return PAD.l + fx * UW; }
+        function py(fy) { return PAD.t + (1 - fy) * UH; }
+
+        var GLD = 'rgba(195,162,70,1.0)';
+        var NDO = 'rgba(200,185,130,0.92)';
+        var RED = 'rgba(224,128,112,0.85)';
+        var RED2 = 'rgba(224,128,112,0.45)';
+        var REDZ = 'rgba(224,128,112,0.07)';
+        var GUIDE = 'rgba(195,162,70,0.22)';
+        var GRID = 'rgba(255,255,255,0.025)';
+
+        /* Structure nodes */
+        var anchor = { fx: 0.03, fy: 0.10 };
+        var HH1 = { fx: 0.20, fy: 0.72, lbl: 'HH' };
+        var HL1 = { fx: 0.37, fy: 0.40, lbl: 'HL' };
+        var HH2 = { fx: 0.55, fy: 0.88, lbl: 'HH' };
+        var HL2 = { fx: 0.70, fy: 0.55, lbl: 'HL' };    /* ← BROKEN */
+        var breakEnd = { fx: 0.92, fy: 0.22 };
+
+        var hl2Y = py(HL2.fy);
+
+        function build() {
+            var svg = document.getElementById('s1-svg');
+            var out = [];
+
+            /* Grid */
+            var gy = 40;
+            while (gy < H) {
+                out.push('<line x1="0" y1="' + gy + '" x2="' + W + '" y2="' + gy +
+                    '" stroke="' + GRID + '" stroke-width="1"/>');
+                gy += 40;
+            }
+
+            /* HL2 guide line — the critical level */
+            out.push(
+                '<line x1="' + PAD.l + '" y1="' + hl2Y +
+                '" x2="' + (W - PAD.r) + '" y2="' + hl2Y +
+                '" stroke="' + GUIDE + '" stroke-width="1" stroke-dasharray="5,5"/>'
+            );
+            out.push(
+                '<text x="' + (PAD.l - 4) + '" y="' + (hl2Y + 1) +
+                '" text-anchor="end" font-size="8.5" font-family="Inter,sans-serif"' +
+                ' fill="' + GUIDE + '" letter-spacing="0.04em" font-weight="600">HL</text>'
+            );
+
+            /* Healthy structure path */
+            var nodes = [anchor, HH1, HL1, HH2, HL2];
+            var pts = nodes.map(function (n) { return { x: px(n.fx), y: py(n.fy) }; });
+            var solidD = 'M' + pts.map(function (p) { return p.x + ',' + p.y; }).join(' L');
+            var len = 0;
+            for (var i = 1; i < pts.length; i++) {
+                var dx = pts[i].x - pts[i - 1].x;
+                var dy = pts[i].y - pts[i - 1].y;
+                len += Math.sqrt(dx * dx + dy * dy);
+            }
+            out.push(
+                '<path d="' + solidD + '" stroke="' + GLD + '" stroke-width="2.2" fill="none"' +
+                ' stroke-linecap="round" stroke-linejoin="round"' +
+                ' stroke-dasharray="' + (len + 10) + '" stroke-dashoffset="' + (len + 10) + '"' +
+                ' style="animation: s1DrawPath .9s ease .1s forwards"/>'
+            );
+
+            /* Break path — red */
+            var bx1 = px(HL2.fx), by1 = hl2Y;
+            var bx2 = px(breakEnd.fx), by2 = py(breakEnd.fy);
+            var bLen = Math.sqrt(Math.pow(bx2 - bx1, 2) + Math.pow(by2 - by1, 2)) + 10;
+            out.push(
+                '<path d="M' + bx1 + ',' + by1 + ' L' + bx2 + ',' + by2 + '"' +
+                ' stroke="' + RED + '" stroke-width="2.2" fill="none"' +
+                ' stroke-linecap="round"' +
+                ' stroke-dasharray="' + bLen + '" stroke-dashoffset="' + bLen + '"' +
+                ' style="animation: s1DrawPath .6s ease 1.0s forwards" opacity="0"' +
+                ' id="s1-break-path"/>'
+            );
+
+            /* Break zone */
+            out.push(
+                '<rect x="' + bx1 + '" y="' + hl2Y +
+                '" width="' + (W - PAD.r - bx1 + 4) + '"' +
+                ' height="' + (H - PAD.b - hl2Y + 4) + '"' +
+                ' fill="' + REDZ + '" opacity="0" id="s1-break-zone"/>'
+            );
+
+            /* Node dots + labels for confirmed structure */
+            [HH1, HL1, HH2, HL2].forEach(function (n) {
+                var x = px(n.fx), y = py(n.fy);
+                out.push('<circle cx="' + x + '" cy="' + y + '" r="4.5" fill="' + NDO + '" stroke="none"' +
+                    ' style="opacity:0;transition:opacity .3s ease 1s"/>');
+                out.push('<text x="' + x + '" y="' + (y - 10) +
+                    '" text-anchor="middle" font-size="9" font-family="Inter,sans-serif"' +
+                    ' fill="' + NDO + '" font-weight="700" letter-spacing="0.06em"' +
+                    ' style="opacity:0;transition:opacity .3s ease 1s">' + n.lbl + '</text>');
+            });
+
+            /* Break end dot + label */
+            out.push(
+                '<circle cx="' + bx2 + '" cy="' + by2 +
+                '" r="4.5" fill="none" stroke="' + RED + '" stroke-width="1.6"' +
+                ' opacity="0" id="s1-break-dot"/>'
+            );
+            out.push(
+                '<text x="' + bx2 + '" y="' + (by2 + 16) +
+                '" text-anchor="middle" font-size="8.5" font-family="Inter,sans-serif"' +
+                ' fill="' + RED + '" font-weight="700" letter-spacing="0.05em"' +
+                ' opacity="0" id="s1-break-lbl">break</text>'
+            );
+
+            svg.innerHTML = out.join('');
+
+            requestAnimationFrame(function () {
+                /* Reveal structure nodes */
+                setTimeout(function () {
+                    svg.querySelectorAll('circle, text').forEach(function (el) {
+                        if (!el.id) el.style.opacity = '1';
+                    });
+                }, 1000);
+
+                /* Reveal break path */
+                setTimeout(function () {
+                    var bp = document.getElementById('s1-break-path');
+                    if (bp) bp.style.opacity = '1';
+                    /* Fade in break zone */
+                    var zone = document.getElementById('s1-break-zone');
+                    if (zone) { zone.style.transition = 'opacity .5s ease'; zone.style.opacity = '1'; }
+                }, 1100);
+
+                /* Reveal break dot and label */
+                setTimeout(function () {
+                    var dot = document.getElementById('s1-break-dot');
+                    var lbl = document.getElementById('s1-break-lbl');
+                    if (dot) { dot.style.transition = 'opacity .3s ease'; dot.style.opacity = '1'; }
+                    if (lbl) { lbl.style.transition = 'opacity .3s ease'; lbl.style.opacity = '1'; }
+                }, 1800);
+            });
+        }
+
+        /* Animate sequence nodes */
+        (function () {
+            var items = document.querySelectorAll('.s1-seq-node');
+            items.forEach(function (el, i) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(4px)';
+                el.style.transition = 'opacity .25s ease, transform .25s ease';
+                setTimeout(function () {
+                    el.style.opacity = '';
+                    el.style.transform = '';
+                }, 80 + i * 90);
+            });
+        })();
+
+        build();
+
+    })();
+</script>
+
+<style>
+    @keyframes s1DrawPath {
+        to {
+            stroke-dashoffset: 0
+        }
+    }
+</style>

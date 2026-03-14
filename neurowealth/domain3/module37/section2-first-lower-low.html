@@ -1,0 +1,317 @@
+<!-- ============================================================
+     Module 3.7 · Section II — First Lower Low
+     Self-contained fragment. Injected by module-shell.html.
+============================================================ -->
+
+<style>
+    .s2-screen {
+        width: 100%;
+        max-width: 640px;
+        animation: s2Fade .22s ease both
+    }
+
+    @keyframes s2Fade {
+        from {
+            opacity: 0;
+            transform: translateY(5px)
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0)
+        }
+    }
+
+    .s2-eyebrow {
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--m-muted);
+        margin-bottom: 1.2rem
+    }
+
+    .s2-h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(1.5rem, 3.8vw, 2.1rem);
+        font-weight: 700;
+        color: var(--m-txt);
+        letter-spacing: -.02em;
+        line-height: 1.15;
+        margin-bottom: .85rem
+    }
+
+    .s2-body {
+        font-size: .95rem;
+        color: var(--m-txt);
+        line-height: 1.7;
+        margin-bottom: 1.5rem
+    }
+
+    .s2-body p {
+        margin-bottom: .5rem
+    }
+
+    .s2-body p:last-child {
+        margin-bottom: 0
+    }
+
+    .s2-chart {
+        position: relative;
+        margin: 1.5rem 0;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-radius: 4px;
+        overflow: hidden;
+        height: 220px
+    }
+
+    .s2-chart svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%
+    }
+
+    .s2-takeaway {
+        font-size: .8rem;
+        color: var(--m-muted);
+        text-align: center;
+        opacity: .85;
+        margin-bottom: 1.75rem;
+        letter-spacing: .01em
+    }
+
+    .s2-btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem;
+        margin-top: .25rem
+    }
+
+    .s2-btn-prev {
+        background: transparent;
+        border: 1px solid var(--m-bdr);
+        color: var(--m-muted);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 500;
+        letter-spacing: .04em;
+        padding: .62rem 1.2rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: border-color var(--m-tr), color var(--m-tr)
+    }
+
+    .s2-btn-prev:hover {
+        border-color: var(--m-bdrhi);
+        color: var(--m-txt)
+    }
+
+    .s2-btn-next {
+        background: transparent;
+        border: 1px solid var(--m-gold-line);
+        color: var(--m-gold);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        padding: .65rem 1.5rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background .2s, border-color .2s
+    }
+
+    .s2-btn-next:hover {
+        background: var(--m-gold-dim);
+        border-color: var(--m-gold)
+    }
+
+    @keyframes s2DrawPath {
+        to {
+            stroke-dashoffset: 0
+        }
+    }
+</style>
+
+<div class="s2-screen" id="s2-root">
+
+    <!-- Eyebrow -->
+    <p class="s2-eyebrow">Section II · Reversal Structure</p>
+
+    <!-- Heading -->
+    <h2 class="s2-h1">First Lower Low</h2>
+
+    <!-- Body -->
+    <div class="s2-body">
+        <p>After structure failure, the first new push creates a
+            <button class="clarify-btn" onclick="openClarify('lowerLow')" aria-label="Clarify: Lower Low">Lower
+                Low.</button>
+        </p>
+        <p>This is the first sign of opposite pressure in the market.</p>
+    </div>
+
+    <!-- Chart -->
+    <div class="s2-chart" id="s2-chart" role="img"
+        aria-label="Break below Higher Low followed by first Lower Low forming">
+        <svg id="s2-svg" viewBox="0 0 600 220" preserveAspectRatio="none"></svg>
+    </div>
+
+    <!-- Takeaway -->
+    <p class="s2-takeaway">A lower low is the first structural step away from the old trend.</p>
+
+    <!-- Navigation -->
+    <div class="s2-btn-row">
+        <button class="s2-btn-prev" onclick="goTo(1, 0)">&larr; Previous</button>
+        <button class="s2-btn-next" onclick="goTo(3, 0)">Next Section &rarr;</button>
+    </div>
+
+</div>
+
+<script>
+    (function () {
+
+        /* ── Register Clarify terms ─────────────────────────── */
+        registerClarifyTerms({
+            lowerLow: {
+                term: 'Lower Low',
+                explanation: 'A Lower Low forms when price pushes below the previous structural low.',
+                example: 'After structure failure, the first new push downward may create a Lower Low.',
+                misc: '<strong>A Lower Low is not just any small downward move.</strong> It is a structural turning point.'
+            }
+        });
+
+        var W = 600, H = 220;
+        var PAD = { l: 32, r: 28, t: 24, b: 24 };
+        var UW = W - PAD.l - PAD.r;
+        var UH = H - PAD.t - PAD.b;
+
+        function px(fx) { return PAD.l + fx * UW; }
+        function py(fy) { return PAD.t + (1 - fy) * UH; }
+
+        var GLD = 'rgba(195,162,70,1.0)';
+        var NDO = 'rgba(200,185,130,0.92)';
+        var RED = 'rgba(224,128,112,0.85)';
+        var REDZ = 'rgba(224,128,112,0.08)';
+        var GUIDE = 'rgba(195,162,70,0.22)';
+        var GRED = 'rgba(224,128,112,0.30)';
+        var GRID = 'rgba(255,255,255,0.025)';
+
+        /* Prior uptrend nodes */
+        var anchor = { fx: 0.02, fy: 0.12 };
+        var HH1 = { fx: 0.18, fy: 0.68, lbl: 'HH' };
+        var HL1 = { fx: 0.33, fy: 0.38, lbl: 'HL' };
+        var HH2 = { fx: 0.50, fy: 0.84, lbl: 'HH' };
+        var HL2 = { fx: 0.63, fy: 0.52, lbl: 'HL' };   /* broken HL */
+
+        /* Break + LL */
+        var breakPt = { fx: 0.72, fy: 0.28 };           /* break below HL2 */
+        var LL1 = { fx: 0.90, fy: 0.13, lbl: 'LL' };   /* first Lower Low */
+
+        var hl2Y = py(HL2.fy);
+
+        function build() {
+            var svg = document.getElementById('s2-svg');
+            var out = [];
+
+            /* Grid */
+            var gy = 40;
+            while (gy < H) {
+                out.push('<line x1="0" y1="' + gy + '" x2="' + W + '" y2="' + gy +
+                    '" stroke="' + GRID + '" stroke-width="1"/>');
+                gy += 40;
+            }
+
+            /* HL2 guide line */
+            out.push(
+                '<line x1="' + PAD.l + '" y1="' + hl2Y +
+                '" x2="' + (W - PAD.r) + '" y2="' + hl2Y +
+                '" stroke="' + GUIDE + '" stroke-width="1" stroke-dasharray="5,5"/>'
+            );
+
+            /* Break zone */
+            out.push(
+                '<rect x="' + px(HL2.fx) + '" y="' + hl2Y +
+                '" width="' + (W - PAD.r - px(HL2.fx) + 4) + '"' +
+                ' height="' + (H - PAD.b - hl2Y + 4) + '"' +
+                ' fill="' + REDZ + '" opacity="0" id="s2-break-zone"/>'
+            );
+
+            /* Prior uptrend path */
+            var uNodes = [anchor, HH1, HL1, HH2, HL2];
+            var uPts = uNodes.map(function (n) { return { x: px(n.fx), y: py(n.fy) }; });
+            var uLen = 0;
+            for (var i = 1; i < uPts.length; i++) {
+                var dx = uPts[i].x - uPts[i - 1].x;
+                var dy = uPts[i].y - uPts[i - 1].y;
+                uLen += Math.sqrt(dx * dx + dy * dy);
+            }
+            out.push(
+                '<path d="M' + uPts.map(function (p) { return p.x + ',' + p.y; }).join(' L') + '"' +
+                ' stroke="' + GLD + '" stroke-width="2.0" fill="none"' +
+                ' stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>'
+            );
+
+            /* Break → LL path — red */
+            var bPts = [HL2, breakPt, LL1];
+            var bPtsXY = bPts.map(function (n) { return { x: px(n.fx), y: py(n.fy) }; });
+            var bLen = 0;
+            for (var j = 1; j < bPtsXY.length; j++) {
+                var ddx = bPtsXY[j].x - bPtsXY[j - 1].x;
+                var ddy = bPtsXY[j].y - bPtsXY[j - 1].y;
+                bLen += Math.sqrt(ddx * ddx + ddy * ddy);
+            }
+            out.push(
+                '<path d="M' + bPtsXY.map(function (p) { return p.x + ',' + p.y; }).join(' L') + '"' +
+                ' stroke="' + RED + '" stroke-width="2.2" fill="none"' +
+                ' stroke-linecap="round" stroke-linejoin="round"' +
+                ' stroke-dasharray="' + (bLen + 10) + '" stroke-dashoffset="' + (bLen + 10) + '"' +
+                ' style="animation: s2DrawPath .75s ease .3s forwards"/>'
+            );
+
+            /* Prior uptrend node dots */
+            [HH1, HL1, HH2, HL2].forEach(function (n) {
+                var x = px(n.fx), y = py(n.fy);
+                out.push('<circle cx="' + x + '" cy="' + y + '" r="3.5" fill="' + NDO + '" opacity="0.5"/>');
+                out.push('<text x="' + x + '" y="' + (y - 9) +
+                    '" text-anchor="middle" font-size="8" font-family="Inter,sans-serif"' +
+                    ' fill="' + NDO + '" font-weight="600" opacity="0.5">' + n.lbl + '</text>');
+            });
+
+            /* LL node — highlighted */
+            var llX = px(LL1.fx), llY = py(LL1.fy);
+            out.push(
+                '<circle cx="' + llX + '" cy="' + llY + '" r="5.5" fill="' + RED + '" stroke="none"' +
+                ' opacity="0" id="s2-ll-dot"/>'
+            );
+            out.push(
+                '<text x="' + llX + '" y="' + (llY + 18) +
+                '" text-anchor="middle" font-size="9.5" font-family="Inter,sans-serif"' +
+                ' fill="' + RED + '" font-weight="700" letter-spacing="0.06em"' +
+                ' opacity="0" id="s2-ll-lbl">LL</text>'
+            );
+
+            svg.innerHTML = out.join('');
+
+            requestAnimationFrame(function () {
+                /* Break zone */
+                setTimeout(function () {
+                    var zone = document.getElementById('s2-break-zone');
+                    if (zone) { zone.style.transition = 'opacity .5s ease'; zone.style.opacity = '1'; }
+                }, 600);
+
+                /* LL dot + label */
+                setTimeout(function () {
+                    var dot = document.getElementById('s2-ll-dot');
+                    var lbl = document.getElementById('s2-ll-lbl');
+                    if (dot) { dot.style.transition = 'opacity .35s ease'; dot.style.opacity = '1'; }
+                    if (lbl) { lbl.style.transition = 'opacity .35s ease'; lbl.style.opacity = '1'; }
+                }, 1100);
+            });
+        }
+
+        build();
+
+    })();
+</script>

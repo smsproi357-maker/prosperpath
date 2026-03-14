@@ -1,0 +1,90 @@
+<style>
+    .s1-screen { width: 100%; max-width: 640px; animation: s1Fade .22s ease both }
+    @keyframes s1Fade { from { opacity: 0; transform: translateY(5px) } to { opacity: 1; transform: translateY(0) } }
+    .s1-eyebrow { font-size: .68rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--m-muted); margin-bottom: 1.2rem }
+    .s1-h1 { font-family: 'Outfit', sans-serif; font-size: clamp(1.5rem, 3.8vw, 2.1rem); font-weight: 700; color: var(--m-txt); letter-spacing: -.02em; line-height: 1.15; margin-bottom: .85rem }
+    .s1-body { font-size: .95rem; color: var(--m-txt); line-height: 1.7; margin-bottom: 1.35rem }
+    .s1-body p { margin-bottom: .5rem }
+    .s1-list { display: grid; gap: .55rem; margin: 1.2rem 0 1.5rem }
+    .s1-item { display: flex; align-items: center; gap: .8rem; background: var(--m-surf2); border: 1px solid var(--m-bdr); border-radius: 4px; padding: .68rem 1rem; opacity: 0; transform: translateX(-6px); transition: opacity .28s ease, transform .28s ease }
+    .s1-item.show { opacity: 1; transform: translateX(0) }
+    .s1-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--m-gold); flex-shrink: 0 }
+    .s1-txt { font-size: .85rem; color: var(--m-muted) }
+    .s1-chart { position: relative; height: 220px; margin: 1.25rem 0 .8rem; background: var(--m-surf2); border: 1px solid var(--m-bdr); border-radius: 4px; overflow: hidden }
+    .s1-chart svg { position: absolute; inset: 0; width: 100%; height: 100% }
+    .s1-takeaway { font-size: .8rem; color: var(--m-muted); text-align: center; opacity: .85; margin-bottom: 1.75rem }
+    .s1-btn-row { display: flex; gap: .6rem; flex-wrap: wrap }
+    .s1-btn-prev, .s1-btn-next { font-family: 'Inter', sans-serif; font-size: .8rem; border-radius: 3px; cursor: pointer; transition: border-color var(--m-tr), color var(--m-tr), background .2s }
+    .s1-btn-prev { background: transparent; border: 1px solid var(--m-bdr); color: var(--m-muted); padding: .62rem 1.2rem }
+    .s1-btn-prev:hover { border-color: var(--m-bdrhi); color: var(--m-txt) }
+    .s1-btn-next { background: transparent; border: 1px solid var(--m-gold-line); color: var(--m-gold); padding: .65rem 1.5rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase }
+    .s1-btn-next:hover { background: var(--m-gold-dim); border-color: var(--m-gold) }
+</style>
+
+<div class="s1-screen">
+    <p class="s1-eyebrow">Section I · Where Liquidity Forms</p>
+    <h2 class="s1-h1">Orders Gather at Obvious Levels</h2>
+    <div class="s1-body">
+        <p>Traders tend to place orders at price levels that stand out on a chart.</p>
+        <p>Because many traders watch the same levels, large clusters of orders form there.</p>
+        <p>These clusters create <button class="clarify-btn" onclick="openClarify('liquidity')" aria-label="Clarify: Liquidity">liquidity</button>.</p>
+    </div>
+    <div class="s1-list">
+        <div class="s1-item" id="s1-li-0"><span class="s1-dot"></span><span class="s1-txt">Previous highs</span></div>
+        <div class="s1-item" id="s1-li-1"><span class="s1-dot"></span><span class="s1-txt">Previous lows</span></div>
+        <div class="s1-item" id="s1-li-2"><span class="s1-dot"></span><span class="s1-txt"><button class="clarify-btn" onclick="openClarify('equalHighsLows')" aria-label="Clarify: Equal Highs">Equal highs</button></span></div>
+        <div class="s1-item" id="s1-li-3"><span class="s1-dot"></span><span class="s1-txt"><button class="clarify-btn" onclick="openClarify('equalHighsLows')" aria-label="Clarify: Equal Lows">Equal lows</button></span></div>
+        <div class="s1-item" id="s1-li-4"><span class="s1-dot"></span><span class="s1-txt"><button class="clarify-btn" onclick="openClarify('range')" aria-label="Clarify: Range">Range</button> highs and range lows</span></div>
+    </div>
+    <div class="s1-chart" role="img" aria-label="Chart with several obvious levels highlighted">
+        <svg id="s1-svg" viewBox="0 0 580 220" preserveAspectRatio="none"></svg>
+    </div>
+    <p class="s1-takeaway">Obvious levels tend to collect obvious orders.</p>
+    <div class="s1-btn-row">
+        <button class="s1-btn-prev" onclick="goTo(0, 0)">&larr; Previous</button>
+        <button class="s1-btn-next" onclick="goTo(2, 0)">Next Section &rarr;</button>
+    </div>
+</div>
+
+<script>
+    (function () {
+        [0, 1, 2, 3, 4].forEach(function (i) {
+            setTimeout(function () {
+                var el = document.getElementById('s1-li-' + i);
+                if (el) el.classList.add('show');
+            }, 100 + i * 90);
+        });
+
+        var W = 580, H = 220;
+        var PAD = { l: 36, r: 28, t: 20, b: 24 };
+        var UW = W - PAD.l - PAD.r;
+        var UH = H - PAD.t - PAD.b;
+        function px(fx) { return PAD.l + fx * UW; }
+        function py(fy) { return PAD.t + (1 - fy) * UH; }
+
+        var priceNodes = [
+            { fx: 0.04, fy: 0.18 }, { fx: 0.14, fy: 0.62 }, { fx: 0.24, fy: 0.34 }, { fx: 0.34, fy: 0.63 },
+            { fx: 0.43, fy: 0.28 }, { fx: 0.56, fy: 0.46 }, { fx: 0.67, fy: 0.23 }, { fx: 0.80, fy: 0.52 }, { fx: 0.92, fy: 0.43 }
+        ];
+        var prevHighY = py(0.62);
+        var prevLowY = py(0.23);
+        var rangeHighY = py(0.52);
+        var rangeLowY = py(0.34);
+        var out = [];
+        [55, 110, 165].forEach(function (gy) {
+            out.push('<line x1="0" y1="' + gy + '" x2="' + W + '" y2="' + gy + '" stroke="rgba(255,255,255,0.025)" stroke-width="1"/>');
+        });
+        out.push('<line x1="' + px(0.04) + '" y1="' + prevHighY + '" x2="' + px(0.40) + '" y2="' + prevHighY + '" stroke="rgba(195,162,70,0.24)" stroke-dasharray="5,4"/>');
+        out.push('<text x="' + px(0.40) + '" y="' + (prevHighY - 8) + '" text-anchor="end" font-size="8.5" font-family="Inter,sans-serif" fill="rgba(195,162,70,0.7)">previous high</text>');
+        out.push('<line x1="' + px(0.58) + '" y1="' + rangeHighY + '" x2="' + px(0.94) + '" y2="' + rangeHighY + '" stroke="rgba(195,162,70,0.24)" stroke-dasharray="5,4"/>');
+        out.push('<text x="' + px(0.94) + '" y="' + (rangeHighY - 8) + '" text-anchor="end" font-size="8.5" font-family="Inter,sans-serif" fill="rgba(195,162,70,0.7)">range high</text>');
+        out.push('<line x1="' + px(0.58) + '" y1="' + rangeLowY + '" x2="' + px(0.94) + '" y2="' + rangeLowY + '" stroke="rgba(195,162,70,0.24)" stroke-dasharray="5,4"/>');
+        out.push('<text x="' + px(0.94) + '" y="' + (rangeLowY + 14) + '" text-anchor="end" font-size="8.5" font-family="Inter,sans-serif" fill="rgba(195,162,70,0.7)">range low</text>');
+        out.push('<line x1="' + px(0.60) + '" y1="' + prevLowY + '" x2="' + px(0.82) + '" y2="' + prevLowY + '" stroke="rgba(195,162,70,0.24)" stroke-dasharray="5,4"/>');
+        out.push('<text x="' + px(0.82) + '" y="' + (prevLowY + 14) + '" text-anchor="end" font-size="8.5" font-family="Inter,sans-serif" fill="rgba(195,162,70,0.7)">previous low</text>');
+        out.push('<rect x="' + px(0.12) + '" y="' + (prevHighY - 18) + '" width="' + (px(0.24) - px(0.12)) + '" height="16" fill="rgba(195,162,70,0.08)"/>');
+        out.push('<text x="' + px(0.18) + '" y="' + (prevHighY - 7) + '" text-anchor="middle" font-size="8" font-family="Inter,sans-serif" fill="rgba(195,162,70,0.72)">equal highs</text>');
+        out.push('<path d="M' + priceNodes.map(function (n) { return px(n.fx) + ',' + py(n.fy); }).join(' L') + '" fill="none" stroke="rgba(195,162,70,1)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>');
+        document.getElementById('s1-svg').innerHTML = out.join('');
+    })();
+</script>

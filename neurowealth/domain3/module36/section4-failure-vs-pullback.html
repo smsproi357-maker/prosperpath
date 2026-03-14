@@ -1,0 +1,470 @@
+<!-- ============================================================
+     Module 3.6 · Section IV — Failure vs Pullback
+     Self-contained fragment. Injected by module-shell.html.
+     Shell provides: goTo, VW, VH, ln, dot, lbl, grid globals.
+============================================================ -->
+
+<style>
+    .s4-screen {
+        width: 100%;
+        max-width: 680px;
+        animation: s4Fade .22s ease both
+    }
+
+    @keyframes s4Fade {
+        from {
+            opacity: 0;
+            transform: translateY(5px)
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0)
+        }
+    }
+
+    .s4-eyebrow {
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--m-muted);
+        margin-bottom: 1.2rem
+    }
+
+    .s4-h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(1.5rem, 3.8vw, 2.1rem);
+        font-weight: 700;
+        color: var(--m-txt);
+        letter-spacing: -.02em;
+        line-height: 1.15;
+        margin-bottom: 1.6rem
+    }
+
+    /* ── Side-by-side grid ─────────────────────────────── */
+    .s4-compare {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem
+    }
+
+    @media (max-width: 520px) {
+        .s4-compare {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .s4-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 0
+    }
+
+    /* chart container */
+    .s4-chart {
+        position: relative;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-radius: 4px 4px 0 0;
+        overflow: hidden;
+        height: 190px
+    }
+
+    .s4-chart svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%
+    }
+
+    /* label bar beneath chart */
+    .s4-label {
+        border: 1px solid var(--m-bdr);
+        border-top: none;
+        border-radius: 0 0 4px 4px;
+        padding: .45rem .75rem;
+        font-size: .68rem;
+        font-weight: 700;
+        letter-spacing: .09em;
+        text-transform: uppercase;
+        text-align: center
+    }
+
+    .s4-label.ok {
+        color: var(--m-gold);
+        background: var(--m-gold-dim);
+        border-color: var(--m-gold-line)
+    }
+
+    .s4-label.broken {
+        color: var(--m-red-txt);
+        background: rgba(224, 128, 112, .07);
+        border-color: rgba(224, 128, 112, .28)
+    }
+
+    /* ── Text block ──────────────────────────────────────── */
+    .s4-text {
+        margin-bottom: 1.75rem
+    }
+
+    .s4-text p {
+        font-size: .92rem;
+        color: var(--m-muted);
+        line-height: 1.7;
+        margin-bottom: .45rem
+    }
+
+    .s4-text p:last-child {
+        margin-bottom: 0
+    }
+
+    .s4-text strong {
+        color: var(--m-txt);
+        font-weight: 500
+    }
+
+    /* ── Button row ──────────────────────────────────────── */
+    .s4-btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem
+    }
+
+    .s4-btn-prev {
+        background: transparent;
+        border: 1px solid var(--m-bdr);
+        color: var(--m-muted);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 500;
+        letter-spacing: .04em;
+        padding: .62rem 1.2rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: border-color var(--m-tr), color var(--m-tr)
+    }
+
+    .s4-btn-prev:hover {
+        border-color: var(--m-bdrhi);
+        color: var(--m-txt)
+    }
+
+    .s4-btn-next {
+        background: transparent;
+        border: 1px solid var(--m-gold-line);
+        color: var(--m-gold);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        padding: .65rem 1.5rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background .2s, border-color .2s
+    }
+
+    .s4-btn-next:hover {
+        background: var(--m-gold-dim);
+        border-color: var(--m-gold)
+    }
+
+    /* ── Animated paths ──────────────────────────────────── */
+    @keyframes s4Draw {
+        from {
+            stroke-dashoffset: 400
+        }
+
+        to {
+            stroke-dashoffset: 0
+        }
+    }
+
+    .s4-path-gold {
+        stroke-dasharray: 400;
+        stroke-dashoffset: 400;
+        animation: s4Draw .7s ease .1s forwards
+    }
+
+    .s4-path-red {
+        stroke-dasharray: 220;
+        stroke-dashoffset: 220;
+        animation: s4Draw .55s ease .55s forwards
+    }
+
+    @keyframes s4ZoneFade {
+        from {
+            opacity: 0
+        }
+
+        to {
+            opacity: 1
+        }
+    }
+
+    .s4-zone {
+        animation: s4ZoneFade .4s ease .85s both
+    }
+</style>
+
+<div class="s4-screen" id="s4-root">
+
+    <!-- Eyebrow -->
+    <p class="s4-eyebrow">Section IV · Structure Failure</p>
+
+    <!-- Heading -->
+    <h2 class="s4-h1">Failure vs Pullback</h2>
+
+    <!-- Side-by-side comparison -->
+    <div class="s4-compare" aria-label="Comparison of normal pullback and structure failure">
+
+        <!-- LEFT — Normal Pullback -->
+        <div class="s4-panel">
+            <div class="s4-chart" id="s4-chart-ok" role="img"
+                aria-label="Uptrend with a normal pullback: Higher Low holds, structure intact">
+                <svg id="s4-svg-ok" viewBox="0 0 300 190" preserveAspectRatio="none"></svg>
+            </div>
+            <div class="s4-label ok">Normal Pullback</div>
+        </div>
+
+        <!-- RIGHT — Structure Failure -->
+        <div class="s4-panel">
+            <div class="s4-chart" id="s4-chart-fail" role="img"
+                aria-label="Uptrend where price breaks below Higher Low, confirming structure failure">
+                <svg id="s4-svg-fail" viewBox="0 0 300 190" preserveAspectRatio="none"></svg>
+            </div>
+            <div class="s4-label broken">Structure Failure</div>
+        </div>
+
+    </div>
+
+    <!-- Short explanation -->
+    <div class="s4-text">
+        <p>Not every pullback is a failure.</p>
+        <p>A trend only fails when <strong>the level that defines the structure</strong> is broken.</p>
+    </div>
+
+    <!-- Navigation -->
+    <div class="s4-btn-row">
+        <button class="s4-btn-prev" onclick="goTo(3, 0)">← Previous</button>
+        <button class="s4-btn-next" onclick="goTo(5, 0)">Next Section →</button>
+    </div>
+
+</div>
+
+<script>
+    (function () {
+
+        /* ── Colour tokens ─────────────────────────────── */
+        var GLD = 'rgba(195,162,70,1.0)';
+        var GLD2 = 'rgba(195,162,70,0.28)';
+        var NDO = 'rgba(200,185,130,0.92)';
+        var RED = 'rgba(224,128,112,0.88)';
+        var RED2 = 'rgba(224,128,112,0.42)';
+        var REDZ = 'rgba(224,128,112,0.065)';
+        var GRD = 'rgba(255,255,255,0.023)';
+        var GUIDE = 'rgba(195,162,70,0.20)';
+
+        /* ── Shared draw helpers ────────────────────────── */
+        var W = 300, H = 190;
+        var PAD = { l: 28, r: 20, t: 24, b: 24 };
+        var UW = W - PAD.l - PAD.r;
+        var UH = H - PAD.t - PAD.b;
+
+        function px(fx) { return PAD.l + fx * UW; }
+        function py(fy) { return PAD.t + (1 - fy) * UH; }
+
+        function gridLines(out) {
+            var gy = 38;
+            while (gy < H) {
+                out.push('<line x1="0" y1="' + gy + '" x2="' + W + '" y2="' + gy +
+                    '" stroke="' + GRD + '" stroke-width="1"/>');
+                gy += 38;
+            }
+        }
+
+        function hlGuide(out, hlY) {
+            /* dashed horizontal guide at HL level */
+            out.push(
+                '<line x1="' + PAD.l + '" y1="' + hlY +
+                '" x2="' + (W - PAD.r) + '" y2="' + hlY +
+                '" stroke="' + GUIDE + '" stroke-width="1" stroke-dasharray="4,4"/>'
+            );
+            out.push(
+                '<text x="' + (PAD.l - 3) + '" y="' + (hlY + 1) +
+                '" text-anchor="end" font-size="7.5" font-family="Inter,sans-serif"' +
+                ' fill="' + GUIDE + '" font-weight="600" letter-spacing="0.04em">HL</text>'
+            );
+        }
+
+        function structurePath(out, nodes, cls) {
+            var pts = nodes.map(function (n) { return px(n.fx) + ',' + py(n.fy); });
+            out.push(
+                '<path class="' + cls + '" d="M' + pts.join(' L') + '"' +
+                ' stroke="' + GLD + '" stroke-width="2.2" fill="none"' +
+                ' stroke-linecap="round" stroke-linejoin="round"/>'
+            );
+        }
+
+        function nodeDots(out, nodes) {
+            nodes.forEach(function (n) {
+                var x = px(n.fx), y = py(n.fy);
+                var isHL = n.lbl === 'HL';
+                if (isHL) {
+                    out.push('<circle cx="' + x + '" cy="' + y +
+                        '" r="5.5" fill="none" stroke="' + GLD2 + '" stroke-width="1.1"/>');
+                }
+                out.push('<circle cx="' + x + '" cy="' + y +
+                    '" r="3.8" fill="' + NDO + '" stroke="none"/>');
+                var dy = isHL ? 12 : -9;
+                out.push('<text x="' + x + '" y="' + (y + dy) +
+                    '" text-anchor="middle" font-size="8" font-family="Inter,sans-serif"' +
+                    ' fill="' + NDO + '" font-weight="700" letter-spacing="0.06em">' + n.lbl + '</text>');
+            });
+        }
+
+        /* ================================================================
+           LEFT CHART — Normal Pullback
+           Sequence: anchor → HH1 → HL1 → HH2 → pullback → HL2 holds
+        ================================================================ */
+        (function buildOK() {
+            /*
+              HL1 is the prior HL.
+              HH2 is the new Higher High.
+              Pullback comes down — HL2 forms ABOVE HL1. Structure intact.
+            */
+            var anchor = { fx: 0.03, fy: 0.10 };
+            var HH1 = { fx: 0.22, fy: 0.70, lbl: 'HH' };
+            var HL1 = { fx: 0.38, fy: 0.40, lbl: 'HL' };
+            var HH2 = { fx: 0.60, fy: 0.88, lbl: 'HH' };
+
+            /* pullback stops above HL1 — forms HL2 */
+            var pb1 = { fx: 0.74, fy: 0.58 };   /* mid pullback */
+            var HL2 = { fx: 0.84, fy: 0.52, lbl: 'HL' }; /* NEW HL — above HL1 */
+
+            /* HL1 guide y */
+            var hl1Y = py(HL1.fy);
+            /* HL2 y to visually confirm it's above HL1 */
+            var hl2Y = py(HL2.fy);
+
+            var out = [];
+            gridLines(out);
+
+            /* HL1 guide */
+            hlGuide(out, hl1Y);
+
+            /* main structure path: anchor → HH1 → HL1 → HH2 */
+            structurePath(out, [anchor, HH1, HL1, HH2], 's4-path-gold');
+
+            /* pullback segment: HH2 → pb1 → HL2 */
+            out.push(
+                '<path class="s4-path-gold" d="M' +
+                px(HH2.fx) + ',' + py(HH2.fy) +
+                ' L' + px(pb1.fx) + ',' + py(pb1.fy) +
+                ' L' + px(HL2.fx) + ',' + py(HL2.fy) + '"' +
+                ' stroke="' + GLD + '" stroke-width="2.0" fill="none"' +
+                ' stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="400" stroke-dashoffset="400"' +
+                ' style="animation:s4Draw .5s ease .65s forwards"/>'
+            );
+
+            /* "holds" vertical tick — thin gold line showing distance above HL1 */
+            out.push(
+                '<line class="s4-zone"' +
+                ' x1="' + px(HL2.fx) + '" y1="' + hl2Y +
+                '" x2="' + px(HL2.fx) + '" y2="' + hl1Y +
+                '" stroke="' + GLD2 + '" stroke-width="1" stroke-dasharray="3,3"/>'
+            );
+
+            /* node dots for HH1, HL1, HH2 */
+            nodeDots(out, [HH1, HL1, HH2]);
+
+            /* HL2 dot */
+            out.push('<circle cx="' + px(HL2.fx) + '" cy="' + py(HL2.fy) +
+                '" r="3.8" fill="' + NDO + '" stroke="none" class="s4-zone"/>');
+            out.push('<text x="' + px(HL2.fx) + '" y="' + (py(HL2.fy) + 12) +
+                '" text-anchor="middle" font-size="8" font-family="Inter,sans-serif"' +
+                ' fill="' + NDO + '" font-weight="700" letter-spacing="0.06em" class="s4-zone">HL</text>');
+
+            /* "holds" badge */
+            out.push(
+                '<text class="s4-zone" x="' + (px(HL2.fx) + 13) + '" y="' + (py(HL2.fy) - 1) +
+                '" font-size="7" font-family="Inter,sans-serif"' +
+                ' fill="' + GLD2 + '" letter-spacing="0.04em">holds ↑</text>'
+            );
+
+            document.getElementById('s4-svg-ok').innerHTML = out.join('');
+        })();
+
+        /* ================================================================
+           RIGHT CHART — Structure Failure
+           Sequence: anchor → HH1 → HL1 → HH2 → pullback → break below HL1
+        ================================================================ */
+        (function buildFail() {
+            var anchor = { fx: 0.03, fy: 0.10 };
+            var HH1 = { fx: 0.22, fy: 0.70, lbl: 'HH' };
+            var HL1 = { fx: 0.38, fy: 0.40, lbl: 'HL' };
+            var HH2 = { fx: 0.60, fy: 0.88, lbl: 'HH' };
+
+            /* break — goes well below HL1 */
+            var brkMid = { fx: 0.76, fy: 0.38 };   /* crossing HL level */
+            var brkEnd = { fx: 0.94, fy: 0.14 };   /* confirmed break */
+
+            var hlY = py(HL1.fy);
+
+            var out = [];
+            gridLines(out);
+
+            /* HL guide */
+            hlGuide(out, hlY);
+
+            /* break zone fill — red rect below HL */
+            var zoneLeft = px(brkMid.fx - 0.04);
+            var zoneRight = W - PAD.r + 3;
+            out.push(
+                '<rect class="s4-zone" x="' + zoneLeft + '" y="' + hlY +
+                '" width="' + (zoneRight - zoneLeft) + '" height="' + (H - PAD.b - hlY + 3) + '"' +
+                ' fill="' + REDZ + '" rx="0"/>'
+            );
+
+            /* main healthy structure path */
+            structurePath(out, [anchor, HH1, HL1, HH2], 's4-path-gold');
+
+            /* break path — animated red, drawn second */
+            out.push(
+                '<path class="s4-path-red" d="M' +
+                px(HH2.fx) + ',' + py(HH2.fy) +
+                ' L' + px(brkMid.fx) + ',' + py(brkMid.fy) +
+                ' L' + px(brkEnd.fx) + ',' + py(brkEnd.fy) + '"' +
+                ' stroke="' + RED + '" stroke-width="2.0" fill="none"' +
+                ' stroke-linecap="round" stroke-linejoin="round"/>'
+            );
+
+            /* vertical emphasis: distance below HL */
+            out.push(
+                '<line class="s4-zone"' +
+                ' x1="' + px(brkMid.fx) + '" y1="' + hlY +
+                '" x2="' + px(brkMid.fx) + '" y2="' + py(brkMid.fy) +
+                '" stroke="' + RED2 + '" stroke-width="1" stroke-dasharray="3,3"/>'
+            );
+
+            /* structural node dots */
+            nodeDots(out, [HH1, HL1, HH2]);
+
+            /* break end — hollow red dot */
+            out.push(
+                '<circle class="s4-zone" cx="' + px(brkEnd.fx) + '" cy="' + py(brkEnd.fy) +
+                '" r="4" fill="none" stroke="' + RED + '" stroke-width="1.5"/>'
+            );
+            out.push(
+                '<text class="s4-zone" x="' + px(brkEnd.fx) + '" y="' + (py(brkEnd.fy) + 13) +
+                '" text-anchor="middle" font-size="7.5" font-family="Inter,sans-serif"' +
+                ' fill="' + RED + '" font-weight="700" letter-spacing="0.05em">break</text>'
+            );
+
+            document.getElementById('s4-svg-fail').innerHTML = out.join('');
+        })();
+
+    })();
+</script>

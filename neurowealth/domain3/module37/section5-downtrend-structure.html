@@ -1,0 +1,350 @@
+<!-- ============================================================
+     Module 3.7 · Section V — Downtrend Structure
+     Self-contained fragment. Injected by module-shell.html.
+============================================================ -->
+
+<style>
+    .s5-screen {
+        width: 100%;
+        max-width: 640px;
+        animation: s5Fade .22s ease both
+    }
+
+    @keyframes s5Fade {
+        from {
+            opacity: 0;
+            transform: translateY(5px)
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0)
+        }
+    }
+
+    .s5-eyebrow {
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--m-muted);
+        margin-bottom: 1.2rem
+    }
+
+    .s5-h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(1.5rem, 3.8vw, 2.1rem);
+        font-weight: 700;
+        color: var(--m-txt);
+        letter-spacing: -.02em;
+        line-height: 1.15;
+        margin-bottom: .85rem
+    }
+
+    .s5-body {
+        font-size: .95rem;
+        color: var(--m-txt);
+        line-height: 1.7;
+        margin-bottom: 1.5rem
+    }
+
+    .s5-body p {
+        margin-bottom: .5rem
+    }
+
+    .s5-body p:last-child {
+        margin-bottom: 0
+    }
+
+    /* Sequence strip */
+    .s5-seq-strip {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        margin: 1rem 0 1.5rem;
+        flex-wrap: wrap
+    }
+
+    .s5-seq-node {
+        font-size: .72rem;
+        font-weight: 700;
+        letter-spacing: .06em;
+        color: var(--m-red-txt);
+        padding: .28rem .6rem;
+        border: 1px solid rgba(224, 128, 112, .38);
+        border-radius: 3px;
+        background: rgba(224, 128, 112, .08)
+    }
+
+    .s5-seq-arrow {
+        font-size: .7rem;
+        color: var(--m-muted);
+        opacity: .55;
+        padding: 0 .35rem;
+        user-select: none
+    }
+
+    .s5-chart {
+        position: relative;
+        margin: 1.5rem 0;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-radius: 4px;
+        overflow: hidden;
+        height: 220px
+    }
+
+    .s5-chart svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%
+    }
+
+    .s5-takeaway {
+        font-size: .8rem;
+        color: var(--m-muted);
+        text-align: center;
+        opacity: .85;
+        margin-bottom: 1.75rem;
+        letter-spacing: .01em
+    }
+
+    .s5-btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem;
+        margin-top: .25rem
+    }
+
+    .s5-btn-prev {
+        background: transparent;
+        border: 1px solid var(--m-bdr);
+        color: var(--m-muted);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 500;
+        letter-spacing: .04em;
+        padding: .62rem 1.2rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: border-color var(--m-tr), color var(--m-tr)
+    }
+
+    .s5-btn-prev:hover {
+        border-color: var(--m-bdrhi);
+        color: var(--m-txt)
+    }
+
+    .s5-btn-next {
+        background: transparent;
+        border: 1px solid var(--m-gold-line);
+        color: var(--m-gold);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        padding: .65rem 1.5rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background .2s, border-color .2s
+    }
+
+    .s5-btn-next:hover {
+        background: var(--m-gold-dim);
+        border-color: var(--m-gold)
+    }
+
+    @keyframes s5DrawPath {
+        to {
+            stroke-dashoffset: 0
+        }
+    }
+</style>
+
+<div class="s5-screen" id="s5-root">
+
+    <!-- Eyebrow -->
+    <p class="s5-eyebrow">Section V · Reversal Structure</p>
+
+    <!-- Heading -->
+    <h2 class="s5-h1">Downtrend Structure</h2>
+
+    <!-- Body -->
+    <div class="s5-body">
+        <p>A new structural sequence has begun.</p>
+        <p>The market is no longer just failing. It is now forming opposite structure.</p>
+    </div>
+
+    <!-- Sequence strip -->
+    <div class="s5-seq-strip" aria-label="New downtrend sequence">
+        <span class="s5-seq-node">LL</span>
+        <span class="s5-seq-arrow">→</span>
+        <span class="s5-seq-node">LH</span>
+        <span class="s5-seq-arrow">→</span>
+        <span class="s5-seq-node">LL</span>
+    </div>
+
+    <!-- Chart -->
+    <div class="s5-chart" id="s5-chart" role="img"
+        aria-label="New downtrend structure: Lower Low, Lower High, Lower Low sequence confirmed">
+        <svg id="s5-svg" viewBox="0 0 600 220" preserveAspectRatio="none"></svg>
+    </div>
+
+    <!-- Takeaway -->
+    <p class="s5-takeaway">Break of structure removes the old trend. Opposite structure confirms the new one.</p>
+
+    <!-- Navigation -->
+    <div class="s5-btn-row">
+        <button class="s5-btn-prev" onclick="goTo(4, 0)">&larr; Previous</button>
+        <button class="s5-btn-next" onclick="goTo(6, 0)">Next Section &rarr;</button>
+    </div>
+
+</div>
+
+<script>
+    (function () {
+
+        var W = 600, H = 220;
+        var PAD = { l: 32, r: 28, t: 24, b: 24 };
+        var UW = W - PAD.l - PAD.r;
+        var UH = H - PAD.t - PAD.b;
+
+        function px(fx) { return PAD.l + fx * UW; }
+        function py(fy) { return PAD.t + (1 - fy) * UH; }
+
+        var GLD = 'rgba(195,162,70,0.55)';
+        var NDO = 'rgba(200,185,130,0.92)';
+        var RED = 'rgba(224,128,112,0.90)';
+        var RED_DIM = 'rgba(224,128,112,0.55)';
+        var REDZ = 'rgba(224,128,112,0.08)';
+        var GUIDE = 'rgba(195,162,70,0.18)';
+        var GRID = 'rgba(255,255,255,0.025)';
+
+        /* Prior uptrend — very faded reference */
+        var prior = [
+            { fx: 0.01, fy: 0.14 },
+            { fx: 0.10, fy: 0.65 },
+            { fx: 0.18, fy: 0.40 },
+            { fx: 0.27, fy: 0.80 },
+            { fx: 0.35, fy: 0.52 }
+        ];
+
+        /* Break event */
+        var HL_brk = { fx: 0.35, fy: 0.52 };
+
+        /* New downtrend structure */
+        var LL1 = { fx: 0.48, fy: 0.12, lbl: 'LL' };
+        var LH1 = { fx: 0.63, fy: 0.44, lbl: 'LH' };
+        var LL2 = { fx: 0.88, fy: 0.08, lbl: 'LL' };
+
+        var hl2Y = py(HL_brk.fy);
+
+        function build() {
+            var svg = document.getElementById('s5-svg');
+            var out = [];
+
+            /* Grid */
+            var gy = 40;
+            while (gy < H) {
+                out.push('<line x1="0" y1="' + gy + '" x2="' + W + '" y2="' + gy +
+                    '" stroke="' + GRID + '" stroke-width="1"/>');
+                gy += 40;
+            }
+
+            /* Old HL guide line */
+            out.push(
+                '<line x1="' + PAD.l + '" y1="' + hl2Y +
+                '" x2="' + (W - PAD.r) + '" y2="' + hl2Y +
+                '" stroke="' + GUIDE + '" stroke-width="1" stroke-dasharray="5,5"/>'
+            );
+
+            /* Break zone */
+            out.push(
+                '<rect x="' + px(HL_brk.fx) + '" y="' + hl2Y +
+                '" width="' + (W - PAD.r - px(HL_brk.fx) + 4) + '"' +
+                ' height="' + (H - PAD.b - hl2Y + 4) + '"' +
+                ' fill="' + REDZ + '" opacity="0.6"/>'
+            );
+
+            /* Prior uptrend — very faded */
+            var uPts = prior.map(function (n) { return { x: px(n.fx), y: py(n.fy) }; });
+            out.push(
+                '<path d="M' + uPts.map(function (p) { return p.x + ',' + p.y; }).join(' L') + '"' +
+                ' stroke="' + GLD + '" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.55"/>'
+            );
+
+            /* New downtrend path: HL_brk → LL1 → LH1 → LL2 — animated */
+            var dNodes = [HL_brk, LL1, LH1, LL2];
+            var dPts = dNodes.map(function (n) { return { x: px(n.fx), y: py(n.fy) }; });
+            var dLen = 0;
+            for (var i = 1; i < dPts.length; i++) {
+                var dx = dPts[i].x - dPts[i - 1].x;
+                var dy = dPts[i].y - dPts[i - 1].y;
+                dLen += Math.sqrt(dx * dx + dy * dy);
+            }
+            out.push(
+                '<path d="M' + dPts.map(function (p) { return p.x + ',' + p.y; }).join(' L') + '"' +
+                ' stroke="' + RED + '" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"' +
+                ' stroke-dasharray="' + (dLen + 10) + '" stroke-dashoffset="' + (dLen + 10) + '"' +
+                ' style="animation: s5DrawPath 1.1s ease .15s forwards"/>'
+            );
+
+            /* LL1 node */
+            var ll1X = px(LL1.fx), ll1Y = py(LL1.fy);
+            out.push('<circle cx="' + ll1X + '" cy="' + ll1Y + '" r="5" fill="' + RED + '"' +
+                ' style="opacity:0;transition:opacity .3s ease 1s" id="sv5-ll1-dot"/>');
+            out.push('<text x="' + ll1X + '" y="' + (ll1Y + 17) +
+                '" text-anchor="middle" font-size="9.5" font-family="Inter,sans-serif"' +
+                ' fill="' + RED + '" font-weight="700" letter-spacing="0.06em"' +
+                ' style="opacity:0;transition:opacity .3s ease 1s" id="sv5-ll1-lbl">LL</text>');
+
+            /* LH1 node */
+            var lh1X = px(LH1.fx), lh1Y = py(LH1.fy);
+            out.push('<circle cx="' + lh1X + '" cy="' + lh1Y + '" r="5" fill="' + NDO + '"' +
+                ' style="opacity:0;transition:opacity .3s ease 1.4s" id="sv5-lh1-dot"/>');
+            out.push('<text x="' + lh1X + '" y="' + (lh1Y - 12) +
+                '" text-anchor="middle" font-size="9.5" font-family="Inter,sans-serif"' +
+                ' fill="' + NDO + '" font-weight="700" letter-spacing="0.06em"' +
+                ' style="opacity:0;transition:opacity .3s ease 1.4s" id="sv5-lh1-lbl">LH</text>');
+
+            /* LL2 node */
+            var ll2X = px(LL2.fx), ll2Y = py(LL2.fy);
+            out.push('<circle cx="' + ll2X + '" cy="' + ll2Y + '" r="5" fill="' + RED + '"' +
+                ' style="opacity:0;transition:opacity .3s ease 1.85s" id="sv5-ll2-dot"/>');
+            out.push('<text x="' + ll2X + '" y="' + (ll2Y + 17) +
+                '" text-anchor="middle" font-size="9.5" font-family="Inter,sans-serif"' +
+                ' fill="' + RED + '" font-weight="700" letter-spacing="0.06em"' +
+                ' style="opacity:0;transition:opacity .3s ease 1.85s" id="sv5-ll2-lbl">LL</text>');
+
+            svg.innerHTML = out.join('');
+
+            requestAnimationFrame(function () {
+                ['sv5-ll1-dot', 'sv5-ll1-lbl', 'sv5-lh1-dot', 'sv5-lh1-lbl',
+                    'sv5-ll2-dot', 'sv5-ll2-lbl'].forEach(function (id) {
+                        var el = document.getElementById(id);
+                        if (el) el.style.opacity = '1';
+                    });
+            });
+
+        }
+
+        /* Animate sequence nodes */
+        (function () {
+            var items = document.querySelectorAll('.s5-seq-node');
+            items.forEach(function (el, i) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(4px)';
+                el.style.transition = 'opacity .25s ease, transform .25s ease';
+                setTimeout(function () {
+                    el.style.opacity = '';
+                    el.style.transform = '';
+                }, 80 + i * 90);
+            });
+        })();
+
+        build();
+
+    })();
+</script>

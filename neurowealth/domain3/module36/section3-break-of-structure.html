@@ -1,0 +1,401 @@
+<!-- ============================================================
+     Module 3.6 · Section III — Break of Structure
+     Self-contained fragment. Injected by module-shell.html.
+     Shell provides: goTo, VW, VH, CHART globals.
+============================================================ -->
+
+<style>
+    .s3-screen {
+        width: 100%;
+        max-width: 640px;
+        animation: s3Fade .22s ease both
+    }
+
+    @keyframes s3Fade {
+        from {
+            opacity: 0;
+            transform: translateY(5px)
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0)
+        }
+    }
+
+    .s3-eyebrow {
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--m-muted);
+        margin-bottom: 1.2rem
+    }
+
+    .s3-h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(1.5rem, 3.8vw, 2.1rem);
+        font-weight: 700;
+        color: var(--m-txt);
+        letter-spacing: -.02em;
+        line-height: 1.15;
+        margin-bottom: .85rem
+    }
+
+    .s3-body {
+        font-size: .95rem;
+        color: var(--m-txt);
+        line-height: 1.7;
+        margin-bottom: 1.4rem
+    }
+
+    /* Sequence strip */
+    .s3-seq-strip {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        margin: 0 0 1.4rem;
+        flex-wrap: wrap
+    }
+
+    .s3-seq-tag {
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: .06em;
+        padding: .28rem .7rem;
+        border-radius: 3px;
+        border: 1px solid transparent
+    }
+
+    .s3-seq-tag.ok {
+        color: var(--m-gold);
+        border-color: var(--m-gold-line);
+        background: var(--m-gold-dim)
+    }
+
+    .s3-seq-tag.broken {
+        color: var(--m-red-txt);
+        border-color: rgba(224, 128, 112, .38);
+        background: rgba(224, 128, 112, .09)
+    }
+
+    .s3-seq-arrow {
+        font-size: .7rem;
+        color: var(--m-muted);
+        opacity: .5;
+        padding: 0 .35rem;
+        user-select: none
+    }
+
+    .s3-seq-arrow.critical {
+        color: var(--m-red-txt);
+        opacity: .6;
+        font-weight: 700
+    }
+
+    /* Main chart */
+    .s3-chart-wrap {
+        position: relative;
+        margin-bottom: .6rem
+    }
+
+    .s3-chart {
+        position: relative;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-radius: 4px;
+        overflow: hidden;
+        height: 240px
+    }
+
+    .s3-chart svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%
+    }
+
+    /* Takeaway line */
+    .s3-takeaway {
+        font-size: .8rem;
+        color: var(--m-muted);
+        text-align: center;
+        opacity: .7;
+        margin-bottom: 1.75rem;
+        letter-spacing: .01em
+    }
+
+    /* Button row */
+    .s3-btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem
+    }
+
+    .s3-btn-prev {
+        background: transparent;
+        border: 1px solid var(--m-bdr);
+        color: var(--m-muted);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 500;
+        letter-spacing: .04em;
+        padding: .62rem 1.2rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: border-color var(--m-tr), color var(--m-tr)
+    }
+
+    .s3-btn-prev:hover {
+        border-color: var(--m-bdrhi);
+        color: var(--m-txt)
+    }
+
+    .s3-btn-next {
+        background: transparent;
+        border: 1px solid var(--m-gold-line);
+        color: var(--m-gold);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        padding: .65rem 1.5rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background .2s, border-color .2s
+    }
+
+    .s3-btn-next:hover {
+        background: var(--m-gold-dim);
+        border-color: var(--m-gold)
+    }
+
+    /* Animated break line — drawn via CSS after chart renders */
+    @keyframes s3BreakDraw {
+        from {
+            stroke-dashoffset: 180
+        }
+
+        to {
+            stroke-dashoffset: 0
+        }
+    }
+
+    .s3-break-path {
+        stroke-dasharray: 180;
+        stroke-dashoffset: 180;
+        animation: s3BreakDraw .65s ease .3s forwards
+    }
+
+    /* Animated break zone fill */
+    @keyframes s3ZoneFade {
+        from {
+            opacity: 0
+        }
+
+        to {
+            opacity: 1
+        }
+    }
+
+    .s3-break-zone {
+        animation: s3ZoneFade .5s ease .7s both
+    }
+</style>
+
+<div class="s3-screen" id="s3-root">
+
+    <!-- Eyebrow -->
+    <p class="s3-eyebrow">Section III · Structure Failure</p>
+
+    <!-- Heading -->
+    <h2 class="s3-h1">Break of Structure</h2>
+
+    <!-- Body -->
+    <div class="s3-body">
+        <p>When price breaks the structure level that should hold, the trend structure fails.</p>
+    </div>
+
+    <!-- Sequence strip -->
+    <div class="s3-seq-strip" aria-label="Structural failure sequence">
+        <span class="s3-seq-tag ok">HH</span>
+        <span class="s3-seq-arrow">→</span>
+        <span class="s3-seq-tag ok">HL</span>
+        <span class="s3-seq-arrow">→</span>
+        <span class="s3-seq-tag ok">HH</span>
+        <span class="s3-seq-arrow critical">→</span>
+        <span class="s3-seq-tag broken">break below HL</span>
+    </div>
+
+    <!-- Main chart -->
+    <div class="s3-chart-wrap">
+        <div class="s3-chart" id="s3-chart" role="img"
+            aria-label="Uptrend structure with HH and HL marked, followed by price breaking below the Higher Low">
+            <svg id="s3-svg" viewBox="0 0 600 240" preserveAspectRatio="none"></svg>
+        </div>
+    </div>
+
+    <!-- Takeaway line -->
+    <p class="s3-takeaway">When price breaks the level that should hold, the trend structure fails.</p>
+
+    <!-- Navigation -->
+    <div class="s3-btn-row">
+        <button class="s3-btn-prev" onclick="goTo(2, 0)">← Previous</button>
+        <button class="s3-btn-next" onclick="goTo(4, 0)">Next Section →</button>
+    </div>
+
+</div>
+
+<script>
+    (function () {
+
+        var GLD = 'rgba(195,162,70,1.0)';
+        var GLD2 = 'rgba(195,162,70,0.30)';
+        var NDO = 'rgba(200,185,130,0.92)';
+        var RED = 'rgba(224,128,112,0.85)';
+        var RED2 = 'rgba(224,128,112,0.45)';
+        var REDZ = 'rgba(224,128,112,0.07)';
+        var GRID = 'rgba(255,255,255,0.025)';
+        var GUIDE = 'rgba(195,162,70,0.22)';
+
+        var W = 600, H = 240;
+        var PAD = { l: 32, r: 28, t: 28, b: 28 };
+        var UW = W - PAD.l - PAD.r;
+        var UH = H - PAD.t - PAD.b;
+
+        function px(fx) { return PAD.l + fx * UW; }
+        function py(fy) { return PAD.t + (1 - fy) * UH; }
+
+        /*
+          Structure:
+            anchor → HH1 → HL1 → HH2 → [break below HL1]
+    
+          We will treat HL1 as the critical level.
+          The break goes noticeably below it.
+        */
+        var anchor = { fx: 0.04, fy: 0.12 };
+        var HH1 = { fx: 0.22, fy: 0.75, lbl: 'HH' };
+        var HL1 = { fx: 0.42, fy: 0.44, lbl: 'HL' };   // <-- CRITICAL LEVEL
+        var HH2 = { fx: 0.62, fy: 0.90, lbl: 'HH' };
+        var breakStart = { fx: 0.62, fy: 0.90 };           // same as HH2 x-start of descent
+        var breakMid = { fx: 0.77, fy: 0.46 };           // approaching HL level
+        var breakEnd = { fx: 0.94, fy: 0.18 };           // well below HL — break confirmed
+
+        // HL1 y-level in absolute pixels (for the horizontal guide)
+        var hlLevelY = py(HL1.fy);
+
+        var staticNodes = [anchor, HH1, HL1, HH2];
+
+        function build() {
+            var svg = document.getElementById('s3-svg');
+            var out = [];
+
+            /* Grid lines */
+            var gy = 40;
+            while (gy < H) {
+                out.push('<line x1="0" y1="' + gy + '" x2="' + W + '" y2="' + gy +
+                    '" stroke="' + GRID + '" stroke-width="1"/>');
+                gy += 40;
+            }
+
+            /* HL guide line — extends across the full chart width */
+            out.push(
+                '<line x1="' + PAD.l + '" y1="' + hlLevelY +
+                '" x2="' + (W - PAD.r) + '" y2="' + hlLevelY +
+                '" stroke="' + GUIDE + '" stroke-width="1" stroke-dasharray="5,5"/>'
+            );
+            /* HL guide label — left side */
+            out.push(
+                '<text x="' + (PAD.l - 4) + '" y="' + (hlLevelY + 1) +
+                '" text-anchor="end" font-size="8.5" font-family="Inter,sans-serif"' +
+                ' fill="' + GUIDE + '" letter-spacing="0.04em" font-weight="600">HL</text>'
+            );
+
+            /* Healthy structure path */
+            var pts = staticNodes.map(function (n) { return { x: px(n.fx), y: py(n.fy) }; });
+            out.push('<path d="M' + pts.map(function (p) { return p.x + ',' + p.y; }).join(' L') +
+                '" stroke="' + GLD + '" stroke-width="2.2" fill="none"' +
+                ' stroke-linecap="round" stroke-linejoin="round"/>');
+
+            /* Break zone fill — subtle red rectangle below HL level */
+            var zoneLeft = px(breakMid.fx - 0.02);
+            var zoneRight = W - PAD.r + 4;
+            out.push(
+                '<rect class="s3-break-zone" x="' + zoneLeft + '" y="' + hlLevelY +
+                '" width="' + (zoneRight - zoneLeft) + '" height="' + (H - PAD.b - hlLevelY + 4) + '"' +
+                ' fill="' + REDZ + '" rx="0"/>'
+            );
+
+            /* Break line — animated, drawn via CSS */
+            var bx1 = px(HH2.fx), by1 = py(HH2.fy);
+            var bx2 = px(breakMid.fx), by2 = py(breakMid.fy);
+            var bx3 = px(breakEnd.fx), by3 = py(breakEnd.fy);
+            out.push(
+                '<path class="s3-break-path"' +
+                ' d="M' + bx1 + ',' + by1 +
+                ' L' + bx2 + ',' + by2 +
+                ' L' + bx3 + ',' + by3 + '"' +
+                ' stroke="' + RED + '" stroke-width="2.0" fill="none"' +
+                ' stroke-linecap="round" stroke-linejoin="round"/>'
+            );
+
+            /* Horizontal emphasis at break end — shows how far below HL we closed */
+            out.push(
+                '<line x1="' + (px(breakMid.fx - 0.01)) + '" y1="' + hlLevelY +
+                '" x2="' + (px(breakMid.fx - 0.01)) + '" y2="' + py(breakMid.fy) +
+                '" stroke="' + RED2 + '" stroke-width="1" stroke-dasharray="3,3"/>'
+            );
+
+            /* Structural node dots + labels */
+            [HH1, HL1, HH2].forEach(function (n) {
+                var x = px(n.fx), y = py(n.fy);
+                var isHL = n.lbl === 'HL';
+                // HL gets a slightly brighter ring to signal it's the critical level
+                if (isHL) {
+                    out.push('<circle cx="' + x + '" cy="' + y +
+                        '" r="6" fill="none" stroke="' + GLD2 + '" stroke-width="1.2"/>');
+                }
+                out.push('<circle cx="' + x + '" cy="' + y +
+                    '" r="4.5" fill="' + NDO + '" stroke="none"/>');
+                out.push('<text x="' + x + '" y="' + (y - 11) +
+                    '" text-anchor="middle" font-size="9" font-family="Inter,sans-serif"' +
+                    ' fill="' + NDO + '" font-weight="700" letter-spacing="0.06em">' + n.lbl + '</text>');
+                /* Extra emphasis label for HL */
+                if (isHL) {
+                    out.push('<text x="' + (x + 14) + '" y="' + (y + 1) +
+                        '" font-size="7.5" font-family="Inter,sans-serif"' +
+                        ' fill="' + GLD2 + '" letter-spacing="0.05em">← must hold</text>');
+                }
+            });
+
+            /* Break end dot — red, hollow */
+            var ex = px(breakEnd.fx), ey = py(breakEnd.fy);
+            out.push(
+                '<circle class="s3-break-zone" cx="' + ex + '" cy="' + ey +
+                '" r="4.5" fill="none" stroke="' + RED + '" stroke-width="1.6"/>'
+            );
+            out.push(
+                '<text class="s3-break-zone" x="' + ex + '" y="' + (ey + 16) +
+                '" text-anchor="middle" font-size="8.5" font-family="Inter,sans-serif"' +
+                ' fill="' + RED + '" font-weight="700" letter-spacing="0.05em">break</text>'
+            );
+
+            svg.innerHTML = out.join('');
+        }
+
+        /* Animate sequence tags */
+        function animateTags() {
+            var tags = document.querySelectorAll('.s3-seq-tag, .s3-seq-arrow');
+            tags.forEach(function (el, i) {
+                el.style.opacity = '0';
+                el.style.transition = 'opacity .2s ease';
+                setTimeout(function () { el.style.opacity = ''; }, 50 + i * 70);
+            });
+        }
+
+        build();
+        animateTags();
+
+    })();
+</script>

@@ -1,0 +1,71 @@
+<style>
+    .s4-screen { width: 100%; max-width: 640px; animation: s4Fade .22s ease both }
+    @keyframes s4Fade { from { opacity: 0; transform: translateY(5px) } to { opacity: 1; transform: translateY(0) } }
+    .s4-eyebrow { font-size: .68rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--m-muted); margin-bottom: 1.2rem }
+    .s4-h1 { font-family: 'Outfit', sans-serif; font-size: clamp(1.5rem, 3.8vw, 2.1rem); font-weight: 700; color: var(--m-txt); letter-spacing: -.02em; line-height: 1.15; margin-bottom: .85rem }
+    .s4-body { font-size: .95rem; color: var(--m-txt); line-height: 1.7; margin-bottom: 1.25rem }
+    .s4-body p { margin-bottom: .5rem }
+    .s4-body ul { margin: .4rem 0 .4rem 1.1rem; color: var(--m-muted) }
+    .s4-body li { margin-bottom: .3rem }
+    .s4-chart { position: relative; height: 235px; margin: 1.2rem 0 1rem; background: var(--m-surf2); border: 1px solid var(--m-bdr); border-radius: 4px; overflow: hidden }
+    .s4-chart svg { position: absolute; inset: 0; width: 100%; height: 100% }
+    .s4-boundary-card { background: var(--m-surf2); border: 1px solid var(--m-bdrhi); border-left: 3px solid var(--m-gold-line); border-radius: 4px; padding: .9rem 1rem; margin-bottom: 1.6rem; font-size: .84rem; color: var(--m-muted); line-height: 1.55 }
+    .s4-btn-row { display: flex; gap: .6rem; flex-wrap: wrap }
+    .s4-btn-prev, .s4-btn-next { font-family: 'Inter', sans-serif; font-size: .8rem; border-radius: 3px; cursor: pointer; transition: border-color var(--m-tr), color var(--m-tr), background .2s }
+    .s4-btn-prev { background: transparent; border: 1px solid var(--m-bdr); color: var(--m-muted); padding: .62rem 1.2rem }
+    .s4-btn-prev:hover { border-color: var(--m-bdrhi); color: var(--m-txt) }
+    .s4-btn-next { background: transparent; border: 1px solid var(--m-gold-line); color: var(--m-gold); padding: .65rem 1.5rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase }
+    .s4-btn-next:hover { background: var(--m-gold-dim); border-color: var(--m-gold) }
+</style>
+
+<div class="s4-screen">
+    <p class="s4-eyebrow">Section IV · Where Liquidity Forms</p>
+    <h2 class="s4-h1">Range Highs and Lows</h2>
+    <div class="s4-body">
+        <p>When markets move sideways, traders place orders near the <button class="clarify-btn" onclick="openClarify('rangeBoundary')" aria-label="Clarify: Range Boundary">range boundaries</button>.</p>
+        <p>Common examples include:</p>
+        <ul>
+            <li>breakout orders above the range high</li>
+            <li>stop losses above the range high</li>
+            <li>stop losses below the range low</li>
+        </ul>
+        <p>These orders create liquidity pools above and below the range.</p>
+    </div>
+    <div class="s4-chart" role="img" aria-label="Sideways market with highlighted range boundaries and liquidity pools above and below">
+        <svg id="s4-svg" viewBox="0 0 580 235" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="s4-boundary-card">Range boundaries are visible to many traders at the same time, which is why they collect so many orders.</div>
+    <div class="s4-btn-row">
+        <button class="s4-btn-prev" onclick="goTo(3, 0)">&larr; Previous</button>
+        <button class="s4-btn-next" onclick="goTo(5, 0)">Next Section &rarr;</button>
+    </div>
+</div>
+
+<script>
+    (function () {
+        var W = 580, H = 235;
+        var PAD = { l: 36, r: 30, t: 22, b: 24 };
+        var UW = W - PAD.l - PAD.r;
+        var UH = H - PAD.t - PAD.b;
+        function px(fx) { return PAD.l + fx * UW; }
+        function py(fy) { return PAD.t + (1 - fy) * UH; }
+        var topY = py(0.67);
+        var lowY = py(0.33);
+        var nodes = [
+            { fx: 0.08, fy: 0.47 }, { fx: 0.18, fy: 0.63 }, { fx: 0.28, fy: 0.36 }, { fx: 0.38, fy: 0.65 }, { fx: 0.48, fy: 0.35 },
+            { fx: 0.58, fy: 0.61 }, { fx: 0.68, fy: 0.38 }, { fx: 0.78, fy: 0.64 }, { fx: 0.90, fy: 0.42 }
+        ];
+        var out = [];
+        [58, 118, 178].forEach(function (gy) {
+            out.push('<line x1="0" y1="' + gy + '" x2="' + W + '" y2="' + gy + '" stroke="rgba(255,255,255,0.025)" stroke-width="1"/>');
+        });
+        out.push('<rect x="' + px(0.10) + '" y="' + (topY - 20) + '" width="' + (px(0.88) - px(0.10)) + '" height="16" fill="rgba(195,162,70,0.08)"/>');
+        out.push('<rect x="' + px(0.10) + '" y="' + (lowY + 4) + '" width="' + (px(0.88) - px(0.10)) + '" height="16" fill="rgba(195,162,70,0.08)"/>');
+        out.push('<line x1="' + px(0.10) + '" y1="' + topY + '" x2="' + px(0.88) + '" y2="' + topY + '" stroke="rgba(195,162,70,0.28)" stroke-dasharray="5,4"/>');
+        out.push('<line x1="' + px(0.10) + '" y1="' + lowY + '" x2="' + px(0.88) + '" y2="' + lowY + '" stroke="rgba(195,162,70,0.28)" stroke-dasharray="5,4"/>');
+        out.push('<text x="' + px(0.88) + '" y="' + (topY - 8) + '" text-anchor="end" font-size="8.5" font-family="Inter,sans-serif" fill="rgba(195,162,70,0.74)">range high</text>');
+        out.push('<text x="' + px(0.88) + '" y="' + (lowY + 18) + '" text-anchor="end" font-size="8.5" font-family="Inter,sans-serif" fill="rgba(195,162,70,0.74)">range low</text>');
+        out.push('<path d="M' + nodes.map(function (n) { return px(n.fx) + ',' + py(n.fy); }).join(' L') + '" fill="none" stroke="rgba(195,162,70,1)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>');
+        document.getElementById('s4-svg').innerHTML = out.join('');
+    })();
+</script>

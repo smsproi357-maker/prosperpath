@@ -23,6 +23,19 @@
     <!-- Plaid Link script -->
     <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
 
+    <!--
+        WalletConnect Ethereum Provider (v2, UMD build).
+        Served locally to avoid CDN CORS issues in development.
+        Source: node_modules/@walletconnect/ethereum-provider/dist/index.umd.js
+        To update: re-run  npm install @walletconnect/ethereum-provider@2  and
+        copy the new dist/index.umd.js to walletconnect-provider.js.
+    -->
+    <script
+        src="walletconnect-provider.js"
+        onload="window.portfolioConnectionChooser?.onWalletConnectLoaded()"
+        onerror="console.warn('[ProsperPath] WalletConnect provider script failed to load.')"
+    ></script>
+
     <!-- Chart.js for visualizations -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -35,6 +48,505 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --accent-gold: var(--color-gold, #D4AF37);
+        }
+
+        .eyebrow-label {
+            font-size: var(--text-xs);
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-4);
+            font-weight: 600;
+            display: block;
+        }
+
+        .hero-labels {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-6);
+            flex-wrap: wrap;
+            margin-top: var(--space-8);
+            margin-bottom: var(--space-4);
+        }
+
+        .simple-label {
+            font-size: var(--text-sm);
+            color: var(--color-text-primary);
+            padding: var(--space-2) var(--space-4);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .page-header-refined {
+            padding: var(--space-20) 0 var(--space-8);
+            text-align: center;
+            position: relative;
+            transition: padding 0.3s ease;
+        }
+
+        .page-header-refined.is-connected {
+            padding: var(--space-10) 0 var(--space-6);
+        }
+
+        .page-header-refined::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            max-width: 800px;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0) 0%, rgba(212, 175, 55, 0.15) 50%, rgba(212, 175, 55, 0) 100%);
+            transition: opacity 0.3s ease;
+        }
+
+        .page-header-refined.is-connected::after {
+            opacity: 0;
+        }
+
+        .layout-section {
+            padding: var(--space-12) 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .layout-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: var(--text-3xl);
+            color: #ffffff;
+            margin-bottom: var(--space-4);
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .section-desc {
+            color: var(--color-text-secondary);
+            font-size: var(--text-base);
+            text-align: center;
+            margin-bottom: var(--space-10);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .card {
+            background-color: var(--color-bg-elevated);
+            background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0) 100%);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateY(-4px);
+            background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+        }
+
+        .premium-card {
+            background-color: var(--color-bg-elevated);
+            background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0) 100%);
+            border: 1px solid var(--color-border);
+            padding: var(--space-12) var(--space-10);
+            /* Increased top/bottom padding slightly */
+            border-radius: var(--radius-md);
+            text-align: center;
+            max-width: 500px;
+            margin: 0 auto;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .premium-card:hover {
+            border-color: rgba(212, 175, 55, 0.5);
+            transform: translateY(-4px);
+            background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+        }
+
+        .premium-card h3 {
+            font-size: var(--text-2xl);
+            color: #ffffff;
+            margin-bottom: var(--space-4);
+            font-weight: 500;
+        }
+
+        .premium-card p {
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+            margin-bottom: var(--space-8);
+            font-size: var(--text-base);
+        }
+
+        .premium-card .card-icon {
+            font-size: 40px;
+            margin-bottom: var(--space-6);
+            line-height: 1;
+            /* Added line-height 1 to remove extra spacing for emoji */
+            opacity: 0.5;
+            filter: grayscale(1);
+            transition: filter 0.3s ease, opacity 0.3s ease, color 0.3s ease;
+        }
+
+        .premium-card:hover .card-icon {
+            opacity: 0.9;
+            color: var(--accent-gold);
+            filter: sepia(1) saturate(2.5) hue-rotate(-5deg) drop-shadow(0 0 8px rgba(212, 175, 55, 0.3));
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-6);
+        }
+
+        .strict-card {
+            background-color: var(--color-bg-base);
+            background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0) 100%);
+            border: 1px solid var(--color-border);
+            padding: var(--space-8);
+            border-radius: var(--radius-md);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            height: 100%;
+        }
+
+        .strict-card:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateY(-4px);
+            background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+        }
+
+        .strict-card h4 {
+            font-size: var(--text-lg);
+            color: #ffffff;
+            margin-bottom: var(--space-3);
+            font-weight: 500;
+        }
+
+        .strict-card p {
+            color: var(--color-text-secondary);
+            line-height: 1.5;
+            font-size: var(--text-sm);
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .muted-icon {
+            opacity: 0.5;
+            font-size: 24px;
+            margin-bottom: var(--space-4);
+            color: var(--color-text-secondary);
+            display: inline-block;
+            filter: grayscale(1);
+            transition: filter 0.3s ease, opacity 0.3s ease, color 0.3s ease;
+        }
+
+        .strict-card:hover .muted-icon {
+            opacity: 0.9;
+            color: var(--accent-gold);
+            filter: sepia(1) saturate(2.5) hue-rotate(-5deg) drop-shadow(0 0 6px rgba(212, 175, 55, 0.3));
+        }
+
+        /* Adjust summary bar for center alignment within hero */
+        #portfolio-summary-bar {
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: var(--space-8);
+            position: relative;
+        }
+
+        @media (max-width: 992px) {
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-4 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ── Intelligence Cards ────────────────────────────────── */
+        .ph-intel-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: var(--space-4);
+            margin-bottom: var(--space-8);
+            overflow-x: auto;
+            padding-bottom: var(--space-2);
+        }
+        
+        .ph-intel-card {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--space-4) var(--space-5);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+            min-width: 160px;
+            position: relative;
+            overflow: hidden;
+            text-align: left;
+        }
+        
+        .ph-intel-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--intel-color, #94a3b8);
+        }
+        
+        .ph-intel-label {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .ph-intel-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        /* ── Summary Strip Overrides ───────────────────────────── */
+        .ph-summary-row.compact-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: var(--space-4);
+            padding: var(--space-4) var(--space-6);
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: var(--space-8);
+        }
+        
+        .compact-strip .ph-metric {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .compact-strip .ph-metric-label {
+            font-size: 0.75rem;
+            text-transform: capitalize;
+            letter-spacing: 0;
+            color: #94a3b8;
+            order: 2; /* Label below value */
+            margin-top: 4px;
+            margin-bottom: 0;
+        }
+        
+        .compact-strip .ph-metric-val {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            order: 1; /* Value above label */
+        }
+        
+        .compact-strip .ph-metric-val.green { color: #4ade80; }
+        .compact-strip .ph-metric-val.red   { color: #f87171; }
+
+        @media (max-width: 1024px) {
+            .ph-intel-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .ph-intel-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .compact-strip .ph-metric-val {
+                font-size: 1.25rem;
+            }
+        }
+
+        /* ── Portfolio Hub ─────────────────────────────────────── */
+        #portfolio-hub-view { padding: var(--space-8) 0; }
+
+        .ph-summary-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-4);
+            padding: var(--space-6) var(--space-8);
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-8);
+        }
+        .ph-metric { flex: 1; min-width: 110px; }
+        .ph-metric-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 4px; }
+        .ph-metric-val { font-size: 1.1rem; font-weight: 700; color: #fff; }
+        .ph-metric-sm { font-size: 0.85rem; }
+
+        .ph-chart-ai-row { display: grid; grid-template-columns: 300px 1fr; gap: var(--space-6); margin-bottom: var(--space-8); }
+        .ph-chart-panel, .ph-ai-panel {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--space-6);
+        }
+        .ph-section-title { font-size: 0.9rem; font-weight: 600; color: #D4AF37; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: var(--space-5); }
+
+        .ph-ai-overview-card { height: 100%; display: flex; flex-direction: column; }
+        .ph-ai-header { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); }
+        .ph-ai-icon { font-size: 1.2rem; }
+        .ph-ai-title { font-weight: 600; color: #fff; font-size: 0.95rem; flex: 1; }
+        .ph-ai-badge { font-size: 0.6rem; font-weight: 700; padding: 2px 7px; border-radius: 20px; background: rgba(212,175,55,0.1); border: 1px solid rgba(212,175,55,0.3); color: #D4AF37; letter-spacing: 0.05em; }
+        .ph-ai-body { flex: 1; }
+        .ph-ai-loading { display: flex; align-items: center; gap: 10px; color: #64748b; font-size: 0.83rem; padding: var(--space-4) 0; }
+        .ph-ai-spinner { width: 14px; height: 14px; border: 2px solid rgba(212,175,55,0.2); border-top-color: #D4AF37; border-radius: 50%; animation: pp-spin 0.7s linear infinite; flex-shrink: 0; }
+        .ph-ai-content p:last-child { margin-bottom: 0; }
+
+        /* ── Portfolio Cards ──────────────────────────────────── */
+        .ph-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-5); }
+
+        .ph-portfolio-card {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: var(--space-6);
+            cursor: pointer;
+            transition: border-color 0.25s ease, transform 0.2s ease, background 0.25s ease;
+            display: flex; flex-direction: column; gap: var(--space-4);
+        }
+        .ph-portfolio-card:hover, .ph-portfolio-card:focus-visible {
+            border-color: rgba(212,175,55,0.45);
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.04);
+            outline: none;
+        }
+        .ph-card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .ph-card-provider { display: flex; align-items: center; gap: var(--space-3); }
+        .ph-card-icon { font-size: 1.4rem; line-height: 1; }
+        .ph-card-name { font-weight: 600; color: #fff; font-size: 0.95rem; margin-bottom: 2px; }
+        .ph-card-sublabel { font-size: 0.75rem; color: #64748b; }
+        .ph-card-badge { font-size: 0.58rem; font-weight: 700; padding: 2px 7px; border-radius: 20px; border: 1px solid; letter-spacing: 0.06em; white-space: nowrap; }
+        .ph-badge-wallet  { color: #a3e635; border-color: rgba(163,230,53,0.3); background: rgba(163,230,53,0.07); }
+        .ph-badge-plaid   { color: #38bdf8; border-color: rgba(56,189,248,0.3); background: rgba(56,189,248,0.07); }
+        .ph-badge-brokerage { color: #c084fc; border-color: rgba(192,132,252,0.3); background: rgba(192,132,252,0.07); }
+        .ph-badge-exchange { color: #fb923c; border-color: rgba(251,146,60,0.3); background: rgba(251,146,60,0.07); }
+        .ph-badge-manual  { color: #94a3b8; border-color: rgba(148,163,184,0.2); background: transparent; }
+        .ph-badge-unknown { color: #94a3b8; border-color: rgba(148,163,184,0.2); background: transparent; }
+        .ph-card-value { font-size: 1.35rem; font-weight: 700; color: #D4AF37; }
+        .ph-card-pnl { font-size: 0.85rem; font-weight: 600; }
+        .ph-pnl-pos { color: #4ade80; }
+        .ph-pnl-neg { color: #f87171; }
+        .ph-pnl-pct { font-weight: 400; opacity: 0.85; }
+        .ph-card-meta { font-size: 0.78rem; color: #64748b; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+        .ph-meta-sep { color: #334155; }
+        .ph-card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: var(--space-3); border-top: 1px solid rgba(255,255,255,0.05); }
+        .ph-card-status { display: flex; align-items: center; gap: 6px; }
+        .ph-status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+        .ph-status-synced  { background: #4ade80; }
+        .ph-status-syncing { background: #D4AF37; animation: pp-pulse 1.2s ease-in-out infinite; }
+        .ph-status-error   { background: #f87171; }
+        @keyframes pp-pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+        .ph-status-text { font-size: 0.72rem; color: #64748b; }
+        .ph-card-cta { font-size: 0.78rem; color: #D4AF37; font-weight: 600; white-space: nowrap; }
+
+        /* ── Back nav ─────────────────────────────────────────── */
+        #ph-back-nav { padding: var(--space-4) 0 0; }
+        #ph-back-to-hub {
+            background: none;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #94a3b8;
+            font-size: 0.82rem;
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        #ph-back-to-hub:hover { color: #fff; border-color: rgba(212,175,55,0.35); }
+
+        @media (max-width: 900px) { .ph-chart-ai-row { grid-template-columns: 1fr; } }
+        @media (max-width: 600px) { .ph-summary-row { gap: var(--space-3); padding: var(--space-4); } .ph-metric { min-width: 90px; } }
+
+        /* ── Hub summary header (label + CTA row) ─────────────────── */
+        .ph-summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-3);
+        }
+
+        /* ── Add Portfolio button (used in hub header, empty-state, detail row) */
+        .ph-add-portfolio-btn {
+            background: rgba(212,175,55,0.08);
+            border: 1px solid rgba(212,175,55,0.38);
+            color: #D4AF37;
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 7px 14px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+            white-space: nowrap;
+            font-family: inherit;
+            line-height: 1;
+        }
+        .ph-add-portfolio-btn:hover {
+            background: rgba(212,175,55,0.16);
+            border-color: rgba(212,175,55,0.65);
+            transform: translateY(-1px);
+        }
+        .ph-add-portfolio-btn:active {
+            transform: translateY(0);
+        }
+
+        /* ── Add-card tile in portfolio cards grid ─────────────────── */
+        .ph-add-card {
+            background: rgba(212,175,55,0.03);
+            border: 1px dashed rgba(212,175,55,0.38);
+            border-radius: var(--radius-md);
+            padding: var(--space-6);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-3);
+            text-align: center;
+            min-height: 160px;
+            transition: border-color 0.25s ease, background 0.25s ease, transform 0.2s ease;
+        }
+        .ph-add-card:hover, .ph-add-card:focus-visible {
+            border-color: rgba(212,175,55,0.68);
+            background: rgba(212,175,55,0.07);
+            transform: translateY(-3px);
+            outline: 2px solid rgba(212,175,55,0.35);
+            outline-offset: 2px;
+        }
+        .ph-add-card:active { transform: translateY(0); }
+        .ph-add-card-icon {
+            font-size: 1.8rem;
+            color: #D4AF37;
+            opacity: 0.65;
+            line-height: 1;
+        }
+        .ph-add-card-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #D4AF37;
+        }
+        .ph-add-card-sublabel {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 400;
+        }
+    </style>
 </head>
 
 <body>
@@ -52,10 +564,48 @@
                     <a href="trade.html">Trade</a>
                     <a href="market-mechanics.html">Market Mechanics</a>
                     <a href="portfolio.html" class="active">Portfolio</a>
-                    <a href="wealth-guides.html">Wealth Guides</a>
-                    <a href="tool-reviews.html">Tool Reviews</a>
-                    <a href="ai-calculators.html">AI Calculators</a>
-                    <a href="blog.html">Blog</a>
+                    <div class="nav-item-dropdown">
+
+                        <a href="resources.html">Resources</a>
+
+                        <div class="dropdown-panel">
+
+                            <a href="wealth-guides.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">Wealth Guides</span>
+
+                                <span class="dropdown-item-desc">Structured frameworks for building financial
+                                    understanding.</span>
+
+                            </a>
+
+                            <a href="tool-reviews.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">Tool Reviews</span>
+
+                                <span class="dropdown-item-desc">Reviews of platforms and financial tools.</span>
+
+                            </a>
+
+                            <a href="ai-calculators.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">AI Calculators</span>
+
+                                <span class="dropdown-item-desc">Interactive tools for financial modelling.</span>
+
+                            </a>
+
+                            <a href="blog.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">Insights</span>
+
+                                <span class="dropdown-item-desc">Market analysis and commentary.</span>
+
+                            </a>
+
+                        </div>
+
+                    </div>
                 </div>
 
                 <div class="nav-actions"
@@ -84,69 +634,89 @@
 
     <main>
         <!-- Page Header / Hero -->
-        <section class="page-header">
+        <section class="page-header-refined" id="page-hero-section">
             <div class="container">
-                <h1 data-animate>Smart <span class="text-gradient">Portfolio Manager</span></h1>
-                <p class="subtitle" data-animate>Connect your brokerage accounts to analyze holdings, track
-                    transactions, and unlock AI-powered wealth insights.</p>
+                <div id="hero-disconnected" data-animate>
+                    <span class="eyebrow-label">Portfolio Intelligence</span>
+                    <h1>Smart <span class="text-gradient">Portfolio Manager</span></h1>
+                    <p class="subtitle" style="max-width: 600px; margin-left: auto; margin-right: auto;">
+                        Connect your brokerage accounts to analyze holdings, track
+                        transactions, and unlock AI-powered wealth insights.</p>
+                </div>
+
+                <div id="hero-connected" class="hidden" data-animate>
+                    <span class="eyebrow-label">Portfolio Command Center</span>
+                    <h1 id="cc-total-value" style="font-size: clamp(2.5rem, 5vw, 4rem); margin: var(--space-4) 0 var(--space-2); color: #fff; font-weight: 600; line-height: 1.1;">$0.00</h1>
+                    <div id="cc-secondary-metrics" style="color: var(--accent-gold); font-size: 1.1rem; font-weight: 500; margin-bottom: var(--space-6);">
+                        0 Portfolios • 0 Assets • 0% Priced
+                    </div>
+                </div>
+
+                <div class="hero-labels" data-animate>
+                    <span class="simple-label">Holdings Analysis</span>
+                    <span class="simple-label">Allocation Tracking</span>
+                    <span class="simple-label">AI Insights</span>
+                    <span class="simple-label">Risk Visibility</span>
+                </div>
 
                 <!-- Summary Bar (Active when connected) -->
-                <div id="portfolio-summary-bar" class="crypto-stats-bar hidden" data-animate>
-                    <div class="stat-item">
-                        <span class="label">Total Value</span>
-                        <span id="summary-total-value" class="value">$0.00</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="label">Total Holdings</span>
-                        <span id="summary-holdings-count" class="value">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="label">Account Status</span>
-                        <span class="value text-accent">Synced</span>
-                    </div>
-                </div>
+                <div id="portfolio-summary-bar-container" class="hidden" data-animate></div>
+                
+                <!-- Portfolio Performance Chart -->
+                <div id="portfolio-performance-chart-container" class="hidden" data-animate style="margin-top: var(--space-8); max-width: 1200px; margin-left: auto; margin-right: auto; width: 100%;"></div>
             </div>
         </section>
 
-        <!-- Portfolio Analysis Section (Visualizations) -->
-        <section class="section hidden" id="analysis-section">
+        <!-- Portfolio Hub View (default when portfolios connected) -->
+        <section id="portfolio-hub-view" class="hidden"></section>
+
+        <!-- Back navigation (shown in detail view) -->
+        <div id="ph-back-nav" class="hidden">
             <div class="container">
-                <div class="section-header" style="text-align: left; margin-bottom: 30px;">
-                    <h2>Portfolio Analysis</h2>
-                    <p>Visual breakdown and detailed allocation of your wealth.</p>
-                </div>
-
-                <div class="grid grid-2" style="gap: var(--space-8); align-items: start;">
-                    <!-- Allocation Pie Chart -->
-                    <div class="card" style="padding: var(--space-8);">
-                        <h3 style="margin-bottom: var(--space-6); text-align: center;">Money Distribution</h3>
-                        <div style="max-width: 400px; margin: 0 auto;">
-                            <canvas id="distribution-chart"></canvas>
-                        </div>
-                    </div>
-
-                    <!-- Detailed Breakdown List -->
-                    <div class="card" style="padding: var(--space-8);">
-                        <h3 style="margin-bottom: var(--space-6);">Allocation Details</h3>
-                        <div id="allocation-details-container"
-                            style="display: flex; flex-direction: column; gap: var(--space-4);">
-                            <!-- Detailed items added dynamically -->
-                        </div>
-                    </div>
-                </div>
+                <button id="ph-back-to-hub">← Back to Portfolio Hub</button>
             </div>
-        </section>
+        </div>
 
-        <!-- Data Visualization Area -->
-        <section class="section" id="portfolio-data-section">
-            <div class="container">
-                <!-- Holdings Grid -->
-                <div id="holdings-section" class="hidden">
+        <!-- Main Dashboard Grid -->
+        <section class="section hidden" id="dashboard-section" style="padding-top: var(--space-8);">
+            <div class="container relative">
+                <div class="dashboard-grid">
+                    
+                    <!-- Left Column: Chart -->
+                    <div class="dashboard-column">
+                        <div class="card" style="padding: var(--space-6);">
+                            <h3 style="margin-bottom: var(--space-4); font-size: 1.1rem; color: #fff;">Money Distribution</h3>
+                            <div style="position: relative; width: 100%; aspect-ratio: 1/1; max-width: 300px; margin: 0 auto;">
+                                <canvas id="distribution-chart"></canvas>
+                            </div>
+                        </div>
+                        <div id="portfolio-chain-exposure-container"></div>
+                    </div>
+
+                    <!-- Center Column: Intelligence -->
+                    <div class="dashboard-column">
+                        <div id="portfolio-summary-panel">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div id="portfolio-insights-panel" class="card" style="padding: var(--space-6); margin-top: var(--space-4);">
+                            <!-- Populated by JS -->
+                        </div>
+                        <div id="portfolio-health-panel" class="card" style="padding: var(--space-6); margin-top: var(--space-4);">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Holdings Section (Full Width) -->
+                <div id="holdings-section" class="hidden" style="margin-top: 60px;">
                     <div class="section-header" style="text-align: left; margin-bottom: 30px;">
                         <h2>Investment Holdings</h2>
-                        <p>Detailed breakdown of your current market positions.</p>
                     </div>
-                    <div id="holdings-container" class="crypto-grid">
+                    <div id="largest-position-card" style="margin-bottom: var(--space-4);">
+                        <!-- Populated by JS -->
+                    </div>
+                    <div id="holdings-container">
                         <!-- Holdings cards added dynamically -->
                     </div>
                 </div>
@@ -166,15 +736,48 @@
             </div>
         </section>
 
-        <!-- Connectivity Section -->
-        <section class="section">
+        <!-- Locked Feature Preview Section -->
+        <section class="layout-section" id="marketing-features-section"
+            style="padding-top: var(--space-4); padding-bottom: var(--space-8); border-top: none;">
             <div class="container">
-                <div class="card connection-card" id="connection-container" data-animate>
+                <div class="grid-4" data-animate>
+                    <div class="strict-card">
+                        <div class="muted-icon">📊</div>
+                        <h4>Portfolio Breakdown</h4>
+                        <p>See allocations across equities, ETFs, cash, and digital assets.</p>
+                    </div>
+                    <div class="strict-card">
+                        <div class="muted-icon">📈</div>
+                        <h4>Performance Attribution</h4>
+                        <p>Understand what is driving returns across positions and sectors.</p>
+                    </div>
+                    <div class="strict-card">
+                        <div class="muted-icon">⚠️</div>
+                        <h4>Risk Exposure</h4>
+                        <p>Identify concentration, volatility, and hidden portfolio risks.</p>
+                    </div>
+                    <div class="strict-card">
+                        <div class="muted-icon">🤖</div>
+                        <h4>AI Wealth Insights</h4>
+                        <p>Receive higher-level observations based on your holdings and portfolio behavior.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Connect Accounts Section -->
+        <section class="layout-section" id="connect-accounts-section" style="padding-top: var(--space-10);">
+            <div class="container">
+                <h2 class="section-title" data-animate>Connect Accounts</h2>
+                <p class="section-desc" data-animate>Securely link your investment accounts to unlock portfolio analysis
+                    and long-term wealth insights.</p>
+
+                <div class="premium-card" id="connection-container" data-animate>
                     <!-- Disconnected State -->
                     <div id="disconnected-state" class="connection-state">
                         <div class="card-icon">🏦</div>
                         <h3>Connect Your Wealth</h3>
-                        <p>Unlock deep analysis by securely linking your investment accounts via Plaid.</p>
+                        <p>Link a brokerage account or crypto wallet to unlock deep portfolio analysis and wealth insights.</p>
                         <button id="link-button" class="btn btn-primary btn-lg">
                             Connect Account
                         </button>
@@ -182,15 +785,117 @@
 
                     <!-- Connected State -->
                     <div id="connected-state" class="connection-state hidden">
-                        <div class="card-icon success">✅</div>
-                        <h3>Portfolio Connected</h3>
-                        <p>Your institutional data is synced and ready for AI enrichment.</p>
-                        <div class="hero-buttons" style="justify-content: center; margin-top: 20px;">
+                        <!-- Icon + heading: provider-aware, updated dynamically -->
+                        <div class="card-icon success" id="connected-icon">✅</div>
+                        <h3 id="connected-heading">Portfolio Connected</h3>
+                        <p id="connected-subtext">Your institutional data is synced and ready for AI enrichment.</p>
+
+                        <!--
+                            Wallet connection summary — hidden for Plaid, shown for
+                            MetaMask / WalletConnect / Trust Wallet after handshake.
+                        -->
+                        <div id="wallet-summary" class="hidden" style="margin: 16px 0 4px;">
+                        <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+                            <div id="wallet-chain-badge" style="
+                                display: inline-block;
+                                font-size: 0.68rem;
+                                font-weight: 600;
+                                padding: 3px 10px;
+                                border-radius: 20px;
+                                border: 1px solid rgba(212,175,55,0.3);
+                                color: #D4AF37;
+                                background: rgba(212,175,55,0.06);
+                            ">—</div>
+                            <!-- Multichain scan count badge (populated by JS) -->
+                            <div id="wallet-chain-count" style="
+                                display: none;
+                                font-size: 0.62rem;
+                                font-weight: 600;
+                                padding: 2px 8px;
+                                border-radius: 20px;
+                                border: 1px solid rgba(99,102,241,0.3);
+                                color: #a5b4fc;
+                                background: rgba(99,102,241,0.06);
+                            "></div>
+                        </div>
+                            <!-- Read-only badge -->
+                            <span style="
+                                display: inline-block;
+                                font-size: 0.62rem;
+                                font-weight: 600;
+                                padding: 2px 8px;
+                                border-radius: 20px;
+                                border: 1px solid rgba(74,222,128,0.25);
+                                color: #4ade80;
+                                background: rgba(74,222,128,0.05);
+                                margin-left: 6px;
+                                vertical-align: middle;
+                            ">🔒 Read-only</span>
+                            <p id="wallet-address" style="
+                                font-size: 0.8rem;
+                                color: #94a3b8;
+                                font-family: monospace;
+                                word-break: break-all;
+                                margin: 8px 0 6px;
+                            ">—</p>
+                            <p id="wallet-balance" style="
+                                font-size: 1.3rem;
+                                font-weight: 700;
+                                color: #D4AF37;
+                                margin: 0 0 2px;
+                            ">—</p>
+                            <!-- Dynamic label updated by JS with correct native symbol -->
+                            <p id="wallet-balance-label" style="font-size: 0.72rem; color: #64748b; margin: 0 0 4px;">
+                                Native balance · Read-only · No transactions sent
+                            </p>
+                            <!-- Total portfolio USD value (populated by token ingestion) -->
+                            <p id="wallet-total-usd" style="
+                                font-size: 0.88rem;
+                                font-weight: 600;
+                                color: #a3e635;
+                                margin: 0 0 16px;
+                                display: none;
+                            "></p>
+                            <!-- Stale note: hidden on connection, shown only if ingestion truly fails -->
+                            <p id="wallet-holdings-note" class="hidden" style="
+                                font-size: 0.8rem;
+                                color: #94a3b8;
+                                background: rgba(255,255,255,0.03);
+                                border: 1px solid rgba(255,255,255,0.07);
+                                border-radius: 8px;
+                                padding: 10px 14px;
+                                margin-bottom: 16px;
+                                text-align: left;
+                            ">
+                                🧩 Token portfolio data is not yet available for on-chain wallets.
+                            </p>
+                        </div>
+
+                        <div class="hero-buttons"
+                            style="display: flex; gap: var(--space-4); justify-content: center; margin-top: 8px; flex-wrap: wrap;">
                             <button id="refresh-button" class="btn btn-secondary">
                                 🔄 Refresh Data
                             </button>
                             <button id="analyze-button" class="btn btn-primary">
                                 🤖 AI Analysis
+                            </button>
+                            <button id="generate-report-btn" class="btn btn-secondary" style="
+                                background: linear-gradient(135deg, rgba(212,175,55,0.12), rgba(212,175,55,0.06));
+                                border: 1px solid rgba(212,175,55,0.35);
+                                color: #D4AF37;
+                                font-weight: 600;
+                            "
+                                onclick="window.PortfolioReportPanel && window.PortfolioReportPanel.open()" title="Generate a detailed AI portfolio intelligence report">
+                                ⚡ AI Portfolio Report
+                            </button>
+                            <!-- Disconnect shown only for wallet connections -->
+                            <button id="wallet-disconnect-btn" class="btn hidden" style="
+                                background: none;
+                                border: 1px solid rgba(255,255,255,0.12);
+                                color: #94a3b8;
+                                font-size: 0.8rem;
+                            ">
+                                Disconnect Wallet
                             </button>
                         </div>
                     </div>
@@ -209,12 +914,36 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-bottom">
-                <p>© 2026 ProsperPath Insights. Securely integrated via Plaid API.</p>
+                <p>© 2026 ProsperPath Insights. Secure account connections powered by Plaid and open wallet standards.</p>
             </div>
         </div>
     </footer>
 
+    <!-- Components -->
+    <script src="components/PortfolioSummaryBar.js"></script>
+    <script src="components/PortfolioPerformanceChart.js"></script>
+    <script src="components/PortfolioDistributionChart.js"></script>
+    <script src="components/PortfolioInsightsPanel.js"></script>
+    <script src="components/PortfolioHealthPanel.js"></script>
+    <script src="components/PortfolioChainExposure.js"></script>
+
+    <!-- AI Portfolio Report modules (analysis, scenarios, AI caller, panel UI) -->
+    <script src="components/portfolio-analysis.js"></script>
+    <script src="components/portfolio-scenarios.js"></script>
+    <script src="components/ai-portfolio-report.js"></script>
+    <script src="components/PortfolioReportPanel.js"></script>
+
+    <!-- Portfolio Hub System -->
+    <script src="components/portfolio-store.js"></script>
+    <script src="components/portfolio-aggregator.js"></script>
+    <script src="components/PortfolioCard.js"></script>
+    <script src="components/PortfolioHubAIOverview.js"></script>
+    <script src="components/portfolio-hub.js"></script>
+
+    <script src="portfolio-connection-providers.js"></script>
+    <script src="wallet-token-ingestion.js"></script>
     <script src="plaid-client.js"></script>
+    <script src="portfolio-connection-chooser.js"></script>
     <script src="script.js"></script>
     <script src="ai-widget.js"></script>
 

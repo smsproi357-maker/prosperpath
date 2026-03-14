@@ -3,16 +3,19 @@
 let handler = null;
 let accessToken = null;
 
-// Initialize when page loads
+// Initialize when page loads — auto-reconnect only.
+// NOTE: #link-button and #refresh-button clicks are handled by
+// portfolio-connection-chooser.js (the chooser modal). Registering
+// them here as well caused double-firing: the chooser would open AND
+// initPlaidLink() would run immediately without user selection.
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('🚀 Plaid Client initialized');
 
-    // Set up event listeners
-    document.getElementById('link-button').addEventListener('click', initPlaidLink);
-    document.getElementById('refresh-button').addEventListener('click', fetchPortfolioData);
-    document.getElementById('analyze-button').addEventListener('click', analyzePortfolio);
+    // #analyze-button: still wired here since chooser does not own it.
+    const analyzeBtn = document.getElementById('analyze-button');
+    if (analyzeBtn) analyzeBtn.addEventListener('click', analyzePortfolio);
 
-    // Check if we already have a persistent session
+    // Auto-restore if account was previously linked
     await checkStatus();
 });
 
@@ -201,6 +204,13 @@ async function fetchPortfolioData() {
         updateSummaryBar(holdingsData);
         renderAnalysis(holdingsData);
 
+        // Normalize and register in Portfolio Hub store
+        if (window.PortfolioStore) {
+            window.PortfolioStore.addPortfolio(
+                normalizePlaidPortfolio(holdingsData, transactionsData)
+            );
+        }
+
         showLoading(false);
     } catch (error) {
         console.error('❌ Error fetching portfolio data:', error);
@@ -211,23 +221,41 @@ async function fetchPortfolioData() {
 
 // Update the Top Summary Bar
 function updateSummaryBar(data) {
-    const summaryBar = document.getElementById('portfolio-summary-bar');
-    const totalValueEl = document.getElementById('summary-total-value');
-    const countEl = document.getElementById('summary-holdings-count');
-
     if (!data.holdings || data.holdings.length === 0) {
-        summaryBar.classList.add('hidden');
+        const container = document.getElementById('portfolio-summary-bar-container');
+        if (container) container.classList.add('hidden');
         return;
     }
 
-    let totalValue = 0;
-    data.holdings.forEach(holding => {
-        totalValue += (holding.quantity * holding.institution_price);
+    let totalPortfolioValueUsd = 0;
+    const allHoldingsFlat = data.holdings.map(h => {
+        const valueUsd = h.quantity * h.institution_price;
+        totalPortfolioValueUsd += valueUsd;
+        return {
+            symbol: h.security?.ticker_symbol || 'Unknown',
+            name: h.security?.name || 'Unknown',
+            quantity: h.quantity,
+            priceUsd: h.institution_price,
+            valueUsd: valueUsd,
+            isPriced: true,
+            pricingSource: 'plaid'
+        };
     });
 
-    totalValueEl.textContent = `$${totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    countEl.textContent = data.holdings.length;
-    summaryBar.classList.remove('hidden');
+    const adaptedResult = {
+        allHoldingsFlat,
+        totalPortfolioValueUsd,
+        activeChains: 1,
+        pricedHoldingsCount: allHoldingsFlat.length
+    };
+
+    if (window.PortfolioSummaryBar) {
+        window.PortfolioSummaryBar.render('portfolio-summary-bar-container', adaptedResult);
+    }
+    
+    if (window.PortfolioPerformanceChart) {
+        window.PortfolioPerformanceChart.render('portfolio-performance-chart-container', totalPortfolioValueUsd);
+    }
 }
 
 // Global variable to keep track of the chart instance
@@ -531,4 +559,59 @@ function showLoading(show) {
     } else {
         overlay.classList.add('hidden');
     }
+}
+
+// Normalize Plaid data into the Portfolio Hub store format
+function normalizePlaidPortfolio(holdingsData, transactionsData) {
+    const PS = window.PortfolioStore;
+    const holdings = holdingsData?.holdings || [];
+
+    // Compute total value
+    let totalValueUsd = 0;
+    const flatHoldings = holdings.map(h => {
+        const valueUsd = (h.quantity || 0) * (h.institution_price || 0);
+        totalValueUsd += valueUsd;
+        return {
+            symbol:    h.security?.ticker_symbol || 'Unknown',
+            name:      h.security?.name || 'Unknown',
+            quantity:  h.quantity,
+            priceUsd:  h.institution_price,
+            valueUsd,
+            isPriced:  true,
+            pricingSource: 'plaid',
+            security: h.security,
+        };
+    });
+
+    // Try to find a stable Plaid item id from session storage
+    let plaidItemId = 'session';
+    try {
+        const session = JSON.parse(localStorage.getItem('plaid_session') || '{}');
+        if (session.item_id) plaidItemId = session.item_id;
+    } catch (_) {}
+
+    const id = 'plaid:' + plaidItemId;
+
+    return {
+        id,
+        sourceType:          PS?.PORTFOLIO_TYPES?.PLAID || 'plaid',
+        providerName:        'Plaid',
+        displayName:         'Brokerage Account',
+        accountLabel:        holdingsData?.accounts?.[0]?.name || 'Investment Account',
+        totalValueUsd,
+        pnlValue:            null,
+        pnlPercent:          null,
+        pricedAssetsCount:   flatHoldings.length,
+        unpricedAssetsCount: 0,
+        totalAssetsCount:    flatHoldings.length,
+        totalChainsCount:    0,
+        syncStatus:          'synced',
+        lastUpdatedAt:       new Date().toISOString(),
+        holdings:            flatHoldings,
+        metadata: {
+            holdings:     holdingsData,
+            transactions: transactionsData,
+        },
+        portfolioHash: PS?.computePortfolioHash(flatHoldings) || 'unknown',
+    };
 }

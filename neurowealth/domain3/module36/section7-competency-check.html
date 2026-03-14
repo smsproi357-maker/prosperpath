@@ -1,0 +1,319 @@
+<!-- ============================================================
+     Module 3.6 · Section VII — Competency Check
+     Self-contained fragment. Injected by module-shell.html.
+
+     Interaction: select answer → gold highlight, Next activates.
+     No per-question feedback. Results appear after Submit.
+     Matches Module 3.4 pattern exactly.
+============================================================ -->
+
+<style>
+    .opt-btn {
+        display: block;
+        width: 100%;
+        background: transparent;
+        border: 1px solid var(--m-bdr);
+        color: var(--m-txt);
+        font-family: 'Inter', sans-serif;
+        font-size: .875rem;
+        text-align: left;
+        padding: .75rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-bottom: .5rem;
+        transition: border-color var(--m-tr), background var(--m-tr)
+    }
+
+    .opt-btn:hover {
+        border-color: var(--m-bdrhi);
+        background: rgba(255, 255, 255, .025)
+    }
+
+    .opt-btn.selected {
+        border-color: var(--m-gold-line);
+        background: var(--m-gold-dim);
+        color: var(--m-gold)
+    }
+
+    .opt-btn:disabled {
+        cursor: default
+    }
+
+    .assessment-prog {
+        font-size: .72rem;
+        color: var(--m-muted);
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        margin-bottom: 1.5rem
+    }
+
+    .assessment-q {
+        font-size: 1rem;
+        color: var(--m-txt);
+        margin-bottom: 1.25rem;
+        line-height: 1.55
+    }
+
+    .result-box {
+        text-align: center;
+        padding: 2rem 1rem
+    }
+
+    .result-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--m-txt);
+        margin-bottom: .5rem
+    }
+
+    .result-gold {
+        color: var(--m-gold)
+    }
+
+    .result-body {
+        font-size: .9rem;
+        color: var(--m-muted);
+        line-height: 1.6;
+        margin-bottom: 1.75rem;
+        max-width: 360px;
+        margin-left: auto;
+        margin-right: auto
+    }
+
+    .btn-primary {
+        background: transparent;
+        border: 1px solid var(--m-gold-line);
+        color: var(--m-gold);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        padding: .65rem 1.5rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background .2s, border-color .2s;
+        margin-right: .6rem
+    }
+
+    .btn-primary:hover {
+        background: var(--m-gold-dim);
+        border-color: var(--m-gold)
+    }
+
+    .btn-primary:disabled {
+        opacity: .42;
+        cursor: not-allowed
+    }
+
+    .btn-ghost {
+        background: transparent;
+        border: 1px solid var(--m-bdr);
+        color: var(--m-muted);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 500;
+        letter-spacing: .04em;
+        padding: .62rem 1.2rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: border-color var(--m-tr), color var(--m-tr)
+    }
+
+    .btn-ghost:hover {
+        border-color: var(--m-bdrhi);
+        color: var(--m-txt)
+    }
+
+    .btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem;
+        margin-top: 1.75rem
+    }
+
+    .s7-eyebrow {
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--m-muted);
+        margin-bottom: 1.2rem
+    }
+</style>
+
+<div id="s7-wrap"></div>
+
+<script>
+    (function () {
+
+        /* ── Question bank ──────────────────────────────────────── */
+        var AQ = [
+            {
+                q: 'When does an uptrend structure fail?',
+                opts: ['When price pauses', 'When price forms a pullback', 'When price breaks below the Higher Low', 'When price moves sideways'],
+                cor: 'When price breaks below the Higher Low'
+            },
+            {
+                q: 'What is weak continuation?',
+                opts: ['Structure failure', 'Loss of momentum without breaking structure', 'A guaranteed reversal', 'A confirmed trend change'],
+                cor: 'Loss of momentum without breaking structure'
+            },
+            {
+                q: 'What differentiates a pullback from structure failure?',
+                opts: ['Pullbacks break the structural level', 'Pullbacks move against the trend but keep structure intact', 'Pullbacks confirm reversals', 'Pullbacks eliminate higher highs'],
+                cor: 'Pullbacks move against the trend but keep structure intact'
+            }
+        ];
+
+        /* ── Answer explanations (shown in Review)  ─────────────── */
+        var AR = [
+            { exp: 'An uptrend is defined by Higher Highs and Higher Lows. Structure fails only when price breaks below the Higher Low — that violates the definition.' },
+            { exp: 'Weak continuation is a loss of momentum within an intact trend. The structural level has not been broken, so it is a warning, not a failure.' },
+            { exp: 'Pullbacks move against the trend but respect the structural level. Structure failure only occurs when that level is actually violated.' }
+        ];
+
+        /* ── State ──────────────────────────────────────────────── */
+        var AS = {
+            ans: [null, null, null],
+            submitted: false,
+            score: null,
+            passed: null,
+            q: 0
+        };
+        var inReview = false;
+
+        /* ── Helpers ────────────────────────────────────────────── */
+        function eH(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+        function eA(s) { return String(s).replace(/"/g, '&quot;'); }
+
+        function render() {
+            var wrap = document.getElementById('s7-wrap');
+            if (!wrap) return;
+            if (inReview) { wrap.innerHTML = bReview(); hookReview(); return; }
+            if (AS.submitted) { wrap.innerHTML = bResult(); hookResult(); return; }
+            wrap.innerHTML = bQuestion();
+            hookQuestion();
+            document.getElementById('main-stage') && (document.getElementById('main-stage').scrollTop = 0);
+        }
+
+        /* ── Question screen ────────────────────────────────────── */
+        function bQuestion() {
+            var qi = AS.q, q = AQ[qi], ua = AS.ans[qi];
+            var has = ua != null, last = (qi === AQ.length - 1);
+            var h = '<p class="s7-eyebrow">Section VII &mdash; Structure Failure</p>';
+            h += '<div class="assessment-prog">Question ' + (qi + 1) + ' of ' + AQ.length + '</div>';
+            h += '<div class="assessment-q">' + eH(q.q) + '</div>';
+            h += '<div id="s7-opts">' + q.opts.map(function (o) {
+                return '<button class="opt-btn' + (ua === o ? ' selected' : '') + '" data-ans="' + eA(o) + '">' + eH(o) + '</button>';
+            }).join('') + '</div>';
+            h += '<div class="btn-row">';
+            if (last) {
+                h += '<button class="btn-primary" id="s7-sub"' + (has ? '' : ' disabled') + '>Submit Assessment</button>';
+            } else {
+                h += '<button class="btn-primary" id="s7-nxt"' + (has ? '' : ' disabled') + '>Next</button>';
+            }
+            h += '</div>';
+            if (!has) h += '<p style="font-size:.75rem;color:var(--m-muted);margin-top:.75rem">Select an answer to continue.</p>';
+            return h;
+        }
+
+        function hookQuestion() {
+            /* Option selection */
+            document.querySelectorAll('[data-ans]').forEach(function (b) {
+                b.addEventListener('click', function () {
+                    var qi = AS.q;
+                    AS.ans[qi] = (AS.ans[qi] === b.dataset.ans) ? null : b.dataset.ans;
+                    render();
+                });
+            });
+            /* Next */
+            var nxt = document.getElementById('s7-nxt');
+            if (nxt) nxt.addEventListener('click', function () {
+                if (AS.ans[AS.q] == null) return;
+                AS.q++;
+                render();
+            });
+            /* Submit */
+            var sub = document.getElementById('s7-sub');
+            if (sub) sub.addEventListener('click', function () {
+                if (AS.ans[AS.q] == null) return;
+                calcScore();
+                render();
+            });
+        }
+
+        /* ── Score ──────────────────────────────────────────────── */
+        function calcScore() {
+            var c = 0;
+            AQ.forEach(function (q, i) { if (AS.ans[i] === q.cor) c++; });
+            var p = Math.round((c / AQ.length) * 100);
+            AS.score = p;
+            AS.passed = (p >= 67);
+            AS.submitted = true;
+            /* Save to localStorage */
+            try {
+                var sv = JSON.parse(localStorage.getItem('pp_ms_modules') || '{}');
+                sv['3.6'] = { verified: AS.passed, mastery: p, mastery_percent: p, status: AS.passed ? 'Verified' : 'Attempted', progress: 100 };
+                localStorage.setItem('pp_ms_modules', JSON.stringify(sv));
+            } catch (e) { }
+        }
+
+        /* ── Results screen ─────────────────────────────────────── */
+        function bResult() {
+            var sc = AS.score, ok = AS.passed;
+            var rb = '<button class="btn-ghost" id="s7-rrev" style="margin-top:.5rem">Review Answers</button>';
+            if (ok) {
+                var h = '<div class="result-box"><div style="font-size:2rem;color:var(--m-gold);margin-bottom:1rem">&#10003;</div>';
+                h += '<div class="result-title">Competency <span class="result-gold">Verified</span></div>';
+                h += '<div class="result-body">Structure failure — understood.<br><span style="color:var(--m-gold);font-size:.85rem">Score: ' + sc + '%</span></div>';
+                h += '<div style="display:flex;flex-direction:column;align-items:center;gap:.5rem"><button class="btn-primary" id="s7-rret">Return to Market Structure</button>' + rb + '</div></div>';
+                return h;
+            }
+            var h = '<div class="result-box"><div style="font-size:2rem;color:var(--m-muted);margin-bottom:1rem">&#8635;</div>';
+            h += '<div class="result-title">Review Recommended</div>';
+            h += '<div class="result-body">Revisit the sections, then try again.<br><span style="color:var(--m-red-txt);font-size:.85rem">Score: ' + sc + '%</span></div>';
+            h += '<div class="btn-row" style="justify-content:center"><button class="btn-ghost" id="s7-rret2">Retry Assessment</button></div>';
+            h += '<div style="margin-top:.75rem;text-align:center">' + rb + '</div></div>';
+            return h;
+        }
+
+        function hookResult() {
+            var rret = document.getElementById('s7-rret');
+            if (rret) rret.addEventListener('click', function () { window.location.href = '../../market-structure.html'; });
+            var rret2 = document.getElementById('s7-rret2');
+            if (rret2) rret2.addEventListener('click', function () {
+                AS.ans = [null, null, null]; AS.submitted = false; AS.score = null; AS.passed = null; AS.q = 0; inReview = false;
+                render();
+            });
+            var rrev = document.getElementById('s7-rrev');
+            if (rrev) rrev.addEventListener('click', function () { inReview = true; render(); });
+        }
+
+        /* ── Review screen ──────────────────────────────────────── */
+        function bReview() {
+            var rows = AQ.map(function (q, i) {
+                var ua = AS.ans[i], ok = (ua === q.cor), rv = AR[i];
+                var ic = ok ? '&#10003;' : '&#10007;', icol = ok ? 'var(--m-green-txt)' : 'var(--m-red-txt)';
+                var h = '<div style="background:var(--m-surf2);border:1px solid var(--m-bdr);border-radius:6px;padding:1rem 1.1rem;margin-bottom:.85rem">';
+                h += '<p style="font-size:.8rem;font-weight:600;color:var(--m-gold);margin-bottom:.6rem">Q' + (i + 1) + '</p>';
+                h += '<p style="font-size:.9rem;color:var(--m-txt);margin-bottom:.75rem;line-height:1.5">' + eH(q.q) + '</p>';
+                h += '<p style="font-size:.82rem;margin-bottom:.3rem"><span style="color:' + icol + ';font-weight:700;margin-right:.35rem">' + ic + '</span><span style="color:var(--m-muted)">Your answer:</span> <span style="color:var(--m-txt)">' + eH(ua || '(none)') + '</span></p>';
+                h += '<p style="font-size:.82rem;color:var(--m-muted);margin-bottom:.75rem">Correct: <span style="color:var(--m-txt);font-weight:500">' + eH(q.cor) + '</span></p>';
+                h += '<p style="font-size:.82rem;color:var(--m-muted);line-height:1.55">' + rv.exp + '</p></div>';
+                return h;
+            }).join('');
+            return '<p class="s7-eyebrow">Section VII &mdash; Review Answers</p><h2 style="font-family:\'Outfit\',sans-serif;font-size:1.25rem;font-weight:600;color:var(--m-txt);margin-bottom:.9rem">Assessment Breakdown</h2>' + rows + '<div class="btn-row"><button class="btn-ghost" id="s7-rrback">Back to Results</button></div>';
+        }
+
+        function hookReview() {
+            var back = document.getElementById('s7-rrback');
+            if (back) back.addEventListener('click', function () { inReview = false; render(); });
+        }
+
+        /* ── Boot ───────────────────────────────────────────────── */
+        render();
+
+    })();
+</script>

@@ -36,6 +36,7 @@
   <!-- Styles -->
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="hero-mock.css">
+  <link rel="stylesheet" href="guided-demo.css">
 </head>
 
 <body>
@@ -87,7 +88,7 @@
       <div class="hero-grid">
         <div class="hero-content">
           <div class="hero-badge">
-            <span>ProsperPath 2.0 is now live</span>
+            <span>Built for long-term thinkers</span>
           </div>
 
           <h1>
@@ -99,23 +100,19 @@
             Institutional-grade intelligent systems for advanced wealth management.
             Gain rigorous transparency and uncompromising execution across global markets.
           </p>
+          <p class="hero-clarity-line" style="font-size: 1.125rem; font-weight: 500; color: var(--color-text-secondary); margin-top: -0.5rem; margin-bottom: 2rem;">
+            Understand how markets actually work.
+          </p>
 
           <div class="hero-buttons">
             <a href="app.html" class="btn btn-primary btn-lg">GET STARTED &rarr;</a>
-            <button onclick="if(window.DemoController) window.DemoController.start();"
-              class="btn btn-lg btn-outline-gold">VIEW
-              DEMO</button>
+            <a href="demo.html" class="btn btn-lg btn-outline-gold">TRY INTERACTIVE DEMO</a>
+          </div>
+          <div class="hero-reassurance" style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 1rem;">
+            No signup required &bull; 2-minute guided experience
           </div>
 
           <div class="hero-trust-elements">
-            <h3 class="trust-heading">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round" class="">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                <polyline points="9 12 11 14 15 10"></polyline>
-              </svg>
-              Built for long-term thinkers.
-            </h3>
             <div class="trust-bullets">
               <div class="trust-bullet">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -481,8 +478,7 @@
       <div class="cta-buttons"
         style="margin-top: var(--space-10); display: flex; gap: var(--space-4); align-items: center; justify-content: center; z-index: 3; opacity: 0; transform: translateY(10px);">
         <a href="app.html" class="btn btn-primary btn-lg">GET STARTED →</a>
-        <button onclick="if(window.DemoController) window.DemoController.start();"
-          class="btn btn-lg btn-outline-gold">VIEW DEMO</button>
+        <a href="demo.html" class="btn btn-lg btn-outline-gold">TRY INTERACTIVE DEMO</a>
       </div>
 
     </div>
@@ -517,6 +513,47 @@
             <a href="clarity-box.html">Clarity Box</a>
             <a href="trade.html">Trade</a>
             <a href="portfolio.html">Portfolio</a>
+            <div class="nav-item-dropdown">
+
+                <a href="resources.html">Resources</a>
+
+                <div class="dropdown-panel">
+
+                    <a href="wealth-guides.html" class="dropdown-item">
+
+                        <span class="dropdown-item-title">Wealth Guides</span>
+
+                        <span class="dropdown-item-desc">Structured frameworks for building financial understanding.</span>
+
+                    </a>
+
+                    <a href="tool-reviews.html" class="dropdown-item">
+
+                        <span class="dropdown-item-title">Tool Reviews</span>
+
+                        <span class="dropdown-item-desc">Reviews of platforms and financial tools.</span>
+
+                    </a>
+
+                    <a href="ai-calculators.html" class="dropdown-item">
+
+                        <span class="dropdown-item-title">AI Calculators</span>
+
+                        <span class="dropdown-item-desc">Interactive tools for financial modelling.</span>
+
+                    </a>
+
+                    <a href="blog.html" class="dropdown-item">
+
+                        <span class="dropdown-item-title">Insights</span>
+
+                        <span class="dropdown-item-desc">Market analysis and commentary.</span>
+
+                    </a>
+
+                </div>
+
+            </div>
             <a href="backtest.html">Backtest Engine</a>
           </div>
         </div>
@@ -524,10 +561,6 @@
         <div class="footer-column">
           <h4>Resources</h4>
           <div class="footer-links">
-            <a href="wealth-guides.html">Wealth Guides</a>
-            <a href="tool-reviews.html">Tool Reviews</a>
-            <a href="ai-calculators.html">AI Calculators</a>
-            <a href="blog.html">Blog</a>
           </div>
         </div>
 
@@ -570,6 +603,7 @@
 
   <script src="script.js?v=rx1"></script>
   <script src="ai-widget.js"></script>
+  <script src="guided-demo.js"></script>
 
   <!-- Hero Card Scroll-Driven Scrub Animation (Framer Motion) -->
   <script type="module">

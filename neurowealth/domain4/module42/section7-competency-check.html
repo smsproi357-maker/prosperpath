@@ -1,0 +1,155 @@
+<style>
+    .opt-btn { display: block; width: 100%; background: transparent; border: 1px solid var(--m-bdr); color: var(--m-txt); font-family: 'Inter', sans-serif; font-size: .875rem; text-align: left; padding: .75rem 1rem; border-radius: 4px; cursor: pointer; margin-bottom: .5rem; transition: border-color var(--m-tr), background var(--m-tr) }
+    .opt-btn:hover { border-color: var(--m-bdrhi); background: rgba(255,255,255,.025) }
+    .opt-btn.selected { border-color: var(--m-gold-line); background: var(--m-gold-dim); color: var(--m-gold) }
+    .opt-btn:disabled { cursor: default }
+    .assessment-prog { font-size: .72rem; color: var(--m-muted); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 1.5rem }
+    .assessment-q { font-size: 1rem; color: var(--m-txt); margin-bottom: 1.25rem; line-height: 1.55 }
+    .q-visual { position: relative; height: 210px; background: var(--m-surf2); border: 1px solid var(--m-bdr); border-radius: 4px; overflow: hidden; margin-bottom: 1.1rem }
+    .q-visual svg { position: absolute; inset: 0; width: 100%; height: 100% }
+    .result-box { text-align: center; padding: 2rem 1rem }
+    .result-title { font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--m-txt); margin-bottom: .5rem }
+    .result-gold { color: var(--m-gold) }
+    .result-body { font-size: .9rem; color: var(--m-muted); line-height: 1.6; margin-bottom: 1.75rem; max-width: 360px; margin-left: auto; margin-right: auto }
+    .btn-primary { background: transparent; border: 1px solid var(--m-gold-line); color: var(--m-gold); font-family: 'Inter', sans-serif; font-size: .8rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; padding: .65rem 1.5rem; border-radius: 3px; cursor: pointer; transition: background .2s, border-color .2s }
+    .btn-primary:hover { background: var(--m-gold-dim); border-color: var(--m-gold) }
+    .btn-primary:disabled { opacity: .42; cursor: not-allowed }
+    .btn-ghost { background: transparent; border: 1px solid var(--m-bdr); color: var(--m-muted); font-family: 'Inter', sans-serif; font-size: .8rem; font-weight: 500; letter-spacing: .04em; padding: .62rem 1.2rem; border-radius: 3px; cursor: pointer; transition: border-color var(--m-tr), color var(--m-tr) }
+    .btn-ghost:hover { border-color: var(--m-bdrhi); color: var(--m-txt) }
+    .btn-row { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.75rem }
+    .btn-col { display: flex; flex-direction: column; align-items: center; gap: .55rem }
+    .s7-eyebrow { font-size: .68rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--m-muted); margin-bottom: 1.2rem }
+</style>
+
+<div id="s7-wrap"></div>
+
+<script>
+    (function () {
+        var AQ = [
+            { q: 'Equal highs usually contain liquidity where?', opts: ['Above the highs', 'Below the highs', 'Inside the range', 'No liquidity exists'], cor: 'Above the highs' },
+            { q: 'Why do previous highs attract liquidity?', opts: ['Because traders place orders around important levels', 'Because indicators signal it', 'Because of random movement', 'Because candles always reverse there'], cor: 'Because traders place orders around important levels' },
+            { q: 'Where is liquidity located on this chart?', opts: ['Below equal highs and below the previous high', 'Above equal highs and above the previous high', 'Inside the candles only', 'At the midpoint of the range'], cor: 'Above equal highs and above the previous high' }
+        ];
+        var AR = [
+            { exp: 'Equal highs attract stop losses and breakout buy orders above the highs, so liquidity forms above them.' },
+            { exp: 'Previous highs are important reference points, so traders place stops, breakout orders, and other orders around them.' },
+            { exp: 'The chart shows two obvious highs and a separate prior swing high. Liquidity sits above each of those visible highs, not inside random candles.' }
+        ];
+        var AS = { ans: [null, null, null], submitted: false, score: null, passed: null, q: 0 };
+        var inReview = false;
+
+        function eH(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+        function eA(s) { return String(s).replace(/"/g, '&quot;'); }
+        function chartHtml() {
+            return [
+                '<div class="q-visual" role="img" aria-label="Chart with equal highs and a previous high, with liquidity marked above both">',
+                '<svg viewBox="0 0 560 210" preserveAspectRatio="none">',
+                '<line x1="0" y1="60" x2="560" y2="60" stroke="rgba(255,255,255,0.025)" />',
+                '<line x1="0" y1="110" x2="560" y2="110" stroke="rgba(255,255,255,0.025)" />',
+                '<line x1="0" y1="160" x2="560" y2="160" stroke="rgba(255,255,255,0.025)" />',
+                '<rect x="72" y="40" width="112" height="14" fill="rgba(195,162,70,0.08)"/>',
+                '<rect x="356" y="56" width="78" height="14" fill="rgba(195,162,70,0.08)"/>',
+                '<line x1="72" y1="56" x2="184" y2="56" stroke="rgba(195,162,70,0.28)" stroke-dasharray="5,4"/>',
+                '<line x1="356" y1="72" x2="434" y2="72" stroke="rgba(195,162,70,0.28)" stroke-dasharray="5,4"/>',
+                '<text x="128" y="35" text-anchor="middle" font-size="8.5" font-family="Inter,sans-serif" fill="rgba(195,162,70,0.76)">equal highs</text>',
+                '<text x="395" y="51" text-anchor="middle" font-size="8.5" font-family="Inter,sans-serif" fill="rgba(195,162,70,0.76)">previous high</text>',
+                '<path d="M36,168 L92,56 L140,120 L184,56 L242,144 L320,108 L392,72 L470,136" fill="none" stroke="rgba(195,162,70,1)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>',
+                '</svg></div>'
+            ].join('');
+        }
+        function render() {
+            var wrap = document.getElementById('s7-wrap');
+            if (!wrap) return;
+            if (inReview) { wrap.innerHTML = bReview(); hookReview(); return; }
+            if (AS.submitted) { wrap.innerHTML = bResult(); hookResult(); return; }
+            wrap.innerHTML = bQuestion();
+            hookQuestion();
+            if (document.getElementById('main-stage')) document.getElementById('main-stage').scrollTop = 0;
+        }
+        function bQuestion() {
+            var qi = AS.q;
+            var q = AQ[qi];
+            var ua = AS.ans[qi];
+            var has = ua != null;
+            var last = qi === AQ.length - 1;
+            var h = '<p class="s7-eyebrow">Section VII - Where Liquidity Forms</p>';
+            h += '<div class="assessment-prog">Question ' + (qi + 1) + ' of ' + AQ.length + '</div>';
+            if (qi === 2) h += chartHtml();
+            h += '<div class="assessment-q">' + eH(q.q) + '</div>';
+            h += '<div>' + q.opts.map(function (o) { return '<button class="opt-btn' + (ua === o ? ' selected' : '') + '" data-ans="' + eA(o) + '">' + eH(o) + '</button>'; }).join('') + '</div>';
+            h += '<div class="btn-row">' + (last ? '<button class="btn-primary" id="s7-sub"' + (has ? '' : ' disabled') + '>Submit Assessment</button>' : '<button class="btn-primary" id="s7-nxt"' + (has ? '' : ' disabled') + '>Next</button>') + '</div>';
+            if (!has) h += '<p style="font-size:.75rem;color:var(--m-muted);margin-top:.75rem">Select an answer to continue.</p>';
+            return h;
+        }
+        function hookQuestion() {
+            document.querySelectorAll('[data-ans]').forEach(function (b) {
+                b.addEventListener('click', function () {
+                    AS.ans[AS.q] = AS.ans[AS.q] === b.dataset.ans ? null : b.dataset.ans;
+                    render();
+                });
+            });
+            var nxt = document.getElementById('s7-nxt');
+            if (nxt) nxt.addEventListener('click', function () { if (AS.ans[AS.q] == null) return; AS.q++; render(); });
+            var sub = document.getElementById('s7-sub');
+            if (sub) sub.addEventListener('click', function () { if (AS.ans[AS.q] == null) return; calcScore(); render(); });
+        }
+        function calcScore() {
+            var c = 0;
+            AQ.forEach(function (q, i) { if (AS.ans[i] === q.cor) c++; });
+            var p = Math.round((c / AQ.length) * 100);
+            AS.score = p;
+            AS.passed = p >= 67;
+            AS.submitted = true;
+            try {
+                var sv = JSON.parse(localStorage.getItem('pp_lq_modules') || '{}');
+                sv['4.2'] = { verified: AS.passed, mastery: p, mastery_percent: p, status: AS.passed ? 'Verified' : 'Attempted', progress: 100 };
+                localStorage.setItem('pp_lq_modules', JSON.stringify(sv));
+            } catch (e) { }
+        }
+        function bResult() {
+            var reviewBtn = '<button class="btn-ghost" id="s7-rrev">Review Answers</button>';
+            if (AS.passed) {
+                return '<div class="result-box"><div style="font-size:2rem;color:var(--m-gold);margin-bottom:1rem">&#10003;</div><div class="result-title">Competency <span class="result-gold">Verified</span></div><div class="result-body">Where liquidity forms - understood.<br><span style="color:var(--m-gold);font-size:.85rem">Score: ' + AS.score + '%</span></div><div class="btn-col"><button class="btn-primary" id="s7-rret">Return to Liquidity Domain</button>' + reviewBtn + '</div></div>';
+            }
+            return '<div class="result-box"><div style="font-size:2rem;color:var(--m-muted);margin-bottom:1rem">&#8635;</div><div class="result-title">Review Recommended</div><div class="result-body">Revisit the sections, then try again.<br><span style="color:var(--m-red-txt);font-size:.85rem">Score: ' + AS.score + '%</span></div><div class="btn-col"><button class="btn-ghost" id="s7-rret2">Retry Assessment</button>' + reviewBtn + '</div></div>';
+        }
+        function hookResult() {
+            var rret = document.getElementById('s7-rret');
+            if (rret) rret.addEventListener('click', function () { window.location.href = '../../liquidity.html'; });
+            var retry = document.getElementById('s7-rret2');
+            if (retry) retry.addEventListener('click', function () {
+                AS.ans = [null, null, null];
+                AS.submitted = false;
+                AS.score = null;
+                AS.passed = null;
+                AS.q = 0;
+                inReview = false;
+                render();
+            });
+            var review = document.getElementById('s7-rrev');
+            if (review) review.addEventListener('click', function () { inReview = true; render(); });
+        }
+        function bReview() {
+            var rows = AQ.map(function (q, i) {
+                var ua = AS.ans[i];
+                var ok = ua === q.cor;
+                var icon = ok ? '&#10003;' : '&#10007;';
+                var color = ok ? 'var(--m-green-txt)' : 'var(--m-red-txt)';
+                var h = '<div style="background:var(--m-surf2);border:1px solid var(--m-bdr);border-radius:6px;padding:1rem 1.1rem;margin-bottom:.85rem">';
+                h += '<p style="font-size:.8rem;font-weight:600;color:var(--m-gold);margin-bottom:.6rem">Q' + (i + 1) + '</p>';
+                if (i === 2) h += chartHtml();
+                h += '<p style="font-size:.9rem;color:var(--m-txt);margin-bottom:.75rem;line-height:1.5">' + eH(q.q) + '</p>';
+                h += '<p style="font-size:.82rem;margin-bottom:.3rem"><span style="color:' + color + ';font-weight:700;margin-right:.35rem">' + icon + '</span><span style="color:var(--m-muted)">Your answer:</span> <span style="color:var(--m-txt)">' + eH(ua || '(none)') + '</span></p>';
+                h += '<p style="font-size:.82rem;color:var(--m-muted);margin-bottom:.75rem">Correct: <span style="color:var(--m-txt);font-weight:500">' + eH(q.cor) + '</span></p>';
+                h += '<p style="font-size:.82rem;color:var(--m-muted);line-height:1.55">' + AR[i].exp + '</p></div>';
+                return h;
+            }).join('');
+            return '<p class="s7-eyebrow">Section VII - Review Answers</p><h2 style="font-family:\'Outfit\',sans-serif;font-size:1.25rem;font-weight:600;color:var(--m-txt);margin-bottom:.9rem">Assessment Breakdown</h2>' + rows + '<div class="btn-row"><button class="btn-ghost" id="s7-rrback">Back to Results</button></div>';
+        }
+        function hookReview() {
+            var back = document.getElementById('s7-rrback');
+            if (back) back.addEventListener('click', function () { inReview = false; render(); });
+        }
+        render();
+    })();
+</script>

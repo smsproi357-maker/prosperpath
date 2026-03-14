@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="description" content="Module 3.1 — Movement | ProsperPath Market Structure">
+    <title>Movement | ProsperPath</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --m-bg: #0d0e10;
+            --m-surf: #141618;
+            --m-surf2: #18191c;
+            --m-bdr: #1e2023;
+            --m-bdrhi: #2e3035;
+            --m-txt: #e0e1e3;
+            --m-muted: #5e626a;
+            --m-muted2: #3a3d44;
+            --m-gold: #a07c2e;
+            --m-gold-dim: rgba(160, 124, 46, .13);
+            --m-gold-line: rgba(160, 124, 46, .38);
+            --m-green: rgba(120, 210, 160, .15);
+            --m-green-txt: #7ed8a8;
+            --m-red: rgba(220, 100, 80, .15);
+            --m-red-txt: #e08070;
+            --m-rad: 6px;
+            --m-tr: 150ms ease
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            background: var(--m-bg);
+            color: var(--m-txt);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh
+        }
+
+        #ai-chat-fab,
+        .ai-fab-btn,
+        .floating-action-btn,
+        [class*="fab"],
+        [id*="fab"] {
+            display: none !important
+        }
+
+        #module-shell {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden
+        }
+
+        #topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .75rem 1.25rem;
+            border-bottom: 1px solid var(--m-bdr);
+            background: var(--m-surf);
+            flex-shrink: 0;
+            gap: 1rem
+        }
+
+        #topbar-left {
+            display: flex;
+            align-items: center;
+            gap: .75rem
+        }
+
+        #back-btn {
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            font-size: .78rem;
+            padding: .38rem .85rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: border-color var(--m-tr), color var(--m-tr)
+        }
+
+        #back-btn:hover {
+            border-color: var(--m-bdrhi);
+            color: var(--m-txt)
+        }
+
+        #back-btn:focus-visible {
+            outline: 2px solid var(--m-bdrhi);
+            outline-offset: 2px
+        }
+
+        #topbar-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: .95rem;
+            font-weight: 600;
+            color: var(--m-txt)
+        }
+
+        #progress-label {
+            font-size: .75rem;
+            color: var(--m-muted);
+            letter-spacing: .04em;
+            white-space: nowrap
+        }
+
+        #progress-bar-wrap {
+            width: 80px;
+            height: 2px;
+            background: var(--m-bdr);
+            border-radius: 1px;
+            overflow: hidden
+        }
+
+        #progress-bar-fill {
+            height: 100%;
+            background: var(--m-gold);
+            border-radius: 1px;
+            transition: width .4s ease
+        }
+
+        #shell-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden
+        }
+
+        #section-nav {
+            width: 200px;
+            flex-shrink: 0;
+            border-right: 1px solid var(--m-bdr);
+            background: var(--m-surf);
+            overflow-y: auto;
+            padding: 1rem 0
+        }
+
+        .sn-item {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            padding: .6rem 1rem;
+            font-size: .75rem;
+            color: var(--m-muted);
+            cursor: pointer;
+            transition: color var(--m-tr), background var(--m-tr);
+            border-left: 2px solid transparent;
+            line-height: 1.3
+        }
+
+        .sn-item:hover {
+            color: var(--m-txt);
+            background: rgba(255, 255, 255, .025)
+        }
+
+        .sn-item:focus-visible {
+            outline: 2px solid var(--m-bdrhi);
+            outline-offset: -2px
+        }
+
+        .sn-item.visited {
+            color: var(--m-txt)
+        }
+
+        .sn-item.current {
+            color: var(--m-gold);
+            border-left-color: var(--m-gold);
+            background: var(--m-gold-dim)
+        }
+
+        .sn-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--m-muted2);
+            flex-shrink: 0;
+            transition: background var(--m-tr)
+        }
+
+        .sn-item.visited .sn-dot {
+            background: var(--m-muted)
+        }
+
+        .sn-item.current .sn-dot {
+            background: var(--m-gold)
+        }
+
+        #main-stage {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2.5rem 1.5rem
+        }
+
+        .screen {
+            width: 100%;
+            max-width: 640px;
+            animation: fadeIn .2s ease
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .scr-eyebrow {
+            font-size: .68rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--m-muted);
+            margin-bottom: 1.2rem
+        }
+
+        .scr-h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            font-weight: 700;
+            color: var(--m-txt);
+            letter-spacing: -.02em;
+            line-height: 1.15;
+            margin-bottom: .75rem
+        }
+
+        .scr-h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--m-txt);
+            margin-bottom: .9rem
+        }
+
+        .scr-meta {
+            font-size: .78rem;
+            color: var(--m-muted);
+            letter-spacing: .04em;
+            margin-bottom: 2rem
+        }
+
+        .scr-body {
+            font-size: .95rem;
+            color: var(--m-muted);
+            line-height: 1.7;
+            margin-bottom: 1.5rem
+        }
+
+        .scr-body p {
+            margin-bottom: .55rem
+        }
+
+        .scr-body p:last-child {
+            margin-bottom: 0
+        }
+
+        .anchor-line {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--m-txt);
+            padding: .7rem 1rem;
+            border-left: 2px solid var(--m-gold);
+            background: var(--m-gold-dim);
+            border-radius: 0 4px 4px 0;
+            margin: 1.5rem 0;
+            line-height: 1.5
+        }
+
+        /* ── Chart Container ── */
+        .ms-chart-outer {
+            position: relative;
+            margin: 1.25rem 0;
+            background: var(--m-surf2);
+            border: 1px solid var(--m-bdr);
+            border-radius: 4px;
+            overflow: hidden;
+            height: 220px
+        }
+
+        .ms-chart-canvas {
+            display: block;
+            width: 100%;
+            height: 100%
+        }
+
+        /* Fade-in overlay text */
+        .ms-chart-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: .85rem 1rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: .92rem;
+            font-weight: 500;
+            color: var(--m-txt);
+            letter-spacing: .01em;
+            opacity: 0;
+            transition: opacity .35s ease;
+            pointer-events: none;
+            background: linear-gradient(transparent, var(--m-surf2) 75%)
+        }
+
+        .ms-chart-caption.visible {
+            opacity: 1
+        }
+
+        /* ── Principle Card ── */
+        .principle-card {
+            background: var(--m-surf2);
+            border: 1px solid var(--m-bdrhi);
+            border-radius: 8px;
+            padding: 3.5rem 2rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            animation: principleFadeIn .7s ease both
+        }
+
+        @keyframes principleFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .principle-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.4rem, 3.5vw, 2rem);
+            font-weight: 700;
+            color: var(--m-txt);
+            letter-spacing: -.02em;
+            line-height: 1.25
+        }
+
+        /* ── Swing dots fade-in ── */
+        @keyframes swingDotFadeIn {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        .swing-dot-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            animation: swingDotFadeIn .55s ease both
+        }
+
+        /* ── Buttons ── */
+        .btn-primary {
+            background: transparent;
+            border: 1px solid var(--m-gold-line);
+            color: var(--m-gold);
+            font-family: 'Inter', sans-serif;
+            font-size: .8rem;
+            font-weight: 600;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            padding: .65rem 1.5rem;
+            border-radius: 3px;
+            cursor: pointer;
+            box-shadow: none;
+            transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            margin-right: .6rem
+        }
+
+        .btn-primary:hover {
+            background: var(--m-gold-dim);
+            border-color: var(--m-gold);
+            box-shadow: 0 0 10px rgba(160, 124, 46, 0.22)
+        }
+
+        .btn-primary:focus-visible {
+            outline: 2px solid var(--m-gold);
+            outline-offset: 2px
+        }
+
+        .btn-primary:disabled {
+            opacity: .42;
+            cursor: not-allowed
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: .8rem;
+            font-weight: 500;
+            letter-spacing: .04em;
+            padding: .62rem 1.2rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: border-color var(--m-tr), color var(--m-tr)
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--m-bdrhi);
+            color: var(--m-txt)
+        }
+
+        .btn-ghost:focus-visible {
+            outline: 2px solid var(--m-bdrhi);
+            outline-offset: 2px
+        }
+
+        .btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .6rem;
+            margin-top: 1.75rem
+        }
+
+        .clarify-btn {
+            background: none;
+            border: none;
+            color: var(--m-gold);
+            font-size: .78rem;
+            font-weight: 600;
+            letter-spacing: .04em;
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            padding: 0;
+            font-family: 'Inter', sans-serif
+        }
+
+        .clarify-btn:focus-visible {
+            outline: 2px solid var(--m-gold);
+            outline-offset: 2px
+        }
+
+        .opt-btn {
+            display: block;
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-txt);
+            font-family: 'Inter', sans-serif;
+            font-size: .875rem;
+            text-align: left;
+            padding: .75rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: .5rem;
+            transition: border-color var(--m-tr), background var(--m-tr)
+        }
+
+        .opt-btn:hover {
+            border-color: var(--m-bdrhi);
+            background: rgba(255, 255, 255, .025)
+        }
+
+        .opt-btn.selected {
+            border-color: var(--m-gold-line);
+            background: var(--m-gold-dim);
+            color: var(--m-gold)
+        }
+
+        .opt-btn:disabled {
+            cursor: default
+        }
+
+        .assessment-prog {
+            font-size: .72rem;
+            color: var(--m-muted);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem
+        }
+
+        .assessment-q {
+            font-size: 1rem;
+            color: var(--m-txt);
+            margin-bottom: 1.25rem;
+            line-height: 1.55
+        }
+
+        .result-box {
+            text-align: center;
+            padding: 2rem 1rem
+        }
+
+        .result-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--m-txt);
+            margin-bottom: .5rem
+        }
+
+        .result-gold {
+            color: var(--m-gold)
+        }
+
+        .result-body {
+            font-size: .9rem;
+            color: var(--m-muted);
+            line-height: 1.6;
+            margin-bottom: 1.75rem;
+            max-width: 360px;
+            margin-left: auto;
+            margin-right: auto
+        }
+
+        /* ── Clarify Panel ── */
+        #clarify-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .55);
+            z-index: 900;
+            display: none;
+            align-items: flex-start;
+            justify-content: flex-end
+        }
+
+        #clarify-overlay.open {
+            display: flex
+        }
+
+        #clarify-panel {
+            width: 340px;
+            max-width: 90vw;
+            height: 100%;
+            background: #16181b;
+            border-left: 1px solid var(--m-bdr);
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            animation: slideInRight .22s ease
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%)
+            }
+
+            to {
+                transform: translateX(0)
+            }
+        }
+
+        .cp-term {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--m-txt);
+            margin-bottom: .25rem
+        }
+
+        .cp-section {
+            margin-top: 1.25rem
+        }
+
+        .cp-label {
+            font-size: .65rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--m-muted);
+            margin-bottom: .4rem
+        }
+
+        .cp-text {
+            font-size: .85rem;
+            color: var(--m-muted);
+            line-height: 1.55
+        }
+
+        .cp-text strong {
+            color: var(--m-txt);
+            font-weight: 500
+        }
+
+        #cp-close {
+            margin-top: 2rem;
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: .78rem;
+            padding: .5rem 1rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: border-color var(--m-tr), color var(--m-tr)
+        }
+
+        #cp-close:hover {
+            border-color: var(--m-bdrhi);
+            color: var(--m-txt)
+        }
+
+        .nav-toggle {
+            display: none;
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            padding: .36rem .7rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: .75rem
+        }
+
+        @media(max-width:700px) {
+            #section-nav {
+                position: fixed;
+                inset: 0 auto 0 0;
+                z-index: 800;
+                transform: translateX(-100%);
+                transition: transform .3s ease;
+                width: 240px
+            }
+
+            #section-nav.open {
+                transform: translateX(0)
+            }
+
+            #nav-backdrop {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, .5);
+                z-index: 799;
+                display: none
+            }
+
+            #nav-backdrop.open {
+                display: block
+            }
+
+            #clarify-panel {
+                width: 100%;
+                height: 60vh;
+                border-left: none;
+                border-top: 1px solid var(--m-bdr);
+                position: fixed;
+                bottom: 0;
+                left: 0
+            }
+
+            #clarify-overlay {
+                align-items: flex-end;
+                justify-content: center
+            }
+
+            #main-stage {
+                padding: 1.5rem 1rem
+            }
+
+            .nav-toggle {
+                display: inline-flex;
+                align-items: center;
+                gap: .4rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="module-shell">
+        <div id="topbar">
+            <div id="topbar-left">
+                <button class="nav-toggle" id="nav-toggle-btn" onclick="toggleNavDrawer()"
+                    aria-label="Open section navigator">&#9776; Sections</button>
+                <button id="back-btn" onclick="goBack()">&#8592; Market Structure</button>
+                <span id="topbar-title">Movement</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:.75rem">
+                <span id="progress-label">Progress 0%</span>
+                <div id="progress-bar-wrap">
+                    <div id="progress-bar-fill" style="width:0%"></div>
+                </div>
+            </div>
+        </div>
+        <div id="nav-backdrop" onclick="toggleNavDrawer()"></div>
+        <div id="shell-body">
+            <nav id="section-nav" aria-label="Module sections">
+                <div id="sn-items"></div>
+            </nav>
+            <main id="main-stage">
+                <div class="screen" id="screen-container"></div>
+            </main>
+        </div>
+    </div>
+    <div id="clarify-overlay" onclick="handleClarifyOverlayClick(event)" role="dialog" aria-modal="true"
+        aria-label="Clarify">
+        <div id="clarify-panel">
+            <div class="cp-term" id="cp-term"></div>
+            <div class="cp-section">
+                <div class="cp-label">Explanation</div>
+                <div class="cp-text" id="cp-explanation"></div>
+            </div>
+            <div class="cp-section">
+                <div class="cp-label">Example</div>
+                <div class="cp-text" id="cp-example"></div>
+            </div>
+            <div class="cp-section">
+                <div class="cp-label">Common Misconception</div>
+                <div class="cp-text" id="cp-misconception"></div>
+            </div>
+            <button id="cp-close" onclick="closeClarify()">Close</button>
+        </div>
+    </div>
+    <script src="script.js?v=m31"></script>
+    <script src="ai-widget.js"></script>
+    <script src="google-auth.js"></script>
+    <script>
+        window.addEventListener('load', () => { if (typeof initGoogleAuth === 'function') initGoogleAuth(); });
+
+        /* ═══════════════════════════ STATE ═══════════════════════════ */
+        const STATE = {
+            currentSectionId: 0, currentScreenIndex: 0,
+            visitedSections: new Set(), sectionLastScreenIndex: {},
+            navHistory: [],
+            assessment: {
+                answers: [null, null, null, null, null],
+                isSubmitted: false, scorePercent: null,
+                passed: null, currentQ: 0
+            },
+            showReview: false, verified: false
+        };
+
+        const SECTIONS = [
+            { id: 0, label: 'Entry' },
+            { id: 1, label: 'Section I \u2014 Raw Movement' },
+            { id: 2, label: 'Section II \u2014 Movement Path' },
+            { id: 3, label: 'Section III \u2014 Swing Points' },
+            { id: 4, label: 'Section IV \u2014 Principle' },
+            { id: 5, label: 'Section V \u2014 Competency Check' }
+        ];
+
+        /* ═══════════════════════════ PROGRESS ═══════════════════════════ */
+        function computeProgress() {
+            const TOTAL = 5;
+            const visited = [...STATE.visitedSections].filter(id => id >= 1 && id <= 5);
+            const base = Math.min(visited.length, TOTAL);
+            let pct = Math.round((base / TOTAL) * 85);
+            if (STATE.assessment.scorePercent !== null && STATE.assessment.scorePercent > 0 && !STATE.assessment.passed)
+                pct = Math.max(pct, 90);
+            if (STATE.assessment.passed) pct = 100;
+            return pct;
+        }
+
+        function updateProgress() {
+            const pct = computeProgress();
+            document.getElementById('progress-label').textContent = 'Progress ' + pct + '%';
+            document.getElementById('progress-bar-fill').style.width = pct + '%';
+        }
+
+        function visit(sid) {
+            if (!STATE.visitedSections.has(sid)) { STATE.visitedSections.add(sid); updateProgress(); }
+            renderNav();
+        }
+
+        /* ═══════════════════════════ NAVIGATION ═══════════════════════════ */
+        function goToSection(sid, screenIndex, pushHistory) {
+            const maxVisited = STATE.visitedSections.size > 0 ? Math.max(...[...STATE.visitedSections]) : 0;
+            const allowed = STATE.visitedSections.has(sid) || sid <= maxVisited + 1 || sid === 0;
+            if (!allowed) return;
+            if (pushHistory !== false) STATE.navHistory.push({ sectionId: STATE.currentSectionId, screenIndex: STATE.currentScreenIndex });
+            STATE.sectionLastScreenIndex[STATE.currentSectionId] = STATE.currentScreenIndex;
+            STATE.currentSectionId = sid;
+            STATE.currentScreenIndex = (screenIndex !== undefined && screenIndex !== null) ? screenIndex : 0;
+            STATE.showReview = false;
+            visit(sid); renderNav(); renderScreen();
+            const nav = document.getElementById('section-nav');
+            if (nav.classList.contains('open')) toggleNavDrawer();
+        }
+
+        function goBack() {
+            if (STATE.showReview) { STATE.showReview = false; renderScreen(); return; }
+            if (STATE.navHistory.length > 0) {
+                const prev = STATE.navHistory.pop();
+                STATE.sectionLastScreenIndex[STATE.currentSectionId] = STATE.currentScreenIndex;
+                STATE.currentSectionId = prev.sectionId;
+                STATE.currentScreenIndex = prev.screenIndex;
+                STATE.showReview = false;
+                visit(prev.sectionId); renderNav(); renderScreen();
+                return;
+            }
+            window.location.href = 'market-structure.html';
+        }
+
+        function toggleNavDrawer() {
+            document.getElementById('section-nav').classList.toggle('open');
+            document.getElementById('nav-backdrop').classList.toggle('open');
+        }
+
+        /* ═══════════════════════════ NAV RENDER ═══════════════════════════ */
+        function renderNav() {
+            const c = document.getElementById('sn-items'); c.innerHTML = '';
+            SECTIONS.forEach(s => {
+                if (s.id === 0) return;
+                const isCurrent = STATE.currentSectionId === s.id;
+                const isVisited = STATE.visitedSections.has(s.id);
+                const maxVisited = STATE.visitedSections.size > 0 ? Math.max(...[...STATE.visitedSections]) : 0;
+                const isAccessible = isVisited || s.id <= maxVisited + 1;
+                const div = document.createElement('div');
+                div.className = 'sn-item' + (isCurrent ? ' current' : '') + (isVisited ? ' visited' : '');
+                div.setAttribute('tabindex', isAccessible ? '0' : '-1');
+                div.setAttribute('role', 'button');
+                div.setAttribute('aria-label', s.label + (isCurrent ? ', current' : isVisited ? ', visited' : ', not visited'));
+                div.innerHTML = `<span class="sn-dot"></span><span>${s.label}</span>`;
+                if (isAccessible) {
+                    div.onclick = () => { const lsi = STATE.sectionLastScreenIndex[s.id]; goToSection(s.id, lsi !== undefined ? lsi : 0); };
+                    div.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { const lsi = STATE.sectionLastScreenIndex[s.id]; goToSection(s.id, lsi !== undefined ? lsi : 0); } };
+                } else { div.style.opacity = '.35'; div.style.cursor = 'not-allowed'; }
+                c.appendChild(div);
+            });
+        }
+
+        /* ═══════════════════════════ CLARIFY ═══════════════════════════ */
+        const CLARIFY_DATA = {
+            rawmovement: {
+                term: 'Raw Movement',
+                explanation: 'The unfiltered series of candles on a chart. At first glance it appears disorganized, but all structure begins with reading this raw data.',
+                example: 'A chart with 20 candles of varying heights and directions — this is raw movement before any filtering or overlay.',
+                misconception: '<strong>"Charts are random."</strong> Charts are not random. The appearance of chaos comes from observing raw data without a framework for reading it.'
+            },
+            rhythm: {
+                term: 'Rhythm',
+                explanation: 'The underlying cadence of price movement — the tendency to move in alternating expansion and pullback phases rather than straight lines.',
+                example: 'Price moves up, then pulls back slightly, then moves up again. This push-and-pull is the rhythm of movement.',
+                misconception: '<strong>"Rhythm means price is predictable."</strong> Rhythm describes the nature of movement, not its outcome. It helps you read what is happening, not what comes next.'
+            },
+            swingpoints: {
+                term: 'Swing Points',
+                explanation: 'Local turning points in price — a swing high is a candle peak surrounded by lower peaks; a swing low is a trough surrounded by higher troughs.',
+                example: 'Price rises to a peak, then starts falling — the peak is a swing high. Price falls to a trough, then starts rising — the trough is a swing low.',
+                misconception: '<strong>"Swing points predict reversals."</strong> Swing points describe turning points that already happened. They are structural markers, not prediction tools.'
+            }
+        };
+
+        function openClarify(topicId) {
+            const d = CLARIFY_DATA[topicId]; if (!d) return;
+            document.getElementById('cp-term').textContent = d.term;
+            document.getElementById('cp-explanation').textContent = d.explanation;
+            document.getElementById('cp-example').textContent = d.example;
+            document.getElementById('cp-misconception').innerHTML = d.misconception;
+            document.getElementById('clarify-overlay').classList.add('open');
+            document.getElementById('cp-close').focus();
+        }
+
+        function closeClarify() { document.getElementById('clarify-overlay').classList.remove('open'); }
+        function handleClarifyOverlayClick(e) { if (e.target === document.getElementById('clarify-overlay')) closeClarify(); }
+        function escHtml(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+        function escAttr(s) { return String(s).replace(/"/g, '&quot;'); }
+
+        /* ═══════════════════════════ CHART ENGINE ═══════════════════════════ */
+
+        // Synthetic price data — 22 candles, realistic alternating movement
+        const CANDLES_DATA = (() => {
+            // [open%, close%, high%, low%] relative to row height
+            const raw = [
+                [30, 46, 52, 24], [46, 40, 50, 36], [40, 58, 62, 38],
+                [58, 50, 62, 46], [50, 66, 70, 48], [66, 60, 72, 54],
+                [60, 74, 78, 56], [74, 62, 80, 58], [62, 70, 74, 56],
+                [70, 64, 76, 60], [64, 78, 82, 60], [78, 70, 84, 66],
+                [70, 80, 84, 66], [80, 68, 84, 64], [68, 76, 80, 62],
+                [76, 66, 80, 62], [66, 72, 78, 60], [72, 62, 76, 58],
+                [62, 70, 74, 56], [70, 82, 86, 66], [82, 74, 88, 70],
+                [74, 84, 88, 70]
+            ];
+            return raw.map(([o, c, h, l]) => ({
+                open: o, close: c, high: h, low: l,
+                bull: c >= o
+            }));
+        })();
+
+        // Detect swing highs/lows with window=2
+        function detectSwings() {
+            const n = CANDLES_DATA.length;
+            const swings = [];
+            for (let i = 2; i < n - 2; i++) {
+                const c = CANDLES_DATA[i];
+                // Swing high: higher than 2 neighbors on each side
+                const isHigh = c.high > CANDLES_DATA[i - 1].high && c.high > CANDLES_DATA[i - 2].high &&
+                    c.high > CANDLES_DATA[i + 1].high && c.high > CANDLES_DATA[i + 2].high;
+                // Swing low: lower than 2 neighbors on each side
+                const isLow = c.low < CANDLES_DATA[i - 1].low && c.low < CANDLES_DATA[i - 2].low &&
+                    c.low < CANDLES_DATA[i + 1].low && c.low < CANDLES_DATA[i + 2].low;
+                if (isHigh) swings.push({ index: i, type: 'high', pct: c.high });
+                if (isLow) swings.push({ index: i, type: 'low', pct: c.low });
+            }
+            return swings;
+        }
+
+        const SWINGS = detectSwings();
+
+        // Chart render modes: 'raw' | 'raw-progressive' | 'path' | 'swings'
+        function drawChart(canvasId, mode, upTo) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const dpr = window.devicePixelRatio || 1;
+            const W = canvas.clientWidth;
+            const H = canvas.clientHeight;
+            canvas.width = W * dpr;
+            canvas.height = H * dpr;
+            const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+
+            const n = CANDLES_DATA.length;
+            const slotW = W / n;
+            const gapW = Math.max(1, slotW * 0.2);
+            const bodyW = Math.max(2, slotW - gapW);
+
+            // pct → y pixel
+            const padT = 10, padB = 10;
+            const chartH = H - padT - padB;
+            const pctToY = (pct) => padT + (1 - pct / 100) * chartH;
+
+            // Number of candles to draw (for progressive reveal)
+            const drawUpTo = (upTo !== undefined && upTo !== null) ? upTo : n;
+
+            const bullFill = (mode === 'path' || mode === 'swings')
+                ? 'rgba(120,210,160,0.08)'
+                : 'rgba(120,210,160,0.22)';
+            const bearFill = (mode === 'path' || mode === 'swings')
+                ? 'rgba(220,100,80,0.07)'
+                : 'rgba(220,100,80,0.18)';
+            const bullBdr = mode === 'raw' ? 'rgba(120,210,160,0.45)' : 'rgba(120,210,160,0.16)';
+            const bearBdr = mode === 'raw' ? 'rgba(220,100,80,0.42)' : 'rgba(220,100,80,0.16)';
+
+            // Draw candles up to drawUpTo
+            for (let i = 0; i < drawUpTo && i < n; i++) {
+                const c = CANDLES_DATA[i];
+                const x = i * slotW + gapW / 2;
+                const fill = c.bull ? bullFill : bearFill;
+                const bdr = c.bull ? bullBdr : bearBdr;
+
+                const highY = pctToY(c.high);
+                const lowY = pctToY(c.low);
+                const openY = pctToY(c.open);
+                const closeY = pctToY(c.close);
+                const bodyTop = Math.min(openY, closeY);
+                const bodyH = Math.max(1, Math.abs(openY - closeY));
+
+                // Wick
+                ctx.strokeStyle = bdr;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(x + bodyW / 2, highY);
+                ctx.lineTo(x + bodyW / 2, lowY);
+                ctx.stroke();
+
+                // Body
+                ctx.fillStyle = fill;
+                ctx.strokeStyle = bdr;
+                ctx.lineWidth = 1;
+                ctx.fillRect(x, bodyTop, bodyW, bodyH);
+                ctx.strokeRect(x, bodyTop, bodyW, bodyH);
+            }
+
+            // Draw smooth bezier movement path line (section II+)
+            if (mode === 'path' || mode === 'swings') {
+                // Build midpoints for all candles
+                const pts = CANDLES_DATA.map((c, i) => ({
+                    x: i * slotW + slotW / 2,
+                    y: pctToY((c.high + c.low) / 2)
+                }));
+
+                ctx.beginPath();
+                ctx.moveTo(pts[0].x, pts[0].y);
+                for (let i = 1; i < pts.length; i++) {
+                    const prev = pts[i - 1];
+                    const curr = pts[i];
+                    const cpx = (prev.x + curr.x) / 2;
+                    ctx.bezierCurveTo(cpx, prev.y, cpx, curr.y, curr.x, curr.y);
+                }
+                ctx.strokeStyle = 'rgba(210,185,120,0.45)';
+                ctx.lineWidth = 1.5;
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+                ctx.stroke();
+            }
+
+            // Swing dots are drawn separately with fade-in via SVG overlay in buildS3
+        }
+
+        // Build chart HTML scaffold
+        function buildChart(canvasId, mode, showCaption) {
+            return `<div class="ms-chart-outer" id="outer-${canvasId}">
+  <canvas class="ms-chart-canvas" id="${canvasId}"></canvas>
+</div>`;
+        }
+
+        /* ═══════════════════════════ SCREEN RENDERERS ═══════════════════════════ */
+        function renderScreen() {
+            const c = document.getElementById('screen-container');
+            c.innerHTML = '';
+            const s = STATE.currentSectionId;
+            let html = '';
+            if (s === 0) html = buildEntry();
+            else if (s === 1) html = buildS1(STATE.currentScreenIndex);
+            else if (s === 2) html = buildS2(STATE.currentScreenIndex);
+            else if (s === 3) html = buildS3(STATE.currentScreenIndex);
+            else if (s === 4) html = buildS4(STATE.currentScreenIndex);
+            else if (s === 5) { if (STATE.showReview) html = buildReviewAnswers(); else html = buildS5(); }
+            c.innerHTML = html;
+            c.scrollTop = 0;
+            document.getElementById('main-stage').scrollTop = 0;
+
+            // Post-render chart initialization
+            if (s === 1 && STATE.currentScreenIndex === 0) {
+                // Progressive candle reveal: ~0.3s per candle, then fade in caption
+                startProgressiveReveal('chart-s1');
+            }
+            if (s === 2 && STATE.currentScreenIndex === 0) {
+                requestAnimationFrame(() => drawChart('chart-s2', 'path'));
+            }
+            if (s === 3 && STATE.currentScreenIndex === 0) {
+                // Draw base chart (no dots), then fade in swing dots svg overlay
+                requestAnimationFrame(() => {
+                    drawChart('chart-s3', 'swings');
+                    renderSwingDotsSvg('chart-s3');
+                });
+            }
+
+            attachHandlers();
+        }
+
+        function buildEntry() {
+            return `<div style="text-align:center;padding:2rem 0">
+<p class="scr-eyebrow">ProsperPath &mdash; Market Structure</p>
+<h1 class="scr-h1">Movement</h1>
+<p class="scr-body" style="max-width:320px;margin:0 auto 1rem">The beginning of structure<br>is reading movement.</p>
+<p class="scr-meta">Beginner &bull; 15 minutes &bull; Raw Movement &amp; Rhythm</p>
+<button class="btn-primary" id="begin-btn">Begin Module</button>
+</div>`;
+        }
+
+        /* ── Section I — Raw Movement ── */
+        function buildS1(i) {
+            if (i === 0) {
+                return `<p class="scr-eyebrow">Section I &mdash; Raw Movement</p>
+<div class="ms-chart-outer" id="outer-chart-s1">
+  <canvas class="ms-chart-canvas" id="chart-s1"></canvas>
+</div>
+<div class="btn-row"><button class="btn-primary" id="s1-next">Continue</button></div>`;
+            }
+            // i === 1 — text screen
+            return `<p class="scr-eyebrow">Section I &mdash; Raw Movement</p>
+<div class="scr-body" style="margin-top:1.75rem;text-align:center">
+<p>Price moves candle by candle.</p>
+<p style="margin-top:.55rem">No pattern is obvious yet.</p>
+<p style="margin-top:.55rem">Structure is not visible at the raw level.</p>
+</div>
+<p style="font-size:.8rem;color:var(--m-muted);margin-bottom:1rem;margin-top:1rem;text-align:center">Clarify: <button class="clarify-btn" data-topic="rawmovement">Raw Movement</button></p>
+<div class="btn-row"><button class="btn-primary" id="s1-to-s2">Continue to Section II</button></div>`;
+        }
+
+        /* ── Section II — Movement Path ── */
+        function buildS2(i) {
+            if (i === 0) {
+                return `<p class="scr-eyebrow">Section II &mdash; Movement Path</p>
+${buildChart('chart-s2', 'path', false)}
+<div class="scr-body" style="margin-top:.9rem;text-align:center">
+<p>Movement follows a rhythm.</p>
+<p style="margin-top:.55rem">When noise is reduced, the flow becomes visible.</p>
+</div>
+<p style="font-size:.8rem;color:var(--m-muted);margin-bottom:1rem;margin-top:1rem;text-align:center">Clarify: <button class="clarify-btn" data-topic="rhythm">Rhythm</button></p>
+<div class="btn-row"><button class="btn-primary" id="s2-to-s3">Continue to Section III</button></div>`;
+            }
+        }
+
+        /* ── Section III — Swing Points ── */
+        function buildS3(i) {
+            if (i === 0) {
+                return `<p class="scr-eyebrow">Section III &mdash; Swing Points</p>
+${buildChart('chart-s3', 'swings', false)}
+<div class="scr-body" style="margin-top:.9rem">
+<p>Turning points reveal the skeleton of movement.</p>
+<p>This is where structure begins.</p>
+</div>
+<p style="font-size:.8rem;color:var(--m-muted);margin-bottom:1rem">Clarify: <button class="clarify-btn" data-topic="swingpoints">Swing Points</button></p>
+<div class="btn-row"><button class="btn-primary" id="s3-to-s4">Continue to Section IV</button></div>`;
+            }
+        }
+
+        /* ── Swing Dot SVG Overlay (fade-in after base chart renders) ── */
+        function renderSwingDotsSvg(canvasId) {
+            const outer = document.getElementById('outer-' + canvasId);
+            if (!outer) return;
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const W = canvas.clientWidth;
+            const H = canvas.clientHeight;
+            const n = CANDLES_DATA.length;
+            const slotW = W / n;
+            const padT = 10, padB = 10;
+            const chartH = H - padT - padB;
+            const pctToY = (pct) => padT + (1 - pct / 100) * chartH;
+
+            // Remove any existing svg overlay
+            const existing = outer.querySelector('.swing-dot-layer');
+            if (existing) existing.remove();
+
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+            svg.style.cssText = `position:absolute;inset:0;width:100%;height:100%;pointer-events:none;animation:swingDotFadeIn .55s ease both;animation-delay:.35s;opacity:0`;
+
+            SWINGS.forEach(sw => {
+                const x = sw.index * slotW + slotW / 2;
+                const y = pctToY(sw.pct);
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', x);
+                circle.setAttribute('cy', y);
+                circle.setAttribute('r', 4);
+                circle.setAttribute('fill', 'rgba(220,210,190,0.90)');
+                circle.setAttribute('stroke', 'rgba(220,210,190,0.28)');
+                circle.setAttribute('stroke-width', '1.5');
+                svg.appendChild(circle);
+            });
+
+            outer.appendChild(svg);
+
+            // Animate opacity via keyframe (animation-fill-mode:forwards alternative)
+            svg.addEventListener('animationend', () => { svg.style.opacity = '1'; });
+        }
+
+        /* ── Section IV — Principle ── */
+        function buildS4(i) {
+            return `<p class="scr-eyebrow">Section IV &mdash; Principle</p>
+<div class="principle-card">
+  <p class="principle-text">Movement becomes structure.</p>
+</div>
+<div class="btn-row"><button class="btn-primary" id="s4-to-s5">Continue to Competency Check</button></div>`;
+        }
+
+        /* ── Section V — Assessment ── */
+        const A_QUESTIONS = [
+            {
+                q: 'What is the first impression raw price movement often gives?',
+                opts: ['Perfect clarity', 'Chaotic / random', 'Always trending'],
+                correct: 'Chaotic / random'
+            },
+            {
+                q: 'Adding a movement path primarily helps you see:',
+                opts: ['Indicators', 'Flow / rhythm of movement', 'Fundamental value'],
+                correct: 'Flow / rhythm of movement'
+            },
+            {
+                q: 'Swing points represent:',
+                opts: ['Random candles', 'Turning points', 'News events'],
+                correct: 'Turning points'
+            },
+            {
+                q: 'Structure begins to appear when you focus on:',
+                opts: ['Turning points', 'Color of candles', 'Social sentiment'],
+                correct: 'Turning points'
+            },
+            {
+                q: 'The core principle of this module is:',
+                opts: ['Movement is noise', 'Movement becomes structure', 'Indicators create structure'],
+                correct: 'Movement becomes structure'
+            }
+        ];
+
+        function buildS5() {
+            if (STATE.assessment.isSubmitted) return buildResultScreen();
+            const qi = STATE.assessment.currentQ;
+            const q = A_QUESTIONS[qi];
+            const userAns = STATE.assessment.answers[qi];
+            const hasAnswer = userAns !== null && userAns !== undefined;
+            const isLastQ = qi === A_QUESTIONS.length - 1;
+            return `<p class="scr-eyebrow">Section V &mdash; Competency Check</p>
+<div class="assessment-prog">Question ${qi + 1} of ${A_QUESTIONS.length}</div>
+<div class="assessment-q">${escHtml(q.q)}</div>
+<div id="assessment-opts">
+${q.opts.map(opt => `<button class="opt-btn${userAns === opt ? ' selected' : ''}" data-ans="${escAttr(opt)}">${escHtml(opt)}</button>`).join('')}
+</div>
+<div class="btn-row">
+  ${isLastQ
+                    ? `<button class="btn-primary" id="assess-submit" ${!hasAnswer ? 'disabled' : ''}>Submit Assessment</button>`
+                    : `<button class="btn-primary" id="assess-next" ${!hasAnswer ? 'disabled' : ''}>Next</button>`}
+</div>
+${!hasAnswer ? `<p style="font-size:.75rem;color:var(--m-muted);margin-top:.75rem">Select an answer to continue.</p>` : ''}`;
+        }
+
+        function buildResultScreen() {
+            const score = STATE.assessment.scorePercent;
+            const passed = STATE.assessment.passed;
+            const reviewBtn = `<button class="btn-ghost" id="result-review-answers" style="margin-top:.5rem">Review Answers</button>`;
+            if (passed) {
+                return `<div class="result-box">
+<div style="font-size:2rem;color:var(--m-gold);margin-bottom:1rem">&#10003;</div>
+<div class="result-title">Competency <span class="result-gold">Verified</span></div>
+<div class="result-body">Movement becomes structure — understood.<br><span style="color:var(--m-gold);font-size:.85rem">Score: ${score}%</span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:.5rem">
+  <button class="btn-primary" id="result-return">Return to Market Structure</button>
+  ${reviewBtn}
+</div>
+</div>`;
+            }
+            return `<div class="result-box">
+<div style="font-size:2rem;color:var(--m-muted);margin-bottom:1rem">&#8635;</div>
+<div class="result-title">Review Recommended</div>
+<div class="result-body">Revisit the sections, then try again.<br><span style="color:var(--m-red-txt);font-size:.85rem">Score: ${score}%</span></div>
+<div class="btn-row" style="justify-content:center">
+  <button class="btn-ghost" id="result-retry">Retry Assessment</button>
+</div>
+<div style="margin-top:.75rem;text-align:center">${reviewBtn}</div>
+</div>`;
+        }
+
+        const A_REVIEW_DATA = [
+            { explanation: 'Raw price data looks chaotic without a framework for reading it. That first impression of chaos is normal.', clarifyTopic: 'rawmovement' },
+            { explanation: 'A movement path traces the midpoints of candles, revealing the rhythm beneath the noise.', clarifyTopic: 'rhythm' },
+            { explanation: 'Swing points are local turning points — highs where price peaked before falling, lows where it bottomed before rising.', clarifyTopic: 'swingpoints' },
+            { explanation: 'Focusing on turning points begins to reveal the skeleton of price structure.', clarifyTopic: 'swingpoints' },
+            { explanation: 'The core principle of Module 3.1: movement — observed and filtered — becomes visible structure.', clarifyTopic: 'rawmovement' }
+        ];
+
+        function buildReviewAnswers() {
+            const rows = A_QUESTIONS.map((q, i) => {
+                const userAns = STATE.assessment.answers[i];
+                const correct = userAns === q.correct;
+                const rv = A_REVIEW_DATA[i];
+                const icon = correct ? '&#10003;' : '&#10007;';
+                const iconColor = correct ? 'var(--m-green-txt)' : 'var(--m-red-txt)';
+                return `<div style="background:var(--m-surf2);border:1px solid var(--m-bdr);border-radius:6px;padding:1rem 1.1rem;margin-bottom:.85rem">
+<p style="font-size:.8rem;font-weight:600;letter-spacing:.04em;color:var(--m-gold);margin-bottom:.6rem">Q${i + 1}</p>
+<p style="font-size:.9rem;color:var(--m-txt);margin-bottom:.75rem;line-height:1.5">${escHtml(q.q)}</p>
+<p style="font-size:.82rem;margin-bottom:.3rem"><span style="color:${iconColor};font-weight:700;margin-right:.35rem">${icon}</span><span style="color:var(--m-muted)">Your answer:</span> <span style="color:var(--m-txt)">${escHtml(userAns || '(no answer)')}</span></p>
+<p style="font-size:.82rem;color:var(--m-muted);margin-bottom:.75rem">Correct answer: <span style="color:var(--m-txt);font-weight:500">${escHtml(q.correct)}</span></p>
+<p style="font-size:.82rem;color:var(--m-muted);line-height:1.55;margin-bottom:.65rem">${rv.explanation}</p>
+<button class="clarify-btn" data-topic="${rv.clarifyTopic}">Clarify</button>
+</div>`;
+            }).join('');
+            return `<p class="scr-eyebrow">Section V &mdash; Review Answers</p>
+<h2 class="scr-h2">Assessment Breakdown</h2>
+${rows}
+<div class="btn-row"><button class="btn-ghost" id="review-back-results">Back to Results</button></div>`;
+        }
+
+        /* ── Progressive Candle Reveal ── */
+        function startProgressiveReveal(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const n = CANDLES_DATA.length;
+            const DELAY_MS = 300; // ~0.3s per candle
+            let revealed = 0;
+
+            function revealNext() {
+                if (!document.getElementById(canvasId)) return; // guard: section may have changed
+                revealed++;
+                drawChart(canvasId, 'raw', revealed);
+                if (revealed < n) {
+                    setTimeout(revealNext, DELAY_MS);
+                }
+            }
+
+            // Start immediately
+            revealNext();
+        }
+
+        /* ═══════════════════════════ SCORE ═══════════════════════════ */
+        function computeScore() {
+            let correct = 0;
+            A_QUESTIONS.forEach((q, i) => { if (STATE.assessment.answers[i] === q.correct) correct++; });
+            const pct = Math.round((correct / A_QUESTIONS.length) * 100);
+            STATE.assessment.scorePercent = pct;
+            STATE.assessment.passed = pct >= 70;
+            STATE.assessment.isSubmitted = true;
+            if (STATE.assessment.passed) {
+                STATE.verified = true;
+                try {
+                    const saved = JSON.parse(localStorage.getItem('pp_ms_modules') || '{}');
+                    saved['3.1'] = { verified: true, mastery: pct, mastery_percent: pct, status: 'Verified', progress: 100 };
+                    localStorage.setItem('pp_ms_modules', JSON.stringify(saved));
+                } catch (e) { }
+            }
+            updateProgress();
+        }
+
+        /* ═══════════════════════════ HANDLERS ═══════════════════════════ */
+        function advanceScreen(sid) {
+            STATE.currentScreenIndex++;
+            STATE.sectionLastScreenIndex[sid] = STATE.currentScreenIndex;
+            renderScreen();
+        }
+
+        function attachHandlers() {
+            const $ = id => document.getElementById(id);
+            const on = (id, ev, fn) => { const el = $(id); if (el) el.addEventListener(ev, fn); };
+
+            // Entry
+            on('begin-btn', 'click', () => goToSection(1, 0));
+            // S1
+            on('s1-next', 'click', () => advanceScreen(1));
+            on('s1-to-s2', 'click', () => goToSection(2, 0));
+            // S2
+            on('s2-to-s3', 'click', () => goToSection(3, 0));
+            // S3
+            on('s3-to-s4', 'click', () => goToSection(4, 0));
+            // S4
+            on('s4-to-s5', 'click', () => goToSection(5, 0));
+
+            // S5 Assessment — NO back button (removed)
+            document.querySelectorAll('[data-ans]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (STATE.assessment.isSubmitted) return;
+                    const qi = STATE.assessment.currentQ;
+                    if (STATE.assessment.answers[qi] === btn.dataset.ans) {
+                        STATE.assessment.answers[qi] = null;
+                    } else {
+                        STATE.assessment.answers[qi] = btn.dataset.ans;
+                    }
+                    renderScreen();
+                });
+            });
+
+            on('assess-next', 'click', () => {
+                const qi = STATE.assessment.currentQ;
+                if (STATE.assessment.answers[qi] === null || STATE.assessment.answers[qi] === undefined) return;
+                STATE.assessment.currentQ++;
+                renderScreen();
+            });
+
+            on('assess-submit', 'click', () => {
+                const qi = STATE.assessment.currentQ;
+                if (STATE.assessment.answers[qi] === null || STATE.assessment.answers[qi] === undefined) return;
+                computeScore();
+                renderScreen();
+            });
+
+            on('result-return', 'click', () => { window.location.href = 'market-structure.html'; });
+            on('result-retry', 'click', () => {
+                STATE.assessment.answers = [null, null, null, null, null];
+                STATE.assessment.isSubmitted = false;
+                STATE.assessment.scorePercent = null;
+                STATE.assessment.passed = null;
+                STATE.assessment.currentQ = 0;
+                STATE.showReview = false;
+                renderScreen();
+            });
+            on('result-review-answers', 'click', () => { if (STATE.assessment.isSubmitted) { STATE.showReview = true; renderScreen(); } });
+            on('review-back-results', 'click', () => { STATE.showReview = false; renderScreen(); });
+
+            // Clarify
+            document.querySelectorAll('.clarify-btn').forEach(btn => {
+                btn.addEventListener('click', () => openClarify(btn.dataset.topic));
+            });
+        }
+
+        /* ═══════════════════════════ INIT ═══════════════════════════ */
+        (function init() {
+            STATE.navHistory = [];
+            STATE.currentSectionId = 0;
+            STATE.currentScreenIndex = 0;
+            visit(0); renderNav(); renderScreen();
+        })();
+    </script>
+</body>
+
+</html>

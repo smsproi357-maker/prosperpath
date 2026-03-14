@@ -1,0 +1,75 @@
+<style>
+    .s2-screen { width: 100%; max-width: 640px; animation: s2Fade .22s ease both }
+    @keyframes s2Fade { from { opacity: 0; transform: translateY(5px) } to { opacity: 1; transform: translateY(0) } }
+    .s2-eyebrow { font-size: .68rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--m-muted); margin-bottom: 1.2rem }
+    .s2-h1 { font-family: 'Outfit', sans-serif; font-size: clamp(1.5rem, 3.8vw, 2.1rem); font-weight: 700; color: var(--m-txt); letter-spacing: -.02em; line-height: 1.15; margin-bottom: .85rem }
+    .s2-body { font-size: .95rem; color: var(--m-txt); line-height: 1.7; margin-bottom: 1.3rem }
+    .s2-body p { margin-bottom: .5rem }
+    .s2-body ul { margin: .4rem 0 .4rem 1.1rem; color: var(--m-muted) }
+    .s2-body li { margin-bottom: .3rem }
+    .s2-chart { position: relative; height: 240px; margin: 1.25rem 0 .95rem; background: var(--m-surf2); border: 1px solid var(--m-bdr); border-radius: 4px; overflow: hidden }
+    .s2-chart svg { position: absolute; inset: 0; width: 100%; height: 100% }
+    .s2-note { background: var(--m-surf2); border: 1px solid var(--m-bdrhi); border-left: 3px solid var(--m-gold-line); border-radius: 4px; padding: .9rem 1rem; margin-bottom: 1.6rem; font-size: .84rem; color: var(--m-muted); line-height: 1.55 }
+    .s2-btn-row { display: flex; gap: .6rem; flex-wrap: wrap }
+    .s2-btn-prev, .s2-btn-next { font-family: 'Inter', sans-serif; font-size: .8rem; border-radius: 3px; cursor: pointer; transition: border-color var(--m-tr), color var(--m-tr), background .2s }
+    .s2-btn-prev { background: transparent; border: 1px solid var(--m-bdr); color: var(--m-muted); padding: .62rem 1.2rem }
+    .s2-btn-prev:hover { border-color: var(--m-bdrhi); color: var(--m-txt) }
+    .s2-btn-next { background: transparent; border: 1px solid var(--m-gold-line); color: var(--m-gold); padding: .65rem 1.5rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase }
+    .s2-btn-next:hover { background: var(--m-gold-dim); border-color: var(--m-gold) }
+</style>
+
+<div class="s2-screen">
+    <p class="s2-eyebrow">Section II · Where Liquidity Forms</p>
+    <h2 class="s2-h1"><button class="clarify-btn" onclick="openClarify('equalHighsLows')" aria-label="Clarify: Equal Highs">Equal Highs</button> and Equal Lows</h2>
+    <div class="s2-body">
+        <p>Equal highs attract liquidity because many traders place stop losses above them.</p>
+        <p>Breakout traders also place buy orders above these highs. This creates a cluster of orders above the highs.</p>
+        <p>Liquidity therefore forms:</p>
+        <ul>
+            <li>above equal highs</li>
+            <li>below equal lows</li>
+        </ul>
+        <p>The highlighted band is labeled as a <button class="clarify-btn" onclick="openClarify('liquidityZone')" aria-label="Clarify: Liquidity Zone">liquidity zone</button>.</p>
+    </div>
+    <div class="s2-chart" role="img" aria-label="Chart showing equal highs and equal lows with liquidity zones above and below">
+        <svg id="s2-svg" viewBox="0 0 580 240" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="s2-note">The chart only marks where liquidity exists. It does not show a sweep or a stop run.</div>
+    <div class="s2-btn-row">
+        <button class="s2-btn-prev" onclick="goTo(1, 0)">&larr; Previous</button>
+        <button class="s2-btn-next" onclick="goTo(3, 0)">Next Section &rarr;</button>
+    </div>
+</div>
+
+<script>
+    (function () {
+        var W = 580, H = 240;
+        var PAD = { l: 36, r: 30, t: 24, b: 24 };
+        var UW = W - PAD.l - PAD.r;
+        var UH = H - PAD.t - PAD.b;
+        function px(fx) { return PAD.l + fx * UW; }
+        function py(fy) { return PAD.t + (1 - fy) * UH; }
+        var eqHighY = py(0.74);
+        var eqLowY = py(0.22);
+        var nodes = [
+            { fx: 0.05, fy: 0.28 }, { fx: 0.16, fy: 0.74 }, { fx: 0.27, fy: 0.42 }, { fx: 0.38, fy: 0.74 },
+            { fx: 0.50, fy: 0.33 }, { fx: 0.60, fy: 0.22 }, { fx: 0.72, fy: 0.46 }, { fx: 0.84, fy: 0.22 }, { fx: 0.93, fy: 0.39 }
+        ];
+        var out = [];
+        [60, 120, 180].forEach(function (gy) {
+            out.push('<line x1="0" y1="' + gy + '" x2="' + W + '" y2="' + gy + '" stroke="rgba(255,255,255,0.025)" stroke-width="1"/>');
+        });
+        out.push('<rect x="' + px(0.10) + '" y="' + (eqHighY - 22) + '" width="' + (px(0.46) - px(0.10)) + '" height="18" fill="rgba(195,162,70,0.08)"/>');
+        out.push('<rect x="' + px(0.54) + '" y="' + (eqLowY + 4) + '" width="' + (px(0.90) - px(0.54)) + '" height="18" fill="rgba(195,162,70,0.08)"/>');
+        out.push('<line x1="' + px(0.08) + '" y1="' + eqHighY + '" x2="' + px(0.48) + '" y2="' + eqHighY + '" stroke="rgba(195,162,70,0.26)" stroke-dasharray="5,4"/>');
+        out.push('<line x1="' + px(0.52) + '" y1="' + eqLowY + '" x2="' + px(0.92) + '" y2="' + eqLowY + '" stroke="rgba(195,162,70,0.26)" stroke-dasharray="5,4"/>');
+        out.push('<text x="' + px(0.30) + '" y="' + (eqHighY - 9) + '" text-anchor="middle" font-size="8.5" font-family="Inter,sans-serif" fill="rgba(195,162,70,0.72)">liquidity zone</text>');
+        out.push('<text x="' + px(0.72) + '" y="' + (eqLowY + 18) + '" text-anchor="middle" font-size="8.5" font-family="Inter,sans-serif" fill="rgba(195,162,70,0.72)">liquidity zone</text>');
+        out.push('<text x="' + px(0.16) + '" y="' + (eqHighY - 28) + '" text-anchor="middle" font-size="8" font-family="Inter,sans-serif" fill="rgba(230,230,230,0.88)">EQH</text>');
+        out.push('<text x="' + px(0.38) + '" y="' + (eqHighY - 28) + '" text-anchor="middle" font-size="8" font-family="Inter,sans-serif" fill="rgba(230,230,230,0.88)">EQH</text>');
+        out.push('<text x="' + px(0.60) + '" y="' + (eqLowY + 30) + '" text-anchor="middle" font-size="8" font-family="Inter,sans-serif" fill="rgba(230,230,230,0.88)">EQL</text>');
+        out.push('<text x="' + px(0.84) + '" y="' + (eqLowY + 30) + '" text-anchor="middle" font-size="8" font-family="Inter,sans-serif" fill="rgba(230,230,230,0.88)">EQL</text>');
+        out.push('<path d="M' + nodes.map(function (n) { return px(n.fx) + ',' + py(n.fy); }).join(' L') + '" fill="none" stroke="rgba(195,162,70,1)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>');
+        document.getElementById('s2-svg').innerHTML = out.join('');
+    })();
+</script>

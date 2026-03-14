@@ -1,0 +1,83 @@
+<style>
+    .s5-screen { width: 100%; max-width: 640px; animation: s5Fade .22s ease both }
+    @keyframes s5Fade { from { opacity: 0; transform: translateY(5px) } to { opacity: 1; transform: translateY(0) } }
+    .s5-eyebrow { font-size: .68rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--m-muted); margin-bottom: 1.2rem }
+    .s5-h1 { font-family: 'Outfit', sans-serif; font-size: clamp(1.5rem, 3.8vw, 2.1rem); font-weight: 700; color: var(--m-txt); letter-spacing: -.02em; line-height: 1.15; margin-bottom: .85rem }
+    .s5-chart { position: relative; height: 255px; margin: 1.25rem 0 1rem; background: var(--m-surf2); border: 1px solid var(--m-bdr); border-radius: 4px; overflow: hidden }
+    .s5-chart svg { position: absolute; inset: 0; width: 100%; height: 100% }
+    .s5-body { font-size: .95rem; color: var(--m-txt); line-height: 1.7; margin-bottom: 1.5rem }
+    .s5-body p { margin-bottom: .5rem }
+    .s5-btn-row { display: flex; gap: .6rem; flex-wrap: wrap }
+    .s5-btn-prev, .s5-btn-next { font-family: 'Inter', sans-serif; font-size: .8rem; border-radius: 3px; cursor: pointer; transition: border-color var(--m-tr), color var(--m-tr), background .2s }
+    .s5-btn-prev { background: transparent; border: 1px solid var(--m-bdr); color: var(--m-muted); padding: .62rem 1.2rem }
+    .s5-btn-prev:hover { border-color: var(--m-bdrhi); color: var(--m-txt) }
+    .s5-btn-next { background: transparent; border: 1px solid var(--m-gold-line); color: var(--m-gold); padding: .65rem 1.5rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase }
+    .s5-btn-next:hover { background: var(--m-gold-dim); border-color: var(--m-gold) }
+</style>
+
+<div class="s5-screen">
+    <p class="s5-eyebrow">Section V · Where Liquidity Forms</p>
+    <div class="s5-body thinking-prompt">
+        <p>Look at the chart.</p>
+        <p>Can you identify where liquidity is likely to exist?</p>
+    </div>
+    <div class="s5-chart" role="img" aria-label="Chart with equal highs, previous highs, and range highs mapped as liquidity areas">
+        <svg id="s5-svg" viewBox="0 0 580 255" preserveAspectRatio="none"></svg>
+    </div>
+    <div class="s5-body explanation" style="opacity: 0; transform: translateY(10px); transition: opacity .6s ease, transform .6s ease;">
+        <p>Liquidity tends to form at obvious price levels.</p>
+        <p>In this chart we can see several examples:</p>
+        <ul style="margin: .5rem 0 1rem 1.25rem; color: var(--m-muted); font-size: .9rem;">
+            <li style="margin-bottom: .3rem;">Equal highs</li>
+            <li style="margin-bottom: .3rem;">Previous highs</li>
+            <li style="margin-bottom: .3rem;">Range boundaries</li>
+        </ul>
+        <p>These areas attract stop losses and breakout orders, which creates liquidity clusters.</p>
+    </div>
+    <div class="s5-btn-row">
+        <button class="s5-btn-prev" onclick="goTo(4, 0)">&larr; Previous</button>
+        <button class="s5-btn-next" onclick="goTo(6, 0)">Next Section &rarr;</button>
+    </div>
+</div>
+
+<script>
+    (function () {
+        var W = 580, H = 255;
+        var PAD = { l: 36, r: 30, t: 24, b: 24 };
+        var UW = W - PAD.l - PAD.r;
+        var UH = H - PAD.t - PAD.b;
+        function px(fx) { return PAD.l + fx * UW; }
+        function py(fy) { return PAD.t + (1 - fy) * UH; }
+        var nodes = [
+            { fx: 0.05, fy: 0.24 }, { fx: 0.13, fy: 0.76 }, { fx: 0.22, fy: 0.46 }, { fx: 0.31, fy: 0.76 }, { fx: 0.42, fy: 0.30 },
+            { fx: 0.54, fy: 0.58 }, { fx: 0.66, fy: 0.36 }, { fx: 0.77, fy: 0.62 }, { fx: 0.88, fy: 0.41 }
+        ];
+        var eqHighY = py(0.76);
+        var prevHighY = py(0.58);
+        var rangeHighY = py(0.62);
+        var out = [];
+        [60, 125, 190].forEach(function (gy) {
+            out.push('<line x1="0" y1="' + gy + '" x2="' + W + '" y2="' + gy + '" stroke="rgba(255,255,255,0.025)" stroke-width="1"/>');
+        });
+        out.push('<rect x="' + px(0.10) + '" y="' + (eqHighY - 20) + '" width="' + (px(0.35) - px(0.10)) + '" height="16" fill="rgba(195,162,70,0.08)"/>');
+        out.push('<rect x="' + px(0.49) + '" y="' + (prevHighY - 20) + '" width="' + (px(0.58) - px(0.49)) + '" height="16" fill="rgba(195,162,70,0.08)"/>');
+        out.push('<rect x="' + px(0.70) + '" y="' + (rangeHighY - 20) + '" width="' + (px(0.90) - px(0.70)) + '" height="16" fill="rgba(195,162,70,0.08)"/>');
+        out.push('<line x1="' + px(0.10) + '" y1="' + eqHighY + '" x2="' + px(0.35) + '" y2="' + eqHighY + '" stroke="rgba(195,162,70,0.28)" stroke-dasharray="5,4"/>');
+        out.push('<line x1="' + px(0.49) + '" y1="' + prevHighY + '" x2="' + px(0.58) + '" y2="' + prevHighY + '" stroke="rgba(195,162,70,0.28)" stroke-dasharray="5,4"/>');
+        out.push('<line x1="' + px(0.70) + '" y1="' + rangeHighY + '" x2="' + px(0.90) + '" y2="' + rangeHighY + '" stroke="rgba(195,162,70,0.28)" stroke-dasharray="5,4"/>');
+        out.push('<text x="' + px(0.22) + '" y="' + (eqHighY - 8) + '" text-anchor="middle" font-size="8.5" font-family="Inter,sans-serif" fill="rgba(195,162,70,0.75)">equal highs</text>');
+        out.push('<text x="' + px(0.535) + '" y="' + (prevHighY - 8) + '" text-anchor="middle" font-size="8.5" font-family="Inter,sans-serif" fill="rgba(195,162,70,0.75)">previous high</text>');
+        out.push('<text x="' + px(0.80) + '" y="' + (rangeHighY - 8) + '" text-anchor="middle" font-size="8.5" font-family="Inter,sans-serif" fill="rgba(195,162,70,0.75)">range high</text>');
+        out.push('<path d="M' + nodes.map(function (n) { return px(n.fx) + ',' + py(n.fy); }).join(' L') + '" fill="none" stroke="rgba(195,162,70,1)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>');
+        document.getElementById('s5-svg').innerHTML = out.join('');
+
+        // Reveal explanation after a delay
+        setTimeout(function() {
+            var exp = document.querySelector('.s5-body.explanation');
+            if (exp) {
+                exp.style.opacity = '1';
+                exp.style.transform = 'translateY(0)';
+            }
+        }, 3500);
+    })();
+</script>

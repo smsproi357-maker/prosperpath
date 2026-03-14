@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Market Structure — Understand how movement becomes structure. Module-based competency path by ProsperPath.">
+    <title>Market Structure | ProsperPath Insights</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        /* ─── MS Page Reset & Base ─────────────────────────── */
+        :root {
+            --mm-bg: #0d0e10;
+            --mm-surface: #141618;
+            --mm-border: #1e2023;
+            --mm-border-hi: #2e3035;
+            --mm-text: #e0e1e3;
+            --mm-muted: #5e626a;
+            --mm-gold: #a07c2e;
+            --mm-gold-dim: rgba(160, 124, 46, 0.14);
+            --mm-gold-line: rgba(160, 124, 46, 0.42);
+            --mm-gold-dot: #a07c2e;
+            --mm-radius: 6px;
+            --mm-transition: 160ms ease;
+        }
+
+        #ai-chat-fab,
+        .ai-fab-btn,
+        .floating-action-btn,
+        [class*="fab"],
+        [id*="fab"] {
+            display: none !important;
+        }
+
+        .mm-page {
+            background: var(--mm-bg);
+            color: var(--mm-text);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        .mm-container {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 0 1.25rem;
+        }
+
+        /* ─── Hero ──────────────────────────────────────────── */
+        .mm-hero {
+            padding: 4rem 1.25rem 2.25rem;
+            text-align: center;
+        }
+
+        .mm-hero-eyebrow {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--mm-muted);
+            margin-bottom: 0.6rem;
+        }
+
+        .mm-hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--mm-text);
+            margin: 0 0 0.6rem;
+        }
+
+        .mm-hero p {
+            font-size: 1rem;
+            color: var(--mm-muted);
+            letter-spacing: 0.03em;
+            margin: 0;
+        }
+
+        /* ─── Domain Status Bar ───────────────────────────── */
+        .mm-status-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 1.25rem 2rem;
+            border-bottom: 1px solid var(--mm-border);
+        }
+
+        .mm-status-chip {
+            font-size: 0.7rem;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            color: var(--mm-muted);
+            padding: 0.32rem 0.7rem;
+            border: 1px solid var(--mm-border);
+            border-radius: 3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .mm-status-chip strong {
+            font-weight: 600;
+            color: var(--mm-text);
+            letter-spacing: 0;
+        }
+
+        .mm-status-chip.gold {
+            border-color: var(--mm-gold-line);
+        }
+
+        .mm-status-chip.gold strong {
+            color: var(--mm-gold);
+        }
+
+        .mm-cert-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--mm-gold);
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        /* ─── Sections ───────────────────────────────────── */
+        .mm-section {
+            padding: 2.5rem 1.25rem;
+            border-bottom: 1px solid var(--mm-border);
+        }
+
+        .mm-card {
+            background: var(--mm-surface);
+            border: 1px solid var(--mm-border);
+            border-radius: var(--mm-radius);
+            padding: 1.75rem 1.5rem;
+        }
+
+        .mm-card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--mm-text);
+            margin: 0 0 0.4rem;
+        }
+
+        .mm-card-sub {
+            font-size: 0.85rem;
+            color: var(--mm-muted);
+            margin: 0 0 1.4rem;
+        }
+
+        /* ─── Buttons ─────────────────────────────────────── */
+        .mm-btn-primary {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid var(--mm-gold-line);
+            color: var(--mm-gold);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 0.62rem 1.4rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background var(--mm-transition), border-color var(--mm-transition);
+        }
+
+        .mm-btn-primary:hover {
+            background: var(--mm-gold-dim);
+            border-color: var(--mm-gold);
+        }
+
+        .mm-btn-primary:focus-visible {
+            outline: 2px solid var(--mm-gold);
+            outline-offset: 2px;
+        }
+
+        .mm-btn-primary:disabled {
+            opacity: 0.38;
+            cursor: not-allowed;
+        }
+
+        .mm-btn-primary:disabled:hover {
+            background: transparent;
+            border-color: var(--mm-gold-line);
+        }
+
+        /* ─── Module List ────────────────────────────────── */
+        .mm-modules-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--mm-muted);
+            margin-bottom: 1.1rem;
+        }
+
+        .mm-modules-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .mm-module-card {
+            background: var(--mm-surface);
+            border: 1px solid var(--mm-border);
+            border-radius: var(--mm-radius);
+            border-left: 3px solid transparent;
+            padding: 1.1rem 1.25rem;
+            transition: border-color var(--mm-transition);
+        }
+
+        .mm-module-card:hover {
+            border-color: var(--mm-border-hi);
+        }
+
+        .mm-module-card.verified {
+            border-left-color: var(--mm-gold);
+        }
+
+        .mm-module-card.verified:hover {
+            border-color: var(--mm-gold-line);
+        }
+
+        .mm-module-mastery {
+            font-size: 0.7rem;
+            color: var(--mm-gold);
+            margin-top: 0.4rem;
+            letter-spacing: 0.03em;
+        }
+
+        .mm-module-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mm-module-num {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--mm-muted);
+        }
+
+        .mm-diff-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            padding: 0.18rem 0.55rem;
+            border-radius: 2px;
+        }
+
+        .mm-diff-badge.beginner {
+            background: rgba(140, 210, 240, 0.1);
+            color: #7dcce8;
+        }
+
+        .mm-diff-badge.intermediate {
+            background: rgba(120, 210, 160, 0.1);
+            color: #7ed8a8;
+        }
+
+        .mm-status-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            padding: 0.18rem 0.55rem;
+            border-radius: 2px;
+        }
+
+        .mm-status-badge.not-started {
+            background: rgba(107, 111, 118, 0.15);
+            color: var(--mm-muted);
+        }
+
+        .mm-status-badge.in-progress {
+            background: rgba(100, 160, 255, 0.12);
+            color: #8ec0ff;
+        }
+
+        .mm-status-badge.verified {
+            background: rgba(160, 124, 46, 0.14);
+            color: var(--mm-gold);
+        }
+
+        .mm-status-badge.coming-next {
+            background: rgba(107, 111, 118, 0.1);
+            color: var(--mm-muted);
+            opacity: 0.65;
+        }
+
+        .mm-module-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--mm-text);
+            margin: 0 0 0.35rem;
+        }
+
+        .mm-module-footer {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.6rem;
+            margin-top: 0.85rem;
+        }
+
+        .mm-module-info {
+            font-size: 0.73rem;
+            color: var(--mm-muted);
+        }
+
+        .mm-module-info+.mm-module-info::before {
+            content: "·";
+            margin-right: 0.6rem;
+        }
+
+        .mm-module-cta {
+            margin-left: auto;
+        }
+
+        /* ─── Competency Summary ─────────────────────────── */
+        .mm-comp-header {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--mm-text);
+            margin: 0 0 0.25rem;
+        }
+
+        .mm-comp-count {
+            font-size: 0.85rem;
+            color: var(--mm-muted);
+            margin: 0 0 1rem;
+        }
+
+        .mm-progress-track {
+            height: 2px;
+            background: var(--mm-border);
+            border-radius: 1px;
+            overflow: hidden;
+            margin-bottom: 1.1rem;
+        }
+
+        .mm-progress-fill {
+            height: 100%;
+            background: var(--mm-gold);
+            border-radius: 1px;
+            transition: width 0.4s ease;
+        }
+
+        .mm-comp-guidance {
+            font-size: 0.8rem;
+            color: var(--mm-muted);
+        }
+
+        /* ─── Domain Back Link ───────────────────────────── */
+        .mm-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.78rem;
+            color: var(--mm-muted);
+            text-decoration: none;
+            padding: 1rem 1.25rem 0;
+            transition: color var(--mm-transition);
+        }
+
+        .mm-back-link:hover {
+            color: var(--mm-text);
+        }
+
+        /* ─── Market Structure Framework Bar ──────────────── */
+        .mm-framework {
+            padding: 1.6rem 1.25rem 2.25rem;
+            border-bottom: 1px solid var(--mm-border);
+        }
+
+        .mm-framework-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--mm-muted);
+            opacity: 0.7;
+            margin-bottom: 0.9rem;
+            text-align: center;
+        }
+
+        .mm-framework-track {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0;
+        }
+
+        .mm-fw-step {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            opacity: 0;
+        }
+
+        .mm-fw-step.fw-visible {
+            animation: fw-fadein 0.3s ease forwards;
+        }
+
+        @keyframes fw-fadein {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .mm-fw-word {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            color: var(--mm-muted);
+            opacity: 0.5;
+            padding: 0.3rem 0.5rem;
+            border-radius: 3px;
+            transition: color 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+            position: relative;
+        }
+
+        .mm-fw-step.fw-done .mm-fw-word {
+            color: var(--mm-gold);
+            opacity: 0.9;
+        }
+
+        .mm-fw-step.fw-done .mm-fw-word::after {
+            content: ' ✓';
+            font-size: 0.68rem;
+            opacity: 0.9;
+        }
+
+        .mm-fw-step.fw-current .mm-fw-word {
+            color: var(--mm-text);
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .mm-fw-step.fw-current .mm-fw-word::after {
+            content: ' ●';
+            font-size: 0.55rem;
+            opacity: 0.9;
+            vertical-align: middle;
+        }
+
+        .mm-fw-step.fw-upcoming .mm-fw-word {
+            color: var(--mm-muted);
+            opacity: 0.6;
+        }
+
+        .mm-fw-arrow {
+            font-size: 0.7rem;
+            color: var(--mm-muted);
+            opacity: 0.6;
+            padding: 0 0.15rem;
+            user-select: none;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ── Navbar ─────────────────────────────────────────── -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="app.html" class="logo">
+                    <div class="logo-icon">⚡</div>
+                    <span>ProsperPath</span>
+                </a>
+
+                <div class="nav-links" id="nav-links">
+                    <a href="clarity-box.html">Clarity Box</a>
+                    <a href="trade.html">Trade</a>
+                    <a href="market-mechanics.html" class="active">Market Mechanics</a>
+                    <a href="portfolio.html">Portfolio</a>
+                    <div class="nav-item-dropdown">
+
+                        <a href="resources.html">Resources</a>
+
+                        <div class="dropdown-panel">
+
+                            <a href="wealth-guides.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">Wealth Guides</span>
+
+                                <span class="dropdown-item-desc">Structured frameworks for building financial understanding.</span>
+
+                            </a>
+
+                            <a href="tool-reviews.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">Tool Reviews</span>
+
+                                <span class="dropdown-item-desc">Reviews of platforms and financial tools.</span>
+
+                            </a>
+
+                            <a href="ai-calculators.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">AI Calculators</span>
+
+                                <span class="dropdown-item-desc">Interactive tools for financial modelling.</span>
+
+                            </a>
+
+                            <a href="blog.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">Insights</span>
+
+                                <span class="dropdown-item-desc">Market analysis and commentary.</span>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="nav-actions" style="display:flex;align-items:center;gap:var(--space-4);position:relative;">
+                    <div class="settings-wrapper" style="position:relative;">
+                        <button id="settings-btn" class="settings-icon-btn" aria-label="Settings"
+                            onclick="toggleAuthMenu()">
+                            <span class="icon">⚙️</span>
+                        </button>
+                        <div id="auth-wrapper" class="auth-rolldown-container">
+                            <div id="auth-container"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ── Main Page ─────────────────────────────────────── -->
+    <main class="mm-page">
+
+        <!-- Back to Market Mechanics -->
+        <a href="market-mechanics.html" class="mm-back-link">&#8592; Market Mechanics</a>
+
+        <!-- 1. Hero -->
+        <section class="mm-hero">
+            <div class="mm-container">
+                <p class="mm-hero-eyebrow">Domain III</p>
+                <h1>Market Structure</h1>
+                <p>Structure is organized movement.</p>
+            </div>
+        </section>
+
+        <!-- 2. Domain Status Bar -->
+        <div class="mm-status-bar" id="mm-status-bar">
+            <span class="mm-status-chip"><strong>Domain III</strong>&thinsp;— Market Structure</span>
+            <span class="mm-status-chip" id="chip-competency"><strong>Competency:</strong>&thinsp;<span
+                    id="chip-comp-val">0 / 1</span> Verified</span>
+            <span class="mm-status-chip" id="chip-cert">Certification: <strong id="chip-cert-val">In
+                    Progress</strong></span>
+        </div>
+
+        <!-- 3. Market Structure Framework Bar -->
+        <div class="mm-framework" id="mm-framework">
+            <div class="mm-container">
+                <p class="mm-framework-label">Market Structure Framework</p>
+                <div class="mm-framework-track" id="framework-track" role="list" aria-label="Framework steps">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Module List -->
+        <section class="mm-section">
+            <div class="mm-container">
+                <p class="mm-modules-label">Domain III — 7 Modules</p>
+                <div class="mm-modules-list" id="modules-list">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Competency Summary -->
+        <section class="mm-section" style="border-bottom:none; padding-bottom: 4rem;">
+            <div class="mm-container">
+                <div class="mm-card">
+                    <p class="mm-comp-header">Structural Competency</p>
+                    <p class="mm-comp-count" id="comp-count">Verified 0 / 1</p>
+                    <div class="mm-progress-track">
+                        <div class="mm-progress-fill" id="comp-bar" style="width:0%"></div>
+                    </div>
+                    <p class="mm-comp-guidance" id="comp-guidance">Complete the verified module to begin building
+                        structural competency.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ── Footer ────────────────────────────────────────── -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2026 ProsperPath Insights. AI-Powered Wealth Strategies.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ── Scripts ───────────────────────────────────────── -->
+    <script src="script.js?v=ms1"></script>
+    <script src="ai-widget.js"></script>
+    <script src="google-auth.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            if (typeof initGoogleAuth === 'function') initGoogleAuth();
+        });
+    </script>
+
+    <script>
+        /* ════════════════════════════════════════════════════════
+           MARKET STRUCTURE — Page State & Logic
+        ════════════════════════════════════════════════════════ */
+
+        // ── Module Data ──────────────────────────────────────────
+        const MODULES = [
+            {
+                id: '3.1',
+                title: 'Movement',
+                difficulty: 'Beginner',
+                time: '15 minutes',
+                focus: 'Raw Movement & Rhythm',
+                mastery: 0,
+                progress: 0,
+                available: true
+            },
+            {
+                id: '3.2',
+                title: 'Swings',
+                difficulty: 'Beginner',
+                time: '15 minutes',
+                focus: 'Swings & Structure',
+                mastery: 0,
+                progress: 0,
+                available: true
+            },
+            {
+                id: '3.3',
+                title: 'Structure',
+                difficulty: 'Beginner',
+                time: '15 minutes',
+                focus: 'Structure & Shape',
+                mastery: 0,
+                progress: 0,
+                available: true
+            },
+            {
+                id: '3.4',
+                title: 'Trends',
+                difficulty: 'Beginner',
+                time: '15 minutes',
+                focus: 'Trends & Structural Drift',
+                mastery: 0,
+                progress: 0,
+                available: true
+            },
+            {
+                id: '3.5',
+                title: 'Pullbacks',
+                difficulty: 'Beginner',
+                time: '15 minutes',
+                focus: 'Impulse & Pullback Phases',
+                mastery: 0,
+                progress: 0,
+                available: true
+            },
+            {
+                id: '3.6',
+                title: 'Structure Failure',
+                difficulty: 'Intermediate',
+                time: '18 minutes',
+                focus: 'When Structure Breaks',
+                mastery: 0,
+                progress: 0,
+                available: true
+            },
+            {
+                id: '3.7',
+                title: 'Reversal Structure',
+                difficulty: 'Intermediate',
+                time: '18 minutes',
+                focus: 'Reversal Confirmation',
+                mastery: 0,
+                progress: 0,
+                available: true
+            }
+        ];
+
+        // ── Load saved progress ──────────────────────────────────
+        function loadProgress() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('pp_ms_modules') || '{}');
+                MODULES.forEach(mod => {
+                    if (saved[mod.id]) {
+                        mod.mastery = saved[mod.id].mastery || 0;
+                        mod.progress = saved[mod.id].progress || 0;
+                    }
+                });
+            } catch (e) { }
+        }
+
+        // ── Helpers ──────────────────────────────────────────────
+        function getStatus(mod) {
+            if (mod.mastery >= 70) return 'Verified';
+            if (mod.progress > 0 && mod.mastery < 70) return 'In Progress';
+            return 'Not Started';
+        }
+
+        function diffClass(d) {
+            return { 'Beginner': 'beginner', 'Intermediate': 'intermediate' }[d] || 'beginner';
+        }
+
+        function statusClass(s) {
+            return { 'Verified': 'verified', 'In Progress': 'in-progress', 'Not Started': 'not-started' }[s] || 'not-started';
+        }
+
+        function countVerified() {
+            return MODULES.filter(m => getStatus(m) === 'Verified').length;
+        }
+
+        // ── Render Modules ────────────────────────────────────────
+        function renderModules() {
+            const list = document.getElementById('modules-list');
+            list.innerHTML = '';
+            MODULES.forEach(mod => {
+                const status = getStatus(mod);
+                const isVerified = status === 'Verified';
+                const isAvailable = mod.available;
+
+                let ctaLabel, ctaDisabled;
+                if (!isAvailable) {
+                    ctaLabel = 'Coming Next';
+                    ctaDisabled = true;
+                } else if (status === 'Verified') {
+                    ctaLabel = 'Review';
+                    ctaDisabled = false;
+                } else if (status === 'In Progress') {
+                    ctaLabel = 'Continue';
+                    ctaDisabled = false;
+                } else {
+                    ctaLabel = 'Start Module';
+                    ctaDisabled = false;
+                }
+
+                const masteryLine = isVerified
+                    ? `<p class="mm-module-mastery">Mastery ${mod.mastery}%</p>`
+                    : '';
+
+                const focusInfo = isAvailable && mod.focus !== '—'
+                    ? `<span class="mm-module-info">${mod.focus}</span>`
+                    : '';
+
+                const timeInfo = isAvailable && mod.time !== '—'
+                    ? `<span class="mm-module-info">${mod.time}</span>`
+                    : '';
+
+                const statusBadge = isAvailable
+                    ? `<span class="mm-status-badge ${statusClass(status)}">${status}</span>`
+                    : `<span class="mm-status-badge coming-next">Coming Next</span>`;
+
+                const card = document.createElement('div');
+                card.className = 'mm-module-card' + (isVerified ? ' verified' : '');
+                card.style.opacity = isAvailable ? '1' : '0.72';
+                card.innerHTML = `
+                <div class="mm-module-meta">
+                    <span class="mm-module-num">MODULE ${mod.id}</span>
+                    <span class="mm-diff-badge ${diffClass(mod.difficulty)}">${mod.difficulty}</span>
+                    ${statusBadge}
+                </div>
+                <p class="mm-module-title">${mod.title}</p>
+                <div class="mm-module-footer">
+                    ${timeInfo}
+                    ${focusInfo}
+                    <div class="mm-module-cta">
+                        <button class="mm-btn-primary" style="font-size:0.72rem; padding:0.46rem 0.95rem;"
+                            onclick="startModule('${mod.id}')"
+                            ${ctaDisabled ? 'disabled' : ''}>${ctaLabel}</button>
+                    </div>
+                </div>
+                ${masteryLine}
+            `;
+                list.appendChild(card);
+            });
+        }
+
+        // ── Render Status Bar ─────────────────────────────────────
+        function renderStatus() {
+            const verified = countVerified();
+            // Count only available modules for certification tracking
+            const availableCount = MODULES.filter(m => m.available).length;
+
+            document.getElementById('chip-comp-val').textContent = `${verified} / ${availableCount}`;
+
+            const certValEl = document.getElementById('chip-cert-val');
+            const certChip = document.getElementById('chip-cert');
+            const eligible = verified >= availableCount;
+            certValEl.textContent = eligible ? 'Available' : 'In Progress';
+            certChip.className = 'mm-status-chip' + (eligible ? ' gold' : '');
+
+            const existingDot = certChip.querySelector('.mm-cert-dot');
+            if (eligible && !existingDot) {
+                const dot = document.createElement('span');
+                dot.className = 'mm-cert-dot';
+                certChip.insertBefore(dot, certChip.firstChild);
+            } else if (!eligible && existingDot) {
+                existingDot.remove();
+            }
+
+            document.getElementById('comp-count').textContent = `${verified} / ${availableCount} Verified`;
+            const pct = availableCount > 0 ? (verified / availableCount) * 100 : 0;
+            document.getElementById('comp-bar').style.width = pct + '%';
+
+            const guidanceEl = document.getElementById('comp-guidance');
+            if (eligible) {
+                guidanceEl.textContent = 'Module 3.1 competency established.';
+            } else {
+                guidanceEl.textContent = 'Complete the verified module to begin building structural competency.';
+            }
+        }
+
+        function startModule(id) {
+            if (id === '3.1') {
+                window.location.href = 'module-3-1.html';
+            } else if (id === '3.2') {
+                window.location.href = 'module-3-2.html';
+            } else if (id === '3.3') {
+                window.location.href = 'module-3-3.html';
+            } else if (id === '3.4') {
+                window.location.href = 'module-3-4.html';
+            } else if (id === '3.5') {
+                window.location.href = 'module-3-5.html';
+            } else if (id === '3.6') {
+                window.location.href = 'domain3/module36/module-shell.html';
+            } else if (id === '3.7') {
+                window.location.href = 'domain3/module37/module-shell.html';
+            }
+        }
+
+        // ── Framework Step Definitions ────────────────────────────
+        const FRAMEWORK_STEPS = [
+            { label: 'Movement', moduleIndex: 0 },
+            { label: 'Swings', moduleIndex: 1 },
+            { label: 'Structure', moduleIndex: 2 },
+            { label: 'Trend', moduleIndex: 3 },
+            { label: 'Pullback', moduleIndex: 4 },
+            { label: 'Shift', moduleIndex: 5 },
+            { label: 'Reversal', moduleIndex: 6 }
+        ];
+
+        // ── Render Framework Bar ──────────────────────────────────
+        function renderFramework() {
+            const track = document.getElementById('framework-track');
+            if (!track) return;
+            track.innerHTML = '';
+
+            const anyInProgress = FRAMEWORK_STEPS.some(s => getStatus(MODULES[s.moduleIndex]) === 'In Progress');
+            const firstIncompleteIdx = FRAMEWORK_STEPS.findIndex(s => getStatus(MODULES[s.moduleIndex]) !== 'Verified');
+
+            FRAMEWORK_STEPS.forEach((step, i) => {
+                const mod = MODULES[step.moduleIndex];
+                const status = getStatus(mod);
+                const isVerified = status === 'Verified';
+                const isInProgress = status === 'In Progress';
+                const isInferred = !anyInProgress && i === firstIncompleteIdx;
+
+                let stateClass;
+                if (isVerified) stateClass = 'fw-done';
+                else if (isInProgress || isInferred) stateClass = 'fw-current';
+                else stateClass = 'fw-upcoming';
+
+                const stepEl = document.createElement('div');
+                stepEl.className = `mm-fw-step ${stateClass}`;
+                stepEl.setAttribute('role', 'listitem');
+                stepEl.setAttribute('aria-label', `${step.label}: ${status}`);
+
+                const wordEl = document.createElement('span');
+                wordEl.className = 'mm-fw-word';
+                wordEl.textContent = step.label;
+                stepEl.appendChild(wordEl);
+
+                // Arrow between steps
+                if (i < FRAMEWORK_STEPS.length - 1) {
+                    const arrowEl = document.createElement('span');
+                    arrowEl.className = 'mm-fw-arrow';
+                    arrowEl.setAttribute('aria-hidden', 'true');
+                    arrowEl.textContent = '→';
+                    stepEl.appendChild(arrowEl);
+                }
+
+                track.appendChild(stepEl);
+
+                // Staggered fade-in
+                setTimeout(() => stepEl.classList.add('fw-visible'), i * 60);
+            });
+        }
+
+        // ── Init ──────────────────────────────────────────────────
+        (function init() {
+            loadProgress();
+            renderFramework();
+            renderModules();
+            renderStatus();
+        })();
+    </script>
+</body>
+
+</html>

@@ -15,38 +15,83 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700&display=swap"
         rel="stylesheet">
 
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="clarity-box.css">
 </head>
 
 <body>
-    <!-- Minimal Navigation -->
-    <header class="clarity-header">
-        <nav class="clarity-nav">
-            <a href="index.html" class="clarity-logo">
-                <span class="logo-mark">⚡</span>
-                <span class="logo-text">ProsperPath</span>
-            </a>
-            <div class="clarity-nav-links">
-                <a href="clarity-box.html" class="active">Clarity Box</a>
-                <a href="trade.html">Trade</a>
-                <a href="market-mechanics.html">Market Mechanics</a>
-                <a href="portfolio.html">Portfolio</a>
-                <a href="wealth-guides.html">Wealth Guides</a>
-                <a href="tool-reviews.html">Tool Reviews</a>
-                <a href="ai-calculators.html">AI Calculators</a>
-                <a href="blog.html">Blog</a>
-                <!-- History Icon -->
-                <button class="clarity-history-btn" id="history-toggle-btn" aria-label="View history"
-                    title="Question History">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <polyline points="12 6 12 12 16 14" />
-                    </svg>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">⚡</div>
+                    <span>ProsperPath</span>
+                </a>
+
+                <div class="nav-links" id="nav-links">
+                    <a href="clarity-box.html" class="active">Clarity Box</a>
+                    <a href="trade.html">Trade</a>
+                    <a href="market-mechanics.html">Market Mechanics</a>
+                    <a href="portfolio.html">Portfolio</a>
+                    <div class="nav-item-dropdown">
+                        <a href="resources.html">Resources</a>
+                        <div class="dropdown-panel">
+                            <a href="wealth-guides.html" class="dropdown-item">
+                                <span class="dropdown-item-title">Wealth Guides</span>
+                                <span class="dropdown-item-desc">Structured frameworks for building financial
+                                    understanding.</span>
+                            </a>
+                            <a href="tool-reviews.html" class="dropdown-item">
+                                <span class="dropdown-item-title">Tool Reviews</span>
+                                <span class="dropdown-item-desc">Reviews of platforms and financial tools.</span>
+                            </a>
+                            <a href="ai-calculators.html" class="dropdown-item">
+                                <span class="dropdown-item-title">AI Calculators</span>
+                                <span class="dropdown-item-desc">Interactive tools for financial modelling.</span>
+                            </a>
+                            <a href="blog.html" class="dropdown-item">
+                                <span class="dropdown-item-title">Insights</span>
+                                <span class="dropdown-item-desc">Market analysis and commentary.</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-actions"
+                    style="display: flex; align-items: center; gap: var(--space-4); position: relative;">
+                    <div class="settings-wrapper" style="position: relative;">
+                        <button id="settings-btn" class="settings-icon-btn" aria-label="Settings"
+                            onclick="toggleAuthMenu()">
+                            <span class="icon">⚙️</span>
+                        </button>
+                        <div id="auth-wrapper" class="auth-rolldown-container">
+                            <div id="auth-container">
+                                <!-- Google Sign-In button will render here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </button>
-            </div>
-        </nav>
+            </nav>
+        </div>
     </header>
+
+    <!-- History Icon moved to Clarity Box interface -->
+    <div style="position: absolute; top: 120px; right: max(40px, calc(50vw - 450px)); z-index: 90;">
+        <button class="clarity-history-btn" id="history-toggle-btn" aria-label="View history" title="Question History">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+            </svg>
+        </button>
+    </div>
 
     <!-- History Sidebar -->
     <div class="history-overlay" id="history-overlay"></div>
@@ -145,6 +190,7 @@
         <p>© 2026 ProsperPath. Clarity, not noise.</p>
     </footer>
 
+    <script src="script.js"></script>
     <script src="clarity-box.js"></script>
     <script type="module" src="demo-controller.js"></script>
 </body>

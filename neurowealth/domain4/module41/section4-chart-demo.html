@@ -1,0 +1,498 @@
+<!-- ============================================================
+     Module 4.1 · Section IV — Chart Demonstration
+     Step-through: equal highs → orders → price moves → liquidity accessed
+     Self-contained fragment. Injected by module-shell.html.
+============================================================ -->
+
+<style>
+    .s4-screen {
+        width: 100%;
+        max-width: 640px;
+        animation: s4Fade .22s ease both
+    }
+
+    @keyframes s4Fade {
+        from { opacity: 0; transform: translateY(5px) }
+        to { opacity: 1; transform: translateY(0) }
+    }
+
+    .s4-eyebrow {
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--m-muted);
+        margin-bottom: 1.2rem
+    }
+
+    .s4-h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(1.5rem, 3.8vw, 2.1rem);
+        font-weight: 700;
+        color: var(--m-txt);
+        letter-spacing: -.02em;
+        line-height: 1.15;
+        margin-bottom: .85rem
+    }
+
+    .s4-body {
+        font-size: .95rem;
+        color: var(--m-txt);
+        line-height: 1.7;
+        margin-bottom: 1.25rem
+    }
+
+    /* Step indicator */
+    .s4-steps {
+        display: flex;
+        gap: .5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.25rem
+    }
+
+    .s4-step-btn {
+        font-size: .72rem;
+        font-weight: 600;
+        letter-spacing: .06em;
+        padding: .3rem .75rem;
+        border-radius: 3px;
+        border: 1px solid var(--m-bdr);
+        color: var(--m-muted);
+        background: transparent;
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+        transition: border-color .18s, color .18s, background .18s
+    }
+
+    .s4-step-btn.active {
+        border-color: var(--m-gold-line);
+        color: var(--m-gold);
+        background: var(--m-gold-dim)
+    }
+
+    .s4-step-btn.done {
+        border-color: var(--m-bdrhi);
+        color: var(--m-txt)
+    }
+
+    /* Chart */
+    .s4-chart {
+        position: relative;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-radius: 4px;
+        overflow: hidden;
+        height: 240px;
+        margin-bottom: .75rem
+    }
+
+    .s4-chart svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%
+    }
+
+    /* Step description */
+    .s4-step-desc {
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdrhi);
+        border-left: 3px solid var(--m-gold-line);
+        border-radius: 4px;
+        padding: .85rem 1.1rem;
+        margin-bottom: 1.5rem;
+        animation: s4DescIn .25s ease
+    }
+
+    @keyframes s4DescIn {
+        from { opacity: 0; transform: translateY(4px) }
+        to { opacity: 1; transform: translateY(0) }
+    }
+
+    .s4-step-title {
+        font-size: .62rem;
+        font-weight: 700;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: var(--m-gold);
+        margin-bottom: .35rem
+    }
+
+    .s4-step-text {
+        font-size: .88rem;
+        color: var(--m-muted);
+        line-height: 1.55
+    }
+
+    /* Takeaway */
+    .s4-takeaway {
+        font-size: .8rem;
+        color: var(--m-muted);
+        text-align: center;
+        opacity: .85;
+        margin-bottom: 1.75rem;
+        letter-spacing: .01em;
+        display: none
+    }
+
+    .s4-takeaway.show { display: block }
+
+    /* Button row */
+    .s4-btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem
+    }
+
+    .s4-btn-prev {
+        background: transparent;
+        border: 1px solid var(--m-bdr);
+        color: var(--m-muted);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 500;
+        letter-spacing: .04em;
+        padding: .62rem 1.2rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: border-color var(--m-tr), color var(--m-tr)
+    }
+
+    .s4-btn-prev:hover { border-color: var(--m-bdrhi); color: var(--m-txt) }
+
+    .s4-btn-next {
+        background: transparent;
+        border: 1px solid var(--m-gold-line);
+        color: var(--m-gold);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        padding: .65rem 1.5rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background .2s, border-color .2s;
+        display: none
+    }
+
+    .s4-btn-next.show { display: inline-flex }
+    .s4-btn-next:hover { background: var(--m-gold-dim); border-color: var(--m-gold) }
+
+    .s4-btn-step-next {
+        background: transparent;
+        border: 1px solid var(--m-bdrhi);
+        color: var(--m-txt);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 500;
+        letter-spacing: .04em;
+        padding: .62rem 1.2rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: border-color var(--m-tr), background var(--m-tr)
+    }
+
+    .s4-btn-step-next:hover { background: rgba(255,255,255,.03) }
+
+    @keyframes s4DrawPath {
+        to { stroke-dashoffset: 0 }
+    }
+</style>
+
+<div class="s4-screen" id="s4-root">
+
+    <!-- Eyebrow -->
+    <p class="s4-eyebrow">Section IV · Why Liquidity Exists</p>
+
+    <!-- Heading -->
+    <h2 class="s4-h1">Liquidity Attracts Price</h2>
+
+    <!-- Body -->
+    <div class="s4-body">
+        <p>Walk through this step-by-step demonstration to see how price moves toward liquidity.</p>
+    </div>
+
+    <!-- Step indicators -->
+    <div class="s4-steps" id="s4-steps">
+        <button class="s4-step-btn active" data-step="0">Step 1</button>
+        <button class="s4-step-btn" data-step="1">Step 2</button>
+        <button class="s4-step-btn" data-step="2">Step 3</button>
+        <button class="s4-step-btn" data-step="3">Step 4</button>
+    </div>
+
+    <!-- Chart -->
+    <div class="s4-chart" id="s4-chart" role="img"
+        aria-label="Step-through chart: liquidity attracts price">
+        <svg id="s4-svg" viewBox="0 0 580 240" preserveAspectRatio="none"></svg>
+    </div>
+
+    <!-- Step description panel -->
+    <div class="s4-step-desc" id="s4-desc">
+        <p class="s4-step-title" id="s4-desc-title">Step 1 — Equal Highs Form</p>
+        <p class="s4-step-text" id="s4-desc-text">Price makes two equal highs at the same level. Many traders notice these highs.</p>
+    </div>
+
+    <!-- Takeaway -->
+    <p class="s4-takeaway" id="s4-takeaway">Markets move toward liquidity.</p>
+
+    <!-- Navigation -->
+    <div class="s4-btn-row">
+        <button class="s4-btn-prev" onclick="goTo(3, 0)">&larr; Previous</button>
+        <button class="s4-btn-step-next" id="s4-step-next-btn">Next Step &rarr;</button>
+        <button class="s4-btn-next" id="s4-btn-next" onclick="goTo(5, 0)">Next Section &rarr;</button>
+    </div>
+
+</div>
+
+<script>
+    (function () {
+
+        var W = 580, H = 240;
+        var PAD = { l: 36, r: 32, t: 28, b: 24 };
+        var UW = W - PAD.l - PAD.r;
+        var UH = H - PAD.t - PAD.b;
+
+        function px(fx) { return PAD.l + fx * UW; }
+        function py(fy) { return PAD.t + (1 - fy) * UH; }
+
+        var GLD = 'rgba(195,162,70,1.0)';
+        var NDO = 'rgba(200,185,130,0.92)';
+        var GLD2 = 'rgba(195,162,70,0.38)';
+        var GLDZ = 'rgba(195,162,70,0.08)';
+        var GRID = 'rgba(255,255,255,0.025)';
+        var GUIDE = 'rgba(195,162,70,0.22)';
+
+        /* Chart key points */
+        var eqhFy = 0.72;
+        var eqhY = py(eqhFy);
+
+        /* Initial price path up to equal highs */
+        var phase0Nodes = [
+            { fx: 0.03, fy: 0.20 },
+            { fx: 0.14, fy: eqhFy, lbl: 'EQH' },
+            { fx: 0.22, fy: 0.44 },
+            { fx: 0.33, fy: eqhFy, lbl: 'EQH' },
+            { fx: 0.42, fy: 0.38 }
+        ];
+
+        /* Phase 2: price continues sideways/down */
+        var phase2Nodes = [
+            { fx: 0.42, fy: 0.38 },
+            { fx: 0.51, fy: 0.28 }
+        ];
+
+        /* Phase 3 + 4: price surges through equal highs */
+        var phase3Nodes = [
+            { fx: 0.51, fy: 0.28 },
+            { fx: 0.63, fy: 0.52 },
+            { fx: 0.73, fy: eqhFy + 0.01 }
+        ];
+
+        var phase4Nodes = [
+            { fx: 0.73, fy: eqhFy + 0.01 },
+            { fx: 0.82, fy: eqhFy + 0.14 },
+            { fx: 0.91, fy: eqhFy + 0.05 }
+        ];
+
+        var _step = 0;
+
+        var STEPS = [
+            {
+                title: 'Step 1 — Equal Highs Form',
+                text: 'Price makes two equal highs at the same level. Many traders notice these highs.'
+            },
+            {
+                title: 'Step 2 — Orders Accumulate Above Highs',
+                text: 'Stop losses, breakout orders, and limit orders accumulate above those equal highs — forming a liquidity pool.'
+            },
+            {
+                title: 'Step 3 — Price Moves Upward',
+                text: 'Price begins to move upward. It is moving toward the area where orders exist.'
+            },
+            {
+                title: 'Step 4 — Liquidity Is Accessed',
+                text: 'Price reaches the liquidity above the equal highs and the orders are filled. The liquidity pool is accessed.'
+            }
+        ];
+
+        function buildBase(svg) {
+            var out = [];
+
+            /* Grid */
+            [60, 120, 180].forEach(function (gy) {
+                out.push('<line x1="0" y1="' + gy + '" x2="' + W + '" y2="' + gy +
+                    '" stroke="' + GRID + '" stroke-width="1"/>');
+            });
+
+            /* EQH guide line */
+            out.push('<line id="s4-guide" x1="' + PAD.l + '" y1="' + eqhY +
+                '" x2="' + (W - PAD.r) + '" y2="' + eqhY +
+                '" stroke="' + GUIDE + '" stroke-width="1" stroke-dasharray="5,4"/>');
+
+            /* EQH label */
+            out.push('<text x="' + (PAD.l - 4) + '" y="' + (eqhY + 4) +
+                '" text-anchor="end" font-size="8" font-family="Inter,sans-serif"' +
+                ' fill="' + GUIDE + '" font-weight="600">EQH</text>');
+
+            /* Phase 0 price path */
+            var pts = phase0Nodes.map(function (n) { return { x: px(n.fx), y: py(n.fy) }; });
+            var d = 'M' + pts.map(function (p) { return p.x + ',' + p.y; }).join(' L');
+            out.push('<path d="' + d + '" stroke="' + GLD + '" stroke-width="2" fill="none"' +
+                ' stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>');
+
+            /* EQH dots */
+            phase0Nodes.forEach(function (n) {
+                if (!n.lbl) return;
+                var x = px(n.fx), y = py(n.fy);
+                out.push('<circle cx="' + x + '" cy="' + y + '" r="5" fill="' + GLD + '" opacity="0.85"/>');
+                out.push('<text x="' + x + '" y="' + (y - 11) +
+                    '" text-anchor="middle" font-size="9" font-family="Inter,sans-serif"' +
+                    ' fill="' + NDO + '" font-weight="700" letter-spacing="0.06em">' + n.lbl + '</text>');
+            });
+
+            /* Cluster zone (hidden, shown in step 2) */
+            out.push('<rect id="s4-zone" x="' + PAD.l + '" y="' + (eqhY - 22) +
+                '" width="' + (px(0.75) - PAD.l) + '" height="20"' +
+                ' fill="' + GLDZ + '" opacity="0"/>');
+            out.push('<text id="s4-zone-lbl" x="' + (px(0.65)) + '" y="' + (eqhY - 9) +
+                '" text-anchor="middle" font-size="8.5" font-family="Inter,sans-serif"' +
+                ' fill="' + GLD2 + '" font-weight="600" opacity="0">liquidity pool</text>');
+
+            /* Phase 2 path (hidden) */
+            var p2pts = phase2Nodes.map(function (n) { return { x: px(n.fx), y: py(n.fy) }; });
+            var d2 = 'M' + p2pts.map(function (p) { return p.x + ',' + p.y; }).join(' L');
+            out.push('<path id="s4-p2" d="' + d2 + '" stroke="' + GLD + '" stroke-width="2.2" fill="none"' +
+                ' stroke-linecap="round" opacity="0"/>');
+
+            /* Phase 3 path (hidden, moving up) */
+            var p3pts = phase3Nodes.map(function (n) { return { x: px(n.fx), y: py(n.fy) }; });
+            var d3 = 'M' + p3pts.map(function (p) { return p.x + ',' + p.y; }).join(' L');
+            var l3 = 0;
+            for (var i = 1; i < p3pts.length; i++) {
+                l3 += Math.sqrt(Math.pow(p3pts[i].x-p3pts[i-1].x,2)+Math.pow(p3pts[i].y-p3pts[i-1].y,2));
+            }
+            out.push('<path id="s4-p3" d="' + d3 + '" stroke="' + GLD + '" stroke-width="2.2" fill="none"' +
+                ' stroke-linecap="round"' +
+                ' stroke-dasharray="' + (l3+10) + '" stroke-dashoffset="' + (l3+10) + '"' +
+                ' opacity="0"/>');
+
+            /* Phase 4 path (hidden, above EQH = accessed) */
+            var p4pts = phase4Nodes.map(function (n) { return { x: px(n.fx), y: py(n.fy) }; });
+            var d4 = 'M' + p4pts.map(function (p) { return p.x + ',' + p.y; }).join(' L');
+            var l4 = 0;
+            for (var j = 1; j < p4pts.length; j++) {
+                l4 += Math.sqrt(Math.pow(p4pts[j].x-p4pts[j-1].x,2)+Math.pow(p4pts[j].y-p4pts[j-1].y,2));
+            }
+            out.push('<path id="s4-p4" d="' + d4 + '" stroke="' + GLD + '" stroke-width="2.2" fill="none"' +
+                ' stroke-linecap="round"' +
+                ' stroke-dasharray="' + (l4+10) + '" stroke-dashoffset="' + (l4+10) + '"' +
+                ' opacity="0"/>');
+
+            /* Accessed label */
+            var lastP4 = p4pts[1];
+            out.push('<text id="s4-accessed-lbl" x="' + (px(0.85)) + '" y="' + (py(eqhFy + 0.22)) +
+                '" text-anchor="middle" font-size="8.5" font-family="Inter,sans-serif"' +
+                ' fill="' + NDO + '" font-weight="700" letter-spacing="0.06em" opacity="0">liquidity accessed</text>');
+
+            svg.innerHTML = out.join('');
+        }
+
+        function applyStep(step) {
+            if (step >= 1) {
+                /* Show cluster zone */
+                ['s4-zone', 's4-zone-lbl'].forEach(function (id) {
+                    var el = document.getElementById(id);
+                    if (el) { el.style.transition = 'opacity .4s ease'; el.style.opacity = '1'; }
+                });
+            }
+            if (step >= 2) {
+                /* Show phase 2 (price continues) */
+                var p2 = document.getElementById('s4-p2');
+                if (p2) { p2.style.transition = 'opacity .3s ease'; p2.style.opacity = '1'; }
+                /* Show phase 3 immediately animated */
+                var p3 = document.getElementById('s4-p3');
+                if (p3) {
+                    p3.style.opacity = '1';
+                    p3.style.animation = 's4DrawPath .7s ease forwards';
+                }
+            }
+            if (step >= 3) {
+                /* Show phase 4 */
+                setTimeout(function () {
+                    var p4 = document.getElementById('s4-p4');
+                    if (p4) {
+                        p4.style.opacity = '1';
+                        p4.style.animation = 's4DrawPath .6s ease forwards';
+                    }
+                    setTimeout(function () {
+                        var lbl = document.getElementById('s4-accessed-lbl');
+                        if (lbl) { lbl.style.transition = 'opacity .4s ease'; lbl.style.opacity = '1'; }
+
+                        /* Show takeaway and next btn */
+                        var tk = document.getElementById('s4-takeaway');
+                        if (tk) tk.classList.add('show');
+                        var nb = document.getElementById('s4-btn-next');
+                        if (nb) nb.classList.add('show');
+                    }, 700);
+                }, 200);
+            }
+        }
+
+        function updateStepUI(step) {
+            document.querySelectorAll('.s4-step-btn').forEach(function (btn, i) {
+                btn.classList.remove('active', 'done');
+                if (i < step) btn.classList.add('done');
+                if (i === step) btn.classList.add('active');
+            });
+
+            var data = STEPS[step];
+            var title = document.getElementById('s4-desc-title');
+            var text = document.getElementById('s4-desc-text');
+            var desc = document.getElementById('s4-desc');
+
+            if (title) title.textContent = data.title;
+            if (text) text.textContent = data.text;
+            if (desc) {
+                desc.style.animation = 'none';
+                void desc.offsetWidth;
+                desc.style.animation = 's4DescIn .25s ease';
+            }
+
+            var snBtn = document.getElementById('s4-step-next-btn');
+            if (snBtn) {
+                if (step >= STEPS.length - 1) {
+                    snBtn.style.display = 'none';
+                } else {
+                    snBtn.style.display = '';
+                }
+            }
+        }
+
+        function goStep(step) {
+            _step = step;
+            updateStepUI(step);
+            applyStep(step);
+        }
+
+        /* Bind step indicator buttons */
+        document.querySelectorAll('.s4-step-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var s = parseInt(btn.getAttribute('data-step'), 10);
+                if (s <= _step + 1) goStep(s);
+            });
+        });
+
+        /* Next step button */
+        var snBtn = document.getElementById('s4-step-next-btn');
+        if (snBtn) snBtn.addEventListener('click', function () {
+            if (_step < STEPS.length - 1) goStep(_step + 1);
+        });
+
+        /* Build chart and init step 0 */
+        var svg = document.getElementById('s4-svg');
+        buildBase(svg);
+        updateStepUI(0);
+
+    })();
+</script>

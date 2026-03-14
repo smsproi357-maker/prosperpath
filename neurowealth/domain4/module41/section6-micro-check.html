@@ -1,0 +1,290 @@
+<!-- ============================================================
+     Module 4.1 · Section VI — Micro Check
+     Quick recall: select answer → immediate feedback.
+     No "Check Answer" button.
+     Self-contained fragment. Injected by module-shell.html.
+============================================================ -->
+
+<style>
+    .s6-screen {
+        width: 100%;
+        max-width: 600px;
+        animation: s6Fade .22s ease both
+    }
+
+    @keyframes s6Fade {
+        from { opacity: 0; transform: translateY(5px) }
+        to { opacity: 1; transform: translateY(0) }
+    }
+
+    .s6-eyebrow {
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--m-muted);
+        margin-bottom: 1.2rem
+    }
+
+    .s6-h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(1.5rem, 3.8vw, 2rem);
+        font-weight: 700;
+        color: var(--m-txt);
+        letter-spacing: -.02em;
+        line-height: 1.15;
+        margin-bottom: 1.5rem
+    }
+
+    /* Question */
+    .s6-question {
+        font-size: .98rem;
+        font-weight: 600;
+        color: var(--m-txt);
+        line-height: 1.5;
+        margin-bottom: 1.25rem
+    }
+
+    /* Options */
+    .s6-options {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        margin-bottom: 1.4rem
+    }
+
+    .s6-opt {
+        display: flex;
+        align-items: center;
+        gap: .85rem;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-radius: 4px;
+        padding: .72rem 1rem;
+        cursor: pointer;
+        transition: border-color .18s, background .18s;
+        text-align: left;
+        width: 100%;
+        font-family: 'Inter', sans-serif
+    }
+
+    .s6-opt:hover:not([disabled]) {
+        border-color: var(--m-bdrhi);
+        background: rgba(255, 255, 255, .03)
+    }
+
+    .s6-opt-key {
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: .07em;
+        color: var(--m-muted);
+        min-width: 1.3rem;
+        flex-shrink: 0
+    }
+
+    .s6-opt-txt {
+        font-size: .88rem;
+        color: var(--m-muted);
+        line-height: 1.45
+    }
+
+    .s6-opt.correct {
+        border-color: var(--m-gold-line);
+        background: var(--m-gold-dim)
+    }
+
+    .s6-opt.correct .s6-opt-key,
+    .s6-opt.correct .s6-opt-txt {
+        color: var(--m-gold)
+    }
+
+    .s6-opt.wrong {
+        border-color: rgba(224, 128, 112, .35);
+        background: rgba(224, 128, 112, .06)
+    }
+
+    .s6-opt.wrong .s6-opt-key,
+    .s6-opt.wrong .s6-opt-txt {
+        color: var(--m-red-txt)
+    }
+
+    .s6-opt.dim { opacity: .4 }
+
+    /* Feedback */
+    .s6-feedback {
+        display: none;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdrhi);
+        border-radius: 4px;
+        padding: .9rem 1.15rem;
+        margin-bottom: 1.5rem
+    }
+
+    .s6-feedback.show {
+        display: block;
+        animation: s6FbIn .28s ease both
+    }
+
+    @keyframes s6FbIn {
+        from { opacity: 0; transform: translateY(4px) }
+        to { opacity: 1; transform: none }
+    }
+
+    .s6-feedback.correct-fb { border-left: 3px solid var(--m-gold-line) }
+    .s6-feedback.wrong-fb { border-left: 3px solid rgba(224, 128, 112, .45) }
+
+    .s6-fb-label {
+        font-size: .62rem;
+        font-weight: 700;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        margin-bottom: .42rem
+    }
+
+    .s6-feedback.correct-fb .s6-fb-label { color: var(--m-gold) }
+    .s6-feedback.wrong-fb .s6-fb-label { color: var(--m-red-txt); opacity: .85 }
+
+    .s6-fb-body {
+        font-size: .88rem;
+        color: var(--m-muted);
+        line-height: 1.6
+    }
+
+    .s6-fb-body strong { color: var(--m-txt); font-weight: 500 }
+
+    /* Button row */
+    .s6-btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem;
+        margin-top: .5rem
+    }
+
+    .s6-btn-prev {
+        background: transparent;
+        border: 1px solid var(--m-bdr);
+        color: var(--m-muted);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 500;
+        letter-spacing: .04em;
+        padding: .62rem 1.2rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: border-color var(--m-tr), color var(--m-tr)
+    }
+
+    .s6-btn-prev:hover { border-color: var(--m-bdrhi); color: var(--m-txt) }
+
+    .s6-btn-next {
+        background: transparent;
+        border: 1px solid var(--m-gold-line);
+        color: var(--m-gold);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        padding: .65rem 1.5rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background .2s, border-color .2s;
+        display: none
+    }
+
+    .s6-btn-next.show { display: inline-flex }
+    .s6-btn-next:hover { background: var(--m-gold-dim); border-color: var(--m-gold) }
+</style>
+
+<div class="s6-screen" id="s6-root">
+
+    <!-- Eyebrow -->
+    <p class="s6-eyebrow">Section VI · Why Liquidity Exists</p>
+
+    <!-- Heading -->
+    <h2 class="s6-h1">Quick Check</h2>
+
+    <!-- Question -->
+    <p class="s6-question">Why does price move toward certain levels?</p>
+
+    <!-- Options -->
+    <div class="s6-options" id="s6-options">
+        <button class="s6-opt" id="s6-opt-a" onclick="s6Answer('a')">
+            <span class="s6-opt-key">A</span>
+            <span class="s6-opt-txt">Random movement</span>
+        </button>
+        <button class="s6-opt" id="s6-opt-b" onclick="s6Answer('b')">
+            <span class="s6-opt-key">B</span>
+            <span class="s6-opt-txt">Because orders exist there</span>
+        </button>
+        <button class="s6-opt" id="s6-opt-c" onclick="s6Answer('c')">
+            <span class="s6-opt-key">C</span>
+            <span class="s6-opt-txt">Because of indicators</span>
+        </button>
+        <button class="s6-opt" id="s6-opt-d" onclick="s6Answer('d')">
+            <span class="s6-opt-key">D</span>
+            <span class="s6-opt-txt">Because of trendlines</span>
+        </button>
+    </div>
+
+    <!-- Feedback -->
+    <div class="s6-feedback" id="s6-feedback">
+        <p class="s6-fb-label" id="s6-fb-label"></p>
+        <p class="s6-fb-body" id="s6-fb-body"></p>
+    </div>
+
+    <!-- Navigation -->
+    <div class="s6-btn-row">
+        <button class="s6-btn-prev" onclick="goTo(5, 0)">&larr; Previous</button>
+        <button class="s6-btn-next" id="s6-btn-next" onclick="goTo(7, 0)">Competency Check &rarr;</button>
+    </div>
+
+</div>
+
+<script>
+    window._s6Done = false;
+
+    function s6Answer(chosen) {
+        if (window._s6Done) return;
+        window._s6Done = true;
+
+        var correct = 'b';
+        var opts = ['a', 'b', 'c', 'd'];
+
+        opts.forEach(function (k) {
+            var el = document.getElementById('s6-opt-' + k);
+            el.disabled = true;
+            if (k === correct) {
+                el.classList.add('correct');
+            } else if (k === chosen && k !== correct) {
+                el.classList.add('wrong');
+            } else {
+                el.classList.add('dim');
+            }
+        });
+
+        var isCorrect = (chosen === correct);
+        var fb = document.getElementById('s6-feedback');
+        var fblbl = document.getElementById('s6-fb-label');
+        var fbbody = document.getElementById('s6-fb-body');
+
+        fb.classList.remove('correct-fb', 'wrong-fb');
+
+        if (isCorrect) {
+            fb.classList.add('correct-fb');
+            fblbl.textContent = 'Correct';
+            fbbody.innerHTML = '<strong>Price moves toward areas where orders exist.</strong> Markets move mechanically to facilitate trade — they need orders on both sides.';
+        } else {
+            fb.classList.add('wrong-fb');
+            fblbl.textContent = 'Not quite';
+            fbbody.innerHTML = 'The correct answer is <strong>B — Because orders exist there.</strong> Markets move toward liquidity pools to fill the orders that have accumulated there.';
+        }
+
+        fb.classList.add('show');
+
+        setTimeout(function () {
+            var btn = document.getElementById('s6-btn-next');
+            if (btn) btn.classList.add('show');
+        }, 400);
+    }
+</script>

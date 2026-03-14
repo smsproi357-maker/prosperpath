@@ -4,10 +4,9 @@
  */
 
 // ================== API Configuration ==================
-const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+// AI calls go through the server-side Worker only — no client API keys required.
+const API_URL = 'https://openrouter.ai/api/v1/chat/completions'; // preserved, used only in dormant fallback path
 const DEFAULT_MODEL = 'zhipu/glm-4.5-air';
-const DEFAULT_API_KEY = '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';
-const TAVILY_API_KEY = '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';
 const TAVILY_API_URL = 'https://api.tavily.com/search';
 
 // ================== State ==================
@@ -128,20 +127,19 @@ function formatTavilyContext(tavilyData) {
 
 // ================== AI Fetch ==================
 async function fetchClarityMap(query, useWebSearch = false) {
-    let apiKey = localStorage.getItem('prosporous_api_key') || DEFAULT_API_KEY;
+    // All AI calls route through the server-side Worker proxy.
+    // Provider keys (SARVAM_API_KEY / OPENROUTER_API_KEY) live only in Worker env secrets.
+    const USE_WORKER_AI_PROXY = true;
 
-    if (apiKey === 'null' || apiKey === 'undefined' || !apiKey.trim()) {
-        apiKey = DEFAULT_API_KEY;
-    }
-    apiKey = apiKey.trim();
+    // Preserved dormant variable — only used when USE_WORKER_AI_PROXY = false (OpenRouter direct path).
+    // Will be resolved from env at that time; not needed while Worker proxy is active.
+    let apiKey = '';
 
-    if (!apiKey) throw new Error("API_KEY_MISSING");
+    if (!USE_WORKER_AI_PROXY && !apiKey) throw new Error("API_KEY_MISSING");
 
-    let webContext = '';
-    if (useWebSearch) {
-        const tavilyData = await fetchTavilyResults(query);
-        webContext = formatTavilyContext(tavilyData);
-    }
+    // Web search is now handled server-side in the Worker via webMode flag.
+    // The Tavily API key lives in Worker env secrets only — never client-side.
+    let webContext = ''; // kept for compatibility; actual enrichment is done server-side
 
     const systemPrompt = `You are the ProsperPath Clarity Engine, an elite financial sense-making AI. 
 Provide a deep, structured analysis for the following user query. 
@@ -181,6 +179,11 @@ The JSON structure must be EXACTLY:
 
 Ensure the content is specific to the query: "${query}"`;
 
+    const messages = [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: query }
+    ];
+
     const controller = new AbortController();
     const timeoutId = setTimeout(() => {
         controller.abort();
@@ -189,23 +192,42 @@ Ensure the content is specific to the query: "${query}"`;
     try {
         const selectedModel = localStorage.getItem('prosporous_selected_model') || DEFAULT_MODEL;
 
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${apiKey}`,
-                'HTTP-Referer': window.location.origin || 'https://prosperpath.ai',
-                'X-Title': 'ProsperPath Clarity Box',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                model: selectedModel,
-                messages: [
-                    { role: 'system', content: systemPrompt },
-                    { role: 'user', content: query }
-                ]
-            }),
-            signal: controller.signal
-        });
+        let response;
+
+        if (USE_WORKER_AI_PROXY) {
+            // TEMPORARY — SARVAM FORCED ROUTING via Worker proxy.
+            // Worker decides which provider to use (currently Sarvam).
+            // Model selection is intentionally ignored at the Worker layer.
+            const workerBase = window.WORKER_API_URL || 'https://neurowealth-worker.smsproi357.workers.dev/api';
+            response = await fetch(`${workerBase}/ai/chat`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: messages,
+                    model: selectedModel,  // sent but overridden by Worker when Sarvam is active
+                    webMode: useWebSearch  // controls server-side Tavily search
+                }),
+                signal: controller.signal
+            });
+        } else {
+            // PRESERVED — Original OpenRouter direct call (dormant while USE_WORKER_AI_PROXY=true).
+            // To restore: set USE_WORKER_AI_PROXY = false above.
+            if (!apiKey) throw new Error("API_KEY_MISSING");
+            response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'HTTP-Referer': window.location.origin || 'https://prosperpath.ai',
+                    'X-Title': 'ProsperPath Clarity Box',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: selectedModel,
+                    messages: messages
+                }),
+                signal: controller.signal
+            });
+        }
 
         clearTimeout(timeoutId);
 
@@ -654,7 +676,7 @@ function setBottomBarLoading(loading) {
 function handleClarityError(error) {
     let message = "Something went wrong while synthesizing clarity.";
     if (error.message === "API_KEY_MISSING") {
-        message = "Please configure your <strong>OpenRouter API Key</strong> in the settings to use Clarity Box.";
+        message = "The AI service is temporarily unavailable. Please try again shortly.";
     } else if (error.message === "MALFORMED_JSON") {
         message = "The AI returned an invalid format. Please try rephrasing your question.";
     } else if (error.message.includes("429")) {

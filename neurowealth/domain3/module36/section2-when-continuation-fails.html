@@ -1,0 +1,479 @@
+<!-- ============================================================
+     Module 3.6 · Section II — When Continuation Fails
+     Self-contained fragment. Injected by module-shell.html.
+     Shell provides: goTo, ln, dot, lbl, grid, VW, VH, CHART
+============================================================ -->
+
+<style>
+    .s2-screen {
+        width: 100%;
+        max-width: 640px;
+        animation: s2Fade .22s ease both
+    }
+
+    @keyframes s2Fade {
+        from {
+            opacity: 0;
+            transform: translateY(5px)
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0)
+        }
+    }
+
+    .s2-eyebrow {
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--m-muted);
+        margin-bottom: 1.2rem
+    }
+
+    .s2-h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(1.5rem, 3.8vw, 2.1rem);
+        font-weight: 700;
+        color: var(--m-txt);
+        letter-spacing: -.02em;
+        line-height: 1.15;
+        margin-bottom: .85rem
+    }
+
+    .s2-body {
+        font-size: .95rem;
+        color: var(--m-txt);
+        line-height: 1.7;
+        margin-bottom: 1.4rem
+    }
+
+    .s2-body p {
+        margin-bottom: .5rem
+    }
+
+    .s2-body p:last-child {
+        margin-bottom: 0
+    }
+
+    /* Comparison row: strong vs weak */
+    .s2-compare {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: .75rem;
+        margin: 1.25rem 0 1.5rem
+    }
+
+    @media (max-width: 480px) {
+        .s2-compare {
+            grid-template-columns: 1fr
+        }
+    }
+
+    .s2-cmp-card {
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-radius: 4px;
+        padding: .75rem 1rem .6rem;
+        text-align: center
+    }
+
+    .s2-cmp-card.weak {
+        border-color: var(--m-bdrhi)
+    }
+
+    .s2-cmp-label {
+        font-size: .62rem;
+        font-weight: 700;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        margin-bottom: .5rem
+    }
+
+    .s2-cmp-label.strong {
+        color: var(--m-gold)
+    }
+
+    .s2-cmp-label.weak {
+        color: var(--m-muted)
+    }
+
+    .s2-cmp-chart {
+        height: 72px;
+        position: relative
+    }
+
+    .s2-cmp-chart svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%
+    }
+
+    .s2-cmp-caption {
+        font-size: .7rem;
+        color: var(--m-muted);
+        margin-top: .45rem;
+        letter-spacing: .03em
+    }
+
+    /* Main chart */
+    .s2-chart {
+        position: relative;
+        margin: .25rem 0 0;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-radius: 4px;
+        overflow: hidden;
+        height: 220px
+    }
+
+    .s2-chart svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%
+    }
+
+    /* Phase tag strip */
+    .s2-phase-strip {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        margin: 1.1rem 0 1.4rem;
+        flex-wrap: wrap
+    }
+
+    .s2-phase-tag {
+        font-size: .7rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        padding: .26rem .65rem;
+        border-radius: 3px;
+        border: 1px solid transparent
+    }
+
+    .s2-phase-tag.ok {
+        color: var(--m-gold);
+        border-color: var(--m-gold-line);
+        background: var(--m-gold-dim)
+    }
+
+    .s2-phase-tag.warn {
+        color: var(--m-muted);
+        border-color: var(--m-bdrhi);
+        background: rgba(255, 255, 255, .03)
+    }
+
+    .s2-phase-tag.stall {
+        color: var(--m-red-txt);
+        border-color: rgba(224, 128, 112, .3);
+        background: rgba(224, 128, 112, .07)
+    }
+
+    .s2-phase-arrow {
+        font-size: .7rem;
+        color: var(--m-muted);
+        opacity: .5;
+        padding: 0 .35rem;
+        user-select: none
+    }
+
+    /* Takeaway line */
+    .s2-takeaway {
+        font-size: .8rem;
+        color: var(--m-muted);
+        text-align: center;
+        opacity: .85;
+        margin: .6rem 0 1.75rem;
+        letter-spacing: .01em
+    }
+
+    /* Button row */
+    .s2-btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem
+    }
+
+    .s2-btn-prev {
+        background: transparent;
+        border: 1px solid var(--m-bdr);
+        color: var(--m-muted);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 500;
+        letter-spacing: .04em;
+        padding: .62rem 1.2rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: border-color var(--m-tr), color var(--m-tr)
+    }
+
+    .s2-btn-prev:hover {
+        border-color: var(--m-bdrhi);
+        color: var(--m-txt)
+    }
+
+    .s2-btn-next {
+        background: transparent;
+        border: 1px solid var(--m-gold-line);
+        color: var(--m-gold);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        padding: .65rem 1.5rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background .2s, border-color .2s
+    }
+
+    .s2-btn-next:hover {
+        background: var(--m-gold-dim);
+        border-color: var(--m-gold)
+    }
+</style>
+
+<div class="s2-screen" id="s2-root">
+
+    <!-- Eyebrow -->
+    <p class="s2-eyebrow">Section II · Structure Failure</p>
+
+    <!-- Heading -->
+    <h2 class="s2-h1">When Continuation Fails</h2>
+
+    <!-- Body -->
+    <div class="s2-body">
+        <p>When expected continuation weakens,
+            <button class="clarify-btn" onclick="openClarify('weakContinuation')"
+                aria-label="Clarify: Weak Continuation">weak continuation</button>
+            signals that structure is losing strength.
+        </p>
+        <p>Loss of
+            <button class="clarify-btn" onclick="openClarify('momentum')"
+                aria-label="Clarify: Momentum">momentum</button>
+            often begins before the full break.
+        </p>
+    </div>
+
+    <!-- Comparison: strong vs weak mini charts -->
+    <div class="s2-compare">
+        <div class="s2-cmp-card">
+            <p class="s2-cmp-label strong">Strong</p>
+            <div class="s2-cmp-chart">
+                <svg id="s2-mini-strong" viewBox="0 0 200 72" preserveAspectRatio="none"></svg>
+            </div>
+            <p class="s2-cmp-caption">Full expansion, clear HH</p>
+        </div>
+        <div class="s2-cmp-card weak">
+            <p class="s2-cmp-label weak">Weak</p>
+            <div class="s2-cmp-chart">
+                <svg id="s2-mini-weak" viewBox="0 0 200 72" preserveAspectRatio="none"></svg>
+            </div>
+            <p class="s2-cmp-caption">Shallow move, stall before HH</p>
+        </div>
+    </div>
+
+
+
+    <!-- Main chart -->
+    <div class="s2-chart" id="s2-chart" role="img"
+        aria-label="Uptrend structure with healthy impulses followed by a weakened continuation and stall">
+        <svg id="s2-svg" viewBox="0 0 600 220" preserveAspectRatio="none"></svg>
+    </div>
+
+    <!-- Takeaway -->
+    <p class="s2-takeaway">Weak continuation is a warning — not a failure.</p>
+
+    <!-- Navigation -->
+    <div class="s2-btn-row">
+        <button class="s2-btn-prev" onclick="goTo(1, 0)">← Previous</button>
+        <button class="s2-btn-next" onclick="goTo(3, 0)">Next Section →</button>
+    </div>
+
+</div>
+
+<script>
+    (function () {
+
+        var GLD = 'rgba(195,162,70,1.0)';
+        var GLD2 = 'rgba(195,162,70,0.38)';
+        var WEAK = 'rgba(195,162,70,0.48)';
+        var STALL = 'rgba(224,128,112,0.72)';
+        var NDO = 'rgba(200,185,130,0.92)';
+        var NDW = 'rgba(200,185,130,0.45)';
+        var GRID = 'rgba(255,255,255,0.025)';
+
+        /* ── Mini chart: strong continuation ─────────────────── */
+        function buildMiniStrong() {
+            var svg = document.getElementById('s2-mini-strong');
+            var W = 200, H = 72, pad = 14;
+            var pts = [
+                { x: pad, y: H - pad - 10 },
+                { x: 60, y: pad + 4 },
+                { x: 100, y: H - pad - 22 },
+                { x: 155, y: pad + 0 },   // clear new HH
+                { x: W - pad, y: H - pad - 28 }
+            ];
+            var d = 'M' + pts.map(function (p) { return p.x + ',' + p.y; }).join(' L');
+            var out = [];
+            out.push('<path d="' + d + '" stroke="' + GLD + '" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>');
+            // dots on HH nodes
+            [pts[1], pts[3]].forEach(function (p) {
+                out.push('<circle cx="' + p.x + '" cy="' + p.y + '" r="3.2" fill="' + NDO + '" stroke="none"/>');
+            });
+            svg.innerHTML = out.join('');
+        }
+
+        /* ── Mini chart: weak / stalling continuation ─────────── */
+        function buildMiniWeak() {
+            var svg = document.getElementById('s2-mini-weak');
+            var W = 200, H = 72, pad = 14;
+            var pts = [
+                { x: pad, y: H - pad - 8 },
+                { x: 60, y: pad + 4 },
+                { x: 100, y: H - pad - 20 },
+                { x: 148, y: pad + 18 },  // short, doesn't reach prev HH
+                { x: W - pad, y: pad + 22 }   // stalls flat
+            ];
+            var d = 'M' + pts.map(function (p) { return p.x + ',' + p.y; }).join(' L');
+            var out = [];
+            // Healthy part
+            out.push('<path d="M' + pts[0].x + ',' + pts[0].y +
+                ' L' + pts[1].x + ',' + pts[1].y +
+                ' L' + pts[2].x + ',' + pts[2].y +
+                '" stroke="' + GLD + '" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>');
+            // Weak part
+            out.push('<path d="M' + pts[2].x + ',' + pts[2].y +
+                ' L' + pts[3].x + ',' + pts[3].y +
+                ' L' + pts[4].x + ',' + pts[4].y +
+                '" stroke="' + WEAK + '" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3,3"/>');
+            // Stall dot
+            out.push('<circle cx="' + pts[4].x + '" cy="' + pts[4].y + '" r="3" fill="none" stroke="' + STALL + '" stroke-width="1.3"/>');
+            svg.innerHTML = out.join('');
+        }
+
+        /* ── Main chart ─────────────────────────────────────────── */
+        function buildMain() {
+            var svg = document.getElementById('s2-svg');
+            var W = 600, H = 220;
+            var PAD = { l: 32, r: 32, t: 26, b: 26 };
+            var UW = W - PAD.l - PAD.r;
+            var UH = H - PAD.t - PAD.b;
+
+            function px(fx) { return PAD.l + fx * UW; }
+            function py(fy) { return PAD.t + (1 - fy) * UH; }
+
+            // Structural nodes
+            var healthy = [
+                { fx: 0.04, fy: 0.10 },
+                { fx: 0.20, fy: 0.72, lbl: 'HH' },
+                { fx: 0.34, fy: 0.38, lbl: 'HL' },
+                { fx: 0.52, fy: 0.90, lbl: 'HH' },
+                { fx: 0.65, fy: 0.54, lbl: 'HL' }
+            ];
+
+            // Weak continuation — falls noticeably short of prior HH
+            var weakTop = { fx: 0.80, fy: 0.74, lbl: 'weak' };  // < 0.90
+            // Stall — sideways, no clear HH formed
+            var stall = { fx: 0.94, fy: 0.71, lbl: 'stall' };
+
+            var out = [];
+
+            // Grid
+            var gy = 40;
+            while (gy < H) {
+                out.push('<line x1="0" y1="' + gy + '" x2="' + W + '" y2="' + gy +
+                    '" stroke="' + GRID + '" stroke-width="1"/>');
+                gy += 40;
+            }
+
+            // Previous-HH horizontal guide line (subtle dashed — no label)
+            var prevHHy = py(0.90);
+            out.push('<line x1="' + px(0.52) + '" y1="' + prevHHy +
+                '" x2="' + px(0.96) + '" y2="' + prevHHy +
+                '" stroke="' + GLD2 + '" stroke-width="1" stroke-dasharray="4,5"/>');
+
+            // Solid healthy structure line
+            var solidPts = healthy.map(function (n) { return { x: px(n.fx), y: py(n.fy) }; });
+            out.push('<path d="M' + solidPts.map(function (p) { return p.x + ',' + p.y; }).join(' L') +
+                '" stroke="' + GLD + '" stroke-width="2.2" fill="none"' +
+                ' stroke-linecap="round" stroke-linejoin="round"/>');
+
+            // Weak continuation — dimmer, thinner
+            var hlLast = healthy[healthy.length - 1];
+            out.push('<path d="M' + px(hlLast.fx) + ',' + py(hlLast.fy) +
+                ' L' + px(weakTop.fx) + ',' + py(weakTop.fy) +
+                ' L' + px(stall.fx) + ',' + py(stall.fy) +
+                '" stroke="' + WEAK + '" stroke-width="1.6" fill="none"' +
+                ' stroke-linecap="round" stroke-linejoin="round"' +
+                ' stroke-dasharray="5,4"/>');
+
+            // Healthy node dots + labels
+            healthy.forEach(function (n) {
+                if (!n.lbl) return;
+                var x = px(n.fx), y = py(n.fy);
+                out.push('<circle cx="' + x + '" cy="' + y + '" r="4.5" fill="' + NDO + '" stroke="none"/>');
+                out.push('<text x="' + x + '" y="' + (y - 10) +
+                    '" text-anchor="middle" font-size="9" font-family="Inter,sans-serif"' +
+                    ' fill="' + NDO + '" font-weight="700" letter-spacing="0.06em">' + n.lbl + '</text>');
+            });
+
+            // Weak top dot — smaller, muted
+            var wx = px(weakTop.fx), wy = py(weakTop.fy);
+            out.push('<circle cx="' + wx + '" cy="' + wy + '" r="3.8" fill="' + NDW + '" stroke="none"/>');
+            out.push('<text x="' + wx + '" y="' + (wy - 10) +
+                '" text-anchor="middle" font-size="8.5" font-family="Inter,sans-serif"' +
+                ' fill="' + NDW + '" font-weight="600" letter-spacing="0.05em">weak</text>');
+
+            // Stall node — hollow red-tinted circle
+            var sx = px(stall.fx), sy = py(stall.fy);
+            out.push('<circle cx="' + sx + '" cy="' + sy +
+                '" r="4" fill="none" stroke="' + STALL + '" stroke-width="1.5"/>');
+            out.push('<text x="' + sx + '" y="' + (sy - 10) +
+                '" text-anchor="middle" font-size="8.5" font-family="Inter,sans-serif"' +
+                ' fill="' + STALL + '" font-weight="600" letter-spacing="0.05em">stall</text>');
+
+            svg.innerHTML = out.join('');
+        }
+
+        /* ── Animate phase tags ─────────────────────────────────── */
+        function animateTags() {
+            var tags = document.querySelectorAll('.s2-phase-tag');
+            tags.forEach(function (el, i) {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(3px)';
+                el.style.transition = 'opacity .22s ease, transform .22s ease';
+                setTimeout(function () {
+                    el.style.opacity = '';
+                    el.style.transform = '';
+                }, 60 + i * 80);
+            });
+        }
+
+        /* ── Register Clarify terms with the shared panel ───────── */
+        registerClarifyTerms({
+            weakContinuation: {
+                term: 'Weak Continuation',
+                explanation: 'Weak continuation occurs when price attempts to extend the trend but falls short of making a clear new structural high.',
+                example: 'In an uptrend, a weak continuation looks like a push upward that stalls below the previous Higher High.',
+                misc: 'Weak continuation is a warning sign. The trend has not failed yet, but structural pressure is increasing.'
+            },
+            momentum: {
+                term: 'Momentum',
+                explanation: 'Momentum describes the strength or speed of a price move in a given direction.',
+                example: 'Strong momentum produces clear, expanding swings. Fading momentum produces smaller, slower moves that struggle to reach new highs.',
+                misc: 'Momentum shifts often precede structural breaks. A loss of momentum is one of the earliest signs that continuation is failing.'
+            }
+        });
+
+        /* ── Init ───────────────────────────────────────────────── */
+        buildMiniStrong();
+        buildMiniWeak();
+        buildMain();
+
+    })();
+</script>

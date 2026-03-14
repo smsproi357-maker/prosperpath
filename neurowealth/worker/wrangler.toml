@@ -6,6 +6,12 @@ compatibility_flags = ["nodejs_compat"]
 
 [vars]
 # We will add Plaid env vars here later
+# TEMPORARY: Controls active AI provider. "sarvam" = Sarvam (active). "openrouter" = preserved fallback.
+# To roll back to OpenRouter: change AI_PROVIDER to "openrouter" and redeploy.
+AI_PROVIDER = "sarvam"
+# NOTE: SARVAM_API_KEY and OPENROUTER_API_KEY are secrets — set via:
+#   wrangler secret put SARVAM_API_KEY
+#   wrangler secret put OPENROUTER_API_KEY
 
 [[kv_namespaces]]
 binding = "USER_DATA"

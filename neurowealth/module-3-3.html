@@ -1,0 +1,1447 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="description" content="Module 3.3 - Structure | ProsperPath Market Structure">
+    <title>Structure | ProsperPath</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --m-bg: #0d0e10;
+            --m-surf: #141618;
+            --m-surf2: #18191c;
+            --m-bdr: #1e2023;
+            --m-bdrhi: #2e3035;
+            --m-txt: #e0e1e3;
+            --m-muted: #5e626a;
+            --m-muted2: #3a3d44;
+            --m-gold: #a07c2e;
+            --m-gold-dim: rgba(160, 124, 46, .13);
+            --m-gold-line: rgba(160, 124, 46, .38);
+            --m-green-txt: #7ed8a8;
+            --m-red-txt: #e08070;
+            --m-tr: 150ms ease
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            background: var(--m-bg);
+            color: var(--m-txt);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh
+        }
+
+        #ai-chat-fab,
+        .ai-fab-btn,
+        .floating-action-btn,
+        [class*="fab"],
+        [id*="fab"] {
+            display: none !important
+        }
+
+        #module-shell {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden
+        }
+
+        #topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: .75rem 1.25rem;
+            border-bottom: 1px solid var(--m-bdr);
+            background: var(--m-surf);
+            flex-shrink: 0;
+            gap: 1rem
+        }
+
+        #topbar-left {
+            display: flex;
+            align-items: center;
+            gap: .75rem
+        }
+
+        #back-btn {
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            font-size: .78rem;
+            padding: .38rem .85rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: border-color var(--m-tr), color var(--m-tr)
+        }
+
+        #back-btn:hover {
+            border-color: var(--m-bdrhi);
+            color: var(--m-txt)
+        }
+
+        #topbar-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: .95rem;
+            font-weight: 600;
+            color: var(--m-txt)
+        }
+
+        #progress-label {
+            font-size: .75rem;
+            color: var(--m-muted);
+            letter-spacing: .04em;
+            white-space: nowrap
+        }
+
+        #progress-bar-wrap {
+            width: 80px;
+            height: 2px;
+            background: var(--m-bdr);
+            border-radius: 1px;
+            overflow: hidden
+        }
+
+        #progress-bar-fill {
+            height: 100%;
+            background: var(--m-gold);
+            border-radius: 1px;
+            transition: width .4s ease
+        }
+
+        #shell-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden
+        }
+
+        #section-nav {
+            width: 200px;
+            flex-shrink: 0;
+            border-right: 1px solid var(--m-bdr);
+            background: var(--m-surf);
+            overflow-y: auto;
+            padding: 1rem 0
+        }
+
+        .sn-item {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            padding: .6rem 1rem;
+            font-size: .75rem;
+            color: var(--m-muted);
+            cursor: pointer;
+            transition: color var(--m-tr), background var(--m-tr);
+            border-left: 2px solid transparent;
+            line-height: 1.3
+        }
+
+        .sn-item:hover {
+            color: var(--m-txt);
+            background: rgba(255, 255, 255, .025)
+        }
+
+        .sn-item.visited {
+            color: var(--m-txt)
+        }
+
+        .sn-item.current {
+            color: var(--m-gold);
+            border-left-color: var(--m-gold);
+            background: var(--m-gold-dim)
+        }
+
+        .sn-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--m-muted2);
+            flex-shrink: 0;
+            transition: background var(--m-tr)
+        }
+
+        .sn-item.visited .sn-dot {
+            background: var(--m-muted)
+        }
+
+        .sn-item.current .sn-dot {
+            background: var(--m-gold)
+        }
+
+        #main-stage {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2.5rem 1.5rem
+        }
+
+        .screen {
+            width: 100%;
+            max-width: 640px;
+            animation: fadeIn .2s ease
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .scr-eyebrow {
+            font-size: .68rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--m-muted);
+            margin-bottom: 1.2rem
+        }
+
+        .scr-h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            font-weight: 700;
+            color: var(--m-txt);
+            letter-spacing: -.02em;
+            line-height: 1.15;
+            margin-bottom: .75rem
+        }
+
+        .scr-meta {
+            font-size: .78rem;
+            color: var(--m-muted);
+            letter-spacing: .04em;
+            margin-bottom: 2rem
+        }
+
+        .scr-body {
+            font-size: .95rem;
+            color: var(--m-muted);
+            line-height: 1.7;
+            margin-bottom: 1.5rem
+        }
+
+        .scr-body p {
+            margin-bottom: .55rem
+        }
+
+        .scr-body p:last-child {
+            margin-bottom: 0
+        }
+
+        .chart-box {
+            position: relative;
+            margin: 1.25rem 0;
+            background: var(--m-surf2);
+            border: 1px solid var(--m-bdr);
+            border-radius: 4px;
+            overflow: hidden;
+            height: 220px
+        }
+
+        .chart-box svg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%
+        }
+
+        .chart-box.short {
+            height: 150px
+        }
+
+        .charts-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: .75rem;
+            margin: 1.25rem 0
+        }
+
+        .chart-cap {
+            font-size: .68rem;
+            color: var(--m-muted);
+            text-align: center;
+            margin-top: .3rem;
+            letter-spacing: .03em
+        }
+
+        .principle-card {
+            background: var(--m-surf2);
+            border: 1px solid var(--m-bdrhi);
+            border-radius: 8px;
+            padding: 3.5rem 2rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            animation: pfade .7s ease both
+        }
+
+        @keyframes pfade {
+            from {
+                opacity: 0;
+                transform: translateY(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .principle-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.4rem, 3.5vw, 2rem);
+            font-weight: 700;
+            color: var(--m-txt);
+            letter-spacing: -.02em;
+            line-height: 1.25
+        }
+
+        .btn-primary {
+            background: transparent;
+            border: 1px solid var(--m-gold-line);
+            color: var(--m-gold);
+            font-family: 'Inter', sans-serif;
+            font-size: .8rem;
+            font-weight: 600;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            padding: .65rem 1.5rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background .2s, border-color .2s, box-shadow .2s;
+            margin-right: .6rem
+        }
+
+        .btn-primary:hover {
+            background: var(--m-gold-dim);
+            border-color: var(--m-gold);
+            box-shadow: 0 0 10px rgba(160, 124, 46, .22)
+        }
+
+        .btn-primary:disabled {
+            opacity: .42;
+            cursor: not-allowed
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: .8rem;
+            font-weight: 500;
+            letter-spacing: .04em;
+            padding: .62rem 1.2rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: border-color var(--m-tr), color var(--m-tr)
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--m-bdrhi);
+            color: var(--m-txt)
+        }
+
+        .btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .6rem;
+            margin-top: 1.75rem
+        }
+
+        .clarify-btn {
+            background: none;
+            border: none;
+            color: var(--m-gold);
+            font-size: .78rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            padding: 0;
+            font-family: 'Inter', sans-serif
+        }
+
+        .opt-btn {
+            display: block;
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-txt);
+            font-family: 'Inter', sans-serif;
+            font-size: .875rem;
+            text-align: left;
+            padding: .75rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: .5rem;
+            transition: border-color var(--m-tr), background var(--m-tr)
+        }
+
+        .opt-btn:hover {
+            border-color: var(--m-bdrhi);
+            background: rgba(255, 255, 255, .025)
+        }
+
+        .opt-btn.selected {
+            border-color: var(--m-gold-line);
+            background: var(--m-gold-dim);
+            color: var(--m-gold)
+        }
+
+        .opt-btn:disabled {
+            cursor: default
+        }
+
+        .assessment-prog {
+            font-size: .72rem;
+            color: var(--m-muted);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem
+        }
+
+        .assessment-q {
+            font-size: 1rem;
+            color: var(--m-txt);
+            margin-bottom: 1.25rem;
+            line-height: 1.55
+        }
+
+        .result-box {
+            text-align: center;
+            padding: 2rem 1rem
+        }
+
+        .result-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--m-txt);
+            margin-bottom: .5rem
+        }
+
+        .result-gold {
+            color: var(--m-gold)
+        }
+
+        .result-body {
+            font-size: .9rem;
+            color: var(--m-muted);
+            line-height: 1.6;
+            margin-bottom: 1.75rem;
+            max-width: 360px;
+            margin-left: auto;
+            margin-right: auto
+        }
+
+        #clarify-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .55);
+            z-index: 900;
+            display: none;
+            align-items: flex-start;
+            justify-content: flex-end
+        }
+
+        #clarify-overlay.open {
+            display: flex
+        }
+
+        #clarify-panel {
+            width: 340px;
+            max-width: 90vw;
+            height: 100%;
+            background: #16181b;
+            border-left: 1px solid var(--m-bdr);
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            animation: slideInRight .22s ease
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%)
+            }
+
+            to {
+                transform: translateX(0)
+            }
+        }
+
+        .cp-term {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--m-txt);
+            margin-bottom: .25rem
+        }
+
+        .cp-section {
+            margin-top: 1.25rem
+        }
+
+        .cp-label {
+            font-size: .65rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--m-muted);
+            margin-bottom: .4rem
+        }
+
+        .cp-text {
+            font-size: .85rem;
+            color: var(--m-muted);
+            line-height: 1.55
+        }
+
+        .cp-text strong {
+            color: var(--m-txt);
+            font-weight: 500
+        }
+
+        #cp-close {
+            margin-top: 2rem;
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: .78rem;
+            padding: .5rem 1rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: border-color var(--m-tr), color var(--m-tr)
+        }
+
+        #cp-close:hover {
+            border-color: var(--m-bdrhi);
+            color: var(--m-txt)
+        }
+
+        .nav-toggle {
+            display: none;
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            padding: .36rem .7rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: .75rem
+        }
+
+        .sim-task {
+            background: var(--m-surf2);
+            border: 1px solid var(--m-bdrhi);
+            border-radius: 4px;
+            padding: .75rem 1rem;
+            margin-bottom: .85rem;
+            font-size: .9rem;
+            color: var(--m-txt);
+            line-height: 1.45
+        }
+
+        .sim-task .task-label {
+            font-size: .65rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--m-gold);
+            margin-bottom: .3rem
+        }
+
+        .sim-fb {
+            min-height: 2rem;
+            font-size: .85rem;
+            padding: .5rem 0
+        }
+
+        .sim-fb.ok {
+            color: var(--m-green-txt)
+        }
+
+        .sim-fb.err {
+            color: var(--m-red-txt)
+        }
+
+        .dir-btns {
+            display: flex;
+            gap: .6rem;
+            margin-top: .85rem;
+            flex-wrap: wrap
+        }
+
+        .dir-btn {
+            flex: 1;
+            min-width: 90px;
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: .82rem;
+            padding: .65rem .8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: border-color var(--m-tr), color var(--m-tr), background var(--m-tr)
+        }
+
+        .dir-btn:hover {
+            border-color: var(--m-bdrhi);
+            color: var(--m-txt);
+            background: rgba(255, 255, 255, .025)
+        }
+
+        /* Section II micro-label */
+        .chart-microlabel {
+            font-size: .6rem;
+            color: var(--m-muted2);
+            text-align: center;
+            letter-spacing: .06em;
+            margin-top: .18rem;
+            font-family: 'Inter', monospace;
+            opacity: .78
+        }
+
+        /* Section IV step controls */
+        .s4-steps {
+            display: flex;
+            gap: .5rem;
+            margin-bottom: .75rem;
+            flex-wrap: wrap
+        }
+
+        .s4-step-btn {
+            background: transparent;
+            border: 1px solid var(--m-bdr);
+            color: var(--m-muted);
+            font-family: 'Inter', sans-serif;
+            font-size: .72rem;
+            padding: .38rem .8rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: border-color var(--m-tr), color var(--m-tr), background var(--m-tr)
+        }
+
+        .s4-step-btn.active {
+            border-color: var(--m-gold-line);
+            color: var(--m-gold);
+            background: var(--m-gold-dim)
+        }
+
+        .s4-step-btn:hover:not(.active) {
+            border-color: var(--m-bdrhi);
+            color: var(--m-txt)
+        }
+
+        .s4-question {
+            font-size: .88rem;
+            color: var(--m-muted);
+            margin-top: .65rem;
+            line-height: 1.6;
+            min-height: 1.4em;
+            transition: opacity .3s ease
+        }
+
+        .s4-question.revealed {
+            opacity: 1
+        }
+
+        @media(max-width:700px) {
+            #section-nav {
+                position: fixed;
+                inset: 0 auto 0 0;
+                z-index: 800;
+                transform: translateX(-100%);
+                transition: transform .3s ease;
+                width: 240px
+            }
+
+            #section-nav.open {
+                transform: translateX(0)
+            }
+
+            #nav-backdrop {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, .5);
+                z-index: 799;
+                display: none
+            }
+
+            #nav-backdrop.open {
+                display: block
+            }
+
+            #clarify-panel {
+                width: 100%;
+                height: 60vh;
+                border-left: none;
+                border-top: 1px solid var(--m-bdr);
+                position: fixed;
+                bottom: 0;
+                left: 0
+            }
+
+            #clarify-overlay {
+                align-items: flex-end;
+                justify-content: center
+            }
+
+            #main-stage {
+                padding: 1.5rem 1rem
+            }
+
+            .nav-toggle {
+                display: inline-flex;
+                align-items: center;
+                gap: .4rem
+            }
+
+            .charts-row {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="module-shell">
+        <div id="topbar">
+            <div id="topbar-left">
+                <button class="nav-toggle" id="nav-toggle-btn" onclick="toggleNav()"
+                    aria-label="Open section navigator">&#9776; Sections</button>
+                <button id="back-btn" onclick="goBack()">&#8592; Market Structure</button>
+                <span id="topbar-title">Structure</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:.75rem">
+                <span id="progress-label">Progress 0%</span>
+                <div id="progress-bar-wrap">
+                    <div id="progress-bar-fill" style="width:0%"></div>
+                </div>
+            </div>
+        </div>
+        <div id="nav-backdrop" onclick="toggleNav()"></div>
+        <div id="shell-body">
+            <nav id="section-nav" aria-label="Module sections">
+                <div id="sn-items"></div>
+            </nav>
+            <main id="main-stage">
+                <div class="screen" id="sc"></div>
+            </main>
+        </div>
+    </div>
+    <div id="clarify-overlay" onclick="if(event.target===this)closeClarify()" role="dialog" aria-modal="true">
+        <div id="clarify-panel">
+            <div class="cp-term" id="cp-term"></div>
+            <div class="cp-section">
+                <div class="cp-label">Explanation</div>
+                <div class="cp-text" id="cp-exp"></div>
+            </div>
+            <div class="cp-section">
+                <div class="cp-label">Example</div>
+                <div class="cp-text" id="cp-ex"></div>
+            </div>
+            <div class="cp-section">
+                <div class="cp-label">Common Misconception</div>
+                <div class="cp-text" id="cp-misc"></div>
+            </div>
+            <button id="cp-close" onclick="closeClarify()">Close</button>
+        </div>
+    </div>
+    <script src="script.js?v=m33"></script>
+    <script src="ai-widget.js"></script>
+    <script src="google-auth.js"></script>
+    <script>
+        window.addEventListener('load', function () { if (typeof initGoogleAuth === 'function') initGoogleAuth(); });
+
+        var ST = {
+            sid: 0, si: 0,
+            visited: new Set(), lastSI: {}, hist: [],
+            assess: { ans: [null, null, null], submitted: false, score: null, passed: null, q: 0 },
+            review: false, verified: false,
+            sim: { task: 0, done: false, picks: { high: null, low: null, internal: null } },
+            s4step: 0
+        };
+
+        var SECS = [
+            { id: 0, label: 'Entry' },
+            { id: 1, label: 'Section I \u2014 From Swings to Structure' },
+            { id: 2, label: 'Section II \u2014 Structure Has Shape' },
+            { id: 3, label: 'Section III \u2014 Internal vs External' },
+            { id: 4, label: 'Section IV \u2014 Reading Current Structure' },
+            { id: 5, label: 'Section V \u2014 Recognition Simulation' },
+            { id: 6, label: 'Section VI \u2014 Principle' },
+            { id: 7, label: 'Section VII \u2014 Competency Check' }
+        ];
+
+        function pct() {
+            var v = [...ST.visited].filter(function (x) { return x >= 1 && x <= 7; });
+            var p = Math.round((Math.min(v.length, 7) / 7) * 85);
+            if (ST.assess.score !== null && ST.assess.score > 0 && !ST.assess.passed) p = Math.max(p, 90);
+            if (ST.assess.passed) p = 100;
+            return p;
+        }
+        function updProg() {
+            var p = pct();
+            document.getElementById('progress-label').textContent = 'Progress ' + p + '%';
+            document.getElementById('progress-bar-fill').style.width = p + '%';
+        }
+        function visit(id) { if (!ST.visited.has(id)) { ST.visited.add(id); updProg(); } renderNav(); }
+
+        function goTo(id, si, push) {
+            var max = ST.visited.size > 0 ? Math.max(...[...ST.visited]) : 0;
+            if (!(ST.visited.has(id) || id <= max + 1 || id === 0)) return;
+            if (push !== false) ST.hist.push({ sid: ST.sid, si: ST.si });
+            ST.lastSI[ST.sid] = ST.si;
+            ST.sid = id; ST.si = (si != null) ? si : 0; ST.review = false;
+            visit(id); renderNav(); render();
+            var n = document.getElementById('section-nav');
+            if (n.classList.contains('open')) toggleNav();
+        }
+        function goBack() {
+            if (ST.review) { ST.review = false; render(); return; }
+            if (ST.hist.length > 0) {
+                var p = ST.hist.pop(); ST.lastSI[ST.sid] = ST.si; ST.sid = p.sid; ST.si = p.si;
+                ST.review = false; visit(p.sid); renderNav(); render(); return;
+            }
+            window.location.href = 'market-structure.html';
+        }
+        function toggleNav() {
+            document.getElementById('section-nav').classList.toggle('open');
+            document.getElementById('nav-backdrop').classList.toggle('open');
+        }
+
+        function renderNav() {
+            var c = document.getElementById('sn-items'); c.innerHTML = '';
+            SECS.forEach(function (s) {
+                if (s.id === 0) return;
+                var cur = ST.sid === s.id, vis = ST.visited.has(s.id);
+                var max = ST.visited.size > 0 ? Math.max(...[...ST.visited]) : 0;
+                var ok = vis || s.id <= max + 1;
+                var d = document.createElement('div');
+                d.className = 'sn-item' + (cur ? ' current' : '') + (vis ? ' visited' : '');
+                d.setAttribute('tabindex', ok ? '0' : '-1'); d.setAttribute('role', 'button');
+                d.innerHTML = '<span class="sn-dot"></span><span>' + s.label + '</span>';
+                if (ok) {
+                    d.onclick = function () { var l = ST.lastSI[s.id]; goTo(s.id, l != null ? l : 0); };
+                    d.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { var l = ST.lastSI[s.id]; goTo(s.id, l != null ? l : 0); } };
+                } else { d.style.opacity = '.35'; d.style.cursor = 'not-allowed'; }
+                c.appendChild(d);
+            });
+        }
+
+        var CD = {
+            structure: {
+                term: 'Structure',
+                explanation: 'Structure is the organized shape formed when swing points are connected. It reveals how price movement progresses: upward, downward, or compressed.',
+                example: 'Three connected swing highs and lows forming a rising staircase. That rising pattern is structure.',
+                misc: '<strong>"Structure is always obvious."</strong> In active markets, structure can compress and overlap. Reading it requires context.'
+            },
+            majorswings: {
+                term: 'Major Swings',
+                explanation: 'Major swings define the primary structure. They are the largest, most significant turning points that frame the overall direction.',
+                example: 'Price rises for several sessions then makes a significant reversal. That prominent peak is a major swing high.',
+                misc: '<strong>"All swing highs are major swings."</strong> Major swings are defined by relative size and significance, not by every minor turn.'
+            },
+            internalswings: {
+                term: 'Internal Structure',
+                explanation: 'Internal structure is the smaller swings that form inside a larger structural move. They show how price progresses within the major structure.',
+                example: 'Price rises from a major swing low toward a major swing high, making smaller turns along the way. Those smaller turns are internal swings.',
+                misc: '<strong>"Internal structure does not matter."</strong> Internal swings reveal the character of the larger move. They matter for timing and context.'
+            }
+        };
+        function openClarify(k) {
+            var d = CD[k]; if (!d) return;
+            document.getElementById('cp-term').textContent = d.term;
+            document.getElementById('cp-exp').textContent = d.explanation;
+            document.getElementById('cp-ex').textContent = d.example;
+            document.getElementById('cp-misc').innerHTML = d.misc;
+            document.getElementById('clarify-overlay').classList.add('open');
+            document.getElementById('cp-close').focus();
+        }
+        function closeClarify() { document.getElementById('clarify-overlay').classList.remove('open'); }
+        function eH(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+        function eA(s) { return String(s).replace(/"/g, '&quot;'); }
+
+        /* SVG chart helpers */
+        var VW = 600, VH = 220, MW = 200, MH = 140;
+        function ln(pts, st, w, da) {
+            var d = 'M' + pts.map(function (p) { return p.x + ',' + p.y; }).join(' L');
+            return '<path d="' + d + '" stroke="' + st + '" stroke-width="' + w + '" fill="none" stroke-dasharray="' + da + '" stroke-linejoin="round" stroke-linecap="round"/>';
+        }
+        function dot(x, y, r, f, s, sw) { return '<circle cx="' + x + '" cy="' + y + '" r="' + r + '" fill="' + f + '" stroke="' + s + '" stroke-width="' + sw + '"/>'; }
+        function lbl(x, y, t, sz, f) { return '<text x="' + x + '" y="' + y + '" text-anchor="middle" font-size="' + sz + '" font-family="Inter,sans-serif" fill="' + f + '" font-weight="600" letter-spacing="0.06em">' + t + '</text>'; }
+        function grid(w, h, step, c) { var s = '', y = step; while (y < h) { s += '<line x1="0" y1="' + y + '" x2="' + w + '" y2="' + y + '" stroke="' + c + '" stroke-width="1"/>'; y += step; } return s; }
+        var GL = grid(VW, VH, 40, 'rgba(255,255,255,0.025)');
+        var MGL = grid(MW, MH, 35, 'rgba(255,255,255,0.025)');
+        var MS = 'rgba(195,162,70,0.55)';
+        var IS = 'rgba(155,128,50,0.35)';
+        var SS = 'rgba(175,148,60,0.45)';
+        /* Main chart: upward structure — SL,SH,SL,SH with HH+HL */
+        var MP = [{ x: 65, y: 162 }, { x: 205, y: 48 }, { x: 338, y: 148 }, { x: 478, y: 36 }];
+        var IP = [{ x: 120, y: 108 }, { x: 158, y: 78 }, { x: 182, y: 96 }, { x: 260, y: 115 }, { x: 295, y: 88 }, { x: 322, y: 108 }];
+        function mjD() { return MP.map(function (p) { return dot(p.x, p.y, 7, 'rgba(200,185,130,0.92)', 'rgba(200,185,130,0.28)', 2); }).join(''); }
+        function itD() { return IP.map(function (p) { return dot(p.x, p.y, 3, 'rgba(168,145,100,0.65)', 'rgba(168,145,100,0.20)', 1); }).join(''); }
+        function mjL() { return ln(MP, MS, 2, '8,5'); }
+        function itL() { return ln([MP[0], IP[0], IP[1], IP[2], MP[1]], IS, 1, '4,4') + ln([MP[2], IP[3], IP[4], IP[5], MP[3]], IS, 1, '4,4'); }
+
+        /* Section builders */
+        function bEntry() {
+            var h = '<div style="text-align:center;padding:2rem 0">';
+            h += '<p class="scr-eyebrow">ProsperPath &mdash; Market Structure</p>';
+            h += '<h1 class="scr-h1">Structure</h1>';
+            h += '<p class="scr-body" style="max-width:320px;margin:0 auto 1rem">Connected swings form structure.<br>Structure reveals the shape of movement.</p>';
+            h += '<p class="scr-meta">Beginner &bull; 15 minutes &bull; Market Structure</p>';
+            h += '<button class="btn-primary" id="begin-btn">Begin Module</button>';
+            h += '</div>';
+            return h;
+        }
+
+        function bS1() {
+            /* Per-marker animated groups — each marker fades in individually */
+            var dotGroups = MP.map(function (s, i) {
+                var isH = (i === 1 || i === 3);
+                var delay = (i * 320) + 'ms';
+                var dEl = dot(s.x, s.y, 5, 'rgba(220,210,190,0.9)', 'rgba(220,210,190,0.28)', 1.5);
+                var lEl = isH ? lbl(s.x, s.y - 13, 'SH', 9, 'rgba(224,225,227,0.72)') : lbl(s.x, s.y + 21, 'SL', 9, 'rgba(224,225,227,0.72)');
+                return '<g id="s1m' + i + '" style="opacity:0;transition:opacity 0.35s ease ' + delay + '">' + dEl + lEl + '</g>';
+            }).join('');
+            /* Structure line group appears after all markers */
+            var lineDelay = (MP.length * 320 + 300) + 'ms';
+            var svg = '<svg viewBox="0 0 ' + VW + ' ' + VH + '" preserveAspectRatio="none">' + GL + dotGroups + '<g id="s1l" style="opacity:0;transition:opacity 0.45s ease ' + lineDelay + '">' + ln(MP, SS, 1.2, '8,6') + '</g></svg>';
+            var h = '<p class="scr-eyebrow">Section I &mdash; From Swings to Structure</p>';
+            h += '<div class="chart-box">' + svg + '</div>';
+            h += '<div class="scr-body" style="margin-top:.9rem;text-align:center"><p>A single swing shows a turn.</p><p style="margin-top:.55rem">Connected swings form structure.</p></div>';
+            h += '<p style="font-size:.8rem;color:var(--m-muted);margin:.85rem 0 1rem;text-align:center">Clarify: <button class="clarify-btn" data-topic="structure">Structure</button></p>';
+            h += '<div class="btn-row"><button class="btn-primary" id="s1n">Continue to Section II</button></div>';
+            return h;
+        }
+        function initS1() {
+            /* Trigger all marker groups and line group to fade in via opacity */
+            setTimeout(function () {
+                MP.forEach(function (_, i) {
+                    var m = document.getElementById('s1m' + i);
+                    if (m) m.style.opacity = '1';
+                });
+                var l = document.getElementById('s1l');
+                if (l) l.style.opacity = '1';
+            }, 40);
+        }
+
+        function bS2() {
+            function mini(sw, cap, microlabel) {
+                var d = sw.map(function (p) { return dot(p.x, p.y, 3.5, 'rgba(200,185,130,0.85)', 'rgba(200,185,130,0.25)', 1); }).join('');
+                var s = sw.map(function (p) { return { x: p.x, y: p.y }; });
+                var svg = '<svg viewBox="0 0 ' + MW + ' ' + MH + '" preserveAspectRatio="none">' + MGL + ln(s, MS, 1.5, '8,6') + d + '</svg>';
+                return '<div><div class="chart-box short" style="margin:0">' + svg + '</div><p class="chart-cap">' + cap + '</p><p class="chart-microlabel">' + microlabel + '</p></div>';
+            }
+            var US = [{ x: 15, y: 118 }, { x: 60, y: 88 }, { x: 100, y: 62 }, { x: 145, y: 38 }, { x: 185, y: 20 }];
+            var DS = [{ x: 15, y: 20 }, { x: 60, y: 48 }, { x: 102, y: 72 }, { x: 147, y: 98 }, { x: 185, y: 118 }];
+            var CS = [{ x: 15, y: 70 }, { x: 45, y: 56 }, { x: 78, y: 82 }, { x: 112, y: 62 }, { x: 148, y: 78 }, { x: 185, y: 65 }];
+            var h = '<p class="scr-eyebrow">Section II &mdash; Structure Has Shape</p>';
+            h += '<div class="scr-body" style="text-align:center;margin-bottom:.5rem"><p>Structure gives price movement a readable shape.</p></div>';
+            h += '<div class="charts-row">' +
+                mini(US, 'Upward structure', 'HH &rarr; HL &rarr; HH') +
+                mini(DS, 'Downward structure', 'LL &rarr; LH &rarr; LL') +
+                mini(CS, 'Compressed structure', 'HL &harr; LH') +
+                '</div>';
+            h += '<div class="scr-body" style="text-align:center;margin-top:.25rem"><p>Different structures form different movement environments.</p></div>';
+            h += '<div class="btn-row"><button class="btn-primary" id="s2n">Continue to Section III</button></div>';
+            return h;
+        }
+
+        function bS3() {
+            var mj = [{ x: 70, y: 158 }, { x: 302, y: 45 }, { x: 532, y: 152 }];
+            var it = [{ x: 140, y: 115 }, { x: 188, y: 80 }, { x: 232, y: 102 }, { x: 368, y: 95 }, { x: 410, y: 122 }, { x: 455, y: 100 }];
+            var mjL2 = ln(mj, MS, 2, '8,5');
+            var itL2 = ln([mj[0], it[0], it[1], it[2], mj[1]], IS, 1, '4,4') + ln([mj[1], it[3], it[4], it[5], mj[2]], IS, 1, '4,4');
+            var mjD2 = mj.map(function (p) { return dot(p.x, p.y, 7, 'rgba(200,185,130,0.92)', 'rgba(200,185,130,0.28)', 2); }).join('');
+            var itD2 = it.map(function (p) { return dot(p.x, p.y, 3, 'rgba(165,140,95,0.65)', 'rgba(165,140,95,0.20)', 1); }).join('');
+            var leg = '<g transform="translate(28,12)">' + dot(7, 7, 6, 'rgba(200,185,130,0.92)', 'rgba(200,185,130,0.28)', 1.5) + '<text x="18" y="11" font-size="9" font-family="Inter,sans-serif" fill="rgba(224,225,227,0.6)">Major swing</text></g><g transform="translate(145,12)">' + dot(5, 7, 3, 'rgba(165,140,95,0.65)', 'rgba(165,140,95,0.20)', 1) + '<text x="14" y="11" font-size="9" font-family="Inter,sans-serif" fill="rgba(224,225,227,0.6)">Internal swing</text></g>';
+            var svg = '<svg viewBox="0 0 ' + VW + ' ' + VH + '" preserveAspectRatio="none">' + GL + itL2 + mjL2 + itD2 + mjD2 + leg + '</svg>';
+            var h = '<p class="scr-eyebrow">Section III &mdash; Internal vs External Structure</p>';
+            h += '<div class="chart-box">' + svg + '</div>';
+            h += '<div class="scr-body" style="margin-top:.9rem;text-align:center"><p>Some swings define the larger structure.</p><p style="margin-top:.55rem">Other swings exist inside that structure.</p></div>';
+            h += '<p style="font-size:.8rem;color:var(--m-muted);margin:.85rem 0 1rem;text-align:center">Clarify: <button class="clarify-btn" data-topic="majorswings">Major Swings</button> &middot; <button class="clarify-btn" data-topic="internalswings">Internal Structure</button></p>';
+            h += '<div class="btn-row"><button class="btn-primary" id="s3n">Continue to Section IV</button></div>';
+            return h;
+        }
+
+        /* Section IV state */
+        var S4 = { step: 0 };
+
+        function s4Svg(step) {
+            /* Step 0: major path full, internal dim */
+            /* Step 1: major slightly faded, internal highlighted */
+            /* Step 2: major + internal dim, current region highlighted */
+            var mjOp = step === 1 ? '0.35' : '0.92';
+            var itOp = step === 0 ? '0.22' : (step === 1 ? '0.88' : '0.28');
+            var mjLOp = step === 1 ? '0.30' : (step === 2 ? '0.55' : '1');
+            var itLOp = step === 0 ? '0.12' : (step === 1 ? '0.80' : '0.22');
+            var hlOp = step === 2 ? '1' : '0';
+            var mjDots = MP.map(function (p) {
+                return dot(p.x, p.y, 7, 'rgba(200,185,130,' + mjOp + ')', 'rgba(200,185,130,0.28)', 2);
+            }).join('');
+            var itDots = IP.map(function (p) {
+                return dot(p.x, p.y, 3, 'rgba(168,145,100,' + itOp + ')', 'rgba(168,145,100,0.20)', 1);
+            }).join('');
+            var mjLine = '<g style="opacity:' + mjLOp + ';transition:opacity .4s ease">' + ln(MP, MS, 2, '8,5') + '</g>';
+            var itLine = '<g style="opacity:' + itLOp + ';transition:opacity .4s ease">' + ln([MP[0], IP[0], IP[1], IP[2], MP[1]], IS, 1, '4,4') + ln([MP[2], IP[3], IP[4], IP[5], MP[3]], IS, 1, '4,4') + '</g>';
+            var hl = '<rect x="320" y="18" width="175" height="148" fill="rgba(160,124,46,0.05)" stroke="rgba(160,124,46,0.22)" stroke-width="1" stroke-dasharray="5,4" rx="3" style="opacity:' + hlOp + ';transition:opacity .4s ease"/>';
+            return '<svg id="s4svg" viewBox="0 0 ' + VW + ' ' + VH + '" preserveAspectRatio="none">' + GL + hl + itLine + mjLine + itDots + mjDots + '</svg>';
+        }
+
+        function bS4() {
+            var step = S4.step;
+            var stepLabels = ['Main structure', 'Internal swings', 'Current region'];
+            var questions = [
+                'Which swings define the main structure?',
+                'Which swings are internal?',
+                'What shape is forming?'
+            ];
+            var stepBtns = stepLabels.map(function (lbl, i) {
+                return '<button class="s4-step-btn' + (step === i ? ' active' : '') + '" onclick="s4Go(' + i + ')">' + lbl + '</button>';
+            }).join('');
+            var h = '<p class="scr-eyebrow">Section IV &mdash; Reading Current Structure</p>';
+            h += '<div class="chart-box" id="s4chart">' + s4Svg(step) + '</div>';
+            h += '<div class="s4-steps">' + stepBtns + '</div>';
+            h += '<div class="s4-question" id="s4q">' + 'To read structure, ask: <em>' + questions[step] + '</em></div>';
+            h += '<div class="btn-row"><button class="btn-primary" id="s4n">Continue to Section V</button></div>';
+            return h;
+        }
+
+        function s4Go(step) {
+            S4.step = step;
+            var chartEl = document.getElementById('s4chart');
+            var qEl = document.getElementById('s4q');
+            var questions = [
+                'Which swings define the main structure?',
+                'Which swings are internal?',
+                'What shape is forming?'
+            ];
+            var stepLabels = ['Main structure', 'Internal swings', 'Current region'];
+            if (chartEl) chartEl.innerHTML = s4Svg(step);
+            if (qEl) qEl.innerHTML = 'To read structure, ask: <em>' + questions[step] + '</em>';
+            /* Update button states */
+            document.querySelectorAll('.s4-step-btn').forEach(function (b, i) {
+                b.className = 's4-step-btn' + (i === step ? ' active' : '');
+            });
+        }
+
+        var STASKS = [
+            { id: 1, key: 'high', ins: 'Tap the major swing high.' },
+            { id: 2, key: 'low', ins: 'Tap the major swing low.' },
+            { id: 3, key: 'internal', ins: 'Tap an internal swing.' },
+            { id: 4, key: 'dir', ins: 'Identify the overall structure direction.' },
+            { id: 5, key: 'nextmove', ins: 'What is the next likely structural move?' }
+        ];
+
+        /* Internal swing targets (pick 3 representative points) */
+        var IT_TARGETS = [
+            { x: IP[1].x, y: IP[1].y },
+            { x: IP[3].x, y: IP[3].y },
+            { x: IP[4].x, y: IP[4].y }
+        ];
+
+        function s5BuildChart(task, emphMajor) {
+            /* Distinguish major vs internal nodes visually */
+            var mjDotsSvg = MP.map(function (p) {
+                return dot(p.x, p.y, 7, 'rgba(200,185,130,0.92)', 'rgba(200,185,130,0.28)', 2);
+            }).join('');
+            /* Internal nodes fully visible from task 3 onwards */
+            var itAlpha = (task.key === 'internal' || task.key === 'dir' || task.key === 'nextmove') ? '0.88' : '0.45';
+            var itDotsSvg = IP.map(function (p) {
+                return dot(p.x, p.y, 3, 'rgba(168,145,100,' + itAlpha + ')', 'rgba(168,145,100,0.20)', 1);
+            }).join('');
+            /* Major structure line — slightly stronger emphasis for tasks 4 & 5 */
+            var mjLineW = emphMajor ? 2.5 : 2;
+            var mjLineDA = emphMajor ? '8,4' : '8,5';
+            var mjLineSvg = ln(MP, MS, mjLineW, mjLineDA);
+            var hr = '<circle id="hring" cx="-99" cy="-99" r="12" fill="none" stroke="rgba(200,185,130,0.45)" stroke-width="1.5" style="opacity:0;transition:opacity .2s"/>';
+            /* Render previously confirmed picks as overlay marks */
+            var picksSvg = '';
+            var picks = ST.sim.picks;
+            if (picks.high) picksSvg += dot(picks.high.x, picks.high.y, 8, 'rgba(120,210,160,0.82)', 'rgba(255,255,255,0.18)', 1.5) + '<circle cx="' + picks.high.x + '" cy="' + picks.high.y + '" r="14" fill="none" stroke="rgba(120,210,160,0.32)" stroke-width="1"/>';
+            if (picks.low) picksSvg += dot(picks.low.x, picks.low.y, 8, 'rgba(120,210,160,0.82)', 'rgba(255,255,255,0.18)', 1.5) + '<circle cx="' + picks.low.x + '" cy="' + picks.low.y + '" r="14" fill="none" stroke="rgba(120,210,160,0.32)" stroke-width="1"/>';
+            if (picks.internal) picksSvg += dot(picks.internal.x, picks.internal.y, 6, 'rgba(120,210,160,0.72)', 'rgba(255,255,255,0.15)', 1.5) + '<circle cx="' + picks.internal.x + '" cy="' + picks.internal.y + '" r="11" fill="none" stroke="rgba(120,210,160,0.28)" stroke-width="1"/>';
+            return '<svg id="s5svg" viewBox="0 0 ' + VW + ' ' + VH + '" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%">' + GL + itL() + mjLineSvg + itDotsSvg + mjDotsSvg + picksSvg + hr + '</svg>';
+        }
+
+        function bS5() {
+            var totalTasks = STASKS.length;
+            if (ST.sim.done) {
+                var h = '<p class="scr-eyebrow">Section V &mdash; Recognition Simulation</p>';
+                h += '<div style="text-align:center;padding:1.5rem 0"><div style="font-size:1.4rem;color:var(--m-green-txt);margin-bottom:.75rem">&#10003;</div>';
+                h += '<p style="font-family:\'Outfit\',sans-serif;font-size:1.1rem;font-weight:600;color:var(--m-txt);margin-bottom:.4rem">Structure identified.</p>';
+                h += '<p class="scr-body" style="max-width:360px;margin:0 auto">You can locate major swings, internal swings, read the structure direction, and reason about the next structural move.</p></div>';
+                h += '<div class="btn-row" style="justify-content:center"><button class="btn-primary" id="s5n">Continue to Section VI</button></div>';
+                return h;
+            }
+            var task = STASKS[ST.sim.task];
+            if (task.key === 'dir') {
+                /* Task 4: show same chart with prior picks visible + subtle major emphasis */
+                var svg4 = s5BuildChart(task, true);
+                var h = '<p class="scr-eyebrow">Section V &mdash; Recognition Simulation</p>';
+                h += '<div class="sim-task"><div class="task-label">Task 4 of ' + totalTasks + '</div>' + task.ins + '</div>';
+                h += '<div id="s5w" style="position:relative;margin:0 0 .85rem;background:var(--m-surf2);border:1px solid var(--m-bdr);border-radius:4px;overflow:hidden;height:220px">' + svg4 + '</div>';
+                h += '<div class="dir-btns"><button class="dir-btn" onclick="doDir(\'up\')">Upward</button><button class="dir-btn" onclick="doDir(\'down\')">Downward</button><button class="dir-btn" onclick="doDir(\'comp\')">Compressed</button></div>';
+                h += '<div class="sim-fb" id="sfb"></div>';
+                return h;
+            }
+            if (task.key === 'nextmove') {
+                /* Task 5: same chart, prior picks, reason about next structural step */
+                var svg5 = s5BuildChart(task, true);
+                var h = '<p class="scr-eyebrow">Section V &mdash; Recognition Simulation</p>';
+                h += '<div class="sim-task"><div class="task-label">Task 5 of ' + totalTasks + '</div>' + task.ins + '</div>';
+                h += '<div id="s5w" style="position:relative;margin:0 0 .85rem;background:var(--m-surf2);border:1px solid var(--m-bdr);border-radius:4px;overflow:hidden;height:220px">' + svg5 + '</div>';
+                h += '<div class="dir-btns"><button class="dir-btn" onclick="doNextMove(\'hh\')">Higher High</button><button class="dir-btn" onclick="doNextMove(\'hl\')">Higher Low</button><button class="dir-btn" onclick="doNextMove(\'ll\')">Lower Low</button></div>';
+                h += '<div class="sim-fb" id="sfb"></div>';
+                return h;
+            }
+            var svg = s5BuildChart(task, false);
+            var h = '<p class="scr-eyebrow">Section V &mdash; Recognition Simulation</p>';
+            h += '<div class="sim-task"><div class="task-label">Task ' + task.id + ' of ' + totalTasks + '</div>' + task.ins + '</div>';
+            h += '<div id="s5w" style="position:relative;margin:0 0 .85rem;background:var(--m-surf2);border:1px solid var(--m-bdr);border-radius:4px;overflow:hidden;height:220px;cursor:crosshair">' + svg + '</div>';
+            h += '<div class="sim-fb" id="sfb"></div>';
+            return h;
+        }
+
+        function doDir(d) {
+            var fb = document.getElementById('sfb');
+            if (d === 'up') {
+                if (fb) { fb.className = 'sim-fb ok'; fb.textContent = 'Correct — higher highs and higher lows confirm upward structure.'; }
+                setTimeout(function () { ST.sim.task++; render(); }, 900);
+            } else {
+                if (fb) { fb.className = 'sim-fb err'; fb.textContent = 'Not quite — observe the sequence of highs and lows.'; }
+                setTimeout(function () { if (fb) { fb.className = 'sim-fb'; fb.textContent = ''; } }, 1400);
+            }
+        }
+
+        function doNextMove(d) {
+            var fb = document.getElementById('sfb');
+            if (d === 'hl') {
+                if (fb) { fb.className = 'sim-fb ok'; fb.textContent = 'Correct. Upward structure typically continues through pullbacks that form higher lows.'; }
+                /* Disable buttons to prevent double-click */
+                document.querySelectorAll('.dir-btn').forEach(function (b) { b.disabled = true; });
+                setTimeout(function () { animateStructureCompletion(); }, 250);
+                setTimeout(function () { ST.sim.done = true; render(); }, 1650);
+            } else {
+                if (fb) { fb.className = 'sim-fb err'; fb.textContent = 'Not quite. In an upward structure, the next likely structural step is typically the pullback that forms the next higher low.'; }
+                setTimeout(function () { if (fb) { fb.className = 'sim-fb'; fb.textContent = ''; } }, 2000);
+            }
+        }
+
+        function animateStructureCompletion() {
+            var wrap = document.getElementById('s5w');
+            if (!wrap) return;
+            /* New Higher Low point — extends chart forward */
+            var hlX = 530, hlY = 108;
+            /* Faint projected continuation toward next possible Higher High */
+            var projX = 594, projY = 22;
+            /* Last confirmed major point (existing HH: MP[3]) */
+            var lastX = MP[3].x, lastY = MP[3].y;
+
+            var ns = 'http://www.w3.org/2000/svg';
+            var svg = document.createElementNS(ns, 'svg');
+            svg.setAttribute('viewBox', '0 0 600 220');
+            svg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5';
+
+            /* 1 — Extension line: last HH → new HL */
+            var extPath = document.createElementNS(ns, 'path');
+            extPath.setAttribute('d', 'M' + lastX + ',' + lastY + ' L' + hlX + ',' + hlY);
+            extPath.setAttribute('stroke', 'rgba(195,162,70,0.55)');
+            extPath.setAttribute('stroke-width', '2');
+            extPath.setAttribute('fill', 'none');
+            extPath.setAttribute('stroke-dasharray', '8,5');
+            extPath.setAttribute('stroke-linecap', 'round');
+            extPath.setAttribute('stroke-linejoin', 'round');
+            extPath.style.opacity = '0';
+            extPath.style.transition = 'opacity 200ms ease';
+            svg.appendChild(extPath);
+
+            /* 2 — New HL node */
+            var hlNode = document.createElementNS(ns, 'circle');
+            hlNode.setAttribute('cx', hlX); hlNode.setAttribute('cy', hlY);
+            hlNode.setAttribute('r', '7');
+            hlNode.setAttribute('fill', 'rgba(200,185,130,0.92)');
+            hlNode.setAttribute('stroke', 'rgba(200,185,130,0.28)');
+            hlNode.setAttribute('stroke-width', '2');
+            hlNode.style.opacity = '0';
+            hlNode.style.transition = 'opacity 200ms ease';
+            svg.appendChild(hlNode);
+
+            /* HL label */
+            var hlLbl = document.createElementNS(ns, 'text');
+            hlLbl.setAttribute('x', hlX); hlLbl.setAttribute('y', hlY + 20);
+            hlLbl.setAttribute('text-anchor', 'middle');
+            hlLbl.setAttribute('font-size', '9');
+            hlLbl.setAttribute('font-family', 'Inter,sans-serif');
+            hlLbl.setAttribute('fill', 'rgba(224,225,227,0.65)');
+            hlLbl.setAttribute('font-weight', '600');
+            hlLbl.setAttribute('letter-spacing', '0.06em');
+            hlLbl.textContent = 'HL';
+            hlLbl.style.opacity = '0';
+            hlLbl.style.transition = 'opacity 200ms ease';
+            svg.appendChild(hlLbl);
+
+            /* 3 — Faint projected continuation: new HL → projected HH */
+            var projPath = document.createElementNS(ns, 'path');
+            projPath.setAttribute('d', 'M' + hlX + ',' + hlY + ' L' + projX + ',' + projY);
+            projPath.setAttribute('stroke', 'rgba(175,148,60,0.22)');
+            projPath.setAttribute('stroke-width', '1.2');
+            projPath.setAttribute('fill', 'none');
+            projPath.setAttribute('stroke-dasharray', '4,5');
+            projPath.setAttribute('stroke-linecap', 'round');
+            projPath.style.opacity = '0';
+            projPath.style.transition = 'opacity 200ms ease';
+            svg.appendChild(projPath);
+
+            wrap.appendChild(svg);
+
+            /* Staggered fade-in sequence */
+            var t0 = 40;
+            setTimeout(function () { extPath.style.opacity = '1'; }, t0);
+            setTimeout(function () { hlNode.style.opacity = '1'; hlLbl.style.opacity = '1'; }, t0 + 220);
+            setTimeout(function () { projPath.style.opacity = '1'; }, t0 + 440);
+        }
+
+        function initSim() {
+            var task = STASKS[ST.sim.task];
+            if (!task || task.key === 'dir' || task.key === 'nextmove') return;
+            var w = document.getElementById('s5w'); if (!w) return;
+            var ring = document.getElementById('hring');
+
+            /* Define targets per task */
+            var tgt, HIT, PRV, label, pickKey;
+            if (task.key === 'high') {
+                tgt = { x: MP[3].x, y: MP[3].y }; HIT = 30; PRV = 65; label = 'major swing high'; pickKey = 'high';
+            } else if (task.key === 'low') {
+                tgt = { x: MP[2].x, y: MP[2].y }; HIT = 30; PRV = 65; label = 'major swing low'; pickKey = 'low';
+            } else if (task.key === 'internal') {
+                /* Accept any of the internal target points */
+                tgt = null; HIT = 28; PRV = 60; label = 'internal swing'; pickKey = 'internal';
+            }
+
+            function gv(e) { var r = w.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * VW, y: (e.clientY - r.top) / r.height * VH }; }
+
+            function mv(e) {
+                var v = gv(e);
+                if (!ring) return;
+                if (tgt) {
+                    var d = Math.hypot(v.x - tgt.x, v.y - tgt.y);
+                    ring.setAttribute('cx', tgt.x); ring.setAttribute('cy', tgt.y);
+                    ring.style.opacity = d <= PRV ? '1' : '0';
+                } else {
+                    /* For internal: show ring near closest internal target */
+                    var best = null, bestD = Infinity;
+                    IT_TARGETS.forEach(function (t) {
+                        var d = Math.hypot(v.x - t.x, v.y - t.y);
+                        if (d < bestD) { bestD = d; best = t; }
+                    });
+                    if (best) {
+                        ring.setAttribute('cx', best.x); ring.setAttribute('cy', best.y);
+                        ring.style.opacity = bestD <= PRV ? '1' : '0';
+                    }
+                }
+            }
+
+            function cl(e) {
+                var v = gv(e);
+                var fb = document.getElementById('sfb');
+                var hit = false;
+                if (tgt) {
+                    hit = Math.hypot(v.x - tgt.x, v.y - tgt.y) <= HIT;
+                } else {
+                    hit = IT_TARGETS.some(function (t) { return Math.hypot(v.x - t.x, v.y - t.y) <= HIT; });
+                }
+                w.removeEventListener('click', cl); w.removeEventListener('mousemove', mv);
+                if (ring) ring.style.opacity = '0';
+                if (hit) {
+                    if (fb) { fb.className = 'sim-fb ok'; fb.textContent = 'Correct — ' + label + ' identified.'; }
+                    var confirmPt = tgt || (function () {
+                        var best = IT_TARGETS[0], bestD = Infinity;
+                        IT_TARGETS.forEach(function (t) { var d = Math.hypot(v.x - t.x, v.y - t.y); if (d < bestD) { bestD = d; best = t; } });
+                        return best;
+                    }());
+                    /* Store confirmed pick for later tasks */
+                    if (pickKey) ST.sim.picks[pickKey] = { x: confirmPt.x, y: confirmPt.y };
+                    mrkSim(w, confirmPt.x, confirmPt.y, 'rgba(120,210,160,0.88)', false);
+                    setTimeout(function () { ST.sim.task++; render(); }, 900);
+                } else {
+                    if (fb) { fb.className = 'sim-fb err'; fb.textContent = 'Not quite — look for the ' + label + '.'; }
+                    mrkSim(w, v.x, v.y, 'rgba(210,90,72,0.65)', true);
+                    setTimeout(function () {
+                        var m = w.querySelector('.smk'); if (m) m.style.opacity = '0';
+                        setTimeout(function () { var m2 = w.querySelector('.smk'); if (m2) m2.remove(); if (fb) { fb.className = 'sim-fb'; fb.textContent = ''; } w.addEventListener('mousemove', mv); w.addEventListener('click', cl); }, 220);
+                    }, 380);
+                }
+            }
+            w.addEventListener('mousemove', mv); w.addEventListener('click', cl);
+        }
+
+        function mrkSim(wrap, vx, vy, col, isErr) {
+            var ex = wrap.querySelector('.smk'); if (ex) ex.remove();
+            var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            s.setAttribute('viewBox', '0 0 ' + VW + ' ' + VH);
+            s.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:10;transition:opacity .25s ease';
+            s.className = 'smk';
+            /* Main marker */
+            var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            c.setAttribute('cx', vx); c.setAttribute('cy', vy);
+            c.setAttribute('r', isErr ? '5' : '8');
+            c.setAttribute('fill', col);
+            c.setAttribute('stroke', isErr ? 'rgba(255,150,130,0.35)' : 'rgba(255,255,255,0.22)');
+            c.setAttribute('stroke-width', '1.5');
+            s.appendChild(c);
+            /* Confirmation ring for correct selection */
+            if (!isErr) {
+                var ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                ring.setAttribute('cx', vx); ring.setAttribute('cy', vy); ring.setAttribute('r', '14');
+                ring.setAttribute('fill', 'none');
+                ring.setAttribute('stroke', 'rgba(120,210,160,0.38)'); ring.setAttribute('stroke-width', '1');
+                s.appendChild(ring);
+            }
+            s.style.opacity = '0'; wrap.appendChild(s);
+            requestAnimationFrame(function () { requestAnimationFrame(function () { s.style.opacity = '1'; }); });
+        }
+
+        function bS6() {
+            return '<p class="scr-eyebrow">Section VI &mdash; Principle</p><div class="principle-card"><p class="principle-text">Structure organizes movement.</p></div><div class="btn-row"><button class="btn-primary" id="s6n">Continue to Competency Check</button></div>';
+        }
+
+        var AQ = [
+            { q: 'What creates structure?', opts: ['Indicators', 'Connected swings', 'News events'], cor: 'Connected swings' },
+            { q: 'Internal structure refers to:', opts: ['Smaller swings inside larger structure', 'Hidden patterns', 'Entry signals'], cor: 'Smaller swings inside larger structure' },
+            { q: 'Structure helps you understand:', opts: ['Chart shape', 'Broker spreads', 'Economic data'], cor: 'Chart shape' }
+        ];
+        var AR = [
+            { exp: 'Structure is created when swing points connect. Indicators and news events do not create structure.', top: 'structure' },
+            { exp: 'Internal structure is the smaller swings that form inside a larger structural move.', top: 'internalswings' },
+            { exp: 'Structure gives price movement a readable shape, revealing the direction and character of movement.', top: 'structure' }
+        ];
+
+        function bS7() {
+            if (ST.assess.submitted) return bResult();
+            var qi = ST.assess.q, q = AQ[qi], ua = ST.assess.ans[qi];
+            var has = ua != null, last = qi === AQ.length - 1;
+            var h = '<p class="scr-eyebrow">Section VII &mdash; Competency Check</p>';
+            h += '<div class="assessment-prog">Question ' + (qi + 1) + ' of ' + AQ.length + '</div>';
+            h += '<div class="assessment-q">' + eH(q.q) + '</div>';
+            h += '<div id="aops">' + q.opts.map(function (o) { return '<button class="opt-btn' + (ua === o ? ' selected' : '') + '" data-ans="' + eA(o) + '">' + eH(o) + '</button>'; }).join('') + '</div>';
+            h += '<div class="btn-row">' + (last ? '<button class="btn-primary" id="asub"' + (has ? '' : ' disabled') + '>Submit Assessment</button>' : '<button class="btn-primary" id="anxt"' + (has ? '' : ' disabled') + '>Next</button>') + '</div>';
+            if (!has) h += '<p style="font-size:.75rem;color:var(--m-muted);margin-top:.75rem">Select an answer to continue.</p>';
+            return h;
+        }
+
+        function bResult() {
+            var sc = ST.assess.score, ok = ST.assess.passed;
+            var rb = '<button class="btn-ghost" id="rrev" style="margin-top:.5rem">Review Answers</button>';
+            if (ok) {
+                var h = '<div class="result-box"><div style="font-size:2rem;color:var(--m-gold);margin-bottom:1rem">&#10003;</div>';
+                h += '<div class="result-title">Competency <span class="result-gold">Verified</span></div>';
+                h += '<div class="result-body">Structure organizes movement &mdash; understood.<br><span style="color:var(--m-gold);font-size:.85rem">Score: ' + sc + '%</span></div>';
+                h += '<div style="display:flex;flex-direction:column;align-items:center;gap:.5rem"><button class="btn-primary" id="rret">Return to Market Structure</button>' + rb + '</div></div>';
+                return h;
+            }
+            var h = '<div class="result-box"><div style="font-size:2rem;color:var(--m-muted);margin-bottom:1rem">&#8635;</div>';
+            h += '<div class="result-title">Review Recommended</div>';
+            h += '<div class="result-body">Revisit the sections, then try again.<br><span style="color:var(--m-red-txt);font-size:.85rem">Score: ' + sc + '%</span></div>';
+            h += '<div class="btn-row" style="justify-content:center"><button class="btn-ghost" id="rret2">Retry Assessment</button></div>';
+            h += '<div style="margin-top:.75rem;text-align:center">' + rb + '</div></div>';
+            return h;
+        }
+
+        function bReview() {
+            var rows = AQ.map(function (q, i) {
+                var ua = ST.assess.ans[i], ok = ua === q.cor, rv = AR[i];
+                var ic = ok ? '&#10003;' : '&#10007;', icol = ok ? 'var(--m-green-txt)' : 'var(--m-red-txt)';
+                var h = '<div style="background:var(--m-surf2);border:1px solid var(--m-bdr);border-radius:6px;padding:1rem 1.1rem;margin-bottom:.85rem">';
+                h += '<p style="font-size:.8rem;font-weight:600;color:var(--m-gold);margin-bottom:.6rem">Q' + (i + 1) + '</p>';
+                h += '<p style="font-size:.9rem;color:var(--m-txt);margin-bottom:.75rem;line-height:1.5">' + eH(q.q) + '</p>';
+                h += '<p style="font-size:.82rem;margin-bottom:.3rem"><span style="color:' + icol + ';font-weight:700;margin-right:.35rem">' + ic + '</span><span style="color:var(--m-muted)">Your answer:</span> <span style="color:var(--m-txt)">' + eH(ua || '(none)') + '</span></p>';
+                h += '<p style="font-size:.82rem;color:var(--m-muted);margin-bottom:.75rem">Correct: <span style="color:var(--m-txt);font-weight:500">' + eH(q.cor) + '</span></p>';
+                h += '<p style="font-size:.82rem;color:var(--m-muted);line-height:1.55;margin-bottom:.65rem">' + rv.exp + '</p>';
+                h += '<button class="clarify-btn" data-topic="' + rv.top + '">Clarify</button></div>';
+                return h;
+            }).join('');
+            return '<p class="scr-eyebrow">Section VII &mdash; Review Answers</p><h2 style="font-family:\'Outfit\',sans-serif;font-size:1.25rem;font-weight:600;color:var(--m-txt);margin-bottom:.9rem">Assessment Breakdown</h2>' + rows + '<div class="btn-row"><button class="btn-ghost" id="rrback">Back to Results</button></div>';
+        }
+
+        function score() {
+            var c = 0; AQ.forEach(function (q, i) { if (ST.assess.ans[i] === q.cor) c++; });
+            var p = Math.round((c / AQ.length) * 100);
+            ST.assess.score = p; ST.assess.passed = p >= 67; ST.assess.submitted = true;
+            if (ST.assess.passed) {
+                ST.verified = true;
+                try {
+                    var sv = JSON.parse(localStorage.getItem('pp_ms_modules') || '{}');
+                    sv['3.3'] = { verified: true, mastery: p, mastery_percent: p, status: 'Verified', progress: 100 };
+                    localStorage.setItem('pp_ms_modules', JSON.stringify(sv));
+                } catch (e) { }
+            }
+            updProg();
+        }
+
+        function render() {
+            var c = document.getElementById('sc'); c.innerHTML = '';
+            var s = ST.sid, h = '';
+            if (s === 0) h = bEntry();
+            else if (s === 1) h = bS1();
+            else if (s === 2) h = bS2();
+            else if (s === 3) h = bS3();
+            else if (s === 4) h = bS4();
+            else if (s === 5) h = bS5();
+            else if (s === 6) h = bS6();
+            else if (s === 7) h = ST.review ? bReview() : bS7();
+            c.innerHTML = h;
+            c.scrollTop = 0; document.getElementById('main-stage').scrollTop = 0;
+            requestAnimationFrame(function () { if (s === 1) initS1(); if (s === 5) initSim(); });
+            handlers();
+        }
+
+        function handlers() {
+            function on(id, fn) { var e = document.getElementById(id); if (e) e.addEventListener('click', fn); }
+            on('begin-btn', function () { goTo(1, 0); });
+            on('s1n', function () { goTo(2, 0); }); on('s2n', function () { goTo(3, 0); }); on('s3n', function () { goTo(4, 0); });
+            on('s4n', function () { goTo(5, 0); }); on('s5n', function () { goTo(6, 0); }); on('s6n', function () { goTo(7, 0); });
+            document.querySelectorAll('[data-ans]').forEach(function (b) {
+                b.addEventListener('click', function () {
+                    if (ST.assess.submitted) return;
+                    var qi = ST.assess.q; ST.assess.ans[qi] = ST.assess.ans[qi] === b.dataset.ans ? null : b.dataset.ans; render();
+                });
+            });
+            on('anxt', function () { if (ST.assess.ans[ST.assess.q] == null) return; ST.assess.q++; render(); });
+            on('asub', function () { if (ST.assess.ans[ST.assess.q] == null) return; score(); render(); });
+            on('rret', function () { window.location.href = 'market-structure.html'; });
+            on('rret2', function () { ST.assess.ans = [null, null, null]; ST.assess.submitted = false; ST.assess.score = null; ST.assess.passed = null; ST.assess.q = 0; ST.review = false; render(); });
+            on('rrev', function () { if (ST.assess.submitted) { ST.review = true; render(); } });
+            on('rrback', function () { ST.review = false; render(); });
+            document.querySelectorAll('.clarify-btn').forEach(function (b) { b.addEventListener('click', function () { openClarify(b.dataset.topic); }); });
+        }
+
+        (function () { ST.hist = []; ST.sid = 0; ST.si = 0; visit(0); renderNav(); render(); })();
+    </script>
+</body>
+
+</html>

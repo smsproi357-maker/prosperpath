@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="description" content="Module 4.2 - Where Liquidity Forms | ProsperPath Liquidity">
+    <title>Where Liquidity Forms | ProsperPath</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../styles.css">
+    <style>
+        :root {
+            --m-bg: #0d0e10;
+            --m-surf: #141618;
+            --m-surf2: #18191c;
+            --m-bdr: #1e2023;
+            --m-bdrhi: #2e3035;
+            --m-txt: #e0e1e3;
+            --m-muted: #5e626a;
+            --m-muted2: #3a3d44;
+            --m-gold: #a07c2e;
+            --m-gold-dim: rgba(160, 124, 46, .13);
+            --m-gold-line: rgba(160, 124, 46, .38);
+            --m-green-txt: #7ed8a8;
+            --m-red-txt: #e08070;
+            --m-tr: 150ms ease
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0 }
+        body { background: var(--m-bg); color: var(--m-txt); font-family: 'Inter', sans-serif; min-height: 100vh }
+        #ai-chat-fab, .ai-fab-btn, .floating-action-btn, .ai-chat-toggle, #ai-chat-toggle, #prosporous-toggle, .prosporous-toggle, [class*="fab"], [id*="fab"], [class*="ai-chat"] { display: none !important }
+        #module-shell { display: flex; flex-direction: column; height: 100vh; overflow: hidden }
+        #topbar { display: flex; align-items: center; justify-content: space-between; padding: .75rem 1.25rem; border-bottom: 1px solid var(--m-bdr); background: var(--m-surf); flex-shrink: 0; gap: 1rem }
+        #topbar-left { display: flex; align-items: center; gap: .75rem }
+        #back-btn { background: transparent; border: 1px solid var(--m-bdr); color: var(--m-muted); font-size: .78rem; padding: .38rem .85rem; border-radius: 3px; cursor: pointer; font-family: 'Inter', sans-serif; transition: border-color var(--m-tr), color var(--m-tr) }
+        #back-btn:hover { border-color: var(--m-bdrhi); color: var(--m-txt) }
+        #topbar-title { font-family: 'Outfit', sans-serif; font-size: .95rem; font-weight: 600; color: var(--m-txt) }
+        #topbar-badge { font-size: .65rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; padding: .18rem .55rem; border-radius: 2px; background: rgba(140, 210, 240, 0.1); color: #7dcce8 }
+        #progress-label { font-size: .75rem; color: var(--m-muted); letter-spacing: .04em; white-space: nowrap }
+        #progress-bar-wrap { width: 80px; height: 2px; background: var(--m-bdr); border-radius: 1px; overflow: hidden }
+        #progress-bar-fill { height: 100%; background: var(--m-gold); border-radius: 1px; transition: width .4s ease }
+        #shell-body { display: flex; flex: 1; overflow: hidden }
+        #section-nav { width: 200px; flex-shrink: 0; border-right: 1px solid var(--m-bdr); background: var(--m-surf); overflow-y: auto; padding: 1rem 0 }
+        .sn-item { display: flex; align-items: center; gap: .6rem; padding: .6rem 1rem; font-size: .75rem; color: var(--m-muted); cursor: pointer; transition: color var(--m-tr), background var(--m-tr); border-left: 2px solid transparent; line-height: 1.3 }
+        .sn-item:hover { color: var(--m-txt); background: rgba(255,255,255,.025) }
+        .sn-item.visited { color: var(--m-txt) }
+        .sn-item.current { color: var(--m-gold); border-left-color: var(--m-gold); background: var(--m-gold-dim) }
+        .sn-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--m-muted2); flex-shrink: 0; transition: background var(--m-tr) }
+        .sn-item.visited .sn-dot { background: var(--m-muted) }
+        .sn-item.current .sn-dot { background: var(--m-gold) }
+        #main-stage { flex: 1; overflow-y: auto; display: flex; align-items: flex-start; justify-content: center; padding: 2.5rem 1.5rem }
+        #section-container { width: 100%; max-width: 640px; animation: fadeIn .2s ease }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: translateY(0) } }
+        #section-loading { display: flex; align-items: center; justify-content: center; padding: 4rem 2rem; color: var(--m-muted); font-size: .85rem; letter-spacing: .04em }
+        #section-loading .ld-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--m-muted2); margin: 0 3px; animation: ldPulse 1.2s ease-in-out infinite }
+        #section-loading .ld-dot:nth-child(2) { animation-delay: .2s }
+        #section-loading .ld-dot:nth-child(3) { animation-delay: .4s }
+        @keyframes ldPulse { 0%, 80%, 100% { transform: scale(1); opacity: .4 } 40% { transform: scale(1.4); opacity: 1 } }
+        #section-error { display: none; text-align: center; padding: 3rem 2rem; color: var(--m-muted); font-size: .88rem; line-height: 1.6 }
+        #clarify-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 900; display: none; align-items: flex-start; justify-content: flex-end }
+        #clarify-overlay.open { display: flex }
+        #clarify-panel { width: 340px; max-width: 90vw; height: 100%; background: #16181b; border-left: 1px solid var(--m-bdr); overflow-y: auto; padding: 2rem 1.5rem; animation: slideInRight .22s ease }
+        @keyframes slideInRight { from { transform: translateX(100%) } to { transform: translateX(0) } }
+        .cp-term { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 600; color: var(--m-txt); margin-bottom: .25rem }
+        .cp-section { margin-top: 1.25rem }
+        .cp-label { font-size: .65rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--m-muted); margin-bottom: .4rem }
+        .cp-text { font-size: .85rem; color: var(--m-muted); line-height: 1.55 }
+        .cp-text strong { color: var(--m-txt); font-weight: 500 }
+        #cp-close { margin-top: 2rem; background: transparent; border: 1px solid var(--m-bdr); color: var(--m-muted); font-family: 'Inter', sans-serif; font-size: .78rem; padding: .5rem 1rem; border-radius: 3px; cursor: pointer; transition: border-color var(--m-tr), color var(--m-tr) }
+        #cp-close:hover { border-color: var(--m-bdrhi); color: var(--m-txt) }
+        .clarify-btn { background: none; border: none; color: var(--m-gold); font-size: inherit; font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; padding: 0; font-family: 'Inter', sans-serif }
+        .nav-toggle { display: none; background: transparent; border: 1px solid var(--m-bdr); color: var(--m-muted); padding: .36rem .7rem; border-radius: 3px; cursor: pointer; font-size: .75rem }
+        @media (max-width: 700px) {
+            #section-nav { position: fixed; inset: 0 auto 0 0; z-index: 800; transform: translateX(-100%); transition: transform .3s ease; width: 240px }
+            #section-nav.open { transform: translateX(0) }
+            #nav-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 799; display: none }
+            #nav-backdrop.open { display: block }
+            #clarify-panel { width: 100%; height: 60vh; border-left: none; border-top: 1px solid var(--m-bdr); position: fixed; bottom: 0; left: 0 }
+            #clarify-overlay { align-items: flex-end; justify-content: center }
+            #main-stage { padding: 1.5rem 1rem }
+            .nav-toggle { display: inline-flex; align-items: center; gap: .4rem }
+        }
+    </style>
+</head>
+<body>
+    <div id="module-shell">
+        <div id="topbar">
+            <div id="topbar-left">
+                <button class="nav-toggle" id="nav-toggle-btn" onclick="toggleNav()" aria-label="Open sections">&#9776; Sections</button>
+                <button id="back-btn" onclick="goBack()">&#8592; Liquidity</button>
+                <span id="topbar-title">Where Liquidity Forms</span>
+                <span id="topbar-badge">Beginner</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:.75rem">
+                <span id="progress-label">Progress 0%</span>
+                <div id="progress-bar-wrap"><div id="progress-bar-fill" style="width:0%"></div></div>
+            </div>
+        </div>
+        <div id="nav-backdrop" onclick="toggleNav()"></div>
+        <div id="shell-body">
+            <nav id="section-nav" aria-label="Module sections"><div id="sn-items"></div></nav>
+            <main id="main-stage">
+                <div id="section-container">
+                    <div id="section-loading"><span class="ld-dot"></span><span class="ld-dot"></span><span class="ld-dot"></span></div>
+                    <div id="section-error">Unable to load section. Please refresh the page.</div>
+                    <div id="sc"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <div id="clarify-overlay" onclick="if(event.target===this)closeClarify()" role="dialog" aria-modal="true" aria-labelledby="cp-term">
+        <div id="clarify-panel">
+            <div class="cp-term" id="cp-term"></div>
+            <div class="cp-section"><div class="cp-label">Explanation</div><div class="cp-text" id="cp-exp"></div></div>
+            <div class="cp-section"><div class="cp-label">Example</div><div class="cp-text" id="cp-ex"></div></div>
+            <div class="cp-section"><div class="cp-label">Common Misconception</div><div class="cp-text" id="cp-misc"></div></div>
+            <button id="cp-close" onclick="closeClarify()">Close</button>
+        </div>
+    </div>
+    <script src="../../script.js?v=m42"></script>
+    <script src="../../ai-widget.js"></script>
+    <script src="../../google-auth.js"></script>
+    <script>
+        window.addEventListener('load', function () {
+            if (typeof initGoogleAuth === 'function') initGoogleAuth();
+        });
+
+        var SECS = [
+            { id: 0, label: 'Entry', file: null },
+            { id: 1, label: 'Section I - Orders Gather at Levels', file: 'section1-orders-gather-at-levels.html' },
+            { id: 2, label: 'Section II - Equal Highs / Equal Lows', file: 'section2-equal-highs-equal-lows.html' },
+            { id: 3, label: 'Section III - Previous Highs / Lows', file: 'section3-previous-highs-lows.html' },
+            { id: 4, label: 'Section IV - Range Boundaries', file: 'section4-range-boundaries.html' },
+            { id: 5, label: 'Section V - Liquidity Map', file: 'section5-liquidity-map.html' },
+            { id: 6, label: 'Section VI - Micro Check', file: 'section6-micro-check.html' },
+            { id: 7, label: 'Section VII - Competency Check', file: 'section7-competency-check.html' }
+        ];
+
+        var ST = { sid: 0, si: 0, visited: new Set(), lastSI: {}, hist: [], assess: { ans: [null, null, null], submitted: false, score: null, passed: null, q: 0 }, review: false, verified: false };
+        var _sectionCache = {};
+        var _clarifyData = {};
+
+        function pct() {
+            var v = Array.from(ST.visited).filter(function (x) { return x >= 1 && x <= 7; });
+            var p = Math.round((Math.min(v.length, 7) / 7) * 85);
+            if (ST.assess.score !== null && ST.assess.score > 0 && !ST.assess.passed) p = Math.max(p, 90);
+            if (ST.assess.passed) p = 100;
+            return p;
+        }
+        function updProg() {
+            var p = pct();
+            document.getElementById('progress-label').textContent = 'Progress ' + p + '%';
+            document.getElementById('progress-bar-fill').style.width = p + '%';
+        }
+        function visit(id) {
+            if (!ST.visited.has(id)) { ST.visited.add(id); updProg(); }
+            renderNav();
+        }
+        function goTo(id, si, push) {
+            var max = ST.visited.size > 0 ? Math.max.apply(null, Array.from(ST.visited)) : 0;
+            if (!(ST.visited.has(id) || id <= max + 1 || id === 0)) return;
+            if (push !== false) ST.hist.push({ sid: ST.sid, si: ST.si });
+            ST.lastSI[ST.sid] = ST.si;
+            ST.sid = id;
+            ST.si = si != null ? si : 0;
+            ST.review = false;
+            visit(id);
+            renderNav();
+            loadSection(id);
+            if (document.getElementById('section-nav').classList.contains('open')) toggleNav();
+        }
+        function goBack() {
+            if (ST.review) { ST.review = false; loadSection(ST.sid); return; }
+            if (ST.hist.length > 0) {
+                var prev = ST.hist.pop();
+                ST.lastSI[ST.sid] = ST.si;
+                ST.sid = prev.sid;
+                ST.si = prev.si;
+                ST.review = false;
+                visit(prev.sid);
+                renderNav();
+                loadSection(ST.sid);
+                return;
+            }
+            window.location.href = '../../liquidity.html';
+        }
+        function toggleNav() {
+            document.getElementById('section-nav').classList.toggle('open');
+            document.getElementById('nav-backdrop').classList.toggle('open');
+        }
+        function renderNav() {
+            var c = document.getElementById('sn-items');
+            c.innerHTML = '';
+            SECS.forEach(function (s) {
+                if (s.id === 0) return;
+                var cur = ST.sid === s.id;
+                var vis = ST.visited.has(s.id);
+                var max = ST.visited.size > 0 ? Math.max.apply(null, Array.from(ST.visited)) : 0;
+                var ok = vis || s.id <= max + 1;
+                var d = document.createElement('div');
+                d.className = 'sn-item' + (cur ? ' current' : '') + (vis ? ' visited' : '');
+                d.setAttribute('tabindex', ok ? '0' : '-1');
+                d.setAttribute('role', 'button');
+                d.innerHTML = '<span class="sn-dot"></span><span>' + s.label + '</span>';
+                if (ok) {
+                    d.onclick = (function (sec) {
+                        return function () {
+                            var last = ST.lastSI[sec.id];
+                            goTo(sec.id, last != null ? last : 0);
+                        };
+                    })(s);
+                    d.onkeydown = (function (sec) {
+                        return function (e) {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                var last = ST.lastSI[sec.id];
+                                goTo(sec.id, last != null ? last : 0);
+                            }
+                        };
+                    })(s);
+                } else {
+                    d.style.opacity = '.35';
+                    d.style.cursor = 'not-allowed';
+                }
+                c.appendChild(d);
+            });
+        }
+        function showLoading(on) {
+            document.getElementById('section-loading').style.display = on ? 'flex' : 'none';
+            document.getElementById('section-error').style.display = 'none';
+            document.getElementById('sc').style.display = on ? 'none' : 'block';
+        }
+        function showError() {
+            document.getElementById('section-loading').style.display = 'none';
+            document.getElementById('section-error').style.display = 'block';
+            document.getElementById('sc').style.display = 'none';
+        }
+        function loadSection(sectionId) {
+            var sec = SECS.find(function (s) { return s.id === sectionId; });
+            if (!sec || !sec.file) { showLoading(false); renderEntryScreen(); return; }
+            if (_sectionCache[sec.file]) { showLoading(false); injectSection(_sectionCache[sec.file]); return; }
+            showLoading(true);
+            fetch(sec.file)
+                .then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.text(); })
+                .then(function (html) { _sectionCache[sec.file] = html; showLoading(false); injectSection(html); })
+                .catch(function (err) { console.warn('[M4.2] Failed to load section file:', sec.file, err); showError(); });
+        }
+        function injectSection(html) {
+            var sc = document.getElementById('sc');
+            sc.innerHTML = html;
+            sc.querySelectorAll('script').forEach(function (oldScript) {
+                var newScript = document.createElement('script');
+                if (oldScript.src) newScript.src = oldScript.src;
+                else newScript.textContent = oldScript.textContent;
+                oldScript.parentNode.replaceChild(newScript, oldScript);
+            });
+            document.getElementById('main-stage').scrollTop = 0;
+            if (typeof window.initSection === 'function') window.initSection(ST);
+        }
+        function renderEntryScreen() {
+            document.getElementById('sc').innerHTML = [
+                '<div class="screen" style="width:100%;max-width:640px">',
+                '<p class="scr-eyebrow" style="font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--m-muted);margin-bottom:1.2rem">Domain IV · Module 4.2</p>',
+                '<h1 class="scr-h1" style="font-family:\'Outfit\',sans-serif;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:700;color:var(--m-txt);letter-spacing:-.02em;line-height:1.15;margin-bottom:.75rem">Where Liquidity Forms</h1>',
+                '<p class="scr-meta" style="font-size:.78rem;color:var(--m-muted);letter-spacing:.04em;margin-bottom:2rem">Beginner · Liquidity</p>',
+                '<div class="scr-body" style="font-size:.95rem;color:var(--m-muted);line-height:1.7;margin-bottom:1.5rem">',
+                '<p><button class="clarify-btn" onclick="openClarify(\'liquidity\')" aria-label="Clarify: Liquidity">Liquidity</button> does not appear randomly in the market.</p>',
+                '<p>Orders tend to gather at certain price levels.</p>',
+                '<p>These levels attract traders because they appear important or obvious.</p>',
+                '<p>When many traders place orders at the same location, liquidity forms.</p>',
+                '<p>Understanding where liquidity forms helps us anticipate where price may move.</p>',
+                '</div>',
+                '<div style="display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.75rem">',
+                '<button class="btn-primary" style="background:transparent;border:1px solid var(--m-gold-line);color:var(--m-gold);font-family:\'Inter\',sans-serif;font-size:.8rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:.65rem 1.5rem;border-radius:3px;cursor:pointer;" onclick="goTo(1,0)">Begin Module &rarr;</button>',
+                '</div></div>'
+            ].join('');
+        }
+        function registerClarifyTerms(data) { Object.assign(_clarifyData, data); }
+        function openClarify(k) {
+            var d = _clarifyData[k];
+            if (!d) return;
+            document.getElementById('cp-term').textContent = d.term;
+            document.getElementById('cp-exp').textContent = d.explanation;
+            document.getElementById('cp-ex').textContent = d.example;
+            document.getElementById('cp-misc').innerHTML = d.misc;
+            document.getElementById('clarify-overlay').classList.add('open');
+            document.getElementById('cp-close').focus();
+        }
+        function closeClarify() { document.getElementById('clarify-overlay').classList.remove('open'); }
+
+        registerClarifyTerms({
+            liquidity: {
+                term: 'Liquidity',
+                explanation: 'Liquidity refers to clusters of orders in the market.',
+                example: 'These orders may include stop losses, breakout orders, and limit orders placed by traders at specific price levels.',
+                misc: 'When many orders gather in one area, that area becomes a liquidity zone.'
+            },
+            liquidityZone: {
+                term: 'Liquidity Zone',
+                explanation: 'A liquidity zone is an area where many orders are clustered.',
+                example: 'These zones often become targets for price movement because they contain a large number of pending orders.',
+                misc: ''
+            },
+            equalHighsLows: {
+                term: 'Equal Highs / Equal Lows',
+                explanation: 'Equal highs occur when price reaches the same level multiple times.',
+                example: 'Many traders place stop losses and breakout orders around these levels.',
+                misc: 'Because of this, liquidity often builds above equal highs and below equal lows.'
+            },
+            range: {
+                term: 'Range',
+                explanation: 'A range occurs when price moves sideways between two levels.',
+                example: 'The upper boundary is called the Range High. The lower boundary is called the Range Low.',
+                misc: 'These boundaries often collect stop losses and breakout orders.'
+            }
+        });
+
+        renderNav();
+        loadSection(0);
+    </script>
+</body>
+</html>

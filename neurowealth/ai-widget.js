@@ -19,8 +19,10 @@ function getAuthToken() {
 class ProsporousWidget {
     constructor() {
         window.prosporousWidget = this;
-        this.apiKey = localStorage.getItem('prosporous_api_key') || '';
-        this.tavilyKey = localStorage.getItem('prosporous_tavily_key') || '';
+        // API keys live exclusively in the server-side Worker environment.
+        // No user-entered keys are read or stored client-side.
+        this.apiKey = ''; // reserved field for dormant OpenRouter direct path only
+        this.tavilyKey = ''; // reserved; Tavily integration is user-optional and not required
         this.models = [];
         this.selectedModel = localStorage.getItem('prosporous_selected_model') || 'zhipu/glm-4.5-air'; // Default: GLM 4.5 Air
         this.sessions = JSON.parse(localStorage.getItem('prosporous_sessions') || '[]');
@@ -61,9 +63,20 @@ class ProsporousWidget {
         this.buildUI();
         this.attachEvents();
 
-        // If we have an API key, fetch models. Otherwise prompting happens in UI.
-        if (this.apiKey) {
-            await this.fetchModels();
+        // TEMPORARY: When using Worker proxy, the API key lives server-side.
+        // Enable the send button immediately without waiting for fetchModels.
+        // When USE_WORKER_AI_PROXY = false (restored), this branch is skipped and
+        // fetchModels() re-gates the button as before.
+        const USE_WORKER_AI_PROXY_INIT = true; // TEMPORARY — SARVAM FORCED ROUTING
+        if (USE_WORKER_AI_PROXY_INIT) {
+            // Enable chatbot immediately — no local key required
+            if (this.sendBtn) this.sendBtn.disabled = false;
+            if (this.input) this.input.disabled = false;
+        } else {
+            // Original path: If we have an API key, fetch models. Otherwise prompting happens in UI.
+            if (this.apiKey) {
+                await this.fetchModels();
+            }
         }
 
         // Initialize Sessions
@@ -208,8 +221,35 @@ class ProsporousWidget {
     }
 
     injectStyles() {
-        // Styles are mainly in styles.css, but we can ensure some basics here if needed.
-        // For now, we rely on the main stylesheet being updated.
+        // Injected CSS for Tavily sources block (rendered when webMode is ON and search returns results).
+        const style = document.createElement('style');
+        style.textContent = `
+            .prosporous-sources {
+                margin-top: 8px;
+                padding: 8px 10px;
+                background: rgba(99,179,237,0.08);
+                border-left: 3px solid rgba(99,179,237,0.6);
+                border-radius: 4px;
+                font-size: 0.78rem;
+            }
+            .prosporous-sources-label {
+                font-weight: 600;
+                color: rgba(99,179,237,0.9);
+                margin-bottom: 4px;
+            }
+            .prosporous-sources-list {
+                margin: 0;
+                padding-left: 16px;
+            }
+            .prosporous-sources-list li { margin-bottom: 2px; }
+            .prosporous-sources-list a {
+                color: rgba(99,179,237,0.85);
+                text-decoration: none;
+                word-break: break-all;
+            }
+            .prosporous-sources-list a:hover { text-decoration: underline; }
+        `;
+        document.head.appendChild(style);
     }
 
     buildUI() {
@@ -255,27 +295,24 @@ class ProsporousWidget {
                 </div>
 
                 <div class="prosporous-settings">
-                    <div class="prosporous-key-config ${this.apiKey ? 'collapsed' : ''}" id="key-config-section">
-                        <input type="password" id="prosporous-api-key-input" placeholder="OpenRouter API Key" value="${this.apiKey}">
-                        <input type="password" id="prosporous-tavily-key-input" placeholder="Tavily API Key (Optional Search)" value="${this.tavilyKey}">
-                        <button id="prosporous-save-key" class="btn-xs">Save Keys</button>
-                    </div>
+                    <!-- API key entry removed: AI calls route through the server-side Worker only. -->
+                    <div class="prosporous-key-config collapsed" id="key-config-section" style="display:none;"></div>
                     <div class="prosporous-model-selector">
                         <select id="prosporous-model-select" disabled>
-                            <option>${this.apiKey ? 'Loading Models...' : 'Enter API Key to load models'}</option>
+                            <option>AI Ready</option>
                         </select>
                     </div>
                 </div>
 
                 <div id="prosporous-messages" class="prosporous-messages">
                     <div class="message system">
-                        <p>Hello! I am Prosporous, your financial AI assistant. flexible and free. Configure your key to start.</p>
+                        <p>Hello! I am Prosporous, your financial AI assistant. Ask me anything about markets, investing, or your portfolio.</p>
                     </div>
                 </div>
 
                 <div class="prosporous-input-area">
                     <div class="prosporous-input-controls">
-                        <button id="prosporous-search-toggle" class="prosporous-tool-btn ${this.tavilyKey ? '' : 'hidden'}" title="Web Search">
+                        <button id="prosporous-search-toggle" class="prosporous-tool-btn" title="Web Search">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                         </button>
                         <button id="prosporous-image-btn" class="prosporous-tool-btn" title="Upload Image">
@@ -299,9 +336,10 @@ class ProsporousWidget {
         this.toggleBtn = document.getElementById('prosporous-toggle');
         this.chatWindow = document.getElementById('prosporous-chat-window');
         this.closeBtn = document.getElementById('prosporous-close');
-        this.keyInput = document.getElementById('prosporous-api-key-input');
-        this.tavilyKeyInput = document.getElementById('prosporous-tavily-key-input');
-        this.saveKeyBtn = document.getElementById('prosporous-save-key');
+        // Key input/save references set to null — UI elements no longer exist
+        this.keyInput = null;
+        this.tavilyKeyInput = null;
+        this.saveKeyBtn = null;
         this.modelSelect = document.getElementById('prosporous-model-select');
         this.messagesContainer = document.getElementById('prosporous-messages');
         this.input = document.getElementById('prosporous-input');
@@ -319,7 +357,10 @@ class ProsporousWidget {
         this.fsToggle = document.getElementById('prosporous-fullscreen-toggle');
 
         // Initial textarea state
-        this.input.disabled = !this.apiKey;
+        // TEMPORARY: When using Worker proxy, key lives server-side — always enable textarea.
+        // To restore original gating: set USE_WORKER_AI_PROXY_BUILD = false.
+        const USE_WORKER_AI_PROXY_BUILD = true; // TEMPORARY — SARVAM FORCED ROUTING
+        this.input.disabled = USE_WORKER_AI_PROXY_BUILD ? false : !this.apiKey;
         this.updateSendButton();
     }
 
@@ -330,10 +371,9 @@ class ProsporousWidget {
         this.fsToggle.addEventListener('click', () => this.toggleFullScreen());
 
         this.settingsToggle.addEventListener('click', () => {
-            this.keyConfigSection.classList.toggle('collapsed');
-            if (!this.keyConfigSection.classList.contains('collapsed')) {
-                this.toggleHistory(false);
-            }
+            // Settings panel is hidden — no user-configurable keys remain.
+            // Button kept to avoid DOM errors; click opens history instead.
+            this.toggleHistory();
         });
 
         this.historyToggle.addEventListener('click', () => {
@@ -344,7 +384,7 @@ class ProsporousWidget {
             this.createNewSession();
         });
 
-        this.saveKeyBtn.addEventListener('click', () => this.saveApiKeys());
+        // saveKeyBtn no longer rendered — event listener skipped
 
         this.modelSelect.addEventListener('change', (e) => {
             this.selectedModel = e.target.value;
@@ -419,29 +459,9 @@ class ProsporousWidget {
     }
 
     saveApiKeys() {
-        const key = this.keyInput.value.trim();
-        const tKey = this.tavilyKeyInput.value.trim();
-
-        if (key) {
-            this.apiKey = key;
-            localStorage.setItem('prosporous_api_key', key);
-            this.appendMessage('system', 'OpenRouter Key saved!');
-            this.fetchModels();
-            // Enable input
-            this.input.disabled = false;
-        }
-
-        if (tKey) {
-            this.tavilyKey = tKey;
-            localStorage.setItem('prosporous_tavily_key', tKey);
-            this.searchToggle.classList.remove('hidden');
-            this.appendMessage('system', 'Tavily Key saved! Search enabled.');
-        }
-
-        if (key || tKey) {
-            this.keyConfigSection.classList.add('collapsed');
-        }
-        this.updateSendButton();
+        // API key entry has been removed. All AI calls go through the server-side Worker.
+        // This method is preserved as a safe stub to avoid any residual call-site errors.
+        console.info('[Prosporous] saveApiKeys() called but is a no-op. Keys are managed server-side.');
     }
 
     async performTavilySearch(query) {
@@ -1128,6 +1148,11 @@ Provide the full analysis first, then this block.
 
         if (!text && !hasImage) return;
 
+        // TEMPORARY — SARVAM FORCED ROUTING
+        // When true, all AI calls go through the server-side Worker proxy (Sarvam active).
+        // To restore direct OpenRouter: set USE_WORKER_AI_PROXY = false.
+        const USE_WORKER_AI_PROXY = true;
+
         // Detect text-only query while still on vision model
         const defaultTextModel = 'google/gemma-3-27b-it:free';
         const visionModel = 'google/gemini-2.0-flash-exp:free';
@@ -1140,11 +1165,12 @@ Provide the full analysis first, then this block.
         }
 
         // Check for API Key before proceeding
-        if (!this.apiKey) {
+        // TEMPORARY: Skip local key check when using Worker proxy (key lives server-side).
+        if (!USE_WORKER_AI_PROXY && !this.apiKey) {
             if (!isHidden) this.appendMessage('user', text || 'Sent an image');
             this.input.value = '';
             this.input.style.height = 'auto';
-            const msgId = this.appendMessage('assistant', '<span class="typing-indicator"><span></span><span></span><span></span></span>');
+            const msgId = this.appendLoadingMessage();
             setTimeout(() => {
                 this.updateMessage(msgId, 'Please configure your **OpenRouter API Key** in the settings (gear icon) to start chatting.');
             }, 600);
@@ -1166,7 +1192,7 @@ Provide the full analysis first, then this block.
         this.saveHistory('user', historyText);
 
         // UI Loading state
-        const loadingId = this.appendMessage('assistant', '<span class="typing-indicator"><span></span><span></span><span></span></span>');
+        const loadingId = this.appendLoadingMessage();
 
         // Safety timeout to prevent "forever loading"
         const controller = new AbortController();
@@ -1183,28 +1209,13 @@ Provide the full analysis first, then this block.
                 this.getMarketNews().catch(() => 'Headlines unavailable')
             ]);
 
-            let searchContext = "";
-            const isFinance = this.isFinanceQuery(text);
-            const dataInPulse = this.isDataInPulse(text);
+            const searchContext = ""; // Web search is now handled server-side via Tavily (webMode flag)
 
-            // Only auto-search if it's a finance query AND the pulse data doesn't suffice
-            const autoSearch = isFinance && !dataInPulse && this.tavilyKey;
-
-            if ((this.isSearchEnabled || autoSearch) && this.tavilyKey && text) {
-                const searchLabel = autoSearch && !this.isSearchEnabled ? 'Auto-Searching sources...' : 'Searching the web...';
-                this.updateMessage(loadingId, `<span class="typing-indicator search"><span></span><span></span><span></span></span> ${searchLabel}`);
-                try {
-                    const searchResults = await this.performTavilySearch(text);
-                    if (searchResults) {
-                        searchContext = `\nWeb Search Results:\n- Direct Answer: ${searchResults.answer}\n- Top Sources: ${searchResults.results.map(r => `[${r.title}](${r.url}): ${r.content.substring(0, 200)}...`).join('\n')}`;
-                    }
-                } catch (se) {
-                    console.error('Search aborted or failed', se);
-                }
-                this.updateMessage(loadingId, '<span class="typing-indicator"><span></span><span></span><span></span></span>');
+            // Show searching indicator when web mode is ON
+            if (this.isSearchEnabled) {
+                this.updateLoadingMessage(loadingId, true);
             }
 
-            console.log('📡 Sending to OpenRouter...');
             // Simplify system prompt if image is present
             let systemPrompt = `You are Prosporous, an elite financial AI assistant.`;
 
@@ -1221,33 +1232,118 @@ Provide the full analysis first, then this block.
                 userContent.push({ type: 'image_url', image_url: { url: imageBase64 } });
             }
 
-            const response = await fetch(`${this.openRouterUrl}/chat/completions`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${this.apiKey}`,
-                    'HTTP-Referer': window.location.href,
-                    'X-Title': 'Prosporous AI Widget',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    model: this.selectedModel,
-                    messages: [
-                        { role: 'system', content: systemPrompt },
-                        ...this.getCurrentSessionMessages().slice(-10).map(m => ({
-                            role: m.role,
-                            content: m.content
-                        })),
-                        { role: 'user', content: userContent }
-                    ]
-                }),
-                signal: controller.signal
-            });
+            // Build messages array — two separate paths for Sarvam vs OpenRouter.
+            let messages;
+
+            if (USE_WORKER_AI_PROXY) {
+                // --- SARVAM PATH ---
+                // Sarvam requirements:
+                //   1. No "system" role — merge into the first user message.
+                //   2. Turns must start with "user" and strictly alternate (user → assistant → user…).
+                //   3. All content must be plain strings (no arrays).
+
+                // Flatten history: only user/assistant roles, plain string content.
+                const historyMsgs = this.getCurrentSessionMessages().slice(-10)
+                    .filter(m => m.role === 'user' || m.role === 'assistant')
+                    .map(m => ({
+                        role: m.role,
+                        content: typeof m.content === 'string'
+                            ? m.content
+                            : (Array.isArray(m.content)
+                                ? m.content.filter(p => p.type === 'text').map(p => p.text || '').join('\n').trim()
+                                : String(m.content ?? ''))
+                    }));
+
+                // New user message content (plain string, image stripped with a note)
+                const newUserText = hasImage
+                    ? (text || '') + '\n[Note: User attempted to upload an image. Image analysis is unavailable via this provider.]'
+                    : (finalPrompt || '');
+
+                // Prepend system prompt into the very first user turn
+                let allMsgs = [...historyMsgs, { role: 'user', content: newUserText }];
+
+                // Find the first user message and prepend the system prompt to it
+                const firstUserIdx = allMsgs.findIndex(m => m.role === 'user');
+                if (firstUserIdx !== -1) {
+                    allMsgs[firstUserIdx] = {
+                        role: 'user',
+                        content: `[System Instructions: ${systemPrompt}]\n\n${allMsgs[firstUserIdx].content}`
+                    };
+                }
+
+                // Strip leading assistant messages (must start with user)
+                while (allMsgs.length > 0 && allMsgs[0].role === 'assistant') {
+                    allMsgs.shift();
+                }
+
+                // Enforce strict alternation: collapse consecutive same-role messages by merging content
+                const deduplicated = [];
+                for (const msg of allMsgs) {
+                    if (deduplicated.length > 0 && deduplicated[deduplicated.length - 1].role === msg.role) {
+                        // Merge into the previous message of the same role
+                        deduplicated[deduplicated.length - 1].content += '\n' + msg.content;
+                    } else {
+                        deduplicated.push({ role: msg.role, content: msg.content });
+                    }
+                }
+
+                messages = deduplicated;
+            } else {
+                // --- OPENROUTER PATH (unchanged) ---
+                messages = [
+                    { role: 'system', content: systemPrompt },
+                    ...this.getCurrentSessionMessages().slice(-10).map(m => ({
+                        role: m.role,
+                        content: m.content
+                    })),
+                    { role: 'user', content: userContent }
+                ];
+            }
+
+            let response;
+
+            if (USE_WORKER_AI_PROXY) {
+                // TEMPORARY — SARVAM FORCED ROUTING via Worker proxy.
+                // The Worker decides which provider to use (currently Sarvam).
+                // Model selection from UI is intentionally ignored at the Worker layer.
+                console.log('📡 Sending to Worker AI proxy (Sarvam active)... webMode:', this.isSearchEnabled);
+                response = await fetch(`${this.workerUrl}/ai/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        messages: messages,
+                        model: this.selectedModel,  // sent but overridden by Worker when Sarvam is active
+                        webMode: this.isSearchEnabled  // controls server-side Tavily search
+                    }),
+                    signal: controller.signal
+                });
+            } else {
+                // PRESERVED — Original OpenRouter direct call (dormant while USE_WORKER_AI_PROXY=true).
+                // To restore: set USE_WORKER_AI_PROXY = false above.
+                console.log('📡 Sending to OpenRouter...');
+                response = await fetch(`${this.openRouterUrl}/chat/completions`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${this.apiKey}`,
+                        'HTTP-Referer': window.location.href,
+                        'X-Title': 'Prosporous AI Widget',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: this.selectedModel,
+                        messages: messages
+                    }),
+                    signal: controller.signal
+                });
+            }
 
             clearTimeout(timeoutId);
 
             if (!response.ok) {
                 const errData = await response.json().catch(() => ({}));
-                console.error('OpenRouter Error:', errData);
+                console.error('AI Provider Error:', errData);
                 throw new Error(errData.error?.message || `API Error ${response.status}`);
             }
 
@@ -1258,6 +1354,28 @@ Provide the full analysis first, then this block.
             // Update AI message with actual content
             this.updateMessage(loadingId, aiText);
             this.saveHistory('assistant', aiText);
+            // Render sources from any retrieval tier (baseline finance OR enhanced web search).
+            // Baseline retrieval runs automatically for finance queries even when web icon is OFF,
+            // mirroring the old OpenRouter behavior. Enhanced runs additionally when web icon is ON.
+            if (Array.isArray(data.sources) && data.sources.length > 0) {
+                // Label: if all sources are baseline tier = "Sources"; if enhanced = "Web Sources"
+                const hasEnhanced = data.sources.some(s => s.tier === 'enhanced');
+                const label = hasEnhanced ? 'Web Sources' : 'Sources';
+                console.log('[Sources] Rendering', data.sources.length, 'sources (label:', label + ')');
+                let srcHtml = '<div class="prosporous-sources"><div class="prosporous-sources-label">' + escapeHtml(label) + '</div><ul class="prosporous-sources-list">';
+                for (const s of data.sources) {
+                    srcHtml += '<li><a href="' + escapeHtml(s.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(s.title) + '</a></li>';
+                }
+                srcHtml += '</ul></div>';
+                const msgEl = this.messagesContainer.querySelector('#' + CSS.escape(loadingId));
+                if (msgEl) {
+                    const tmpDiv = document.createElement('div');
+                    tmpDiv.innerHTML = srcHtml;
+                    msgEl.appendChild(tmpDiv.firstElementChild);
+                }
+            } else if (this.isSearchEnabled && (!data.sources || data.sources.length === 0)) {
+                console.warn('[Sources] webMode=ON but worker returned no sources - Tavily may have failed or query was not finance-related');
+            }
 
             // Handle Pattern Hunter Result Extraction
             if (isHidden && text.includes('[PROSPEROUS PATTERN HUNTER ANALYSIS REQUEST]')) {
@@ -1482,6 +1600,38 @@ Provide the full analysis first, then this block.
         this.updateSendButton();
     }
 
+    // Creates a loading message with an animated dot indicator (bypasses formatContent/escapeHtml)
+    appendLoadingMessage() {
+        const div = document.createElement('div');
+        div.className = 'message assistant';
+        const id = 'msg-' + Date.now() + Math.random().toString(36).substr(2, 9);
+        div.id = id;
+
+        const indicator = document.createElement('span');
+        indicator.className = 'typing-indicator';
+        indicator.innerHTML = '<span></span><span></span><span></span>';
+        div.appendChild(indicator);
+
+        this.messagesContainer.appendChild(div);
+        this.scrollToBottom();
+        return id;
+    }
+
+    // Updates loading message dots (optionally adds 'search' style + label)
+    updateLoadingMessage(id, isSearch = false) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.innerHTML = '';
+        const indicator = document.createElement('span');
+        indicator.className = isSearch ? 'typing-indicator search' : 'typing-indicator';
+        indicator.innerHTML = '<span></span><span></span><span></span>';
+        el.appendChild(indicator);
+        if (isSearch) {
+            el.appendChild(document.createTextNode(' Searching the web...'));
+        }
+        this.scrollToBottom();
+    }
+
     appendMessage(role, content, image) {
         const div = document.createElement('div');
         div.className = `message ${role}`;
@@ -1631,7 +1781,13 @@ Provide the full analysis first, then this block.
         if (this.sendBtn) {
             const hasText = this.input && this.input.value.trim().length > 0;
             const hasImage = !!this.pendingImage;
-            this.sendBtn.disabled = !this.apiKey || (!hasText && !hasImage);
+            // TEMPORARY — SARVAM FORCED ROUTING
+            // When proxy is active, API key lives server-side. Do not gate on local apiKey.
+            // To restore original gating: set USE_WORKER_AI_PROXY_BTN = false.
+            const USE_WORKER_AI_PROXY_BTN = true; // TEMPORARY — SARVAM FORCED ROUTING
+            this.sendBtn.disabled = USE_WORKER_AI_PROXY_BTN
+                ? (!hasText && !hasImage)
+                : (!this.apiKey || (!hasText && !hasImage));
         }
     }
 }

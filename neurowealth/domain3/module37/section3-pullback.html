@@ -1,0 +1,630 @@
+<!-- ============================================================
+     Module 3.7 · Section III — Pullback
+     Interactive: learner predicts what forms next.
+     No "Check Answer" button — answer resolves on click.
+     Self-contained fragment. Injected by module-shell.html.
+============================================================ -->
+
+<style>
+    .s3-screen {
+        width: 100%;
+        max-width: 640px;
+        animation: s3Fade .22s ease both
+    }
+
+    @keyframes s3Fade {
+        from {
+            opacity: 0;
+            transform: translateY(5px)
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0)
+        }
+    }
+
+    .s3-eyebrow {
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--m-muted);
+        margin-bottom: 1.2rem
+    }
+
+    .s3-h1 {
+        font-family: 'Outfit', sans-serif;
+        font-size: clamp(1.5rem, 3.8vw, 2.1rem);
+        font-weight: 700;
+        color: var(--m-txt);
+        letter-spacing: -.02em;
+        line-height: 1.15;
+        margin-bottom: .85rem
+    }
+
+    .s3-body {
+        font-size: .95rem;
+        color: var(--m-txt);
+        line-height: 1.7;
+        margin-bottom: 1.25rem
+    }
+
+    /* Chart area */
+    .s3-chart-wrap {
+        position: relative;
+        margin-bottom: .55rem
+    }
+
+    .s3-chart {
+        position: relative;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-radius: 4px;
+        overflow: hidden;
+        height: 220px
+    }
+
+    .s3-chart svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%
+    }
+
+    /* Pause badge */
+    .s3-pause-badge {
+        position: absolute;
+        top: .7rem;
+        right: .8rem;
+        font-size: .62rem;
+        font-weight: 700;
+        letter-spacing: .09em;
+        text-transform: uppercase;
+        color: var(--m-gold);
+        background: rgba(13, 14, 16, .82);
+        border: 1px solid var(--m-gold-line);
+        border-radius: 3px;
+        padding: .22rem .65rem;
+        pointer-events: none;
+        opacity: 1
+    }
+
+    /* Question wrap */
+    .s3-q-wrap {
+        opacity: 0;
+        transform: translateY(6px);
+        transition: opacity .32s ease, transform .32s ease;
+        margin-top: 1.25rem
+    }
+
+    .s3-q-wrap.revealed {
+        opacity: 1;
+        transform: translateY(0)
+    }
+
+    .s3-question {
+        font-size: .95rem;
+        font-weight: 600;
+        color: var(--m-txt);
+        line-height: 1.5;
+        margin-bottom: 1.1rem
+    }
+
+    /* Options */
+    .s3-options {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        margin-bottom: 1.4rem
+    }
+
+    .s3-opt {
+        display: flex;
+        align-items: center;
+        gap: .85rem;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdr);
+        border-radius: 4px;
+        padding: .72rem 1rem;
+        cursor: pointer;
+        transition: border-color .18s, background .18s;
+        text-align: left;
+        width: 100%;
+        font-family: 'Inter', sans-serif
+    }
+
+    .s3-opt:hover:not([disabled]) {
+        border-color: var(--m-bdrhi);
+        background: rgba(255, 255, 255, .03)
+    }
+
+    .s3-opt-key {
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: .07em;
+        color: var(--m-muted);
+        min-width: 1.3rem;
+        flex-shrink: 0
+    }
+
+    .s3-opt-txt {
+        font-size: .88rem;
+        color: var(--m-muted);
+        line-height: 1.45
+    }
+
+    .s3-opt.correct {
+        border-color: var(--m-gold-line);
+        background: var(--m-gold-dim)
+    }
+
+    .s3-opt.correct .s3-opt-key,
+    .s3-opt.correct .s3-opt-txt {
+        color: var(--m-gold)
+    }
+
+    .s3-opt.wrong {
+        border-color: rgba(224, 128, 112, .35);
+        background: rgba(224, 128, 112, .06)
+    }
+
+    .s3-opt.wrong .s3-opt-key,
+    .s3-opt.wrong .s3-opt-txt {
+        color: var(--m-red-txt)
+    }
+
+    .s3-opt.dim {
+        opacity: .4
+    }
+
+    /* Feedback */
+    .s3-feedback {
+        display: none;
+        background: var(--m-surf2);
+        border: 1px solid var(--m-bdrhi);
+        border-radius: 4px;
+        padding: .9rem 1.15rem;
+        margin-bottom: 1.6rem
+    }
+
+    .s3-feedback.show {
+        display: block;
+        animation: s3FbIn .28s ease both
+    }
+
+    @keyframes s3FbIn {
+        from {
+            opacity: 0;
+            transform: translateY(4px)
+        }
+
+        to {
+            opacity: 1;
+            transform: none
+        }
+    }
+
+    .s3-feedback.correct-fb {
+        border-left: 3px solid var(--m-gold-line)
+    }
+
+    .s3-feedback.wrong-fb {
+        border-left: 3px solid rgba(224, 128, 112, .45)
+    }
+
+    .s3-fb-label {
+        font-size: .62rem;
+        font-weight: 700;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        margin-bottom: .42rem
+    }
+
+    .s3-feedback.correct-fb .s3-fb-label {
+        color: var(--m-gold)
+    }
+
+    .s3-feedback.wrong-fb .s3-fb-label {
+        color: var(--m-red-txt);
+        opacity: .85
+    }
+
+    .s3-fb-body {
+        font-size: .88rem;
+        color: var(--m-muted);
+        line-height: 1.6
+    }
+
+    .s3-fb-body strong {
+        color: var(--m-txt);
+        font-weight: 500
+    }
+
+    /* Takeaway — shown after answer */
+    .s3-takeaway {
+        font-size: .8rem;
+        color: var(--m-muted);
+        text-align: center;
+        opacity: .85;
+        margin-bottom: 1.25rem;
+        letter-spacing: .01em;
+        display: none
+    }
+
+    .s3-takeaway.show {
+        display: block
+    }
+
+    /* Button row */
+    .s3-btn-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem
+    }
+
+    .s3-btn-prev {
+        background: transparent;
+        border: 1px solid var(--m-bdr);
+        color: var(--m-muted);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 500;
+        letter-spacing: .04em;
+        padding: .62rem 1.2rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: border-color var(--m-tr), color var(--m-tr)
+    }
+
+    .s3-btn-prev:hover {
+        border-color: var(--m-bdrhi);
+        color: var(--m-txt)
+    }
+
+    .s3-btn-next {
+        background: transparent;
+        border: 1px solid var(--m-gold-line);
+        color: var(--m-gold);
+        font-family: 'Inter', sans-serif;
+        font-size: .8rem;
+        font-weight: 600;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+        padding: .65rem 1.5rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background .2s, border-color .2s;
+        display: none
+    }
+
+    .s3-btn-next.show {
+        display: inline-flex
+    }
+
+    .s3-btn-next:hover {
+        background: var(--m-gold-dim);
+        border-color: var(--m-gold)
+    }
+
+    @keyframes s3DrawPath {
+        to {
+            stroke-dashoffset: 0
+        }
+    }
+</style>
+
+<div class="s3-screen" id="s3-root">
+
+    <!-- Eyebrow -->
+    <p class="s3-eyebrow">Section III · Reversal Structure</p>
+
+    <!-- Heading -->
+    <h2 class="s3-h1">Pullback</h2>
+
+    <!-- Body -->
+    <div class="s3-body">
+        <p>The first Lower Low has formed. The chart pauses here — price hasn't moved yet.</p>
+    </div>
+
+    <!-- Chart -->
+    <div class="s3-chart-wrap">
+        <div class="s3-chart" id="s3-chart" role="img"
+            aria-label="Lower Low formed, chart paused at LL — awaiting prediction">
+            <svg id="s3-svg" viewBox="0 0 600 220" preserveAspectRatio="none"></svg>
+        </div>
+        <div class="s3-pause-badge" id="s3-badge" style="opacity:0">Chart paused — what forms next?</div>
+    </div>
+
+    <!-- Question + Options + Feedback -->
+    <div class="s3-q-wrap" id="s3-q-wrap">
+
+        <p class="s3-question">What is most likely forming?</p>
+
+        <div class="s3-options" id="s3-options">
+            <button class="s3-opt" id="s3-opt-a" onclick="s3Answer('a')">
+                <span class="s3-opt-key">A</span>
+                <span class="s3-opt-txt">Higher High</span>
+            </button>
+            <button class="s3-opt" id="s3-opt-b" onclick="s3Answer('b')">
+                <span class="s3-opt-key">B</span>
+                <span class="s3-opt-txt">Lower High</span>
+            </button>
+            <button class="s3-opt" id="s3-opt-c" onclick="s3Answer('c')">
+                <span class="s3-opt-key">C</span>
+                <span class="s3-opt-txt">Consolidation</span>
+            </button>
+            <button class="s3-opt" id="s3-opt-d" onclick="s3Answer('d')">
+                <span class="s3-opt-key">D</span>
+                <span class="s3-opt-txt">Continuation</span>
+            </button>
+        </div>
+
+
+
+    </div>
+
+    <!-- Takeaway — revealed after answer -->
+    <p class="s3-takeaway" id="s3-takeaway">
+        The pullback does not reclaim the old high. Instead, it begins forming opposite structure.
+    </p>
+
+    <!-- Navigation -->
+    <div class="s3-btn-row">
+        <button class="s3-btn-prev" onclick="goTo(2, 0)">&larr; Previous</button>
+        <button class="s3-btn-next" id="s3-btn-next" onclick="goTo(4, 0)">Next Section &rarr;</button>
+    </div>
+
+</div>
+
+<script>
+    /* ── Reset state on section (re-)entry ──────────────── */
+    window._s3Done = false;
+
+    /* ── Global answer handler ───────────────────────────── */
+    function s3Answer(chosen) {
+        if (window._s3Done) return;
+        window._s3Done = true;
+
+        var correct = 'b';
+        var opts = ['a', 'b', 'c', 'd'];
+
+        opts.forEach(function (k) {
+            var el = document.getElementById('s3-opt-' + k);
+            el.disabled = true;
+
+            if (k === correct) {
+                el.classList.add('correct');
+            } else if (k === chosen && k !== correct) {
+                el.classList.add('wrong');
+            } else {
+                el.classList.add('dim');
+            }
+        });
+
+        /* Chart resolves the answer visually */
+        if (window._s3DrawResolution) window._s3DrawResolution(chosen === correct);
+
+        /* Reveal takeaway */
+        setTimeout(function () {
+            var tk = document.getElementById('s3-takeaway');
+            if (tk) tk.classList.add('show');
+        }, 500);
+
+        /* Show next button */
+        setTimeout(function () {
+            var btn = document.getElementById('s3-btn-next');
+            if (btn) btn.classList.add('show');
+        }, 600);
+    }
+
+    /* ── Chart IIFE ──────────────────────────────────────── */
+    (function () {
+
+        var W = 600, H = 220;
+        var PAD = { l: 32, r: 28, t: 24, b: 24 };
+        var UW = W - PAD.l - PAD.r;
+        var UH = H - PAD.t - PAD.b;
+
+        function px(fx) { return PAD.l + fx * UW; }
+        function py(fy) { return PAD.t + (1 - fy) * UH; }
+
+        var GLD = 'rgba(195,162,70,1.0)';
+        var GLD2 = 'rgba(195,162,70,0.38)';
+        var NDO = 'rgba(200,185,130,0.92)';
+        var RED = 'rgba(224,128,112,0.85)';
+        var REDZ = 'rgba(224,128,112,0.08)';
+        var GUIDE = 'rgba(195,162,70,0.22)';
+        var GRID = 'rgba(255,255,255,0.025)';
+
+        /* Prior uptrend reference (faded) */
+        var HH_ref = { fx: 0.08, fy: 0.80, lbl: 'HH' };
+        var HL_ref = { fx: 0.22, fy: 0.50, lbl: 'HL' };
+        var HH2_ref = { fx: 0.38, fy: 0.92, lbl: 'HH' };
+        var HL2_brk = { fx: 0.50, fy: 0.60, lbl: 'HL' };
+
+        /* Break destination = LL.  Chart STOPS here. */
+        var LL1 = { fx: 0.65, fy: 0.16 };
+
+        /* Pullback path — drawn ONLY after answer */
+        var pbMid = { fx: 0.76, fy: 0.36 };
+        var LH1 = { fx: 0.90, fy: 0.47, lbl: 'LH' };
+
+        var hl2Y = py(HL2_brk.fy);
+        var llX = px(LL1.fx);
+        var llY = py(LL1.fy);
+
+        function build() {
+            var svg = document.getElementById('s3-svg');
+            var out = [];
+
+            /* Grid */
+            var gy = 40;
+            while (gy < H) {
+                out.push('<line x1="0" y1="' + gy + '" x2="' + W + '" y2="' + gy +
+                    '" stroke="' + GRID + '" stroke-width="1"/>');
+                gy += 40;
+            }
+
+            /* HL guide line */
+            out.push(
+                '<line x1="' + PAD.l + '" y1="' + hl2Y +
+                '" x2="' + (W - PAD.r) + '" y2="' + hl2Y +
+                '" stroke="' + GUIDE + '" stroke-width="1" stroke-dasharray="5,5"/>'
+            );
+
+            /* Break zone */
+            out.push(
+                '<rect x="' + px(HL2_brk.fx) + '" y="' + hl2Y +
+                '" width="' + (W - PAD.r - px(HL2_brk.fx) + 4) + '"' +
+                ' height="' + (H - PAD.b - hl2Y + 4) + '"' +
+                ' fill="' + REDZ + '" opacity="0.7"/>'
+            );
+
+            /* Prior uptrend path — faded */
+            var uPts = [{ fx: 0.01, fy: 0.15 }, HH_ref, HL_ref, HH2_ref, HL2_brk].map(
+                function (n) { return { x: px(n.fx), y: py(n.fy) }; }
+            );
+            out.push(
+                '<path d="M' + uPts.map(function (p) { return p.x + ',' + p.y; }).join(' L') + '"' +
+                ' stroke="' + GLD + '" stroke-width="1.8" fill="none" stroke-linecap="round" opacity="0.35"/>'
+            );
+
+            /* Break → LL path — red, animates in */
+            var bPts = [HL2_brk, { fx: 0.57, fy: 0.33 }, LL1].map(
+                function (n) { return { x: px(n.fx), y: py(n.fy) }; }
+            );
+            var bLen = 0;
+            for (var i = 1; i < bPts.length; i++) {
+                var dx = bPts[i].x - bPts[i - 1].x;
+                var dy = bPts[i].y - bPts[i - 1].y;
+                bLen += Math.sqrt(dx * dx + dy * dy);
+            }
+            out.push(
+                '<path d="M' + bPts.map(function (p) { return p.x + ',' + p.y; }).join(' L') + '"' +
+                ' stroke="' + RED + '" stroke-width="2.2" fill="none" stroke-linecap="round"' +
+                ' stroke-dasharray="' + (bLen + 10) + '" stroke-dashoffset="' + (bLen + 10) + '"' +
+                ' style="animation: s3DrawPath .75s ease .1s forwards"/>'
+            );
+
+            /* PULLBACK PATH — starts at LL, fully hidden until answer */
+            var pbPts = [LL1, pbMid, LH1].map(function (n) { return { x: px(n.fx), y: py(n.fy) }; });
+            var pbLen = 0;
+            for (var j = 1; j < pbPts.length; j++) {
+                var ddx = pbPts[j].x - pbPts[j - 1].x;
+                var ddy = pbPts[j].y - pbPts[j - 1].y;
+                pbLen += Math.sqrt(ddx * ddx + ddy * ddy);
+            }
+            out.push(
+                '<path id="s3-pb-path"' +
+                ' d="M' + pbPts.map(function (p) { return p.x + ',' + p.y; }).join(' L') + '"' +
+                ' stroke="' + GLD + '" stroke-width="2.0" fill="none" stroke-linecap="round"' +
+                ' stroke-dasharray="' + (pbLen + 10) + '" stroke-dashoffset="' + (pbLen + 10) + '"' +
+                ' opacity="0"/>'
+            );
+
+            /* LH node — hidden until correct answer */
+            var lhX = px(LH1.fx), lhY = py(LH1.fy);
+            out.push(
+                '<circle id="s3-lh-dot" cx="' + lhX + '" cy="' + lhY +
+                '" r="5" fill="' + GLD + '" opacity="0"/>'
+            );
+            out.push(
+                '<text id="s3-lh-lbl" x="' + lhX + '" y="' + (lhY - 12) +
+                '" text-anchor="middle" font-size="9.5" font-family="Inter,sans-serif"' +
+                ' fill="' + NDO + '" font-weight="700" letter-spacing="0.06em" opacity="0">LH</text>'
+            );
+
+            /* LL dot — revealed after break path finishes */
+            out.push(
+                '<circle id="s3-ll-dot" cx="' + llX + '" cy="' + llY +
+                '" r="5.5" fill="' + RED + '" opacity="0"/>'
+            );
+            out.push(
+                '<text id="s3-ll-lbl" x="' + llX + '" y="' + (llY + 18) +
+                '" text-anchor="middle" font-size="9.5" font-family="Inter,sans-serif"' +
+                ' fill="' + RED + '" font-weight="700" letter-spacing="0.06em" opacity="0">LL</text>'
+            );
+
+            /* Pause ring — sits ON the LL dot, larger radius so it wraps around it */
+            out.push(
+                '<circle id="s3-pause-ring" cx="' + llX + '" cy="' + llY +
+                '" r="12" fill="none" stroke="' + GLD2 + '" stroke-width="1.5" opacity="0"/>'
+            );
+            /* "…?" label just above the LL */
+            out.push(
+                '<text id="s3-pause-lbl" x="' + llX + '" y="' + (llY - 20) +
+                '" text-anchor="middle" font-size="8.5" font-family="Inter,sans-serif"' +
+                ' fill="' + GLD2 + '" font-weight="600" opacity="0">…?</text>'
+            );
+
+            /* Prior node labels (faded) */
+            [HH_ref, HL_ref, HH2_ref].forEach(function (n) {
+                var x = px(n.fx), y = py(n.fy);
+                out.push('<text x="' + x + '" y="' + (y - 9) +
+                    '" text-anchor="middle" font-size="8" font-family="Inter,sans-serif"' +
+                    ' fill="' + NDO + '" font-weight="600" opacity="0.4">' + n.lbl + '</text>');
+            });
+
+            svg.innerHTML = out.join('');
+
+            requestAnimationFrame(function () {
+                /* Step 1 — LL dot + label appear after break path finishes (~850 ms) */
+                setTimeout(function () {
+                    ['s3-ll-dot', 's3-ll-lbl'].forEach(function (id) {
+                        var el = document.getElementById(id);
+                        if (el) { el.style.transition = 'opacity .3s ease'; el.style.opacity = '1'; }
+                    });
+                }, 900);
+
+                /* Step 2 — Pause ring + "…?" appear ON the LL */
+                setTimeout(function () {
+                    ['s3-pause-ring', 's3-pause-lbl'].forEach(function (id) {
+                        var el = document.getElementById(id);
+                        if (el) { el.style.transition = 'opacity .35s ease'; el.style.opacity = '1'; }
+                    });
+                    var badge = document.getElementById('s3-badge');
+                    if (badge) { badge.style.transition = 'opacity .35s ease'; badge.style.opacity = '1'; }
+                }, 1250);
+
+                /* Step 3 — Reveal question */
+                setTimeout(function () {
+                    var qw = document.getElementById('s3-q-wrap');
+                    if (qw) qw.classList.add('revealed');
+                }, 1750);
+            });
+        }
+
+        /* ── Draw resolution after answer choice ─────────── */
+        window._s3DrawResolution = function (isCorrect) {
+            /* Fade out pause elements */
+            ['s3-pause-ring', 's3-pause-lbl', 's3-badge'].forEach(function (id) {
+                var el = document.getElementById(id);
+                if (el) { el.style.transition = 'opacity .25s ease'; el.style.opacity = '0'; }
+            });
+
+            /* Draw pullback path from LL upward */
+            setTimeout(function () {
+                var pb = document.getElementById('s3-pb-path');
+                if (pb) {
+                    pb.style.transition = 'opacity .15s ease';
+                    pb.style.opacity = '1';
+                    pb.style.animation = 's3DrawPath .7s ease forwards';
+                }
+
+                /* LH label only on correct */
+                if (isCorrect) {
+                    setTimeout(function () {
+                        ['s3-lh-dot', 's3-lh-lbl'].forEach(function (id) {
+                            var el = document.getElementById(id);
+                            if (el) { el.style.transition = 'opacity .35s ease'; el.style.opacity = '1'; }
+                        });
+                    }, 650);
+                }
+            }, 300);
+        };
+
+        build();
+
+    })();
+</script>

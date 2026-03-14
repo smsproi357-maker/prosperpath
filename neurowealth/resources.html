@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="ProsperPath Resources - Guides, tools, and insights designed to improve financial clarity.">
+    <title>Resources | ProsperPath</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        :root {
+            --accent-gold: var(--color-gold, #D4AF37);
+        }
+
+        /* Strict minimal layout styles for Resources */
+        .resources-hero {
+            padding: var(--space-24) 0 var(--space-20);
+            text-align: center;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .resources-hero h1 {
+            font-size: var(--text-5xl);
+            margin-bottom: var(--space-4);
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .resources-hero p {
+            font-size: var(--text-xl);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-8);
+            font-weight: 400;
+        }
+
+        .hero-labels {
+            display: flex;
+            justify-content: center;
+            gap: var(--space-6);
+            flex-wrap: wrap;
+        }
+
+        .simple-label {
+            font-size: var(--text-sm);
+            color: var(--color-text-primary);
+            padding: var(--space-2) var(--space-4);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .layout-section {
+            padding: var(--space-16) 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .layout-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: var(--text-3xl);
+            color: #ffffff;
+            margin-bottom: var(--space-10);
+            font-weight: 500;
+        }
+
+        .strict-card {
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            padding: var(--space-8);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            transition: border-color 0.2s ease, transform 0.2s ease;
+            height: 100%;
+        }
+
+        .strict-card:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .card-category-label {
+            font-size: var(--text-xs);
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-4);
+            font-weight: 600;
+            display: block;
+        }
+
+        .strict-card h3 {
+            font-size: var(--text-xl);
+            color: #ffffff;
+            margin-bottom: var(--space-3);
+            font-weight: 500;
+        }
+
+        .strict-card p {
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+            margin-bottom: var(--space-6);
+            flex-grow: 1;
+            font-size: var(--text-base);
+        }
+
+        .card-arrow {
+            color: var(--color-text-secondary);
+            font-size: var(--text-xl);
+            align-self: flex-start;
+            transition: color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .strict-card:hover .card-arrow {
+            color: var(--accent-gold);
+        }
+
+        .grid-2x2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-6);
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-6);
+        }
+
+        .start-path-card {
+            background: var(--color-bg-base);
+            border: 1px solid var(--color-border);
+            padding: var(--space-6);
+            border-radius: var(--radius-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .start-path-card:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .start-path-title {
+            color: #ffffff;
+            font-size: var(--text-lg);
+            font-weight: 500;
+        }
+
+        .start-path-dest {
+            color: var(--color-text-secondary);
+            font-size: var(--text-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            transition: color 0.2s ease;
+        }
+
+        .start-path-card:hover .start-path-dest {
+            color: var(--accent-gold);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: var(--space-6);
+            margin-bottom: var(--space-8);
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: var(--space-4);
+            overflow-x: auto;
+        }
+
+        .filter-tab {
+            background: none;
+            border: none;
+            color: var(--color-text-secondary);
+            font-size: var(--text-base);
+            font-weight: 500;
+            cursor: pointer;
+            padding: 0;
+            padding-bottom: var(--space-4);
+            margin-bottom: calc(-1 * var(--space-4) - 1px);
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .filter-tab.active {
+            color: var(--accent-gold);
+            border-bottom-color: rgba(212, 175, 55, 0.5);
+        }
+
+        .filter-tab:hover:not(.active) {
+            color: #ffffff;
+        }
+
+        .browse-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-4);
+        }
+
+        .browse-card {
+            border: 1px solid var(--color-border);
+            padding: var(--space-6);
+            border-radius: var(--radius-sm);
+            background: transparent;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .browse-card:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .browse-meta {
+            color: var(--accent-gold);
+            font-size: var(--text-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-2);
+            font-weight: 600;
+        }
+
+        .browse-title {
+            color: #ffffff;
+            font-size: var(--text-lg);
+            font-weight: 500;
+            margin-bottom: var(--space-2);
+        }
+
+        .browse-excerpt {
+            color: var(--color-text-secondary);
+            font-size: var(--text-sm);
+            line-height: 1.5;
+        }
+
+        .browse-row-bottom {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: auto;
+            padding-top: var(--space-4);
+        }
+
+        .browse-card .card-arrow {
+            transition: color 0.2s ease;
+        }
+
+        .browse-card:hover .card-arrow {
+            color: var(--accent-gold);
+        }
+
+        .closing-section {
+            padding: var(--space-24) 0;
+            text-align: center;
+        }
+
+        .closing-text {
+            font-size: var(--text-3xl);
+            color: #ffffff;
+            margin-bottom: var(--space-8);
+            font-weight: 400;
+        }
+
+        @media (max-width: 992px) {
+            .grid-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .grid-3 .strict-card:nth-child(3) {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .grid-2x2,
+            .grid-3,
+            .browse-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-3 .strict-card:nth-child(3) {
+                display: flex;
+            }
+
+            .start-path-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-4);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">⚡</div>
+                    <span>ProsperPath</span>
+                </a>
+
+                <div class="nav-links" id="nav-links">
+                    <a href="clarity-box.html">Clarity Box</a>
+                    <a href="trade.html">Trade</a>
+                    <a href="market-mechanics.html">Market Mechanics</a>
+                    <a href="portfolio.html">Portfolio</a>
+                    <div class="nav-item-dropdown">
+
+                        <a href="resources.html" class="active">Resources</a>
+
+                        <div class="dropdown-panel">
+
+                            <a href="wealth-guides.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">Wealth Guides</span>
+
+                                <span class="dropdown-item-desc">Structured frameworks for building financial understanding.</span>
+
+                            </a>
+
+                            <a href="tool-reviews.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">Tool Reviews</span>
+
+                                <span class="dropdown-item-desc">Reviews of platforms and financial tools.</span>
+
+                            </a>
+
+                            <a href="ai-calculators.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">AI Calculators</span>
+
+                                <span class="dropdown-item-desc">Interactive tools for financial modelling.</span>
+
+                            </a>
+
+                            <a href="blog.html" class="dropdown-item">
+
+                                <span class="dropdown-item-title">Insights</span>
+
+                                <span class="dropdown-item-desc">Market analysis and commentary.</span>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="nav-actions"
+                    style="display: flex; align-items: center; gap: var(--space-4); position: relative;">
+                    <div class="settings-wrapper" style="position: relative;">
+                        <button id="settings-btn" class="settings-icon-btn" aria-label="Settings"
+                            onclick="toggleAuthMenu()">
+                            <span class="icon">⚙️</span>
+                        </button>
+                        <div id="auth-wrapper" class="auth-rolldown-container">
+                            <div id="auth-container">
+                                <!-- Google Sign-In button will render here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- SECTION 1 — HERO -->
+    <section class="resources-hero">
+        <div class="container">
+            <h1>Resources</h1>
+            <p>Guides, tools, and insights designed to improve financial clarity.</p>
+            <div class="hero-labels">
+                <a href="wealth-guides.html" class="simple-label" style="text-decoration: none; display: inline-block;">Wealth Guides</a>
+                <a href="tool-reviews.html" class="simple-label" style="text-decoration: none; display: inline-block;">Tool Reviews</a>
+                <a href="ai-calculators.html" class="simple-label" style="text-decoration: none; display: inline-block;">AI Calculators</a>
+                <a href="blog.html" class="simple-label" style="text-decoration: none; display: inline-block;">Insights</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2 — FEATURED RESOURCES -->
+    <section class="layout-section">
+        <div class="container">
+            <h2 class="section-title">Featured Resources</h2>
+            <div class="grid-3">
+                <a href="wealth-guides.html" class="strict-card">
+                    <span class="card-category-label">WEALTH GUIDE</span>
+                    <h3>The Structure of Market Mechanics</h3>
+                    <p>Understanding the core drivers of market movements and liquidity.</p>
+                    <div class="card-arrow">→</div>
+                </a>
+                <a href="blog.html" class="strict-card">
+                    <span class="card-category-label">INSIGHT</span>
+                    <h3>Building Institutional Risk Models</h3>
+                    <p>How professional managers evaluate their portfolio risk overlays.</p>
+                    <div class="card-arrow">→</div>
+                </a>
+                <a href="ai-calculators.html" class="strict-card">
+                    <span class="card-category-label">AI CALCULATOR</span>
+                    <h3>Compound Growth Simulator</h3>
+                    <p>Project long-term outcomes of steady systematic investments.</p>
+                    <div class="card-arrow">→</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3 — CATEGORY GRID -->
+    <section class="layout-section">
+        <div class="container">
+            <h2 class="section-title">Categories</h2>
+            <div class="grid-2x2">
+                <a href="wealth-guides.html" class="strict-card">
+                    <span class="card-category-label">WEALTH GUIDE</span>
+                    <h3>Wealth Guides</h3>
+                    <p>Structured frameworks for building financial understanding.</p>
+                </a>
+                <a href="tool-reviews.html" class="strict-card">
+                    <span class="card-category-label">TOOL REVIEW</span>
+                    <h3>Tool Reviews</h3>
+                    <p>Reviews of platforms and financial tools.</p>
+                </a>
+                <a href="ai-calculators.html" class="strict-card">
+                    <span class="card-category-label">AI CALCULATOR</span>
+                    <h3>AI Calculators</h3>
+                    <p>Interactive tools for financial modelling.</p>
+                </a>
+                <a href="blog.html" class="strict-card">
+                    <span class="card-category-label">INSIGHT</span>
+                    <h3>Insights</h3>
+                    <p>Analysis and commentary on markets.</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4 — START HERE -->
+    <section class="layout-section">
+        <div class="container">
+            <h2 class="section-title">Start Here</h2>
+            <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+                <a href="wealth-guides.html" class="start-path-card">
+                    <span class="start-path-title">Learn the Foundations</span>
+                    <span class="start-path-dest">Wealth Guides <span class="card-arrow"
+                            style="margin-left: 8px;">→</span></span>
+                </a>
+                <a href="tool-reviews.html" class="start-path-card">
+                    <span class="start-path-title">Explore the Best Tools</span>
+                    <span class="start-path-dest">Tool Reviews <span class="card-arrow"
+                            style="margin-left: 8px;">→</span></span>
+                </a>
+                <a href="ai-calculators.html" class="start-path-card">
+                    <span class="start-path-title">Use Practical Calculators</span>
+                    <span class="start-path-dest">AI Calculators <span class="card-arrow"
+                            style="margin-left: 8px;">→</span></span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 5 — BROWSE ALL -->
+    <section class="layout-section" id="all-resources">
+        <div class="container">
+            <h2 class="section-title">All Resources</h2>
+            <div class="filter-tabs">
+                <button class="filter-tab active">All</button>
+                <button class="filter-tab">Wealth Guides</button>
+                <button class="filter-tab">Tool Reviews</button>
+                <button class="filter-tab">AI Calculators</button>
+                <button class="filter-tab">Insights</button>
+            </div>
+
+            <div class="browse-grid">
+                <a href="wealth-guides.html" class="browse-card">
+                    <span class="browse-meta">WEALTH GUIDE</span>
+                    <h4 class="browse-title">The Foundation of Market Structure</h4>
+                    <p class="browse-excerpt">An essential look into how markets actually move, explaining liquidity and
+                        depth.</p>
+                    <div class="browse-row-bottom">
+                        <span class="card-arrow">→</span>
+                    </div>
+                </a>
+                <a href="ai-calculators.html" class="browse-card">
+                    <span class="browse-meta">AI CALCULATOR</span>
+                    <h4 class="browse-title">Options Strategy Profit Simulator</h4>
+                    <p class="browse-excerpt">Visualize complex payoffs before executing a trade.</p>
+                    <div class="browse-row-bottom">
+                        <span class="card-arrow">→</span>
+                    </div>
+                </a>
+                <a href="tool-reviews.html" class="browse-card">
+                    <span class="browse-meta">TOOL REVIEW</span>
+                    <h4 class="browse-title">Evaluating Institutional Order Routing Networks</h4>
+                    <p class="browse-excerpt">A breakdown of the top tools used to minimize slippage on large
+                        executions.</p>
+                    <div class="browse-row-bottom">
+                        <span class="card-arrow">→</span>
+                    </div>
+                </a>
+                <a href="blog.html" class="browse-card">
+                    <span class="browse-meta">INSIGHT</span>
+                    <h4 class="browse-title">Q3 Macro Thesis: The Shift in Monetary Regimes</h4>
+                    <p class="browse-excerpt">Our perspective on the evolving interest rate environment and its effect
+                        on risk assets.</p>
+                    <div class="browse-row-bottom">
+                        <span class="card-arrow">→</span>
+                    </div>
+                </a>
+            </div>
+
+
+        </div>
+    </section>
+
+    <!-- SECTION 6 — CLOSING -->
+    <section class="closing-section">
+        <div class="container">
+            <h2 class="closing-text">Clarity compounds when knowledge is structured.</h2>
+            <a href="#all-resources" class="btn btn-primary"
+                style="padding: var(--space-4) var(--space-8); font-size: var(--text-lg); scroll-behavior: smooth;">Explore Resources</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="index.html" class="logo">
+                        <div class="logo-icon">⚡</div>
+                        <span>ProsperPath</span>
+                    </a>
+                    <p>Your trusted source for AI-powered investing insights, automated wealth management strategies,
+                        and digital asset security guidance.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <div class="footer-links">
+                        <a href="resources.html">All Resources</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 ProsperPath Insights. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Smooth scroll for internal links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href === '#') return;
+                    
+                    const target = document.querySelector(href);
+                    if (target) {
+                        e.preventDefault();
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // Filter Tabs Logic
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            const browseCards = document.querySelectorAll('.browse-card');
+
+            if (filterTabs.length > 0 && browseCards.length > 0) {
+                filterTabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        // Update active tab
+                        filterTabs.forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+
+                        const filterText = tab.textContent.trim().toUpperCase();
+
+                        // Filter cards
+                        browseCards.forEach(card => {
+                            const metaElem = card.querySelector('.browse-meta');
+                            if (!metaElem) return;
+                            
+                            const metaLabel = metaElem.textContent.trim().toUpperCase();
+                            
+                            if (filterText === 'ALL' || 
+                                filterText.includes(metaLabel) || 
+                                metaLabel.includes(filterText) ||
+                                (filterText === 'WEALTH GUIDES' && metaLabel === 'WEALTH GUIDE') || 
+                                (filterText === 'TOOL REVIEWS' && metaLabel === 'TOOL REVIEW') || 
+                                (filterText === 'AI CALCULATORS' && metaLabel === 'AI CALCULATOR') || 
+                                (filterText === 'INSIGHTS' && metaLabel === 'INSIGHT')) {
+                                card.style.display = 'flex';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        });
+                    });
+                });
+            }
+        });
+    </script>
+    <script src="script.js"></script>
+    <script src="ai-widget.js"></script>
+
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="google-auth.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            if (typeof initGoogleAuth === 'function') initGoogleAuth();
+        });
+    </script>
+</body>
+
+</html>
