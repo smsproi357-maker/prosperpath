@@ -1,0 +1,406 @@
+/* ============================================================
+   MARKET SURFACE — ProsperPath Native Chart System
+   Integrates with styles.css, clarity-box.css, market-theme.css
+   ============================================================ */
+
+/* ─── Card Wrapper ──────────────────────────────────────────── */
+
+.ms-card {
+    background: rgba(10, 15, 28, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow:
+        0 4px 24px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: border-color 0.3s ease;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+.ms-card:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* ─── Header ────────────────────────────────────────────────── */
+
+.ms-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.02);
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.ms-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.ms-asset-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.ms-asset-name {
+    font-family: 'Outfit', 'Inter', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 18ch;
+}
+
+.ms-asset-symbol {
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.35);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: rgba(255, 255, 255, 0.06);
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    white-space: nowrap;
+}
+
+.ms-price-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.ms-price {
+    font-family: 'Outfit', 'Inter', sans-serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: rgba(255, 255, 255, 0.96);
+    line-height: 1;
+}
+
+.ms-change {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 20px;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.ms-change.up {
+    background: rgba(0, 212, 170, 0.12);
+    color: #00d4aa;
+    border: 1px solid rgba(0, 212, 170, 0.2);
+}
+
+.ms-change.down {
+    background: rgba(255, 107, 107, 0.12);
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 107, 107, 0.2);
+}
+
+.ms-change.neutral {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ─── Timeframe Selector ────────────────────────────────────── */
+
+.ms-tf-selector {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 3px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+
+.ms-tf-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 4px 9px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    font-family: inherit;
+    line-height: 1;
+}
+
+.ms-tf-btn:hover {
+    color: rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.ms-tf-btn.active {
+    background: rgba(0, 212, 170, 0.18);
+    color: #00d4aa;
+    border: 1px solid rgba(0, 212, 170, 0.25);
+}
+
+.ms-tf-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* ─── Chart Region ──────────────────────────────────────────── */
+
+.ms-chart-region {
+    position: relative;
+    flex: 1;
+    min-height: 320px;
+    background: rgba(8, 12, 24, 0.7);
+}
+
+.ms-chart-canvas {
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+}
+
+.ms-chart-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: rgba(8, 12, 24, 0.85);
+    z-index: 5;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.ms-chart-loading.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ms-spinner {
+    width: 28px;
+    height: 28px;
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    border-top-color: rgba(0, 212, 170, 0.7);
+    border-radius: 50%;
+    animation: ms-spin 0.85s linear infinite;
+}
+
+@keyframes ms-spin {
+    to { transform: rotate(360deg); }
+}
+
+.ms-loading-text {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.04em;
+}
+
+.ms-chart-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    height: 100%;
+    min-height: 280px;
+    color: rgba(255, 255, 255, 0.3);
+    text-align: center;
+    padding: 2rem;
+}
+
+.ms-chart-empty-icon {
+    font-size: 2rem;
+    opacity: 0.4;
+}
+
+.ms-chart-empty-text {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    max-width: 260px;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.ms-retry-btn {
+    background: rgba(0, 212, 170, 0.1);
+    border: 1px solid rgba(0, 212, 170, 0.25);
+    color: #00d4aa;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 7px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.ms-retry-btn:hover {
+    background: rgba(0, 212, 170, 0.2);
+    border-color: rgba(0, 212, 170, 0.4);
+}
+
+/* ─── Context Strip ─────────────────────────────────────────── */
+
+.ms-context-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.018);
+}
+
+.ms-context-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 11px 16px;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.ms-context-item:last-child {
+    border-right: none;
+}
+
+.ms-context-item:hover {
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.ms-context-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.3);
+    line-height: 1;
+}
+
+.ms-context-value {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ms-context-value.bullish { color: #00d4aa; }
+.ms-context-value.bearish { color: #ff6b6b; }
+.ms-context-value.neutral { color: rgba(255, 200, 80, 0.85); }
+.ms-context-value.elevated { color: #ff8c42; }
+.ms-context-value.placeholder { color: rgba(255, 255, 255, 0.2); }
+
+/* Accent stripe on hover */
+.ms-context-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 0;
+    background: rgba(0, 212, 170, 0.5);
+    transition: height 0.25s ease;
+    border-radius: 0 0 2px 0;
+}
+
+.ms-context-item:hover::before {
+    height: 100%;
+}
+
+/* ─── Responsive ────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+    .ms-header {
+        padding: 12px 14px;
+    }
+
+    .ms-price {
+        font-size: 1.3rem;
+    }
+
+    .ms-asset-name {
+        font-size: 0.95rem;
+        max-width: 14ch;
+    }
+
+    .ms-tf-btn {
+        padding: 3px 7px;
+        font-size: 0.65rem;
+    }
+
+    .ms-context-strip {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .ms-context-item {
+        padding: 9px 12px;
+    }
+
+    .ms-context-item:nth-child(2) {
+        border-right: none;
+    }
+
+    .ms-context-item:nth-child(3) {
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .ms-context-item:nth-child(4) {
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .ms-chart-region {
+        min-height: 260px;
+    }
+}
+
+@media (max-width: 420px) {
+    .ms-tf-selector {
+        gap: 1px;
+    }
+
+    .ms-tf-btn {
+        padding: 3px 6px;
+    }
+}
+
+/* ─── Integration: chart-section override ───────────────────── */
+
+/* Ensures the ms-card sits correctly in the existing detail-grid layout */
+.chart-section .ms-card {
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+}
+
+.chart-section .ms-chart-region {
+    flex: 1;
+    min-height: 360px;
+}

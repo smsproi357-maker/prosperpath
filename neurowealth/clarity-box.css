@@ -1135,3 +1135,326 @@ body {
         opacity: 1;
     }
 }
+
+
+/* ═══════════════════════════════════════════════
+   MARKET PULSE SECTION
+   Scrolls below the Clarity Box hero.
+   Matches Clarity Box dark aesthetic exactly.
+═══════════════════════════════════════════════ */
+
+/* ---------- Section Container ---------- */
+.mp-section {
+    background: var(--cb-bg-primary);
+    padding: 6rem var(--cb-space-lg) 8rem;
+    position: relative;
+    overflow: hidden;
+    /* Subtle top separator */
+    border-top: 1px solid var(--cb-border);
+}
+
+/* Ambient glow behind section */
+.mp-section::before {
+    content: '';
+    position: absolute;
+    top: -120px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 300px;
+    background: radial-gradient(ellipse at center, rgba(228, 228, 231, 0.04) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.mp-inner {
+    max-width: 880px;
+    margin: 0 auto;
+    /* Fade-in when intersected */
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.mp-inner.mp-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ---------- Header ---------- */
+.mp-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.mp-header-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 1rem;
+    padding: 4px 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--cb-border);
+    border-radius: 20px;
+}
+
+.mp-live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+    animation: mpPulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+@keyframes mpPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.85); }
+}
+
+.mp-label-text {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #4ade80;
+}
+
+.mp-title {
+    font-family: var(--cb-font-display);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: var(--cb-text-primary);
+    margin-bottom: 0.5rem;
+    line-height: 1.1;
+}
+
+.mp-subtitle {
+    font-size: 1rem;
+    color: var(--cb-text-muted);
+    font-weight: 300;
+}
+
+/* ---------- Category Selector (Segmented Control) ---------- */
+.mp-category-selector {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    background: var(--cb-bg-secondary);
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius-xl);
+    margin: 0 auto 2.5rem;
+    display: flex;
+    justify-content: center;
+    width: fit-content;
+}
+
+.mp-cat {
+    padding: 0.5rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--cb-text-muted);
+    background: transparent;
+    border: none;
+    border-radius: calc(var(--cb-radius-xl) - 4px);
+    cursor: pointer;
+    transition: all var(--cb-transition-base);
+    letter-spacing: 0.01em;
+    font-family: var(--cb-font-body);
+}
+
+.mp-cat:hover {
+    color: var(--cb-text-secondary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.mp-cat.active {
+    color: var(--cb-text-primary);
+    background: var(--cb-bg-elevated);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* ---------- Asset Chip Grid ---------- */
+.mp-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    min-height: 160px;
+}
+
+/* Individual floating chip */
+.mp-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 14px 20px;
+    background: var(--cb-bg-secondary);
+    border: 1px solid var(--cb-border);
+    border-radius: var(--cb-radius-xl);
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    min-width: 96px;
+    transition: all var(--cb-transition-base);
+    position: relative;
+    animation: mpFloat 6s ease-in-out infinite;
+    animation-delay: var(--mp-delay, 0s);
+    will-change: transform;
+}
+
+@keyframes mpFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+.mp-chip:hover {
+    transform: translateY(-6px) !important;
+    background: var(--cb-bg-card);
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3),
+                0 0 16px rgba(255, 255, 255, 0.04);
+    animation-play-state: paused;
+}
+
+.mp-chip-symbol {
+    font-family: var(--cb-font-display);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--cb-text-primary);
+    letter-spacing: 0.02em;
+}
+
+.mp-chip-price {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--cb-text-secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+.mp-chip-change {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border-radius: 6px;
+    padding: 1px 5px;
+}
+
+.mp-chip-change.mp-up {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.1);
+}
+
+.mp-chip-change.mp-down {
+    color: #f87171;
+    background: rgba(248, 113, 113, 0.1);
+}
+
+.mp-chip-change.mp-neutral {
+    color: var(--cb-text-muted);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Skeleton loading chips */
+.mp-skeleton-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    width: 100%;
+}
+
+.mp-chip--skeleton {
+    min-width: 96px;
+    height: 82px;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.04) 25%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.04) 75%
+    );
+    background-size: 200% 100%;
+    animation: mpShimmer 1.6s ease-in-out infinite, mpFloat 6s ease-in-out infinite;
+    border-radius: var(--cb-radius-xl);
+    cursor: default;
+}
+
+@keyframes mpShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Stagger skeleton animations */
+.mp-chip--skeleton:nth-child(1) { animation-delay: 0s, 0s; }
+.mp-chip--skeleton:nth-child(2) { animation-delay: 0.1s, 0.4s; }
+.mp-chip--skeleton:nth-child(3) { animation-delay: 0.2s, 0.8s; }
+.mp-chip--skeleton:nth-child(4) { animation-delay: 0.3s, 1.2s; }
+.mp-chip--skeleton:nth-child(5) { animation-delay: 0.4s, 1.6s; }
+.mp-chip--skeleton:nth-child(6) { animation-delay: 0.5s, 2.0s; }
+.mp-chip--skeleton:nth-child(7) { animation-delay: 0.6s, 0.2s; }
+.mp-chip--skeleton:nth-child(8) { animation-delay: 0.7s, 0.6s; }
+.mp-chip--skeleton:nth-child(9) { animation-delay: 0.8s, 1.0s; }
+
+/* ---------- Footer Link ---------- */
+.mp-footer-link {
+    text-align: center;
+    margin-top: 2.5rem;
+}
+
+.mp-explore-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--cb-text-muted);
+    text-decoration: none;
+    letter-spacing: 0.01em;
+    transition: all var(--cb-transition-fast);
+    padding: 4px 0;
+    border-bottom: 1px solid transparent;
+}
+
+.mp-explore-link:hover {
+    color: var(--cb-text-secondary);
+    border-bottom-color: var(--cb-border-light);
+}
+
+.mp-explore-link svg {
+    transition: transform var(--cb-transition-fast);
+}
+
+.mp-explore-link:hover svg {
+    transform: translateX(3px);
+}
+
+/* ---------- Error state ---------- */
+.mp-error {
+    width: 100%;
+    text-align: center;
+    color: var(--cb-text-muted);
+    font-size: 0.9rem;
+    padding: 2rem 0;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+    .mp-section {
+        padding: 4rem var(--cb-space-sm) 5rem;
+    }
+
+    .mp-chip {
+        min-width: 80px;
+        padding: 12px 14px;
+    }
+
+    .mp-cat {
+        padding: 0.4rem 0.9rem;
+        font-size: 0.8125rem;
+    }
+}

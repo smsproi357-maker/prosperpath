@@ -31,12 +31,12 @@
                     <span>ProsperPath</span>
                 </a>
                 <span class="bt-header-divider"></span>
-                <a href="trade.html" class="bt-header-back">
+                <a href="clarity-box.html" class="bt-header-back">
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                         <path d="M9 3L5 7l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
                             stroke-linejoin="round" />
                     </svg>
-                    Back to Trading
+                    Clarity Box
                 </a>
             </div>
             <div class="bt-header-center">
@@ -189,176 +189,6 @@
 
                         <div class="bt-divider"></div>
 
-                        <!-- Indicators -->
-                        <div class="bt-section-header">
-                            <span class="bt-section-label">Indicators</span>
-                            <button class="bt-btn-sm" id="btn-add-indicator">
-                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                                    <path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.5"
-                                        stroke-linecap="round" />
-                                </svg>
-                                Add
-                            </button>
-                        </div>
-
-                        <div class="bt-indicator-list" id="indicator-list">
-                            <!-- Indicator 1 -->
-                            <div class="bt-indicator-card" data-indicator-type="SMA">
-                                <div class="bt-indicator-header">
-                                    <span class="bt-indicator-badge sma">SMA</span>
-                                    <span class="bt-indicator-name">Simple Moving Average</span>
-                                    <button class="bt-indicator-remove" title="Remove">&times;</button>
-                                </div>
-                                <div class="bt-indicator-params">
-                                    <div class="bt-mini-field">
-                                        <label>Period</label>
-                                        <input type="number" value="20" class="bt-input-mini" data-param-period>
-                                    </div>
-                                    <div class="bt-mini-field">
-                                        <label>Source</label>
-                                        <select class="bt-select-mini">
-                                            <option>Close</option>
-                                            <option>Open</option>
-                                            <option>High</option>
-                                            <option>Low</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Indicator 2 -->
-                            <div class="bt-indicator-card" data-indicator-type="RSI">
-                                <div class="bt-indicator-header">
-                                    <span class="bt-indicator-badge rsi">RSI</span>
-                                    <span class="bt-indicator-name">Relative Strength Index</span>
-                                    <button class="bt-indicator-remove" title="Remove">&times;</button>
-                                </div>
-                                <div class="bt-indicator-params">
-                                    <div class="bt-mini-field">
-                                        <label>Period</label>
-                                        <input type="number" value="14" class="bt-input-mini" data-param-period>
-                                    </div>
-                                    <div class="bt-mini-field">
-                                        <label>Overbought</label>
-                                        <input type="number" value="70" class="bt-input-mini" data-param-overbought>
-                                    </div>
-                                    <div class="bt-mini-field">
-                                        <label>Oversold</label>
-                                        <input type="number" value="30" class="bt-input-mini" data-param-oversold>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Indicator 3 -->
-                            <div class="bt-indicator-card" data-indicator-type="MACD">
-                                <div class="bt-indicator-header">
-                                    <span class="bt-indicator-badge macd">MACD</span>
-                                    <span class="bt-indicator-name">MACD</span>
-                                    <button class="bt-indicator-remove" title="Remove">&times;</button>
-                                </div>
-                                <div class="bt-indicator-params">
-                                    <div class="bt-mini-field">
-                                        <label>Fast</label>
-                                        <input type="number" value="12" class="bt-input-mini" data-param-fast>
-                                    </div>
-                                    <div class="bt-mini-field">
-                                        <label>Slow</label>
-                                        <input type="number" value="26" class="bt-input-mini" data-param-slow>
-                                    </div>
-                                    <div class="bt-mini-field">
-                                        <label>Signal</label>
-                                        <input type="number" value="9" class="bt-input-mini" data-param-signal>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="bt-divider"></div>
-
-                        <!-- Entry Conditions -->
-                        <div class="bt-section-label">Entry Conditions</div>
-                        <div class="bt-condition-block" id="entry-rules-block">
-                            <div class="bt-condition-row" data-rule>
-                                <select class="bt-select-sm" data-rule-lhs>
-                                    <option>RSI(14)</option>
-                                    <option>SMA(20)</option>
-                                    <option>MACD Signal</option>
-                                    <option>Price</option>
-                                </select>
-                                <select class="bt-select-sm bt-select-op" data-rule-op>
-                                    <option>crosses below</option>
-                                    <option>crosses above</option>
-                                    <option>&lt;</option>
-                                    <option>&gt;</option>
-                                    <option>=</option>
-                                </select>
-                                <input type="number" class="bt-input-sm" value="30" data-rule-rhs>
-                            </div>
-                            <div class="bt-condition-logic">AND</div>
-                            <div class="bt-condition-row" data-rule>
-                                <select class="bt-select-sm" data-rule-lhs>
-                                    <option selected>Price</option>
-                                    <option>RSI(14)</option>
-                                    <option>SMA(20)</option>
-                                    <option>MACD Signal</option>
-                                </select>
-                                <select class="bt-select-sm bt-select-op" data-rule-op>
-                                    <option selected>crosses above</option>
-                                    <option>crosses below</option>
-                                    <option>&lt;</option>
-                                    <option>&gt;</option>
-                                </select>
-                                <select class="bt-select-sm" data-rule-rhs>
-                                    <option selected>SMA(20)</option>
-                                    <option>EMA(20)</option>
-                                    <option>VWAP</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Exit Conditions -->
-                        <div class="bt-section-label">Exit Conditions</div>
-                        <div class="bt-condition-block" id="exit-rules-block">
-                            <div class="bt-condition-row" data-rule>
-                                <select class="bt-select-sm" data-rule-lhs>
-                                    <option selected>RSI(14)</option>
-                                    <option>SMA(20)</option>
-                                    <option>MACD Signal</option>
-                                    <option>Price</option>
-                                </select>
-                                <select class="bt-select-sm bt-select-op" data-rule-op>
-                                    <option selected>crosses above</option>
-                                    <option>crosses below</option>
-                                    <option>&lt;</option>
-                                    <option>&gt;</option>
-                                </select>
-                                <input type="number" class="bt-input-sm" value="70" data-rule-rhs>
-                            </div>
-                        </div>
-
-                        <div class="bt-divider"></div>
-
-                        <!-- Risk Management -->
-                        <div class="bt-section-label">Risk Management</div>
-                        <div class="bt-row-2">
-                            <div class="bt-field-group">
-                                <label class="bt-label">Stop Loss</label>
-                                <div class="bt-input-suffix">
-                                    <input type="number" class="bt-input" id="stop-loss" value="2.0" min="0" max="50"
-                                        step="0.1">
-                                    <span class="bt-suffix">%</span>
-                                </div>
-                            </div>
-                            <div class="bt-field-group">
-                                <label class="bt-label">Take Profit</label>
-                                <div class="bt-input-suffix">
-                                    <input type="number" class="bt-input" id="take-profit" value="5.0" min="0" max="100"
-                                        step="0.1">
-                                    <span class="bt-suffix">%</span>
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- Run Button Area -->
                         <div style="display: flex; gap: 8px; width: 100%;">
                             <button class="bt-btn-run" id="btn-run-backtest" data-demo-id="run-backtest"
@@ -450,131 +280,14 @@
                             </button>
                         </div>
 
-                        <div class="bt-export-group" id="export-group"
-                            style="display: none; margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                            <button class="bt-btn-sm" id="btn-export-config"
-                                style="justify-content: center; padding: 8px;">
-                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right: 4px;">
-                                    <path d="M2.5 6.5l3.5 3.5 3.5-3.5M6 2v8" stroke="currentColor" stroke-width="1.5"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                                Export Config
-                            </button>
-                            <button class="bt-btn-sm" id="btn-export-report"
-                                style="justify-content: center; padding: 8px;">
-                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right: 4px;">
-                                    <path d="M2.5 6.5l3.5 3.5 3.5-3.5M6 2v8" stroke="currentColor" stroke-width="1.5"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                                Export Report
-                            </button>
-                            <button class="bt-btn-sm" id="btn-export-readiness"
-                                style="justify-content: center; padding: 8px; grid-column: span 2;  color: #86efac; border: 1px solid rgba(34, 197, 94, 0.25);"
-                                class="glass-panel">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="margin-right: 4px;">
-                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                                Export Readiness Report
-                            </button>
-                            <button class="bt-btn-sm" id="btn-save-version" onclick="openSaveVersionModal()"
-                                style="justify-content: center; padding: 8px; grid-column: span 2;  color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3);"
-                                class="glass-panel">
-                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right: 4px;">
-                                    <path
-                                        d="M10 2H2C1.44772 2 1 2.44772 1 3V9C1 9.55228 1.44772 10 2 10H10C10.5523 10 11 9.55228 11 9V3C11 2.44772 10.5523 2 10 2Z"
-                                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                    <path d="M3 5H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                    <path d="M5 8H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                </svg>
-                                Save to Journal
-                            </button>
-                            <button class="bt-btn-sm" id="btn-save-run" onclick="openSaveRunModal()"
-                                style="justify-content: center; padding: 8px; grid-column: span 2;  color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3);"
-                                class="glass-panel">
-                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right: 4px;">
-                                    <path
-                                        d="M10 2H2C1.44772 2 1 2.44772 1 3V9C1 9.55228 1.44772 10 2 10H10C10.5523 10 11 9.55228 11 9V3C11 2.44772 10.5523 2 10 2Z"
-                                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                    <path d="M6 4v4M4 6h4" stroke="currentColor" stroke-width="1.5"
-                                        stroke-linecap="round" />
-                                </svg>
-                                Save Run (Snapshot)
-                            </button>
-                        </div>
-
-                        <div class="bt-export-group" id="compare-group"
-                            style="display: none; margin-top: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                            <button class="bt-btn-sm" id="btn-save-baseline"
-                                style="justify-content: center; padding: 8px;  color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.2);"
-                                class="glass-panel">
-                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right: 4px;">
-                                    <path
-                                        d="M10 2H2C1.44772 2 1 2.44772 1 3V9C1 9.55228 1.44772 10 2 10H10C10.5523 10 11 9.55228 11 9V3C11 2.44772 10.5523 2 10 2Z"
-                                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                    <path d="M1 5H11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                </svg>
-                                Save Baseline
-                            </button>
-                            <button class="bt-btn-sm" id="btn-compare-runs" disabled
-                                style="justify-content: center; padding: 8px; opacity: 0.5;  color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3);"
-                                class="glass-panel">
-                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right: 4px;">
-                                    <path d="M2.5 8L1.5 9L2.5 10" stroke="currentColor" stroke-width="1.5"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                    <path
-                                        d="M1.5 9H7C7.53043 9 8.03914 8.78929 8.41421 8.41421C8.78929 8.03914 9 7.53043 9 7V2"
-                                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                    <path d="M9.5 4L10.5 3L11.5 4" stroke="currentColor" stroke-width="1.5"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                    <path
-                                        d="M10.5 3V8C10.5 8.53043 10.2893 9.03914 9.91421 9.41421C9.53914 9.78929 9.03043 10 8.5 10H3"
-                                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                </svg>
-                                Compare
-                            </button>
-                        </div>
-
-                        <!-- Import / Export Strategy Pack Area -->
-                        <div
-                            style="margin-top: 16px; border-top: 1px dashed rgba(226, 232, 240, 0.1); padding-top: 16px;">
-                            <div
-                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <h4 class="bt-panel-title" style="font-size: 0.85rem; color: #94a3b8; margin: 0;">Import
-                                    /
-                                    Export Data</h4>
-                            </div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                                <button class="bt-btn-sm" id="btn-export-pack-config"
-                                    style="justify-content: center; padding: 6px; font-size: 0.75rem; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0;">
-                                    Export Config
-                                </button>
-                                <button class="bt-btn-sm" id="btn-import-pack-config"
-                                    style="justify-content: center; padding: 6px; font-size: 0.75rem; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0;">
-                                    Import Config
-                                </button>
-                                <button class="bt-btn-sm" id="btn-export-pack-full"
-                                    style="justify-content: center; padding: 6px; font-size: 0.75rem;  border: 1px solid rgba(56, 189, 248, 0.2); color: #38bdf8;"
-                                    class="glass-panel">
-                                    Export Strategy Pack
-                                </button>
-                                <button class="bt-btn-sm" id="btn-import-pack-full"
-                                    style="justify-content: center; padding: 6px; font-size: 0.75rem;  border: 1px solid rgba(56, 189, 248, 0.2); color: #38bdf8;"
-                                    class="glass-panel">
-                                    Import Strategy Pack
-                                </button>
-                            </div>
-                            <input type="file" id="file-import-config" accept=".json" style="display: none;" />
-                            <input type="file" id="file-import-pack" accept=".json" style="display: none;" />
-                        </div>
+                        <!-- Modify Strategy button -->
+                        <button id="btn-modify-strategy">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Advanced Strategy Editor
+                        </button>
 
                     </div>
                 </aside>
@@ -585,7 +298,7 @@
                         <div class="bt-chart-header-left">
                             <h2 class="bt-panel-title" id="chart-symbol">BTC-USD</h2>
                             <span class="bt-chart-price" id="chart-price">$0.00</span>
-                            <span class="bt-chart-change positive" id="chart-change">+0.00%</span>
+                            <span class="bt-chart-change" id="chart-change">+0.00%</span>
                             <span class="bt-production-badge" id="production-badge"
                                 style="display: none;">DEPLOYMENT-GRADE
                                 (OOS VALIDATED)</span>
@@ -641,6 +354,70 @@
                     <div class="bt-volume-chart" id="volume-chart">
                         <canvas id="volume-canvas"></canvas>
                     </div>
+
+                    <!-- Analytics Dock — bounded inside center panel -->
+                    <section class="bt-below-fold" id="below-fold">
+
+                        <div class="bt-below-header">
+                            <h2 class="bt-below-title">Detailed Analytics</h2>
+                            <div class="bt-below-tabs">
+                                <button class="bt-tab active" data-tab="equity">Equity Curve</button>
+                                <button class="bt-tab" data-tab="drawdown">Drawdown</button>
+                                <button class="bt-tab" data-tab="monthly">Monthly Returns</button>
+                                <button class="bt-tab" data-tab="distribution">Distribution</button>
+                            </div>
+                        </div>
+
+                        <!-- Full Equity Curve -->
+                        <div class="bt-analytics-panel active" id="tab-equity">
+                            <div class="bt-full-chart" id="equity-chart">
+                                <canvas id="equity-canvas"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Drawdown Chart -->
+                        <div class="bt-analytics-panel" id="tab-drawdown">
+                            <div class="bt-full-chart" id="drawdown-chart">
+                                <canvas id="drawdown-canvas"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Monthly Returns Heatmap -->
+                        <div class="bt-analytics-panel" id="tab-monthly">
+                            <div class="bt-heatmap-container">
+                                <table class="bt-heatmap" id="monthly-heatmap">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Jan</th>
+                                            <th>Feb</th>
+                                            <th>Mar</th>
+                                            <th>Apr</th>
+                                            <th>May</th>
+                                            <th>Jun</th>
+                                            <th>Jul</th>
+                                            <th>Aug</th>
+                                            <th>Sep</th>
+                                            <th>Oct</th>
+                                            <th>Nov</th>
+                                            <th>Dec</th>
+                                            <th>Year</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="heatmap-body"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Trade Distribution Histogram -->
+                        <div class="bt-analytics-panel" id="tab-distribution">
+                            <div class="bt-full-chart" id="distribution-chart">
+                                <canvas id="distribution-canvas"></canvas>
+                            </div>
+                        </div>
+
+                    </section><!-- /bt-below-fold -->
+
                 </section>
 
                 <!-- RIGHT PANEL – Performance Metrics -->
@@ -660,39 +437,39 @@
                         <div class="bt-metrics-grid" id="bt-metrics-grid">
                             <div class="bt-metric">
                                 <div class="bt-metric-label">Total Return</div>
-                                <div class="bt-metric-value positive" data-metric="totalReturn">+42.87%</div>
+                                <div class="bt-metric-value" data-metric="totalReturn">+0.00%</div>
                             </div>
                             <div class="bt-metric">
                                 <div class="bt-metric-label">CAGR</div>
-                                <div class="bt-metric-value positive" data-metric="cagr">+13.24%</div>
+                                <div class="bt-metric-value" data-metric="cagr">+0.00%</div>
                             </div>
                             <div class="bt-metric">
                                 <div class="bt-metric-label">Max Drawdown</div>
-                                <div class="bt-metric-value negative" data-metric="maxDrawdown">-8.34%</div>
+                                <div class="bt-metric-value" data-metric="maxDrawdown">0.00%</div>
                             </div>
                             <div class="bt-metric">
                                 <div class="bt-metric-label">Sharpe Ratio</div>
-                                <div class="bt-metric-value" data-metric="sharpe">1.87</div>
+                                <div class="bt-metric-value" data-metric="sharpe">0.00</div>
                             </div>
                             <div class="bt-metric">
                                 <div class="bt-metric-label">Sortino Ratio</div>
-                                <div class="bt-metric-value" data-metric="sortino">2.41</div>
+                                <div class="bt-metric-value" data-metric="sortino">0.00</div>
                             </div>
                             <div class="bt-metric">
                                 <div class="bt-metric-label">Win Rate</div>
-                                <div class="bt-metric-value" data-metric="winRate">63.2%</div>
+                                <div class="bt-metric-value" data-metric="winRate">0.0%</div>
                             </div>
                             <div class="bt-metric">
                                 <div class="bt-metric-label">Profit Factor</div>
-                                <div class="bt-metric-value positive" data-metric="profitFactor">1.94</div>
+                                <div class="bt-metric-value" data-metric="profitFactor">0.00</div>
                             </div>
                             <div class="bt-metric">
                                 <div class="bt-metric-label">Expectancy</div>
-                                <div class="bt-metric-value positive" data-metric="expectancy">$284</div>
+                                <div class="bt-metric-value" data-metric="expectancy">$0</div>
                             </div>
                             <div class="bt-metric bt-metric-wide">
                                 <div class="bt-metric-label">Number of Trades</div>
-                                <div class="bt-metric-value" data-metric="tradeCount">147</div>
+                                <div class="bt-metric-value" data-metric="tradeCount">0</div>
                             </div>
                         </div>
 
@@ -719,23 +496,23 @@
                         <div class="bt-stat-rows">
                             <div class="bt-stat-row">
                                 <span class="bt-stat-key">Calmar Ratio</span>
-                                <span class="bt-stat-val" data-metric="calmar">1.59</span>
+                                <span class="bt-stat-val" data-metric="calmar">0.00</span>
                             </div>
                             <div class="bt-stat-row">
                                 <span class="bt-stat-key">Avg Win / Avg Loss</span>
-                                <span class="bt-stat-val" data-metric="avgWinLoss">1.72</span>
+                                <span class="bt-stat-val" data-metric="avgWinLoss">0.00</span>
                             </div>
                             <div class="bt-stat-row">
                                 <span class="bt-stat-key">Max Consec. Losses</span>
-                                <span class="bt-stat-val" data-metric="maxConsecLosses">4</span>
+                                <span class="bt-stat-val" data-metric="maxConsecLosses">0</span>
                             </div>
                             <div class="bt-stat-row">
                                 <span class="bt-stat-key">Avg Trade Duration</span>
-                                <span class="bt-stat-val" data-metric="avgTradeDuration">3.2d</span>
+                                <span class="bt-stat-val" data-metric="avgTradeDuration">0.0d</span>
                             </div>
                             <div class="bt-stat-row">
                                 <span class="bt-stat-key">Exposure Time</span>
-                                <span class="bt-stat-val" data-metric="exposureTime">67.4%</span>
+                                <span class="bt-stat-val" data-metric="exposureTime">0.0%</span>
                             </div>
                         </div>
 
@@ -756,70 +533,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="trade-log-body">
-                                    <tr>
-                                        <td>Dec 02</td>
-                                        <td>Dec 05</td>
-                                        <td><span class="bt-side long">LONG</span></td>
-                                        <td class="positive">+3.21%</td>
-                                        <td class="positive">+$3,210</td>
-                                        <td>3d</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Nov 28</td>
-                                        <td>Dec 01</td>
-                                        <td><span class="bt-side short">SHORT</span></td>
-                                        <td class="negative">-1.14%</td>
-                                        <td class="negative">-$1,140</td>
-                                        <td>3d</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Nov 20</td>
-                                        <td>Nov 26</td>
-                                        <td><span class="bt-side long">LONG</span></td>
-                                        <td class="positive">+4.56%</td>
-                                        <td class="positive">+$4,560</td>
-                                        <td>6d</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Nov 15</td>
-                                        <td>Nov 19</td>
-                                        <td><span class="bt-side long">LONG</span></td>
-                                        <td class="positive">+2.08%</td>
-                                        <td class="positive">+$2,080</td>
-                                        <td>4d</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Nov 10</td>
-                                        <td>Nov 14</td>
-                                        <td><span class="bt-side short">SHORT</span></td>
-                                        <td class="positive">+1.73%</td>
-                                        <td class="positive">+$1,730</td>
-                                        <td>4d</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Nov 04</td>
-                                        <td>Nov 09</td>
-                                        <td><span class="bt-side long">LONG</span></td>
-                                        <td class="negative">-0.82%</td>
-                                        <td class="negative">-$820</td>
-                                        <td>5d</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Oct 30</td>
-                                        <td>Nov 03</td>
-                                        <td><span class="bt-side long">LONG</span></td>
-                                        <td class="positive">+5.12%</td>
-                                        <td class="positive">+$5,120</td>
-                                        <td>4d</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Oct 24</td>
-                                        <td>Oct 29</td>
-                                        <td><span class="bt-side short">SHORT</span></td>
-                                        <td class="negative">-1.94%</td>
-                                        <td class="negative">-$1,940</td>
-                                        <td>5d</td>
-                                    </tr>
+                                    <!-- Populated by backtest engine after first run -->
                                 </tbody>
                             </table>
                         </div>
@@ -861,73 +575,11 @@
 
             </div><!-- /bt-layout -->
 
-            <!-- BELOW FOLD SECTION -->
-            <section class="bt-below-fold" id="below-fold">
-
-                <div class="bt-below-header">
-                    <h2 class="bt-below-title">Detailed Analytics</h2>
-                    <div class="bt-below-tabs">
-                        <button class="bt-tab active" data-tab="equity">Equity Curve</button>
-                        <button class="bt-tab" data-tab="drawdown">Drawdown</button>
-                        <button class="bt-tab" data-tab="monthly">Monthly Returns</button>
-                        <button class="bt-tab" data-tab="distribution">Distribution</button>
-                    </div>
-                </div>
-
-                <!-- Full Equity Curve -->
-                <div class="bt-analytics-panel active" id="tab-equity">
-                    <div class="bt-full-chart" id="equity-chart">
-                        <canvas id="equity-canvas"></canvas>
-                    </div>
-                </div>
-
-                <!-- Drawdown Chart -->
-                <div class="bt-analytics-panel" id="tab-drawdown">
-                    <div class="bt-full-chart" id="drawdown-chart">
-                        <canvas id="drawdown-canvas"></canvas>
-                    </div>
-                </div>
-
-                <!-- Monthly Returns Heatmap -->
-                <div class="bt-analytics-panel" id="tab-monthly">
-                    <div class="bt-heatmap-container">
-                        <table class="bt-heatmap" id="monthly-heatmap">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Jan</th>
-                                    <th>Feb</th>
-                                    <th>Mar</th>
-                                    <th>Apr</th>
-                                    <th>May</th>
-                                    <th>Jun</th>
-                                    <th>Jul</th>
-                                    <th>Aug</th>
-                                    <th>Sep</th>
-                                    <th>Oct</th>
-                                    <th>Nov</th>
-                                    <th>Dec</th>
-                                    <th>Year</th>
-                                </tr>
-                            </thead>
-                            <tbody id="heatmap-body"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Trade Distribution Histogram -->
-                <div class="bt-analytics-panel" id="tab-distribution">
-                    <div class="bt-full-chart" id="distribution-chart">
-                        <canvas id="distribution-canvas"></canvas>
-                    </div>
-                </div>
-
-            </section>
-
         </main>
 
-        <!-- Footer -->
-        <footer class="footer">
+
+        <!-- Footer hidden: backtest is a self-contained app screen -->
+        <footer class="footer" style="display:none;">
             <div class="container">
                 <div class="footer-grid">
                     <div class="footer-brand">
@@ -2034,7 +1686,369 @@
     <script src="portfolio-manager.js"></script>
     <script src="portfolio-attribution.js"></script>
     <script src="portfolio-risk-overlay.js"></script>
-    <script type="module" src="demo-controller.js"></script>
+    <!-- =====================================================
+         STRATEGY EDITOR SLIDE-OVER PANEL
+         Fixed overlay — does not reflow the main layout.
+         All advanced sections live here (exactly one copy).
+         ===================================================== -->
+
+    <!-- Backdrop -->
+    <div id="strategy-editor-backdrop" aria-hidden="true"></div>
+
+    <!-- Drawer -->
+    <div id="strategy-editor-panel" role="dialog" aria-modal="true" aria-label="Advanced Strategy Editor">
+
+        <!-- Header -->
+        <div class="se-header">
+            <div class="se-header-left">
+                <div class="se-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="se-title">Advanced Strategy Editor</div>
+                    <div class="se-subtitle">Indicators · Conditions · Risk · Tools</div>
+                </div>
+            </div>
+            <button id="btn-close-strategy-editor" title="Close (ESC)">&times;</button>
+        </div>
+
+        <!-- Scrollable body with all advanced sections -->
+        <div class="se-body">
+
+            <!-- ── Indicators ── -->
+            <div class="bt-section-header">
+                <span class="bt-section-label">Indicators</span>
+                <button class="bt-btn-sm" id="btn-add-indicator">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                    </svg>
+                    Add
+                </button>
+            </div>
+
+            <div class="bt-indicator-list" id="indicator-list">
+                <!-- Indicator 1 – SMA -->
+                <div class="bt-indicator-card" data-indicator-type="SMA">
+                    <div class="bt-indicator-header">
+                        <span class="bt-indicator-badge sma">SMA</span>
+                        <span class="bt-indicator-name">Simple Moving Average</span>
+                        <button class="bt-indicator-remove" title="Remove">&times;</button>
+                    </div>
+                    <div class="bt-indicator-params">
+                        <div class="bt-mini-field">
+                            <label>Period</label>
+                            <input type="number" value="20" class="bt-input-mini" data-param-period>
+                        </div>
+                        <div class="bt-mini-field">
+                            <label>Source</label>
+                            <select class="bt-select-mini">
+                                <option>Close</option>
+                                <option>Open</option>
+                                <option>High</option>
+                                <option>Low</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Indicator 2 – RSI -->
+                <div class="bt-indicator-card" data-indicator-type="RSI">
+                    <div class="bt-indicator-header">
+                        <span class="bt-indicator-badge rsi">RSI</span>
+                        <span class="bt-indicator-name">Relative Strength Index</span>
+                        <button class="bt-indicator-remove" title="Remove">&times;</button>
+                    </div>
+                    <div class="bt-indicator-params">
+                        <div class="bt-mini-field">
+                            <label>Period</label>
+                            <input type="number" value="14" class="bt-input-mini" data-param-period>
+                        </div>
+                        <div class="bt-mini-field">
+                            <label>Overbought</label>
+                            <input type="number" value="70" class="bt-input-mini" data-param-overbought>
+                        </div>
+                        <div class="bt-mini-field">
+                            <label>Oversold</label>
+                            <input type="number" value="30" class="bt-input-mini" data-param-oversold>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Indicator 3 – MACD -->
+                <div class="bt-indicator-card" data-indicator-type="MACD">
+                    <div class="bt-indicator-header">
+                        <span class="bt-indicator-badge macd">MACD</span>
+                        <span class="bt-indicator-name">MACD</span>
+                        <button class="bt-indicator-remove" title="Remove">&times;</button>
+                    </div>
+                    <div class="bt-indicator-params">
+                        <div class="bt-mini-field">
+                            <label>Fast</label>
+                            <input type="number" value="12" class="bt-input-mini" data-param-fast>
+                        </div>
+                        <div class="bt-mini-field">
+                            <label>Slow</label>
+                            <input type="number" value="26" class="bt-input-mini" data-param-slow>
+                        </div>
+                        <div class="bt-mini-field">
+                            <label>Signal</label>
+                            <input type="number" value="9" class="bt-input-mini" data-param-signal>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="se-section-divider"></div>
+
+            <!-- ── Entry Conditions ── -->
+            <div class="bt-section-label">Entry Conditions</div>
+            <div class="bt-condition-block" id="entry-rules-block">
+                <div class="bt-condition-row" data-rule>
+                    <select class="bt-select-sm" data-rule-lhs>
+                        <option>RSI(14)</option>
+                        <option>SMA(20)</option>
+                        <option>MACD Signal</option>
+                        <option>Price</option>
+                    </select>
+                    <select class="bt-select-sm bt-select-op" data-rule-op>
+                        <option>crosses below</option>
+                        <option>crosses above</option>
+                        <option>&lt;</option>
+                        <option>&gt;</option>
+                        <option>=</option>
+                    </select>
+                    <input type="number" class="bt-input-sm" value="30" data-rule-rhs>
+                </div>
+                <div class="bt-condition-logic">AND</div>
+                <div class="bt-condition-row" data-rule>
+                    <select class="bt-select-sm" data-rule-lhs>
+                        <option selected>Price</option>
+                        <option>RSI(14)</option>
+                        <option>SMA(20)</option>
+                        <option>MACD Signal</option>
+                    </select>
+                    <select class="bt-select-sm bt-select-op" data-rule-op>
+                        <option selected>crosses above</option>
+                        <option>crosses below</option>
+                        <option>&lt;</option>
+                        <option>&gt;</option>
+                    </select>
+                    <select class="bt-select-sm" data-rule-rhs>
+                        <option selected>SMA(20)</option>
+                        <option>EMA(20)</option>
+                        <option>VWAP</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="se-section-divider"></div>
+
+            <!-- ── Exit Conditions ── -->
+            <div class="bt-section-label">Exit Conditions</div>
+            <div class="bt-condition-block" id="exit-rules-block">
+                <div class="bt-condition-row" data-rule>
+                    <select class="bt-select-sm" data-rule-lhs>
+                        <option selected>RSI(14)</option>
+                        <option>SMA(20)</option>
+                        <option>MACD Signal</option>
+                        <option>Price</option>
+                    </select>
+                    <select class="bt-select-sm bt-select-op" data-rule-op>
+                        <option selected>crosses above</option>
+                        <option>crosses below</option>
+                        <option>&lt;</option>
+                        <option>&gt;</option>
+                    </select>
+                    <input type="number" class="bt-input-sm" value="70" data-rule-rhs>
+                </div>
+            </div>
+
+            <div class="se-section-divider"></div>
+
+            <!-- ── Risk Management ── -->
+            <div class="bt-section-label">Risk Management</div>
+            <div class="bt-row-2">
+                <div class="bt-field-group">
+                    <label class="bt-label">Stop Loss</label>
+                    <div class="bt-input-suffix">
+                        <input type="number" class="bt-input" id="stop-loss" value="2.0" min="0" max="50" step="0.1">
+                        <span class="bt-suffix">%</span>
+                    </div>
+                </div>
+                <div class="bt-field-group">
+                    <label class="bt-label">Take Profit</label>
+                    <div class="bt-input-suffix">
+                        <input type="number" class="bt-input" id="take-profit" value="5.0" min="0" max="100" step="0.1">
+                        <span class="bt-suffix">%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="se-section-divider"></div>
+
+            <!-- ── Strategy Tools (Export / Compare / Save) ── -->
+            <div class="bt-section-label" style="margin-bottom:10px;">Strategy Tools</div>
+
+            <div class="bt-export-group" id="export-group"
+                style="display: none; margin-bottom: 10px; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <button class="bt-btn-sm" id="btn-export-config"
+                    style="justify-content: center; padding: 8px;">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right: 4px;">
+                        <path d="M2.5 6.5l3.5 3.5 3.5-3.5M6 2v8" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Export Config
+                </button>
+                <button class="bt-btn-sm" id="btn-export-report"
+                    style="justify-content: center; padding: 8px;">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right: 4px;">
+                        <path d="M2.5 6.5l3.5 3.5 3.5-3.5M6 2v8" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Export Report
+                </button>
+                <button class="bt-btn-sm" id="btn-export-readiness"
+                    style="justify-content: center; padding: 8px; grid-column: span 2; color: #86efac; border: 1px solid rgba(34, 197, 94, 0.25);"
+                    class="glass-panel">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="margin-right: 4px;">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Export Readiness Report
+                </button>
+                <button class="bt-btn-sm" id="btn-save-version" onclick="openSaveVersionModal()"
+                    style="justify-content: center; padding: 8px; grid-column: span 2; color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3);"
+                    class="glass-panel">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right: 4px;">
+                        <path d="M10 2H2C1.44772 2 1 2.44772 1 3V9C1 9.55228 1.44772 10 2 10H10C10.5523 10 11 9.55228 11 9V3C11 2.44772 10.5523 2 10 2Z"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M3 5H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M5 8H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Save to Journal
+                </button>
+                <button class="bt-btn-sm" id="btn-save-run" onclick="openSaveRunModal()"
+                    style="justify-content: center; padding: 8px; grid-column: span 2; color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3);"
+                    class="glass-panel">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right: 4px;">
+                        <path d="M10 2H2C1.44772 2 1 2.44772 1 3V9C1 9.55228 1.44772 10 2 10H10C10.5523 10 11 9.55228 11 9V3C11 2.44772 10.5523 2 10 2Z"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M6 4v4M4 6h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                    </svg>
+                    Save Run (Snapshot)
+                </button>
+            </div>
+
+            <div class="bt-export-group" id="compare-group"
+                style="display: none; margin-bottom: 10px; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <button class="bt-btn-sm" id="btn-save-baseline"
+                    style="justify-content: center; padding: 8px; color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.2);"
+                    class="glass-panel">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right: 4px;">
+                        <path d="M10 2H2C1.44772 2 1 2.44772 1 3V9C1 9.55228 1.44772 10 2 10H10C10.5523 10 11 9.55228 11 9V3C11 2.44772 10.5523 2 10 2Z"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M1 5H11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Save Baseline
+                </button>
+                <button class="bt-btn-sm" id="btn-compare-runs" disabled
+                    style="justify-content: center; padding: 8px; opacity: 0.5; color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3);"
+                    class="glass-panel">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right: 4px;">
+                        <path d="M2.5 8L1.5 9L2.5 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M1.5 9H7C7.53043 9 8.03914 8.78929 8.41421 8.41421C8.78929 8.03914 9 7.53043 9 7V2"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M9.5 4L10.5 3L11.5 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M10.5 3V8C10.5 8.53043 10.2893 9.03914 9.91421 9.41421C9.53914 9.78929 9.03043 10 8.5 10H3"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Compare
+                </button>
+            </div>
+
+            <div class="se-section-divider"></div>
+
+            <!-- ── Import / Export Data ── -->
+            <div class="bt-section-label" style="margin-bottom:10px;">Import / Export Data</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <button class="bt-btn-sm" id="btn-export-pack-config"
+                    style="justify-content: center; padding: 6px; font-size: 0.75rem; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0;">
+                    Export Config
+                </button>
+                <button class="bt-btn-sm" id="btn-import-pack-config"
+                    style="justify-content: center; padding: 6px; font-size: 0.75rem; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: #e2e8f0;">
+                    Import Config
+                </button>
+                <button class="bt-btn-sm" id="btn-export-pack-full"
+                    style="justify-content: center; padding: 6px; font-size: 0.75rem; border: 1px solid rgba(56, 189, 248, 0.2); color: #38bdf8;"
+                    class="glass-panel">
+                    Export Strategy Pack
+                </button>
+                <button class="bt-btn-sm" id="btn-import-pack-full"
+                    style="justify-content: center; padding: 6px; font-size: 0.75rem; border: 1px solid rgba(56, 189, 248, 0.2); color: #38bdf8;"
+                    class="glass-panel">
+                    Import Strategy Pack
+                </button>
+            </div>
+            <input type="file" id="file-import-config" accept=".json" style="display: none;" />
+            <input type="file" id="file-import-pack" accept=".json" style="display: none;" />
+
+        </div><!-- /se-body -->
+
+        <!-- Footer -->
+        <div class="se-footer">
+            <button id="btn-strategy-editor-apply">Apply Changes</button>
+            <button id="btn-strategy-editor-cancel">Cancel</button>
+        </div>
+
+    </div><!-- /strategy-editor-panel -->
+
+    <!-- Strategy Editor — open/close wiring (no new dependencies) -->
+    <script>
+    (function () {
+        'use strict';
+
+        function openStrategyEditor() {
+            document.body.classList.add('strategy-editor-open');
+        }
+
+        function closeStrategyEditor() {
+            document.body.classList.remove('strategy-editor-open');
+        }
+
+        // Trigger button on main page
+        var btnOpen = document.getElementById('btn-modify-strategy');
+        if (btnOpen) btnOpen.addEventListener('click', openStrategyEditor);
+
+        // Close button inside panel
+        var btnClose = document.getElementById('btn-close-strategy-editor');
+        if (btnClose) btnClose.addEventListener('click', closeStrategyEditor);
+
+        // Apply Changes — close (fields stay mounted, values preserved)
+        var btnApply = document.getElementById('btn-strategy-editor-apply');
+        if (btnApply) btnApply.addEventListener('click', closeStrategyEditor);
+
+        // Cancel — close (values preserved, nothing reset)
+        var btnCancel = document.getElementById('btn-strategy-editor-cancel');
+        if (btnCancel) btnCancel.addEventListener('click', closeStrategyEditor);
+
+        // Backdrop click
+        var backdrop = document.getElementById('strategy-editor-backdrop');
+        if (backdrop) backdrop.addEventListener('click', closeStrategyEditor);
+
+        // ESC key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && document.body.classList.contains('strategy-editor-open')) {
+                closeStrategyEditor();
+            }
+        });
+    })();
+    </script>
+
 </body>
+
 
 </html>

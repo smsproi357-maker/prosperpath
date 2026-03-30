@@ -133,6 +133,24 @@
     opacity: 1;
 }
 
+/* Demo walkthrough active state — mirrors :hover exactly */
+.mock-panel.demo-active {
+    transform: translateY(-8px) scale(1.03) !important;
+    z-index: 10 !important;
+    background: linear-gradient(135deg, rgba(25, 25, 32, 0.9) 0%, rgba(15, 15, 20, 0.95) 100%);
+    border-color: rgba(245, 200, 66, 0.2);
+    box-shadow:
+        0 16px 48px rgba(0, 0, 0, 0.7),
+        0 4px 16px rgba(245, 200, 66, 0.06),
+        0 1px 0 rgba(255, 255, 255, 0.06) inset;
+    animation: none;
+    /* stop floating so spotlight stays aligned */
+}
+
+.mock-panel.demo-active::after {
+    opacity: 1;
+}
+
 /* ---- Panel Header ---- */
 .panel-header {
     display: flex;
@@ -163,37 +181,76 @@
     letter-spacing: 3px;
 }
 
-/* ---- Individual Panel Positioning ---- */
+/* ---- Individual Panel Positioning (5-card diagonal stack) ---- */
 .panel-backtest {
-    top: 30px;
+    top: 52%;
     left: 0%;
-    width: 340px;
+    width: 300px;
     z-index: 1;
-    transform: rotate(-1.5deg) translateZ(0px);
+    transform: rotate(-1.5deg) translateX(-40px) translateZ(0px) scale(0.94);
+    filter: brightness(0.9);
 }
 
-.panel-pattern {
-    top: 12%;
-    left: 22%;
-    width: 310px;
+.panel-pattern-hunter {
+    top: 38%;
+    left: 12%;
+    width: 300px;
     z-index: 2;
-    transform: rotate(0.5deg) translateZ(20px);
+    transform: rotate(0.5deg) translateX(-20px) translateZ(15px) scale(0.96);
+    filter: brightness(0.9);
 }
 
-.panel-clarity {
-    top: 22%;
-    left: 48%;
-    width: 280px;
-    z-index: 4;
-    transform: rotate(1deg) translateZ(40px);
+.panel-market-intelligence {
+    top: 24%;
+    left: 28%;
+    width: 290px;
+    z-index: 3;
+    transform: rotate(1deg) translateX(0px) translateZ(30px) scale(0.97);
+    filter: brightness(0.9);
 }
 
 .panel-portfolio {
-    top: 52%;
-    left: 8%;
-    width: 370px;
-    z-index: 3;
-    transform: rotate(-0.5deg) translateZ(10px);
+    top: 10%;
+    left: 44%;
+    width: 310px;
+    z-index: 4;
+    transform: rotate(-0.5deg) translateX(20px) translateZ(40px) scale(0.98);
+    filter: brightness(0.9);
+}
+
+.panel-clarity {
+    top: 0%;
+    left: 52%;
+    width: 320px;
+    z-index: 5;
+    transform: rotate(0.4deg) translateX(40px) translateZ(55px) scale(1.02);
+    filter: brightness(1.05);
+}
+
+/* ---- Focus Card Subtitle ---- */
+.panel-subtitle {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+    line-height: 1.4;
+}
+
+/* ---- Card Preview Container (future micro previews) ---- */
+.card-preview {
+    min-height: 0;
+    /* reserved for future animated UI previews */
+}
+
+/* ---- Depth Effect — active/inactive states ---- */
+.mock-panel.depth-active {
+    filter: brightness(1.05) blur(0) !important;
+    z-index: 10 !important;
+    transform: translateY(-6px) scale(1.03) !important;
+}
+
+.mock-panel.depth-inactive {
+    filter: brightness(0.85) blur(1.5px) !important;
 }
 
 /* ---- Backtest Chart ---- */
@@ -379,12 +436,12 @@
     animation-delay: 0s;
 }
 
-.panel-pattern {
+.panel-pattern-hunter {
     animation: floatPanel 7s ease-in-out infinite;
     animation-delay: 1.5s;
 }
 
-.panel-clarity {
+.panel-market-intelligence {
     animation: floatPanel 5.5s ease-in-out infinite;
     animation-delay: 0.8s;
 }
@@ -392,6 +449,11 @@
 .panel-portfolio {
     animation: floatPanel 6.5s ease-in-out infinite;
     animation-delay: 2s;
+}
+
+.panel-clarity {
+    animation: floatPanel 6s ease-in-out infinite;
+    animation-delay: 2.2s;
 }
 
 /* ---- Trust Elements ---- */
@@ -414,19 +476,31 @@
 
 .trust-bullets {
     display: flex;
-    gap: var(--space-6);
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-4);
     flex-wrap: wrap;
+}
+
+@media (max-width: 992px) {
+    .trust-bullets {
+        gap: var(--space-5);
+    }
 }
 
 .trust-bullet {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: var(--space-2);
-    font-size: var(--text-sm);
+    font-size: 13.5px;
     color: var(--color-text-secondary);
     font-weight: 500;
+    white-space: nowrap;
 }
 
 .trust-bullet svg {
     color: var(--color-accent);
+    width: 16px;
+    height: 16px;
 }

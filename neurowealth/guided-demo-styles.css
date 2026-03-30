@@ -1,0 +1,245 @@
+/* ============================================================
+   PROSPERPATH INTERACTIVE DEMO — Isolated Styles
+   All styles are scoped to demo-specific IDs/classes.
+   No global CSS mutations. No shared layout interference.
+   ============================================================ */
+
+/* ── Full-screen overlay ──────────────────────────────────── */
+#pp-demo-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 200ms ease-out;
+  pointer-events: auto;
+}
+#pp-demo-overlay.pp-visible {
+  opacity: 1;
+}
+
+/* ── Tooltip ──────────────────────────────────────────────── */
+#pp-demo-tooltip {
+  position: fixed;
+  z-index: 10001;
+  background: #18191c;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 24px 28px;
+  max-width: 380px;
+  min-width: 260px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 1px 3px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
+  pointer-events: auto;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+#pp-demo-tooltip.pp-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#pp-demo-tooltip .pp-tooltip-title {
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #f0f0f2;
+  margin: 0 0 8px;
+  letter-spacing: -0.01em;
+}
+
+#pp-demo-tooltip .pp-tooltip-body {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0 0 20px;
+}
+
+#pp-demo-tooltip .pp-tooltip-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+#pp-demo-tooltip .pp-tooltip-step-indicator {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.06em;
+  margin-bottom: 10px;
+}
+
+/* ── Tooltip Buttons ──────────────────────────────────────── */
+.pp-btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 9px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  transition: background 160ms ease, transform 100ms ease, box-shadow 160ms ease;
+}
+.pp-btn:active {
+  transform: scale(0.97);
+}
+
+.pp-btn-primary {
+  background: #EAB308;
+  color: #0d0e10;
+}
+.pp-btn-primary:hover {
+  background: #f5c842;
+  box-shadow: 0 2px 12px rgba(234, 179, 8, 0.25);
+}
+
+.pp-btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.pp-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.pp-btn-ghost {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 9px 14px;
+}
+.pp-btn-ghost:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Full-screen Panels (intro, handoff, account prompt) ── */
+#pp-demo-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 10002;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  transition: opacity 250ms ease-out;
+  pointer-events: auto;
+}
+#pp-demo-panel.pp-visible {
+  opacity: 1;
+}
+
+#pp-demo-panel .pp-panel-card {
+  background: #141518;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 48px 44px;
+  max-width: 480px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.5);
+  transform: scale(0.96) translateY(12px);
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+#pp-demo-panel.pp-visible .pp-panel-card {
+  transform: scale(1) translateY(0);
+}
+
+#pp-demo-panel .pp-panel-icon {
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+  display: block;
+}
+
+#pp-demo-panel .pp-panel-title {
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #f0f0f2;
+  margin: 0 0 12px;
+  letter-spacing: -0.02em;
+}
+
+#pp-demo-panel .pp-panel-body {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0 0 8px;
+}
+
+#pp-demo-panel .pp-panel-secondary {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.3);
+  margin: 0 0 28px;
+}
+
+#pp-demo-panel .pp-panel-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── Locked Feature Badge ─────────────────────────────────── */
+.pp-demo-locked-badge {
+  position: fixed;
+  z-index: 10003;
+  background: #18191c;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 16px 24px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  font-family: 'Inter', sans-serif;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 200ms ease-out;
+  pointer-events: auto;
+}
+.pp-demo-locked-badge.pp-visible {
+  opacity: 1;
+}
+.pp-demo-locked-badge .pp-locked-text {
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+.pp-demo-locked-badge .pp-locked-icon {
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* ── Exit Demo floating button ────────────────────────────── */
+#pp-demo-exit-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 10004;
+  background: rgba(24, 25, 28, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 10px 18px;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+#pp-demo-exit-btn:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(40, 40, 45, 0.95);
+}

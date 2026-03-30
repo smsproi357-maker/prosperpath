@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -561,7 +561,7 @@
 
                 <div class="nav-links" id="nav-links">
                     <a href="clarity-box.html">Clarity Box</a>
-                    <a href="trade.html">Trade</a>
+                    <a href="backtest-landing.html">Backtest</a>
                     <a href="market-mechanics.html">Market Mechanics</a>
                     <a href="portfolio.html" class="active">Portfolio</a>
                     <div class="nav-item-dropdown">
@@ -938,6 +938,7 @@
     <script src="components/portfolio-aggregator.js"></script>
     <script src="components/PortfolioCard.js"></script>
     <script src="components/PortfolioHubAIOverview.js"></script>
+    <script src="demo-portfolio-data.js"></script>
     <script src="components/portfolio-hub.js"></script>
 
     <script src="portfolio-connection-providers.js"></script>
@@ -950,6 +951,11 @@
     <!-- Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="google-auth.js"></script>
+
+    <!-- Interactive Demo System (isolated) -->
+    <link rel="stylesheet" href="guided-demo-styles.css">
+    <script src="guided-demo-overlay.js"></script>
+    <script src="guided-demo-controller.js"></script>
     <script>
         window.addEventListener('load', () => {
             if (typeof initGoogleAuth === 'function') {

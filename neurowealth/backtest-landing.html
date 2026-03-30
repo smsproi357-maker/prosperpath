@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Test trading strategies over time. See how ideas behave across different market conditions with ProsperPath's Backtest Engine.">
+    <title>Backtest | ProsperPath Insights</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- Shared styles -->
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        /* ---- Page-level fade-in ---- */
+        body {
+            opacity: 0;
+            animation: btl-fadein 0.45s ease forwards;
+        }
+
+        @keyframes btl-fadein {
+            to { opacity: 1; }
+        }
+
+        /* ---- Landing layout ---- */
+        .btl-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .btl-main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-24) var(--space-6) var(--space-16);
+        }
+
+        .btl-container {
+            text-align: center;
+            max-width: 560px;
+            width: 100%;
+        }
+
+        /* ---- Eyebrow label ---- */
+        .btl-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-family: var(--font-primary);
+            font-size: var(--text-xs);
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+            margin-bottom: var(--space-8);
+        }
+
+        .btl-eyebrow-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--color-accent);
+            opacity: 0.7;
+        }
+
+        /* ---- Headline ---- */
+        .btl-headline {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 6vw, 3.75rem);
+            font-weight: 400;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            color: var(--color-text-primary);
+            margin-bottom: var(--space-6);
+        }
+
+        /* ---- Subtext ---- */
+        .btl-subtext {
+            font-family: var(--font-primary);
+            font-size: var(--text-lg);
+            font-weight: 400;
+            color: var(--color-text-secondary);
+            line-height: 1.7;
+            margin-bottom: var(--space-12);
+            max-width: 420px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ---- CTA Button ---- */
+        .btl-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-4) var(--space-8);
+            background: var(--color-accent);
+            color: #050506;
+            font-family: var(--font-primary);
+            font-size: var(--text-sm);
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            border-radius: var(--radius-md);
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+            box-shadow: 0 4px 20px rgba(245, 200, 66, 0.18);
+            margin-bottom: var(--space-6);
+        }
+
+        .btl-cta:hover {
+            background: var(--color-accent-dark);
+            box-shadow: 0 6px 28px rgba(245, 200, 66, 0.30);
+            transform: translateY(-1px);
+            color: #050506;
+        }
+
+        .btl-cta:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 12px rgba(245, 200, 66, 0.18);
+        }
+
+        .btl-cta svg {
+            transition: transform 0.18s ease;
+        }
+
+        .btl-cta:hover svg {
+            transform: translateX(3px);
+        }
+
+        /* ---- Secondary text ---- */
+        .btl-secondary-text {
+            font-family: var(--font-primary);
+            font-size: var(--text-xs);
+            color: var(--color-text-muted);
+            letter-spacing: 0.3px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="btl-page">
+
+        <!-- Global Navbar (unchanged) -->
+        <header class="header" id="header">
+            <div class="container">
+                <nav class="nav">
+                    <a href="index.html" class="logo">
+                        <div class="logo-icon">⚡</div>
+                        <span>ProsperPath</span>
+                    </a>
+
+                    <div class="nav-links" id="nav-links">
+                        <a href="clarity-box.html">Clarity Box</a>
+                        <a href="backtest-landing.html" class="active">Backtest</a>
+                        <a href="market-mechanics.html">Market Mechanics</a>
+                        <a href="portfolio.html">Portfolio</a>
+                        <div class="nav-item-dropdown">
+                            <a href="resources.html">Resources</a>
+                            <div class="dropdown-panel">
+                                <a href="wealth-guides.html" class="dropdown-item">
+                                    <span class="dropdown-item-title">Wealth Guides</span>
+                                    <span class="dropdown-item-desc">Structured frameworks for building financial understanding.</span>
+                                </a>
+                                <a href="tool-reviews.html" class="dropdown-item">
+                                    <span class="dropdown-item-title">Tool Reviews</span>
+                                    <span class="dropdown-item-desc">Reviews of platforms and financial tools.</span>
+                                </a>
+                                <a href="ai-calculators.html" class="dropdown-item">
+                                    <span class="dropdown-item-title">AI Calculators</span>
+                                    <span class="dropdown-item-desc">Interactive tools for financial modelling.</span>
+                                </a>
+                                <a href="blog.html" class="dropdown-item">
+                                    <span class="dropdown-item-title">Insights</span>
+                                    <span class="dropdown-item-desc">Market analysis and commentary.</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="nav-actions"
+                        style="display: flex; align-items: center; gap: var(--space-4); position: relative;">
+                        <div class="settings-wrapper" style="position: relative;">
+                            <button id="settings-btn" class="settings-icon-btn" aria-label="Settings"
+                                onclick="toggleAuthMenu()">
+                                <span class="icon">⚙️</span>
+                            </button>
+                            <div id="auth-wrapper" class="auth-rolldown-container">
+                                <div id="auth-container">
+                                    <!-- Google Sign-In button will render here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Centered landing content -->
+        <main class="btl-main">
+            <div class="btl-container">
+
+                <div class="btl-eyebrow">
+                    <span class="btl-eyebrow-dot"></span>
+                    Strategy Research
+                </div>
+
+                <h1 class="btl-headline">Test ideas over time.</h1>
+
+                <p class="btl-subtext">
+                    See how strategies behave across different market conditions.
+                </p>
+
+                <div>
+                    <a href="backtest.html" class="btl-cta" id="btn-enter-backtest">
+                        Enter Backtest Engine
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M3 8h10M8.5 3.5L13 8l-4.5 4.5" stroke="currentColor" stroke-width="1.8"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </a>
+                </div>
+
+                <p class="btl-secondary-text">Templates coming soon</p>
+
+            </div>
+        </main>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

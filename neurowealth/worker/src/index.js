@@ -1,5 +1,6 @@
 import { Configuration, PlaidApi, PlaidEnvironments } from 'plaid';
 import { handleWalletTokens, handleWalletTokensMultichain } from './wallet-tokens.js';
+import { handleWaitlist } from './waitlist.js';
 
 function getAllowedOrigins(env) {
     const configured = (env.ALLOWED_ORIGINS || '')
@@ -172,6 +173,14 @@ export default {
 
         const url = new URL(request.url);
         const path = url.pathname;
+
+        // Pass ctx so waitlist handler can use ctx.waitUntil for fire-and-forget email
+        env.__ctx = ctx;
+
+        // ── Waitlist endpoint (public — no auth required) ─────────────────────
+        if (path === '/api/waitlist' && request.method === 'POST') {
+            return handleWaitlist(request, env, corsHeaders);
+        }
 
         // Initialize Plaid Client
         const configuration = new Configuration({

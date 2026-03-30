@@ -26,6 +26,101 @@
     let baselineReport = null;
     let currentReport = null;
 
+    // ---- Pre-Run Guard Flag ----
+    // Set to true only after a successful backtest completes in this session.
+    // Never auto-set from localStorage or cached data.
+    let hasActiveBacktestResult = false;
+
+    // ====================================================================
+    // RESET TO EMPTY STATE
+    // Clears all UI metric elements, trade table, provenance block,
+    // chart canvases, and resets all result-bearing state variables to null.
+    // Safe to call multiple times (idempotent).
+    // ====================================================================
+    function resetBacktestDisplayToEmptyState() {
+        // 1. Reset all JS state variables
+        lastResult = null;
+        lastMetrics = null;
+        currentReport = null;
+        baselineReport = null;
+        hasActiveBacktestResult = false;
+        window._lastBacktestResult = null;
+        ohlcvData = [];
+        equityCurve = [];
+        drawdownData = [];
+        distributionData = [];
+        monthlyReturns = {};
+
+        // 2. Reset chart header
+        const chartPrice = document.getElementById('chart-price');
+        if (chartPrice) chartPrice.textContent = '$0.00';
+        const chartChange = document.getElementById('chart-change');
+        if (chartChange) {
+            chartChange.textContent = '+0.00%';
+            chartChange.classList.remove('positive', 'negative');
+        }
+
+        // 3. Zero all data-metric elements
+        const metricDefaults = {
+            totalReturn: '+0.00%',
+            cagr: '+0.00%',
+            maxDrawdown: '0.00%',
+            sharpe: '0.00',
+            sortino: '0.00',
+            winRate: '0.0%',
+            profitFactor: '0.00',
+            expectancy: '$0',
+            tradeCount: '0',
+            calmar: '0.00',
+            avgWinLoss: '0.00',
+            maxConsecLosses: '0',
+            avgTradeDuration: '0.0d',
+            exposureTime: '0.0%'
+        };
+        for (const [id, val] of Object.entries(metricDefaults)) {
+            const el = document.querySelector(`[data-metric="${id}"]`);
+            if (el) {
+                el.textContent = val;
+                el.classList.remove('positive', 'negative');
+            }
+        }
+
+        // 4. Clear trade log body
+        const tradeLogBody = document.getElementById('trade-log-body');
+        if (tradeLogBody) tradeLogBody.innerHTML = '';
+
+        // 5. Clear chart canvases
+        ['candlestick-canvas', 'volume-canvas', 'equity-canvas', 'drawdown-canvas', 'distribution-canvas'].forEach(id => {
+            const canvas = document.getElementById(id);
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        });
+
+        // 6. Clear trade markers
+        const tradeMarkers = document.getElementById('trade-markers');
+        if (tradeMarkers) tradeMarkers.innerHTML = '';
+
+        // 7. Hide export/compare groups
+        const exportGroup = document.getElementById('export-group');
+        if (exportGroup) exportGroup.style.display = 'none';
+        const compareGroup = document.getElementById('compare-group');
+        if (compareGroup) compareGroup.style.display = 'none';
+
+        // 8. Hide explain results button
+        const explainBtn = document.getElementById('btn-explain-results');
+        if (explainBtn) explainBtn.style.display = 'none';
+
+        // 9. Hide/remove provenance block
+        const provBlock = document.getElementById('run-provenance-block');
+        if (provBlock) provBlock.style.display = 'none';
+
+        // 10. Hide production badge
+        const prodBadge = document.getElementById('production-badge');
+        if (prodBadge) prodBadge.style.display = 'none';
+    }
+
     // ---- Strategy Versioning State ----
     const DEBUG_VERSION_JOURNAL = true;
 
@@ -935,6 +1030,8 @@
 
                 // Populate currentReport for A/B Compare and show compare group
                 currentReport = buildReportObj('internal');
+                // Mark that a valid backtest result now exists in this session
+                hasActiveBacktestResult = true;
                 const compareGroup = document.getElementById('compare-group');
                 if (compareGroup) compareGroup.style.display = 'grid';
                 updateCompareButtonState();
@@ -4115,6 +4212,11 @@ Limit to MAXIMUM 12 runs total (including CONTROL).`;
                 console.error(`[Init Error] ${step.name} failed:`, e);
             }
         });
+
+        // Enforce empty pre-run state before any stale values can appear.
+        // This runs AFTER module inits (which load localStorage data for
+        // the journal/history lists) but BEFORE the UI is first visible.
+        resetBacktestDisplayToEmptyState();
 
         window.addEventListener('resize', handleResize);
 

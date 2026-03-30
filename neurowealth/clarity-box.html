@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -31,7 +31,7 @@
 
                 <div class="nav-links" id="nav-links">
                     <a href="clarity-box.html" class="active">Clarity Box</a>
-                    <a href="trade.html">Trade</a>
+                    <a href="backtest-landing.html">Backtest</a>
                     <a href="market-mechanics.html">Market Mechanics</a>
                     <a href="portfolio.html">Portfolio</a>
                     <div class="nav-item-dropdown">
@@ -185,14 +185,68 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="clarity-footer" id="clarity-footer">
-        <p>© 2026 ProsperPath. Clarity, not noise.</p>
-    </footer>
+
+
+    <!-- ═══════════════════════════════════════════════════════════
+         MARKET PULSE SECTION
+         Scrolls below the Clarity Box hero.
+         Hero above is completely untouched.
+    ════════════════════════════════════════════════════════════════ -->
+    <section class="mp-section" id="market-pulse-section" aria-label="Market Pulse">
+        <div class="mp-inner">
+            <!-- Section Header -->
+            <div class="mp-header">
+                <div class="mp-header-label">
+                    <span class="mp-live-dot" aria-hidden="true"></span>
+                    <span class="mp-label-text">Live</span>
+                </div>
+                <h2 class="mp-title">Market Pulse</h2>
+                <p class="mp-subtitle">Observe the current market state.</p>
+            </div>
+
+            <!-- Category Selector -->
+            <div class="mp-category-selector" id="mp-category-selector" role="tablist" aria-label="Market category">
+                <button class="mp-cat active" data-cat="crypto" role="tab" aria-selected="true" id="mp-tab-crypto">Crypto</button>
+                <button class="mp-cat" data-cat="stocks" role="tab" aria-selected="false" id="mp-tab-stocks">Stocks</button>
+                <button class="mp-cat" data-cat="commodities" role="tab" aria-selected="false" id="mp-tab-commodities">Commodities</button>
+            </div>
+
+            <!-- Asset Chip Grid -->
+            <div class="mp-grid" id="mp-grid" role="list" aria-live="polite">
+                <!-- Chips rendered by market-pulse.js -->
+                <div class="mp-skeleton-grid" id="mp-skeleton">
+                    <div class="mp-chip mp-chip--skeleton"></div>
+                    <div class="mp-chip mp-chip--skeleton"></div>
+                    <div class="mp-chip mp-chip--skeleton"></div>
+                    <div class="mp-chip mp-chip--skeleton"></div>
+                    <div class="mp-chip mp-chip--skeleton"></div>
+                    <div class="mp-chip mp-chip--skeleton"></div>
+                    <div class="mp-chip mp-chip--skeleton"></div>
+                    <div class="mp-chip mp-chip--skeleton"></div>
+                    <div class="mp-chip mp-chip--skeleton"></div>
+                </div>
+            </div>
+
+            <!-- View Full Market link -->
+            <div class="mp-footer-link">
+                <a href="crypto-tracker.html" class="mp-explore-link" id="mp-explore-link">
+                    Explore full market
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
 
     <script src="script.js"></script>
     <script src="clarity-box.js"></script>
-    <script type="module" src="demo-controller.js"></script>
+    <script src="market-pulse.js"></script>
+
+    <!-- Interactive Demo System (isolated) -->
+    <link rel="stylesheet" href="guided-demo-styles.css">
+    <script src="guided-demo-overlay.js"></script>
+    <script src="guided-demo-controller.js"></script>
 </body>
 
 </html>

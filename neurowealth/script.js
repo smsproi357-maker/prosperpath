@@ -1032,6 +1032,371 @@ async function fetchFromYahoo(symbol) {
     return null;
 }
 
+// ============================================================
+// Yahoo OHLCV Cache — keyed by "symbol::interval"
+// Prevents redundant fetches when switching timeframes or
+// backfilling already-loaded ranges.
+// ============================================================
+const _yahooCache = new Map();   // "symbol::interval::start" → candle[]
+
+// Max seconds of history we'll try to load per interval
+// Yahoo hard limits: 5m → 60d, 15m → 60d, 1h → 730d, 1d → unlimited, 1wk → unlimited
+const YAHOO_MAX_RANGE = {
+    '5m':  '60d',
+    '15m': '60d',
+    '1h':  '730d',
+    '1d':  'max',
+    '1wk': 'max',
+};
+
+// ============================================================
+// fetchYahooOHLC — Normalized OHLCV data for Market Surface
+// Returns: [{time, open, high, low, close, volume}] or []
+//
+// UPGRADED: each timeframe now loads the maximum practical
+// history supported by Yahoo Finance, giving much deeper
+// data for pan/zoom exploration.
+// ============================================================
+window.fetchYahooOHLC = async function fetchYahooOHLC(symbol, range) {
+    // Maximized range map — each key maps to the largest valid
+    // Yahoo interval+range combination for that timeframe button.
+    // Yahoo hard limits:
+    //   5m, 15m  → max 60 days of history
+    //   1h       → max ~730 days
+    //   1d, 1wk  → unlimited (use 'max')
+    const RANGE_PARAMS = {
+        '5m':  { interval: '5m',  range: '60d'  },  // max allowed by Yahoo
+        '15m': { interval: '15m', range: '60d'  },  // max allowed by Yahoo
+        '1h':  { interval: '60m', range: '730d' },  // ~2 years of hourly
+        '1d':  { interval: '1d',  range: '2y'   },  // 2 years of daily
+        '5d':  { interval: '1d',  range: '5y'   },  // 5 years of daily for 1W button
+        '1mo': { interval: '1d',  range: 'max'  },  // all available daily
+        '3mo': { interval: '1wk', range: 'max'  },  // all available weekly
+        '6mo': { interval: '1wk', range: 'max'  },  // all available weekly
+        '1y':  { interval: '1mo', range: 'max'  },  // all available monthly
+        '5y':  { interval: '1mo', range: 'max'  },  // all available monthly
+    };
+
+    const p = RANGE_PARAMS[range] || { interval: '1d', range: '2y' };
+    const cacheKey = `${symbol}::${p.interval}::initial`;
+    if (_yahooCache.has(cacheKey)) {
+        return _yahooCache.get(cacheKey);
+    }
+
+    const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=${p.interval}&range=${p.range}`;
+    const result = await _fetchAndNormalize(yahooUrl);
+    if (result.length >= 2) {
+        _yahooCache.set(cacheKey, result);
+    }
+    return result;
+};
+
+// ============================================================
+// fetchYahooOHLCBefore — fetch candles ending before `beforeTs`
+// Used for left-edge historical backfill.
+// beforeTs: Unix timestamp (seconds) — fetch ends just before this.
+// interval: Yahoo interval string (e.g. '1d', '1wk')
+// Returns older candles sorted ascending, or [] on failure.
+// ============================================================
+window.fetchYahooOHLCBefore = async function fetchYahooOHLCBefore(symbol, interval, beforeTs) {
+    // Yahoo's period1/period2 are Unix timestamps in SECONDS
+    // We request a window ending just before beforeTs.
+    // Window size scales with interval to give meaningful history:
+    const WINDOW_SECS = {
+        '5m':  60 * 60 * 24 * 5,         // 5 days
+        '15m': 60 * 60 * 24 * 15,        // 15 days
+        '60m': 60 * 60 * 24 * 90,        // 90 days
+        '1d':  60 * 60 * 24 * 365 * 2,   // 2 years
+        '1wk': 60 * 60 * 24 * 365 * 5,   // 5 years
+        '1mo': 60 * 60 * 24 * 365 * 10,  // 10 years
+    };
+
+    const windowSecs = WINDOW_SECS[interval] || 60 * 60 * 24 * 365;
+    const period2 = Math.floor(beforeTs) - 1;          // end just before current oldest
+    const period1 = Math.max(0, period2 - windowSecs); // start of window
+
+    const cacheKey = `${symbol}::${interval}::${period1}`;
+    if (_yahooCache.has(cacheKey)) {
+        return _yahooCache.get(cacheKey);
+    }
+
+    const yahooUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=${interval}&period1=${period1}&period2=${period2}`;
+    const result = await _fetchAndNormalize(yahooUrl);
+    if (result.length >= 1) {
+        _yahooCache.set(cacheKey, result);
+    }
+    return result;
+};
+
+// ============================================================
+// Internal: fetch + normalize Yahoo chart response via CORS proxies
+// ============================================================
+async function _fetchAndNormalize(yahooUrl) {
+    for (let i = 0; i < CORS_PROXIES.length; i++) {
+        try {
+            const proxyUrl = CORS_PROXIES[i](yahooUrl);
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 12000);
+
+            const response = await fetch(proxyUrl, { signal: controller.signal });
+            clearTimeout(timeout);
+            if (!response.ok) continue;
+
+            const json = await response.json();
+            const result = json?.chart?.result?.[0];
+            if (!result) continue;
+
+            const timestamps = result.timestamp;
+            const quote      = result.indicators?.quote?.[0];
+            if (!timestamps || !quote) continue;
+
+            const { open, high, low, close, volume } = quote;
+            const normalized = [];
+
+            for (let j = 0; j < timestamps.length; j++) {
+                const o = open[j], h = high[j], l = low[j], c = close[j];
+                if (o == null || h == null || l == null || c == null) continue;
+                normalized.push({
+                    time:   timestamps[j],
+                    open:   o,
+                    high:   h,
+                    low:    l,
+                    close:  c,
+                    volume: volume?.[j] ?? 0,
+                });
+            }
+
+            if (normalized.length < 1) continue;
+            return normalized;
+        } catch (e) {
+            continue;
+        }
+    }
+
+    return [];
+}
+
+
+// ============================================================
+// COINGECKO_TO_YAHOO — CoinGecko ID → Yahoo Finance -USD symbol
+// Only confirmed symbols are listed. Unmapped coins gracefully
+// show the chart-unavailable state without breaking the page.
+// ============================================================
+const COINGECKO_TO_YAHOO = {
+    'bitcoin':              'BTC-USD',
+    'ethereum':             'ETH-USD',
+    'solana':               'SOL-USD',
+    'cardano':              'ADA-USD',
+    'ripple':               'XRP-USD',
+    'polkadot':             'DOT-USD',
+    'dogecoin':             'DOGE-USD',
+    'binancecoin':          'BNB-USD',
+    'avalanche-2':          'AVAX-USD',
+    'shiba-inu':            'SHIB-USD',
+    'chainlink':            'LINK-USD',
+    'tron':                 'TRX-USD',
+    'matic-network':        'MATIC-USD',
+    'the-open-network':     'TON-USD',
+    'internet-computer':    'ICP-USD',
+    'litecoin':             'LTC-USD',
+    'uniswap':              'UNI-USD',
+    'pepe':                 'PEPE-USD',
+    'sui':                  'SUI-USD',
+    'near':                 'NEAR-USD',
+    'render-token':         'RNDR-USD',
+    'kaspa':                'KAS-USD',
+    'fetch-ai':             'FET-USD',
+    'arbitrum':             'ARB-USD',
+    'celestia':             'TIA-USD',
+    'dogwifhat':            'WIF-USD',
+    'blockstack':           'STX-USD',
+    'bitcoin-cash':         'BCH-USD',
+    'ethereum-classic':     'ETC-USD',
+    'aptos':                'APT-USD',
+    'hedera-hashgraph':     'HBAR-USD',
+    'stellar':              'XLM-USD',
+    'crypto-com-chain':     'CRO-USD',
+    'bittensor':            'TAO-USD',
+    'filecoin':             'FIL-USD',
+    'immutable-x':          'IMX-USD',
+    'monero':               'XMR-USD',
+    'aave':                 'AAVE-USD',
+    'maker':                'MKR-USD',
+    'cosmos':               'ATOM-USD',
+    'algorand':             'ALGO-USD',
+    'injective-protocol':   'INJ-USD',
+    'lido-dao':             'LDO-USD',
+    'worldcoin-wld':        'WLD-USD',
+    'pendle':               'PENDLE-USD',
+    'akash-network':        'AKT-USD',
+    'gnosis':               'GNO-USD',
+    'raydium':              'RAY-USD',
+    // Coins without reliable Yahoo USD pairs are intentionally omitted:
+    // based-brett, popcat, mog-coin, turbo, ethena, coredaoorg
+};
+
+// ============================================================
+// initMarketDetailChart — Mounts Market Surface on market-detail.html
+// FIX 2: Chart is created immediately with placeholder price/change.
+//         When the hero finishes populating, updatePrice() is called
+//         so the header updates without re-rendering the chart.
+// ============================================================
+function initMarketDetailChart() {
+    const mountEl = document.getElementById('ms-mount');
+    if (!mountEl) return; // Only run on market-detail page
+
+    const params      = new URLSearchParams(window.location.search);
+    const rawSymbol   = params.get('symbol') || '';
+    const assetType   = params.get('type')   || 'stock';
+
+    if (!rawSymbol) return;
+
+    // FIX 1: Forex uses OHLC-only chart (no volume histogram).
+    //        All four context metrics (Trend, Range, Volatility, Key Level)
+    //        are OHLC-derived and are always shown.
+    const isForex     = assetType === 'forex';
+    const showVolume  = !isForex;
+
+    // Resolve Yahoo symbol based on asset type
+    let yahooSymbol = rawSymbol;
+    if (assetType === 'crypto') {
+        // rawSymbol here is the CoinGecko ID (passed from crypto-tracker cards)
+        const mapped = COINGECKO_TO_YAHOO[rawSymbol];
+        if (!mapped) {
+            // FIX 2 / graceful fallback: show unavailable state, keep rest of page intact
+            mountEl.innerHTML = `
+                <div class="ms-card" style="min-height:420px;">
+                    <div class="ms-chart-region">
+                        <div class="ms-chart-empty">
+                            <span class="ms-chart-empty-icon">📡</span>
+                            <p class="ms-chart-empty-text">Yahoo Finance chart not yet available for this asset.<br>Price data above is still live.</p>
+                        </div>
+                    </div>
+                </div>`;
+            return;
+        }
+        yahooSymbol = mapped;
+    }
+
+    // FIX 2: Create chart immediately — price/changePercent are OPTIONAL.
+    // The header renders '—' placeholders; chart data loads independently.
+    // When hero populates via initMarketHero(), it calls updatePrice() to fill in live values.
+    ProsperPathChart.create({
+        containerId:    'ms-mount',
+        symbol:         yahooSymbol,
+        assetName:      rawSymbol.replace('=X', '').replace('=F', ''),
+        // currentPrice and changePercent intentionally omitted here (Fix 2).
+        // They will be pushed via ProsperPathChart.updatePrice() once hero data loads.
+        defaultRange:   '1d',
+        showVolumePanel: showVolume,  // Fix 1
+    });
+}
+
+// ============================================================
+// initMarketHero — Populates the hero section on market-detail.html
+// and calls updatePrice() to sync the Market Surface header.
+// ============================================================
+async function initMarketHero() {
+    const heroEl = document.getElementById('market-hero');
+    if (!heroEl) return;
+
+    const params    = new URLSearchParams(window.location.search);
+    const rawSymbol = params.get('symbol') || '';
+    const assetType = params.get('type')   || 'stock';
+    if (!rawSymbol) return;
+
+    // Resolve Yahoo quote symbol
+    let quoteSymbol = rawSymbol;
+    if (assetType === 'crypto') {
+        quoteSymbol = COINGECKO_TO_YAHOO[rawSymbol] || rawSymbol + '-USD';
+    }
+
+    // Fetch live quote via existing fetchFromYahoo
+    let quote = null;
+    try { quote = await fetchFromYahoo(quoteSymbol); } catch (_) {}
+
+    const price         = quote?.regularMarketPrice   ?? null;
+    const changePercent = quote?.regularMarketChangePercent ?? null;
+    const name          = quote?.longName || rawSymbol;
+    const displaySym    = rawSymbol.replace('=X', '').replace('=F', '');
+
+    // Determine trend color
+    const isUp = changePercent == null ? null : changePercent >= 0;
+    const trendColor  = isUp === null  ? 'rgba(255,255,255,0.7)'
+                      : isUp ? 'var(--color-success, #00d4aa)' : 'var(--color-danger, #ff6b6b)';
+    const changeStr   = changePercent != null
+        ? `${changePercent >= 0 ? '+' : ''}${changePercent.toFixed(2)}% (24h)`
+        : '—';
+    const priceStr    = price != null
+        ? (price >= 100 ? '$' + price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                        : '$' + price.toPrecision(5))
+        : '—';
+
+    heroEl.innerHTML = `
+        <h1 style="font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 700; font-family: var(--font-display, 'Outfit', sans-serif); margin-bottom: 8px;">
+            ${name} <span style="opacity: 0.45; font-size: 0.6em;">${displaySym}</span>
+        </h1>
+        <div style="font-size: clamp(1.8rem, 5vw, 3.5rem); font-weight: 700; font-family: var(--font-display, 'Outfit', sans-serif); letter-spacing: -0.03em; margin-bottom: 6px;">
+            ${priceStr}
+        </div>
+        <div style="color: ${trendColor}; font-size: 1rem; font-weight: 600;">${changeStr}</div>
+    `;
+
+    // FIX 2: Push live price/change into Market Surface header without re-rendering chart
+    if (price != null && typeof ProsperPathChart !== 'undefined') {
+        ProsperPathChart.updatePrice(quoteSymbol, price, changePercent ?? 0);
+    }
+
+    // Also update document title and AI panel context
+    document.title = `${name} | ProsperPath Insights`;
+
+    // AI Sentiment — reuse existing AI panel update if available
+    if (changePercent != null) {
+        const sentimentScore = Math.max(0, Math.min(100, Math.round(50 + changePercent * 4)));
+        const sentimentScoreEl = document.getElementById('ai-sentiment-score');
+        const sentimentBar     = document.getElementById('sentiment-bar');
+        if (sentimentScoreEl) sentimentScoreEl.innerText = `${sentimentScore}/100`;
+        if (sentimentBar) {
+            setTimeout(() => { sentimentBar.style.width = `${sentimentScore}%`; }, 500);
+            if (sentimentScore > 66)      sentimentBar.style.background = 'var(--color-success, #00d4aa)';
+            else if (sentimentScore < 33) sentimentBar.style.background = 'var(--color-danger, #ff6b6b)';
+            else                          sentimentBar.style.background = 'var(--color-warning, #ffc107)';
+        }
+
+        // Verdict
+        const verdictBadge = document.getElementById('ai-verdict-badge');
+        const verdictText  = document.getElementById('ai-verdict-text');
+        if (verdictBadge && verdictText) {
+            const verdict = changePercent > 3  ? 'Buy'
+                          : changePercent > 0  ? 'Accumulate'
+                          : changePercent > -3 ? 'Hold'
+                          : 'Sell';
+            verdictBadge.innerText = verdict;
+            verdictBadge.className = `verdict-badge verdict-${verdict.toLowerCase()}`;
+
+            const reason = changePercent > 3
+                ? `Bullish momentum: +${changePercent.toFixed(2)}% move detected. Price action supports continued upside.`
+                : changePercent > 0
+                ? `Steady accumulation. Stable gain of +${changePercent.toFixed(2)}% across the session.`
+                : changePercent > -3
+                ? `Sideways consolidation (${changePercent.toFixed(2)}%). Await confirmed direction.`
+                : `Bearish pressure: ${changePercent.toFixed(2)}% decline. Risk management advised.`;
+            verdictText.innerText = reason;
+        }
+
+        // Price outlook
+        if (price) {
+            const low  = document.getElementById('pred-low');
+            const high = document.getElementById('pred-high');
+            const fmt  = (v) => v >= 100
+                ? '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                : '$' + v.toPrecision(4);
+            if (low)  low.innerText  = fmt(price * 0.82);
+            if (high) high.innerText = fmt(price * 1.35);
+        }
+    }
+}
+
 // Main fetch function (backwards compatible)
 window.fetchFinnhubData = async function (symbols) {
     if (!symbols || symbols.length === 0) return [];
@@ -2666,6 +3031,40 @@ function initCryptoDetail() {
 
             // Populate Analysis UI
             updateAnalysisUI(analysis);
+
+            // 2. Initialize Native Market Surface Chart (Yahoo Finance OHLCV)
+            // TradingView replaced — data is in scope here from CoinGecko response.
+            const msMount = document.getElementById('ms-mount');
+            if (msMount && typeof ProsperPathChart !== 'undefined') {
+                const yahooSym = COINGECKO_TO_YAHOO[coinId];
+                if (yahooSym) {
+                    // FIX 2: price/changePercent are available synchronously from
+                    // the CoinGecko data we just received — pass them directly.
+                    // If null, formatPrice() renders '—' and chart still renders.
+                    const cgPrice  = data?.market_data?.current_price?.usd   ?? null;
+                    const cgChange = data?.market_data?.price_change_percentage_24h ?? null;
+                    ProsperPathChart.create({
+                        containerId:     'ms-mount',
+                        symbol:          yahooSym,
+                        assetName:       data?.name || coinId,
+                        currentPrice:    cgPrice,
+                        changePercent:   cgChange,
+                        defaultRange:    '1d',
+                        showVolumePanel: true,  // Crypto always has volume
+                    });
+                } else {
+                    // Graceful fallback for unmapped coins — rest of page remains functional
+                    msMount.innerHTML = `
+                        <div class="ms-card" style="min-height:420px;">
+                            <div class="ms-chart-region">
+                                <div class="ms-chart-empty">
+                                    <span class="ms-chart-empty-icon">📡</span>
+                                    <p class="ms-chart-empty-text">Yahoo Finance chart not yet available for this asset.<br>Price data above is still live.</p>
+                                </div>
+                            </div>
+                        </div>`;
+                }
+            }
         })
         .catch(err => {
             console.error(err);
@@ -2710,34 +3109,6 @@ function initCryptoDetail() {
             `).join('');
         }
     }
-
-    // 2. Initialize TradingView Widget (Safety Check for library loading)
-    if (window.TradingView && document.getElementById('tv-chart-container')) {
-        new TradingView.widget({
-            "autosize": true,
-            "symbol": symbolMap[coinId] || "BTCUSD",
-            "interval": "1",
-            "timezone": "Etc/UTC",
-            "theme": "dark",
-            "style": "1",
-            "locale": "en",
-            "toolbar_bg": "#141d2b",
-            "enable_publishing": false,
-            "allow_symbol_change": true,
-            "hide_top_toolbar": false,
-            "hide_legend": false,
-            "save_image": false,
-            "container_id": "tv-chart-container",
-            "backgroundColor": "rgba(20, 29, 43, 1)",
-            "disabled_features": ["use_localstorage_for_settings"],
-            "enabled_features": ["study_templates", "header_fullscreen_button"],
-            "studies_overrides": {}
-        });
-    } else if (document.getElementById('tv-chart-container')) {
-        document.getElementById('tv-chart-container').innerHTML = `<div style="padding: 2rem; text-align: center; opacity: 0.5;">TradingView Widget Loading...</div>`;
-    }
-
-
 
 }
 
@@ -3021,6 +3392,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     initForexDashboard(); // Checks for forex-grid internally
     initCryptoDetail();
     initMarketNewsArticle();
+    // Market detail page: chart + hero (gated by element presence)
+    initMarketDetailChart();
+    initMarketHero();
     if (document.getElementById('live-blog-container')) {
         initLiveBlog();
     }
@@ -8697,8 +9071,43 @@ async function initMarketDetail() {
         hero.innerHTML = `<div class="error-state"><p>Market Data Unavailable</p></div>`;
     }
 
-    // 2. Initialize TradingView Chart
-    initTradingViewWidget(symbol, type);
+    // 2. Initialize ProsperPath Market Surface (native Yahoo-powered chart)
+    // Market Surface is loaded via market-surface.js after this script
+    const mountEl = document.getElementById('ms-mount');
+    if (mountEl) {
+        // Get price/change from already-fetched Finnhub data if available
+        let heroPrice   = null;
+        let heroChange  = null;
+        let heroName    = symbol;
+        if (data && data.length > 0) {
+            heroPrice  = data[0].regularMarketPrice;
+            heroChange = data[0].regularMarketChangePercent;
+            heroName   = data[0].longName || symbol;
+        }
+
+        // Defer slightly to ensure market-surface.js has executed
+        const mountChart = () => {
+            if (typeof ProsperPathChart !== 'undefined') {
+                ProsperPathChart.create({
+                    containerId:   'ms-mount',
+                    symbol:        symbol,
+                    assetName:     heroName,
+                    currentPrice:  heroPrice,
+                    changePercent: heroChange,
+                    defaultRange:  '1d',
+                });
+            } else {
+                console.warn('[MarketDetail] ProsperPathChart not available — market-surface.js may not be loaded');
+            }
+        };
+
+        // Try immediately, then after a short delay if not ready
+        if (typeof ProsperPathChart !== 'undefined') {
+            mountChart();
+        } else {
+            setTimeout(mountChart, 150);
+        }
+    }
 
     // 3. Fetch News
     initMarketNews(symbol);

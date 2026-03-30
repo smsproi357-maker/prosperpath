@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Choose your trading tools with ProsperPath Insights. Access the AI Backtest Engine or explore real-time Markets.">
-    <title>Trade | ProsperPath Insights</title>
+        content="AI Backtest Engine — Simulate and refine your trading strategies with advanced AI analysis and historical data.">
+    <title>Backtest | ProsperPath Insights</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,107 +17,10 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
-    <style>
-        .trade-selection-layout {
-            min-height: calc(100vh - 80px);
-            /* Adjust for header */
-            margin-top: 80px;
-            display: flex;
-            background: var(--color-primary);
-            position: relative;
-        }
-
-        .trade-option {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: var(--space-12);
-            text-align: center;
-            transition: all var(--transition-slow);
-            text-decoration: none;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid var(--color-border);
-        }
-
-        .trade-option:first-child {
-            border-left: none;
-        }
-
-        .trade-option:last-child {
-            border-right: none;
-        }
-
-        .backtest-option {
-            background: linear-gradient(135deg, rgba(30, 42, 58, 0.4) 0%, transparent 100%);
-        }
-
-        .markets-option {
-            background: linear-gradient(225deg, rgba(0, 212, 170, 0.05) 0%, transparent 100%);
-        }
-
-        .trade-option:hover {
-            flex: 1.2;
-            background: var(--color-surface-elevated);
-            z-index: 10;
-        }
-
-        .backtest-option:hover {
-            box-shadow: 20px 0 50px rgba(0, 0, 0, 0.5);
-        }
-
-        .markets-option:hover {
-            box-shadow: -20px 0 50px rgba(0, 212, 170, 0.1);
-            border-color: var(--color-accent);
-        }
-
-        .option-icon {
-            font-size: 80px;
-            margin-bottom: var(--space-6);
-            transition: transform var(--transition-base);
-        }
-
-        .trade-option:hover .option-icon {
-            transform: scale(1.1) translateY(-10px);
-        }
-
-        .option-content h2 {
-            font-size: var(--text-5xl);
-            margin-bottom: var(--space-4);
-        }
-
-        .option-content p {
-            font-size: var(--text-lg);
-            color: var(--color-text-secondary);
-            max-width: 400px;
-            margin: 0 auto var(--space-8);
-        }
-
-        .btn-massive {
-            padding: var(--space-5) var(--space-10);
-            font-size: var(--text-lg);
-            border-radius: var(--radius-xl);
-        }
-
-        @media (max-width: 768px) {
-            .trade-selection-layout {
-                flex-direction: column;
-            }
-
-            .trade-option {
-                border-right: none;
-                border-bottom: 1px solid var(--color-border);
-                padding: var(--space-16) var(--space-6);
-            }
-
-            .trade-option:hover {
-                flex: 1;
-                /* Disable flex growth on mobile for better UX */
-            }
-        }
-    </style>
+    <script>
+        // Instant redirect — Backtest page is now backtest.html
+        window.location.replace('backtest.html');
+    </script>
 </head>
 
 <body>
@@ -132,49 +35,29 @@
 
                 <div class="nav-links" id="nav-links">
                     <a href="clarity-box.html">Clarity Box</a>
-                    <a href="trade.html" class="active">Trade</a>
+                    <a href="trade.html" class="active">Backtest</a>
                     <a href="market-mechanics.html">Market Mechanics</a>
                     <a href="portfolio.html">Portfolio</a>
                     <div class="nav-item-dropdown">
-
                         <a href="resources.html">Resources</a>
-
                         <div class="dropdown-panel">
-
                             <a href="wealth-guides.html" class="dropdown-item">
-
                                 <span class="dropdown-item-title">Wealth Guides</span>
-
                                 <span class="dropdown-item-desc">Structured frameworks for building financial understanding.</span>
-
                             </a>
-
                             <a href="tool-reviews.html" class="dropdown-item">
-
                                 <span class="dropdown-item-title">Tool Reviews</span>
-
                                 <span class="dropdown-item-desc">Reviews of platforms and financial tools.</span>
-
                             </a>
-
                             <a href="ai-calculators.html" class="dropdown-item">
-
                                 <span class="dropdown-item-title">AI Calculators</span>
-
                                 <span class="dropdown-item-desc">Interactive tools for financial modelling.</span>
-
                             </a>
-
                             <a href="blog.html" class="dropdown-item">
-
                                 <span class="dropdown-item-title">Insights</span>
-
                                 <span class="dropdown-item-desc">Market analysis and commentary.</span>
-
                             </a>
-
                         </div>
-
                     </div>
                 </div>
 
@@ -200,39 +83,11 @@
         </div>
     </header>
 
-    <main class="trade-selection-layout">
-        <!-- Backtest Engine Option -->
-        <a href="backtest.html" class="trade-option backtest-option">
-            <div class="option-icon">⚙️</div>
-            <div class="option-content">
-                <h2>AI <span class="text-gradient"><i>Backtest</i></span> Engine</h2>
-                <p>Simulate and refine your trading strategies with advanced AI analysis and historical data.</p>
-                <span class="btn btn-secondary btn-massive">Launch Engine</span>
-            </div>
-        </a>
-
-        <!-- Markets Option -->
-        <a href="crypto-tracker.html" class="trade-option markets-option">
-            <div class="option-icon">📊</div>
-            <div class="option-content">
-                <h2>Live <span class="text-gradient"><i>Market</i></span> Place</h2>
-                <p>Real-time global market pulse, AI-driven sentiment, and multi-asset tracking.</p>
-                <span class="btn btn-primary btn-massive">Explore Markets</span>
-            </div>
-        </a>
+    <main style="min-height:100vh; display:flex; align-items:center; justify-content:center; margin-top:80px;">
+        <p style="color: var(--color-text-secondary); font-family: 'Inter', sans-serif;">Redirecting to Backtest…</p>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-bottom">
-                <p>© 2026 ProsperPath Insights. AI-Powered Wealth Strategies.</p>
-            </div>
-        </div>
-    </footer>
-
     <script src="script.js?v=rx1"></script>
-    <script src="ai-widget.js"></script>
     <script src="google-auth.js"></script>
     <script>
         window.addEventListener('load', () => {

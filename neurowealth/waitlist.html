@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ProsperPath — a clarity-first platform for understanding how markets actually work. Join the waitlist for early access.">
+  <meta name="robots" content="noindex, nofollow">
+  <title>ProsperPath — Early Access Waitlist</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+  <!-- Waitlist-only styles (standalone, no coupling to other pages) -->
+  <link rel="stylesheet" href="waitlist.css">
+</head>
+
+<body class="wl-root">
+
+  <!-- ═══════════════════════════════════════
+       NAVIGATION
+  ═══════════════════════════════════════ -->
+  <nav class="wl-nav" id="wl-nav" role="navigation" aria-label="ProsperPath waitlist navigation">
+    <div class="wl-container wl-nav-inner">
+      <a href="#" class="wl-logo" aria-label="ProsperPath home">
+        <div class="wl-logo-icon" aria-hidden="true">⚡</div>
+        <span>ProsperPath</span>
+      </a>
+      <div class="wl-nav-pill" aria-label="Status indicator">
+        <span class="wl-nav-dot" aria-hidden="true"></span>
+        Early Access Open
+      </div>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- ═══════════════════════════════════════
+         HERO — Above the fold email capture
+    ═══════════════════════════════════════ -->
+    <section class="wl-hero" aria-labelledby="wl-hero-headline">
+      <div class="wl-container">
+        <div class="wl-hero-inner">
+
+          <span class="wl-hero-eyebrow wl-reveal wl-reveal-d1">
+            Built for Long-Term Thinkers
+          </span>
+
+          <h1 class="wl-hero-headline wl-reveal wl-reveal-d2" id="wl-hero-headline">
+            Understand Markets<br>
+            <em>Before You Trade Them.</em>
+          </h1>
+
+          <p class="wl-hero-subtext wl-reveal wl-reveal-d3">
+            ProsperPath is a clarity-first learning platform for understanding how markets actually work — the structure beneath the noise, the mechanics behind the moves.
+          </p>
+
+          <!-- Waitlist form — submits to /api/waitlist -->
+          <form
+            class="wl-hero-form wl-reveal wl-reveal-d4"
+            id="wl-hero-form"
+            aria-label="Waitlist sign-up"
+            onsubmit="return wlHandleSubmit(event, 'wl-hero-form');">
+            <!-- Honeypot: hidden from real users, traps bots that fill all fields -->
+            <label for="wl-hero-website" class="wl-sr-only" aria-hidden="true">Leave this blank</label>
+            <input type="text" id="wl-hero-website" name="website" tabindex="-1" autocomplete="off" style="display:none" aria-hidden="true">
+            <label for="wl-hero-email" class="wl-sr-only">Email address</label>
+            <input
+              type="email"
+              id="wl-hero-email"
+              name="email"
+              placeholder="Enter your email"
+              autocomplete="email"
+              required
+              aria-required="true">
+            <button type="submit" class="wl-btn-gold" id="wl-hero-cta">
+              Join Waitlist &rarr;
+            </button>
+          </form>
+
+          <p class="wl-hero-social-proof wl-reveal wl-reveal-d5">
+            Get early access to Market Mechanics before public release.
+          </p>
+          <p class="wl-hero-support wl-reveal wl-reveal-d5" style="margin-top:0;opacity:0.65;">
+            Join 20+ early members preparing for launch
+          </p>
+          <p class="wl-hero-support wl-reveal wl-reveal-d5">
+            No spam. Just early access.
+          </p>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════
+         VALUE STRIP — 3 concise points
+    ═══════════════════════════════════════ -->
+    <div class="wl-value-strip" role="region" aria-label="Platform value propositions">
+      <div class="wl-container">
+        <div class="wl-value-strip-inner">
+
+          <!-- 1 -->
+          <div class="wl-value-item wl-reveal wl-reveal-d1">
+            <div class="wl-value-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/>
+              </svg>
+            </div>
+            <div class="wl-value-text-wrap">
+              <div class="wl-value-title">Structured Learning Paths</div>
+              <div class="wl-value-desc">Frameworks built from how markets actually behave, not textbook theory.</div>
+            </div>
+          </div>
+
+          <!-- 2 -->
+          <div class="wl-value-item wl-reveal wl-reveal-d2">
+            <div class="wl-value-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+              </svg>
+            </div>
+            <div class="wl-value-text-wrap">
+              <div class="wl-value-title">Visual Market Clarity</div>
+              <div class="wl-value-desc">Concepts rendered visually so complexity becomes navigable, not overwhelming.</div>
+            </div>
+          </div>
+
+          <!-- 3 -->
+          <div class="wl-value-item wl-reveal wl-reveal-d3">
+            <div class="wl-value-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <div class="wl-value-text-wrap">
+              <div class="wl-value-title">Exclusive Early Access</div>
+              <div class="wl-value-desc">Shape what ProsperPath becomes. Waitlist members get in first.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════
+         PRODUCT PREVIEW — 3 premium cards
+    ═══════════════════════════════════════ -->
+    <section class="wl-preview-section wl-section" aria-labelledby="wl-preview-heading">
+      <div class="wl-container">
+
+        <header class="wl-preview-header">
+          <span class="wl-section-label wl-reveal wl-reveal-d1">Platform Preview</span>
+          <h2 class="wl-section-heading wl-reveal wl-reveal-d2" id="wl-preview-heading">
+            What You'll Find Inside
+          </h2>
+          <p class="wl-section-subtext wl-reveal wl-reveal-d3">
+            Three interconnected pillars — each designed to build genuine understanding, not just surface-level awareness.
+          </p>
+        </header>
+
+        <div class="wl-preview-grid">
+
+          <!-- CARD 1: Market Mechanics -->
+          <article class="wl-preview-card wl-reveal wl-reveal-d1" aria-label="Market Mechanics module">
+            <span class="wl-card-tag">Module 01</span>
+            <div class="wl-card-icon-area">
+              <div class="wl-card-icon-wrap" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5C842" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+              </div>
+            </div>
+            <h3 class="wl-card-title">Market Mechanics</h3>
+            <p class="wl-card-desc">
+              Understand the forces that move prices — order flow, liquidity structure, and participant behavior. Build the foundation every serious trader needs.
+            </p>
+            <!-- Mini visual: bar chart simulation -->
+            <div class="wl-card-visual" aria-hidden="true">
+              <div class="wl-chart-lines">
+                <div class="wl-chart-line-row">
+                  <span class="wl-chart-label">Liquidity</span>
+                  <div class="wl-chart-bar-bg">
+                    <div class="wl-chart-bar-fill" style="width: 82%; background: linear-gradient(90deg,rgba(245,200,66,0.8),rgba(245,200,66,0.25));"></div>
+                  </div>
+                  <span class="wl-chart-val" style="color:#F5C842">82%</span>
+                </div>
+                <div class="wl-chart-line-row">
+                  <span class="wl-chart-label">Order Flow</span>
+                  <div class="wl-chart-bar-bg">
+                    <div class="wl-chart-bar-fill" style="width: 65%; background: linear-gradient(90deg,rgba(100,160,255,0.8),rgba(100,160,255,0.2));"></div>
+                  </div>
+                  <span class="wl-chart-val" style="color:#789cf0">65%</span>
+                </div>
+                <div class="wl-chart-line-row">
+                  <span class="wl-chart-label">Structure</span>
+                  <div class="wl-chart-bar-bg">
+                    <div class="wl-chart-bar-fill" style="width: 74%; background: linear-gradient(90deg,rgba(74,222,128,0.7),rgba(74,222,128,0.2));"></div>
+                  </div>
+                  <span class="wl-chart-val" style="color:#4ade80">74%</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- CARD 2: Clarity Tools -->
+          <article class="wl-preview-card wl-reveal wl-reveal-d2" aria-label="Clarity Tools module">
+            <span class="wl-card-tag">Module 02</span>
+            <div class="wl-card-icon-area">
+              <div class="wl-card-icon-wrap" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5C842" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"/>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  <line x1="11" y1="8" x2="11" y2="14"/>
+                  <line x1="8" y1="11" x2="14" y2="11"/>
+                </svg>
+              </div>
+            </div>
+            <h3 class="wl-card-title">Clarity Tools</h3>
+            <p class="wl-card-desc">
+              Purpose-built instruments for reading market context without noise. Visual frameworks that reveal structure when most see only randomness.
+            </p>
+            <!-- Mini visual: stat blocks -->
+            <div class="wl-card-visual" aria-hidden="true">
+              <div class="wl-stat-grid">
+                <div class="wl-stat-block">
+                  <div class="wl-stat-label">Trend Score</div>
+                  <div class="wl-stat-value gold">8.2</div>
+                </div>
+                <div class="wl-stat-block">
+                  <div class="wl-stat-label">Vol. Bias</div>
+                  <div class="wl-stat-value positive">Bullish</div>
+                </div>
+                <div class="wl-stat-block">
+                  <div class="wl-stat-label">Structure</div>
+                  <div class="wl-stat-value" style="color:#f4f4f5;">Clear</div>
+                </div>
+                <div class="wl-stat-block">
+                  <div class="wl-stat-label">Momentum</div>
+                  <div class="wl-stat-value positive">+2.4σ</div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- CARD 3: Interactive Learning -->
+          <article class="wl-preview-card wl-reveal wl-reveal-d3" aria-label="Interactive Learning module">
+            <span class="wl-card-tag">Module 03</span>
+            <div class="wl-card-icon-area">
+              <div class="wl-card-icon-wrap" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F5C842" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                </svg>
+              </div>
+            </div>
+            <h3 class="wl-card-title">Interactive Learning</h3>
+            <p class="wl-card-desc">
+              Live market simulations, scenario walkthroughs, and guided exercises. Understanding compounds when you apply it in context.
+            </p>
+            <!-- Mini visual: progress steps -->
+            <div class="wl-card-visual" aria-hidden="true">
+              <div class="wl-steps">
+                <div class="wl-step-row">
+                  <div class="wl-step-num done">✓</div>
+                  <div class="wl-step-bar"><div class="wl-step-bar-fill" style="width:100%"></div></div>
+                  <span class="wl-step-text">Foundation</span>
+                </div>
+                <div class="wl-step-row">
+                  <div class="wl-step-num done">✓</div>
+                  <div class="wl-step-bar"><div class="wl-step-bar-fill" style="width:100%"></div></div>
+                  <span class="wl-step-text">Structure</span>
+                </div>
+                <div class="wl-step-row">
+                  <div class="wl-step-num" style="border-color:rgba(245,200,66,0.35);color:var(--wl-gold);">3</div>
+                  <div class="wl-step-bar"><div class="wl-step-bar-fill" style="width:55%"></div></div>
+                  <span class="wl-step-text">Application</span>
+                </div>
+                <div class="wl-step-row">
+                  <div class="wl-step-num">4</div>
+                  <div class="wl-step-bar"><div class="wl-step-bar-fill" style="width:0%"></div></div>
+                  <span class="wl-step-text">Mastery</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════
+         EARLY ACCESS BENEFITS
+    ═══════════════════════════════════════ -->
+    <section class="wl-benefits-section wl-section" aria-labelledby="wl-benefits-heading">
+      <div class="wl-container">
+        <div class="wl-benefits-inner">
+
+          <!-- Left: Copy -->
+          <div class="wl-benefits-copy">
+            <span class="wl-section-label wl-reveal wl-reveal-d1">Why Join Early</span>
+            <h2 class="wl-section-heading wl-reveal wl-reveal-d2" id="wl-benefits-heading">
+              First access matters<br>when the platform is still forming.
+            </h2>
+            <p class="wl-section-subtext wl-reveal wl-reveal-d3">
+              ProsperPath is built incrementally — with feedback from people who think carefully about markets. Early members aren't just users. They shape what this becomes.
+            </p>
+
+            <ul class="wl-benefits-list wl-reveal wl-reveal-d4" role="list">
+              <li class="wl-benefit-item">
+                <div class="wl-benefit-icon" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F5C842" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
+                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
+                    <line x1="6" y1="1" x2="6" y2="4"/>
+                    <line x1="10" y1="1" x2="10" y2="4"/>
+                    <line x1="14" y1="1" x2="14" y2="4"/>
+                  </svg>
+                </div>
+                <div class="wl-benefit-text">
+                  <strong>First Access</strong>
+                  <p>Access modules before they're publicly released. No queue, no waitlist delay once you're in.</p>
+                </div>
+              </li>
+              <li class="wl-benefit-item">
+                <div class="wl-benefit-icon" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F5C842" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 17H2a3 3 0 0 0 3-3V9a7 7 0 0 1 14 0v5a3 3 0 0 0 3 3zm-8.27 4a2 2 0 0 1-3.46 0"/>
+                  </svg>
+                </div>
+                <div class="wl-benefit-text">
+                  <strong>Launch Updates</strong>
+                  <p>Be notified as new tools and modules go live. Curated updates — nothing irrelevant.</p>
+                </div>
+              </li>
+              <li class="wl-benefit-item">
+                <div class="wl-benefit-icon" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F5C842" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
+                </div>
+                <div class="wl-benefit-text">
+                  <strong>Shape the Platform</strong>
+                  <p>Direct feedback from early members influences what gets built next. Understanding compounds — so does your input.</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Right: Timeline visual -->
+          <div class="wl-benefits-visual wl-reveal wl-reveal-d2" aria-label="Launch timeline" role="region">
+            <div class="wl-benefits-visual-label">Launch Roadmap</div>
+            <div class="wl-timeline" role="list">
+
+              <div class="wl-timeline-item" role="listitem">
+                <div class="wl-timeline-spine" aria-hidden="true">
+                  <div class="wl-timeline-dot active"></div>
+                  <div class="wl-timeline-line"></div>
+                </div>
+                <div class="wl-timeline-content">
+                  <div class="wl-timeline-phase">Phase 01 — Now</div>
+                  <div class="wl-timeline-title">Waitlist Open</div>
+                  <div class="wl-timeline-desc">Early registrations open. Founding members gain priority access and direct input into development.</div>
+                </div>
+              </div>
+
+              <div class="wl-timeline-item" role="listitem">
+                <div class="wl-timeline-spine" aria-hidden="true">
+                  <div class="wl-timeline-dot"></div>
+                  <div class="wl-timeline-line"></div>
+                </div>
+                <div class="wl-timeline-content">
+                  <div class="wl-timeline-phase">Phase 02 — Upcoming</div>
+                  <div class="wl-timeline-title">Beta Access</div>
+                  <div class="wl-timeline-desc">Waitlist members get first access to Market Mechanics and Clarity Tools modules before public launch.</div>
+                </div>
+              </div>
+
+              <div class="wl-timeline-item" role="listitem">
+                <div class="wl-timeline-spine" aria-hidden="true">
+                  <div class="wl-timeline-dot"></div>
+                  <div class="wl-timeline-line"></div>
+                </div>
+                <div class="wl-timeline-content">
+                  <div class="wl-timeline-phase">Phase 03</div>
+                  <div class="wl-timeline-title">Interactive Learning Launch</div>
+                  <div class="wl-timeline-desc">Live simulations and scenario walkthroughs unlock. Full platform becomes available.</div>
+                </div>
+              </div>
+
+              <div class="wl-timeline-item" role="listitem">
+                <div class="wl-timeline-spine" aria-hidden="true">
+                  <div class="wl-timeline-dot"></div>
+                  <div class="wl-timeline-line"></div>
+                </div>
+                <div class="wl-timeline-content">
+                  <div class="wl-timeline-phase">Phase 04</div>
+                  <div class="wl-timeline-title">Full Public Release</div>
+                  <div class="wl-timeline-desc">ProsperPath opens to the public. Early access pricing locked in for founding members.</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════
+         FINAL CTA — Repeat email capture
+    ═══════════════════════════════════════ -->
+    <section class="wl-final-cta" aria-labelledby="wl-final-heading">
+      <div class="wl-container">
+        <div class="wl-final-cta-inner">
+
+          <div class="wl-final-divider wl-reveal wl-reveal-d1" aria-hidden="true"></div>
+
+          <span class="wl-section-label wl-reveal wl-reveal-d2">Get Early Access</span>
+
+          <h2 class="wl-section-heading wl-reveal wl-reveal-d3" id="wl-final-heading">
+            Understanding compounds.<br>
+            <em>Start here.</em>
+          </h2>
+
+          <p class="wl-section-subtext wl-reveal wl-reveal-d4" style="text-align:center;">
+            Join the waitlist. Be among the first to access a platform built for people who take markets seriously — without the noise, without the hype.
+          </p>
+
+          <!-- Waitlist form — submits to /api/waitlist -->
+          <form
+            class="wl-final-form wl-reveal wl-reveal-d5"
+            id="wl-final-form"
+            aria-label="Final waitlist sign-up"
+            onsubmit="return wlHandleSubmit(event, 'wl-final-form');">
+            <!-- Honeypot -->
+            <label for="wl-final-website" class="wl-sr-only" aria-hidden="true">Leave this blank</label>
+            <input type="text" id="wl-final-website" name="website" tabindex="-1" autocomplete="off" style="display:none" aria-hidden="true">
+            <label for="wl-final-email" class="wl-sr-only">Email address</label>
+            <input
+              type="email"
+              id="wl-final-email"
+              name="email"
+              placeholder="Enter your email"
+              autocomplete="email"
+              required
+              aria-required="true">
+            <button type="submit" class="wl-btn-gold" id="wl-final-cta">
+              Join Waitlist &rarr;
+            </button>
+          </form>
+
+          <p class="wl-hero-social-proof wl-reveal wl-reveal-d5">
+            Get early access to Market Mechanics before public release.
+          </p>
+          <p class="wl-final-support wl-reveal wl-reveal-d5" style="margin-top:0;opacity:0.65;">
+            Join 20+ early members preparing for launch
+          </p>
+          <p class="wl-final-support wl-reveal wl-reveal-d5">
+            No spam. Just early access.
+          </p>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ═══════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════ -->
+  <footer class="wl-foot" role="contentinfo">
+    <div class="wl-container">
+      <div class="wl-foot-inner">
+        <p class="wl-foot-copy">© 2026 ProsperPath. All rights reserved.</p>
+        <nav class="wl-foot-links" aria-label="Footer navigation">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Contact</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ═══════════════════════════════════════
+       STANDALONE SCRIPTS — No coupling to external systems
+  ═══════════════════════════════════════ -->
+  <style>
+    /* Screen-reader only utility (inlined to keep fully standalone) */
+    .wl-sr-only {
+      position: absolute;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Inline success panel — replaces form on success */
+    .wl-success-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1.1rem 1.5rem;
+      background: rgba(34, 197, 94, 0.07);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+      border-radius: 0.75rem;
+      max-width: 480px;
+      margin: 0 auto;
+      animation: wl-fadein 0.4s ease both;
+    }
+    .wl-success-panel-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #4ade80;
+      letter-spacing: 0.01em;
+    }
+    .wl-success-panel-sub {
+      font-size: 0.8rem;
+      color: var(--wl-text-muted, #71717a);
+      text-align: center;
+      line-height: 1.5;
+    }
+  </style>
+
+  <script>
+    /* ─────────────────────────────────────────────────────────────
+       WAITLIST PAGE SCRIPTS
+       Isolated to this page. Connects only to /api/waitlist on
+       the same origin. No external services called from the browser.
+    ───────────────────────────────────────────────────────────── */
+
+    /* 1. Nav scroll state */
+    (function () {
+      const nav = document.getElementById('wl-nav');
+      if (!nav) return;
+      const onScroll = () => {
+        nav.classList.toggle('scrolled', window.scrollY > 48);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+
+    /* 2. Scroll-reveal observer */
+    (function () {
+      if (!('IntersectionObserver' in window)) {
+        document.querySelectorAll('.wl-reveal').forEach(el => el.classList.add('is-visible'));
+        return;
+      }
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReduced) {
+        document.querySelectorAll('.wl-reveal').forEach(el => el.classList.add('is-visible'));
+        return;
+      }
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+      document.querySelectorAll('.wl-reveal').forEach(el => observer.observe(el));
+      document.querySelectorAll('.wl-hero .wl-reveal').forEach(el => {
+        setTimeout(() => el.classList.add('is-visible'), 80);
+      });
+    })();
+
+    /* 3. Waitlist form submission
+     *
+     * Button states:
+     *   default  → "Join Waitlist →"
+     *   loading  → "Joining…"  (disabled)
+     *   success  → form replaced with .wl-success-panel
+     *   error    → "Try again"  (re-enabled after 4 s)
+     *
+     * The Brevo API key stays in .env on the server — never in this file.
+     */
+    async function wlHandleSubmit(event, formId) {
+      event.preventDefault();
+
+      const form  = document.getElementById(formId);
+      if (!form) return false;
+
+      const emailInput = form.querySelector('input[name="email"]');
+      const honeypot  = form.querySelector('input[name="website"]');
+      const btn        = form.querySelector('button[type="submit"]');
+      if (!emailInput || !btn) return false;
+
+      if (btn.disabled) return false;
+
+      // ─ Loading ──────────────────────────────────────────────────────────
+      btn.disabled        = true;
+      btn.textContent     = 'Joining…';
+      emailInput.disabled = true;
+
+      try {
+        // Resolve endpoint: use absolute Worker URL on Pages, same-origin on localhost
+        const _workerBase = (typeof window !== 'undefined' && window.WORKER_BASE_URL)
+          ? window.WORKER_BASE_URL
+          : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+              ? ''
+              : 'https://neurowealth-worker.smsproi357.workers.dev');
+        const res  = await fetch(_workerBase + '/api/waitlist', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email:   emailInput.value.trim(),
+            website: honeypot ? honeypot.value : '',
+          }),
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (data.ok) {
+          // ─ Success: swap form out for the calm confirmation panel ───
+          _wlShowSuccess(form);
+
+        } else if (data.status === 'rate_limited') {
+          _wlResetBtn(btn, emailInput, 'Too many attempts — please wait.');
+
+        } else if (data.status === 'invalid') {
+          _wlResetBtn(btn, emailInput, 'Enter a valid email');
+
+        } else {
+          _wlResetBtn(btn, emailInput, 'Something went wrong — try again');
+        }
+
+      } catch (_) {
+        _wlResetBtn(btn, emailInput, 'Could not connect — try again');
+      }
+
+      return false;
+    }
+
+    /**
+     * Replace the submitted form with a calm inline success panel.
+     * The form element is removed from the DOM, preventing repeat submissions.
+     */
+    function _wlShowSuccess(form) {
+      const panel = document.createElement('div');
+      panel.className = 'wl-success-panel';
+      panel.setAttribute('role', 'status');
+      panel.setAttribute('aria-live', 'polite');
+      panel.innerHTML = [
+        '<span class="wl-success-panel-title">You’re on the list ✓</span>',
+        '<span class="wl-success-panel-sub">Early access updates will be sent to your inbox.</span>',
+      ].join('');
+      form.replaceWith(panel);
+      panel.setAttribute('tabindex', '-1');
+      panel.focus();
+    }
+
+    /** Reset button to error label, re-enable after 4 s. */
+    function _wlResetBtn(btn, input, label) {
+      btn.textContent      = label;
+      btn.style.background = '';
+      btn.style.color      = '';
+      input.disabled       = false;
+      setTimeout(() => {
+        btn.disabled    = false;
+        btn.textContent = 'Join Waitlist →';
+      }, 4000);
+    }
+  </script>
+
+</body>
+</html>

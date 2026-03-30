@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -36,7 +36,6 @@
   <!-- Styles -->
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="hero-mock.css">
-  <link rel="stylesheet" href="guided-demo.css">
 </head>
 
 <body>
@@ -106,7 +105,7 @@
 
           <div class="hero-buttons">
             <a href="app.html" class="btn btn-primary btn-lg">GET STARTED &rarr;</a>
-            <a href="demo.html" class="btn btn-lg btn-outline-gold">TRY INTERACTIVE DEMO</a>
+            <a href="#" class="btn btn-lg btn-outline-gold" onclick="event.preventDefault(); if(window.ProsperDemo) ProsperDemo.startDemo();">TRY INTERACTIVE DEMO</a>
           </div>
           <div class="hero-reassurance" style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 1rem;">
             No signup required &bull; 2-minute guided experience
@@ -141,68 +140,93 @@
 
         <div class="hero-visual">
           <div class="mock-ui-container">
-            <!-- Backtest Card -->
-            <div class="mock-panel panel-backtest">
+            <!-- Card 1: Backtest (deepest layer, back of stack) -->
+            <div class="mock-panel panel-backtest" data-demo-card="backtest">
               <div class="panel-header">
-                <div class="panel-title"><span class="icon" style="font-size: 16px;">⚡</span> Backtest</div>
+                <div class="panel-title"><span class="icon" style="font-size: 16px;">📈</span> Backtest</div>
                 <div class="panel-dots">•••</div>
               </div>
               <div class="panel-body">
-                <div class="panel-date">Apr 1, 2024 — May 1, 2024</div>
-                <div class="panel-chart-placeholder pattern-chart"><span
-                    style="position:absolute; bottom:10px; left:10%; font-size:10px; color:var(--color-text-secondary);">Entry</span>
+                <div class="panel-subtitle">Test strategies against historical markets.</div>
+                <div class="panel-chart-placeholder" style="height:65px; position:relative; background: linear-gradient(90deg, transparent 0%, rgba(245,200,66,0.04) 50%, transparent 100%); border-radius:6px; overflow:hidden;">
+                  <svg viewBox="0 0 200 50" style="width:100%; height:100%;" preserveAspectRatio="none">
+                    <path d="M0,40 Q25,35 50,28 T100,18 T150,12 T200,8" fill="none" stroke="rgba(245,200,66,0.7)" stroke-width="2" vector-effect="non-scaling-stroke"/>
+                    <path d="M0,42 Q25,38 50,32 T100,25 T150,20 T200,15" fill="none" stroke="rgba(100,140,255,0.4)" stroke-width="1.5" stroke-dasharray="4 3" vector-effect="non-scaling-stroke"/>
+                  </svg>
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
-                  <span
-                    style="font-size:10px; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:1px;">RETURN</span>
-                  <span style="font-size:13px; font-weight:700; color:#22c55e;">+18.4%</span>
+                  <span style="font-size:10px; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:1px;">HISTORICAL</span>
+                  <span style="font-size:11px; font-weight:600; color:#22c55e;">+12.4% annual</span>
                 </div>
               </div>
+              <div class="card-preview"></div>
             </div>
 
-            <!-- Pattern Hunter Card -->
-            <div class="mock-panel panel-pattern">
+            <!-- Card 2: Pattern Hunter -->
+            <div class="mock-panel panel-pattern-hunter" data-demo-card="pattern-hunter">
               <div class="panel-header">
-                <div class="panel-title"><span class="icon" style="font-size: 16px;">◓</span> Pattern Hunter
-                </div>
+                <div class="panel-title"><span class="icon" style="font-size: 16px;">🔍</span> Pattern Hunter</div>
                 <div class="panel-dots">•••</div>
               </div>
               <div class="panel-body">
-                <ul class="pattern-list">
-                  <li><span>Symmetrical Triangle</span> <span style="color:#22c55e; font-weight:600;">87%</span></li>
-                  <li><span>Ascending Triangle</span> <span style="color:#F5C842; font-weight:600;">72%</span></li>
-                  <li><span>Cup & Handle</span> <span style="color:var(--color-text-muted);">54%</span></li>
-                </ul>
+                <div class="panel-subtitle">Detect repeatable market patterns.</div>
+                <div class="panel-chart-placeholder" style="height:65px; position:relative; background: linear-gradient(180deg, rgba(59,130,246,0.06) 0%, transparent 100%); border-radius:6px; overflow:hidden;">
+                  <div style="display:flex; flex-direction:column; justify-content:center; gap:4px; height:100%; padding:8px 12px;">
+                    <div style="display:flex; align-items:center; gap:6px;">
+                      <span style="font-size:9px; color:var(--color-text-muted); width:52px;">Pattern A</span>
+                      <div style="height:6px; width:85%; background:linear-gradient(90deg, rgba(34,197,94,0.7), rgba(34,197,94,0.2)); border-radius:3px;"></div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                      <span style="font-size:9px; color:var(--color-text-muted); width:52px;">Pattern B</span>
+                      <div style="height:6px; width:60%; background:linear-gradient(90deg, rgba(245,200,66,0.7), rgba(245,200,66,0.2)); border-radius:3px;"></div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                      <span style="font-size:9px; color:var(--color-text-muted); width:52px;">Pattern C</span>
+                      <div style="height:6px; width:72%; background:linear-gradient(90deg, rgba(59,130,246,0.7), rgba(59,130,246,0.2)); border-radius:3px;"></div>
+                    </div>
+                  </div>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                  <span style="font-size:10px; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:1px;">SCANNER</span>
+                  <span style="font-size:11px; font-weight:600; color:#22c55e;">3 setups found</span>
+                </div>
               </div>
+              <div class="card-preview"></div>
             </div>
 
-            <!-- Clarity Box Card -->
-            <div class="mock-panel panel-clarity">
+            <!-- Card 3: Market Intelligence -->
+            <div class="mock-panel panel-market-intelligence" data-demo-card="market-intelligence">
               <div class="panel-header">
-                <div class="panel-title"><span class="icon" style="font-size: 16px;">◎</span> Clarity Box
-                </div>
-                <span
-                  style="display:inline-flex; align-items:center; gap:4px; font-size:9px; color:#22c55e; text-transform:uppercase; letter-spacing:1px;">
-                  <span
-                    style="width:6px; height:6px; border-radius:50%; background:#22c55e; display:inline-block; animation: pulse 2s infinite;"></span>
-                  LIVE
-                </span>
+                <div class="panel-title"><span class="icon" style="font-size: 16px;">🧠</span> Market Intelligence</div>
+                <div class="panel-dots">•••</div>
               </div>
               <div class="panel-body">
-                <div class="panel-ticker">BTC/USD</div>
-                <div class="panel-price">$42,518.27</div>
-                <div style="font-size:11px; color:#22c55e; margin-top:2px; font-weight:500;">▲ +2.34% today</div>
-                <div class="panel-chart-placeholder mini-chart"></div>
+                <div class="panel-subtitle">Understand what the market is actually doing.</div>
+                <div class="panel-chart-placeholder" style="height:65px; position:relative; background: linear-gradient(90deg, transparent 0%, rgba(100,140,255,0.04) 50%, transparent 100%); border-radius:6px; overflow:hidden;">
+                  <svg viewBox="0 0 200 50" style="width:100%; height:100%;" preserveAspectRatio="none">
+                    <path d="M0,40 Q20,35 35,28 T70,18 T100,22 T130,12 T160,16 T200,8" fill="none" stroke="rgba(245,200,66,0.7)" stroke-width="2" vector-effect="non-scaling-stroke"/>
+                    <path d="M0,42 Q20,38 35,32 T70,25 T100,28 T130,20 T160,22 T200,15" fill="none" stroke="rgba(100,140,255,0.4)" stroke-width="1.5" stroke-dasharray="4 3" vector-effect="non-scaling-stroke"/>
+                    <circle cx="70" cy="18" r="3" fill="rgba(34,197,94,0.8)"/>
+                    <circle cx="130" cy="12" r="3" fill="rgba(34,197,94,0.8)"/>
+                    <circle cx="100" cy="22" r="3" fill="rgba(239,68,68,0.7)"/>
+                  </svg>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                  <span style="font-size:10px; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:1px;">SIGNAL</span>
+                  <span style="font-size:11px; font-weight:600; color:#22c55e;">Bullish bias detected</span>
+                </div>
               </div>
+              <div class="card-preview"></div>
             </div>
 
-            <!-- Portfolio Card -->
-            <div class="mock-panel panel-portfolio">
+            <!-- Card 4: Portfolio -->
+            <div class="mock-panel panel-portfolio" data-demo-card="portfolio">
               <div class="panel-header">
                 <div class="panel-title"><span class="icon" style="font-size: 16px;">💳</span> Portfolio</div>
                 <div class="panel-dots">•••</div>
               </div>
               <div class="panel-body">
+                <div class="panel-subtitle">Track assets and understand exposure.</div>
                 <div class="portfolio-row">
                   <div class="portfolio-name">Short-Term Equities</div>
                   <div class="portfolio-dots">.............</div>
@@ -213,7 +237,6 @@
                   <div class="portfolio-change text-success">▲ 5.23%<br /><span class="change-sub">in 30 days</span>
                   </div>
                 </div>
-                <!-- Mini allocation bar -->
                 <div style="display:flex; gap:2px; margin-top:10px; height:4px; border-radius:4px; overflow:hidden;">
                   <div style="flex:4; background:#22c55e; border-radius:2px;"></div>
                   <div style="flex:3; background:#F5C842; border-radius:2px;"></div>
@@ -227,6 +250,29 @@
                   <span style="font-size:8px; color:var(--color-text-muted);">Cash</span>
                 </div>
               </div>
+              <div class="card-preview"></div>
+            </div>
+
+            <!-- Card 5: Clarity Box (front focus card) -->
+            <div class="mock-panel panel-clarity" data-demo-card="clarity-box">
+              <div class="panel-header">
+                <div class="panel-title"><span class="icon" style="font-size: 16px;">◎</span> Clarity Box
+                </div>
+                <span
+                  style="display:inline-flex; align-items:center; gap:4px; font-size:9px; color:#22c55e; text-transform:uppercase; letter-spacing:1px;">
+                  <span
+                    style="width:6px; height:6px; border-radius:50%; background:#22c55e; display:inline-block; animation: pulse 2s infinite;"></span>
+                  LIVE
+                </span>
+              </div>
+              <div class="panel-body">
+                <div class="panel-subtitle">Ask questions. Get structured answers.</div>
+                <div class="panel-ticker">BTC/USD</div>
+                <div class="panel-price">$42,518.27</div>
+                <div style="font-size:11px; color:#22c55e; margin-top:2px; font-weight:500;">▲ +2.34% today</div>
+                <div class="panel-chart-placeholder mini-chart"></div>
+              </div>
+              <div class="card-preview"></div>
             </div>
           </div>
         </div>
@@ -478,7 +524,7 @@
       <div class="cta-buttons"
         style="margin-top: var(--space-10); display: flex; gap: var(--space-4); align-items: center; justify-content: center; z-index: 3; opacity: 0; transform: translateY(10px);">
         <a href="app.html" class="btn btn-primary btn-lg">GET STARTED →</a>
-        <a href="demo.html" class="btn btn-lg btn-outline-gold">TRY INTERACTIVE DEMO</a>
+        <a href="#" class="btn btn-lg btn-outline-gold" onclick="event.preventDefault(); if(window.ProsperDemo) ProsperDemo.startDemo();">TRY INTERACTIVE DEMO</a>
       </div>
 
     </div>
@@ -511,7 +557,7 @@
           <h4>Platform</h4>
           <div class="footer-links">
             <a href="clarity-box.html">Clarity Box</a>
-            <a href="trade.html">Trade</a>
+            <a href="backtest-landing.html">Backtest</a>
             <a href="portfolio.html">Portfolio</a>
             <div class="nav-item-dropdown">
 
@@ -603,7 +649,11 @@
 
   <script src="script.js?v=rx1"></script>
   <script src="ai-widget.js"></script>
-  <script src="guided-demo.js"></script>
+
+  <!-- Interactive Demo System (isolated) -->
+  <link rel="stylesheet" href="guided-demo-styles.css">
+  <script src="guided-demo-overlay.js"></script>
+  <script src="guided-demo-controller.js"></script>
 
   <!-- Hero Card Scroll-Driven Scrub Animation (Framer Motion) -->
   <script type="module">
@@ -646,6 +696,31 @@
           };
         });
       }
+    }
+
+    // Depth effect: hover activates card, dims siblings
+    if (panels.length > 0) {
+      panels.forEach(panel => {
+        panel.addEventListener('mouseenter', () => {
+          // Skip depth effect if demo is actively controlling cards
+          if (panel.classList.contains('demo-active')) return;
+          panels.forEach(p => {
+            if (p === panel) {
+              p.classList.add('depth-active');
+              p.classList.remove('depth-inactive');
+            } else {
+              p.classList.add('depth-inactive');
+              p.classList.remove('depth-active');
+            }
+          });
+        });
+        panel.addEventListener('mouseleave', () => {
+          // Clear all depth states — return to CSS defaults
+          panels.forEach(p => {
+            p.classList.remove('depth-active', 'depth-inactive');
+          });
+        });
+      });
     }
 
     // Secondary Animation: Core Focus Cards (Bottom-left to Final Structure)
@@ -878,9 +953,6 @@
       }
     });
   </script>
-
-  <!-- Interactive Demo Machine -->
-  <script type="module" src="demo-controller.js"></script>
 </body>
 
 </html>

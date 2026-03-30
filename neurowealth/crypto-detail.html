@@ -17,114 +17,9 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="styles.css">
-
-    <style>
-        /* Page specific overrides */
-        .coin-hero {
-            padding: var(--space-8) 0;
-            text-align: center;
-        }
-
-        .coin-hero-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            margin-bottom: var(--space-4);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .detail-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: var(--space-8);
-            margin-bottom: var(--space-12);
-        }
-
-        @media (max-width: 900px) {
-            .detail-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .chart-container {
-            height: 500px;
-            background: var(--color-surface-elevated);
-            border-radius: var(--radius-xl);
-            border: 1px solid var(--color-border);
-            overflow: hidden;
-        }
-
-        .ai-panel {
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-6);
-        }
-
-        .ai-card {
-            background: var(--color-surface-elevated);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-lg);
-            padding: var(--space-5);
-        }
-
-        .ai-card h3 {
-            font-size: var(--text-lg);
-            margin-bottom: var(--space-3);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .verdict-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: var(--radius-full);
-            font-weight: 700;
-            font-size: var(--text-sm);
-            margin-left: auto;
-        }
-
-        .verdict-buy {
-            background: rgba(0, 212, 170, 0.2);
-            color: var(--color-success);
-            border: 1px solid var(--color-success);
-        }
-
-        .verdict-sell {
-            background: rgba(255, 107, 107, 0.2);
-            color: var(--color-danger);
-            border: 1px solid var(--color-danger);
-        }
-
-        .verdict-hold {
-            background: rgba(255, 217, 61, 0.2);
-            color: var(--color-warning);
-            border: 1px solid var(--color-warning);
-        }
-
-        .news-item {
-            border-bottom: 1px solid var(--color-border);
-            padding-bottom: var(--space-3);
-            margin-bottom: var(--space-3);
-        }
-
-        .news-item:last-child {
-            border: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .news-item p {
-            font-size: var(--text-sm);
-            color: var(--color-text-secondary);
-            margin-top: 4px;
-        }
-
-        .news-date {
-            font-size: var(--text-xs);
-            color: var(--color-text-muted);
-        }
-    </style>
+    <link rel="stylesheet" href="clarity-box.css">
+    <link rel="stylesheet" href="market-theme.css">
+    <link rel="stylesheet" href="market-surface.css">
 </head>
 
 <body>
@@ -186,7 +81,7 @@
                 </div>
 
                 <div class="nav-actions"
-                    style="display: flex; align-items: center; gap: var(--space-4); position: relative;">
+                    style="display: flex; align-items: center; gap: var(--cb-space-md); position: relative;">
                     <div class="settings-wrapper" style="position: relative;">
                         <button id="settings-btn" class="settings-icon-btn" aria-label="Settings"
                             onclick="toggleAuthMenu()">
@@ -220,35 +115,32 @@
         <div class="detail-grid">
             <!-- Left: Chart -->
             <div class="chart-section">
-                <h2 style="margin-bottom: var(--space-4);">Professional Analysis Chart</h2>
-                <div class="chart-container" id="tv-chart-container">
-                    <!-- TradingView Widget will be injected here -->
-                </div>
+                <!-- ProsperPath Market Surface (Yahoo Finance OHLCV — migrated from TradingView) -->
+                <div id="ms-mount"></div>
 
                 <!-- AI Price Prediction (Replacing Whale Tracker) -->
-                <div class="ai-card" style="margin-top: var(--space-6); position: relative; overflow: hidden;">
+                <div class="ai-card" style="margin-top: var(--cb-space-lg); position: relative; overflow: hidden;">
                     <div
-                        style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-4);">
+                        style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--cb-space-md);">
                         <h3 style="margin-bottom: 4px;">🚀 AI Model Price Prediction</h3>
-                        <p style="font-size: var(--text-xs); color: var(--color-text-muted);">EOY 2026 Forecast by
+                        <p style="font-size: 0.75rem; color: var(--cb-text-muted);">EOY 2026 Forecast by
                             leading AI models (Compare multiple)</p>
                     </div>
 
                     <!-- AI Model Pills Container -->
                     <div id="ai-model-pills"
-                        style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: var(--space-6);">
+                        style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: var(--cb-space-lg);">
                         <!-- Pills will be injected here via script.js -->
                     </div>
 
                     <div id="ai-prediction-grid"
-                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-4);">
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--cb-space-md);">
                         <!-- Prediction cards will be injected here via script.js -->
                     </div>
 
                     <div id="ai-prediction-empty"
-                        style="text-align: center; padding: 3rem;  border: 1px dashed var(--color-border); border-radius: 12px; opacity: 0.6;"
-                        class="glass-panel">
-                        <p style="font-size: var(--text-sm);">Select one or more models above to compare predictions</p>
+                        style="text-align: center; padding: 3rem; border: 1px dashed var(--cb-border); border-radius: 12px; opacity: 0.6;">
+                        <p style="font-size: 0.875rem;">Select one or more models above to compare predictions</p>
                     </div>
                 </div>
             </div>
@@ -260,14 +152,12 @@
                 <div class="ai-card">
                     <h3>🧠 AI Market Sentiment</h3>
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: var(--text-sm); color: var(--color-text-secondary);">Fear & Greed
+                        <span style="font-size: 0.875rem; color: var(--cb-text-secondary);">Fear & Greed
                             Score</span>
-                        <strong id="ai-sentiment-score" style="font-size: var(--text-xl);">--</strong>
+                        <strong id="ai-sentiment-score" style="font-size: 1.25rem;">--</strong>
                     </div>
-                    <div style="height: 6px;  border-radius: 4px; margin-top: 10px; overflow: hidden;"
-                        class="glass-panel">
-                        <div id="sentiment-bar" style="width: 0%; height: 100%;  transition: width 1s ease;"
-                            class="glass-panel">
+                    <div style="height: 6px; border-radius: 4px; margin-top: 10px; overflow: hidden; background: var(--cb-bg-elevated);">
+                        <div id="sentiment-bar" style="width: 0%; height: 100%; transition: width 1s ease; background: var(--cb-accent);">
                         </div>
                     </div>
                 </div>
@@ -276,7 +166,7 @@
                 <div class="ai-card">
                     <h3>🤖 Investment Verdict <span id="ai-verdict-badge" class="verdict-badge">ANALYZING</span></h3>
                     <p id="ai-verdict-text"
-                        style="font-size: var(--text-sm); line-height: 1.6; color: var(--color-text-secondary);">
+                        style="font-size: 0.875rem; line-height: 1.6; color: var(--cb-text-secondary);">
                         ProsperPath AI is analyzing on-chain data, volume profiles, and social sentiment...
                     </p>
                 </div>
@@ -285,12 +175,12 @@
                 <div class="ai-card">
                     <h3>📈 2026 Price Outlook</h3>
                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                        <span style="color: var(--color-text-muted);">Conservative</span>
+                        <span style="color: var(--cb-text-muted);">Conservative</span>
                         <strong id="pred-low">--</strong>
                     </div>
                     <div style="display: flex; justify-content: space-between;">
-                        <span style="color: var(--color-accent);">Bull Case</span>
-                        <strong id="pred-high" style="color: var(--color-accent);">--</strong>
+                        <span style="color: var(--cb-accent);">Bull Case</span>
+                        <strong id="pred-high" style="color: var(--cb-accent);">--</strong>
                     </div>
                 </div>
 
@@ -313,13 +203,17 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-bottom">
-                <p>© 2026 ProsperPath Insights. Data via CoinGecko & TradingView.</p>
+                <p>© 2026 ProsperPath Insights. Price data via CoinGecko. Charts via Yahoo Finance.</p>
             </div>
         </div>
     </footer>
 
     <script src="script.js"></script>
     <script src="ai-widget.js"></script>
+
+    <!-- Lightweight Charts (required by Market Surface) -->
+    <script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
+    <script src="market-surface.js"></script>
 
     <!-- Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -329,8 +223,6 @@
             if (typeof initGoogleAuth === 'function') initGoogleAuth();
         });
     </script>
-    <!-- TradingView Widget Script (Loaded dynamically but good to have context) -->
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 </body>
 
 </html>

@@ -59,7 +59,70 @@ function requireApiAuth(req, res, next) {
     next();
 }
 
+// ── Waitlist endpoint ────────────────────────────────────────────────────────
+// Registered BEFORE requireApiAuth so it is publicly accessible.
+// Protected by a lightweight in-memory rate limiter and a honeypot field.
+const { addToBrevoWaitlist } = require('./waitlist-brevo-service');
+
+// In-memory rate limit: max 5 submissions per IP per 60 seconds.
+// Resets after the window. Sufficient for a low-traffic public form.
+const _waitlistRateMap = new Map();
+const WAITLIST_RATE_LIMIT    = 5;
+const WAITLIST_RATE_WINDOW   = 60 * 1000; // 60 s
+
+function _waitlistRateCheck(ip) {
+    const now    = Date.now();
+    const entry  = _waitlistRateMap.get(ip);
+    if (!entry || now - entry.ts > WAITLIST_RATE_WINDOW) {
+        _waitlistRateMap.set(ip, { ts: now, count: 1 });
+        return true;
+    }
+    if (entry.count >= WAITLIST_RATE_LIMIT) return false;
+    entry.count++;
+    return true;
+}
+
+// Simple email format validator (RFC 5321-ish, no external lib)
+const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/;
+
+app.post('/api/waitlist', async (req, res) => {
+    // ── 1. Rate limit ────────────────────────────────────────────────────────
+    const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim();
+    if (!_waitlistRateCheck(ip)) {
+        return res.status(429).json({ ok: false, status: 'rate_limited', message: 'Too many requests. Please wait a moment.' });
+    }
+
+    // ── 2. Honeypot check ────────────────────────────────────────────────────
+    // The hidden `website` field must be absent or empty. Bots that auto-fill
+    // all fields will be silently rejected without revealing the guard.
+    if (req.body && req.body.website) {
+        // Return 200 to fool bots — no real action taken.
+        return res.json({ ok: true, status: 'added' });
+    }
+
+    // ── 3. Input validation ──────────────────────────────────────────────────
+    const rawEmail = (req.body && req.body.email) || '';
+    const email    = rawEmail.toString().trim().toLowerCase();
+
+    if (!email) {
+        return res.status(400).json({ ok: false, status: 'invalid', message: 'Email address is required.' });
+    }
+    if (!EMAIL_RE.test(email)) {
+        return res.status(400).json({ ok: false, status: 'invalid', message: 'Please enter a valid email address.' });
+    }
+
+    // ── 4. Brevo upsert ──────────────────────────────────────────────────────
+    const result = await addToBrevoWaitlist(email);
+
+    if (result.ok) {
+        return res.json({ ok: true, status: 'added' });
+    }
+    return res.status(500).json({ ok: false, status: 'error', message: result.message || 'Something went wrong. Please try again.' });
+});
+
+// ── API auth guard (applied to all /api/* routes AFTER the public waitlist above)
 app.use('/api', requireApiAuth);
+
 
 // Plaid Configuration
 const configuration = new Configuration({

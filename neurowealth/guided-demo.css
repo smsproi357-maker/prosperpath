@@ -7,54 +7,38 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(10, 10, 12, 0.85); /* Dark translucent */
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
   z-index: 9998;
   opacity: 0;
   transition: opacity 300ms ease-in-out;
-  pointer-events: none; /* Let clicks pass to the underlying target when necessary */
+  pointer-events: none;
+  /* Overlay container ignores clicks, allowing panels to catch them */
 }
 
 .guided-demo-overlay.active {
   opacity: 1;
-  pointer-events: auto; /* Block all clicks on background */
+}
+
+/* 4 Spotlight Panels */
+.gd-spotlight-panel {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: top 220ms ease-in-out, left 220ms ease-in-out, width 220ms ease-in-out, height 220ms ease-in-out;
+  pointer-events: auto;
 }
 
 /* --- 2. SPOTLIGHT HIGHLIGHT --- */
-/* The target element needs relative position to attach pseudo elements or wrap properly */
 .guided-demo-target {
   position: relative;
-  z-index: 9999 !important; /* Above overlay */
-  /* Remove pointer-events none from here, target must be clickable if desired */
+  z-index: 9999 !important;
+  /* Above overlay */
 }
 
-/* Create the spotlight ring */
-.guided-demo-target::after {
-  content: '';
-  position: absolute;
-  top: -8px;
-  left: -8px;
-  right: -8px;
-  bottom: -8px;
-  border: 2px solid var(--color-accent, #F5C842);
-  border-radius: var(--radius-lg, 12px);
-  pointer-events: none; /* Crucial: clicks must pass through the ring */
-  box-shadow: 0 0 0 9999px rgba(10, 10, 12, 0.85); /* Alternative dimming method if overlay div isn't used */
-  z-index: -1;
-  opacity: 0;
-  animation: pulse-ring 2s infinite;
-}
-
-/* We will use the explicit overlay div for dimming instead of the box-shadow hack above for better control. */
-.guided-demo-target::after {
-  box-shadow: none; 
-}
-
-@keyframes pulse-ring {
-  0% { transform: scale(0.98); opacity: 0.8; box-shadow: 0 0 0 0 rgba(245, 200, 66, 0.4); }
-  70% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 10px rgba(245, 200, 66, 0); }
-  100% { transform: scale(0.98); opacity: 0.8; box-shadow: 0 0 0 0 rgba(245, 200, 66, 0); }
+/* Elevate parent containers enough to beat sibling overlaps but keep below overlay (9998)
+   so the 4-panel mask can still blur the rest of the parent card */
+.guided-demo-target-parent {
+  z-index: 3 !important;
 }
 
 
@@ -74,7 +58,8 @@
   transform: translateY(8px);
   font-family: 'Inter', sans-serif;
   color: #fff;
-  pointer-events: none; /* Ignore until active */
+  pointer-events: none;
+  /* Ignore until active */
 }
 
 .guided-demo-tooltip.active {
@@ -84,7 +69,7 @@
 }
 
 .tooltip-animate {
-  animation: tooltip-appear 220ms cubic-bezier(.2,.8,.2,1) forwards;
+  animation: tooltip-appear 220ms cubic-bezier(.2, .8, .2, 1) forwards;
 }
 
 @keyframes tooltip-appear {
@@ -92,6 +77,7 @@
     opacity: 0;
     transform: translateY(8px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -153,7 +139,8 @@
 .guided-demo-desc {
   font-size: 0.9rem;
   line-height: 1.5;
-  color: var(--color-text-secondary, #a1a1aa); /* Fallback color */
+  color: var(--color-text-secondary, #a1a1aa);
+  /* Fallback color */
   margin: 0 0 var(--space-6, 1.5rem) 0;
 }
 
@@ -294,6 +281,53 @@
 }
 
 
+/* --- 6. INTERACTIVE DEMO BANNER --- */
+.guided-demo-banner {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  gap: var(--space-6, 1.5rem);
+  background: rgba(20, 20, 22, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl, 16px);
+  padding: var(--space-4, 1rem) var(--space-6, 1.5rem);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transition: opacity 250ms ease-in-out;
+  pointer-events: none;
+}
+
+.guided-demo-banner.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.guided-demo-banner-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.guided-demo-banner-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 2px 0;
+}
+
+.guided-demo-banner-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary, #a1a1aa);
+  margin: 0;
+}
+
 /* --- RESPONSIVE BEHAVIOR --- */
 @media (max-width: 768px) {
   .guided-demo-tooltip {
@@ -301,4 +335,147 @@
     left: 16px !important;
     /* Force bottom positioning on mobile usually, managed by JS */
   }
+}
+
+/* --- 7. NEW DEMO STATES (HANDOFF, SANDBOX, MODALS) --- */
+
+/* Centered Modal Base */
+.gd-center-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10005;
+  background: rgba(20, 20, 22, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-xl, 16px);
+  padding: var(--space-8, 2rem) var(--space-6, 1.5rem);
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  text-align: center;
+  width: 90%;
+  max-width: 420px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms ease-in-out, transform 300ms ease;
+}
+
+.gd-center-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.gd-modal-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 var(--space-3, 0.75rem) 0;
+}
+
+.gd-modal-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary, #a1a1aa);
+  margin: 0 0 var(--space-6, 1.5rem) 0;
+}
+
+.gd-modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 0.75rem);
+  align-items: center;
+}
+
+.gd-modal-actions .guided-demo-btn {
+  width: 100%;
+  padding: var(--space-3, 0.75rem);
+  font-size: 1rem;
+}
+
+/* Sandbox Mode Indicator (Minimal) */
+.gd-sandbox-indicator {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  background: rgba(20, 20, 22, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  padding: 8px 16px 8px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms ease;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+.gd-sandbox-indicator.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.gd-sandbox-indicator-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+.gd-sandbox-indicator-text::before {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+}
+
+.gd-sandbox-btn-exit {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  color: #a1a1aa;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.gd-sandbox-btn-exit:hover {
+  color: #fff;
+  background: rgba(255,255,255,0.1);
+}
+
+/* Dim overlay for modals to feel distinct from Guided Walkthrough */
+.gd-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 10004;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms ease;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.gd-modal-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
 }

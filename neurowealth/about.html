@@ -1,118 +1,1005 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us | ProsperPath</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="About ProsperPath — advancing capital preservation through algorithmic transparency and structural market understanding.">
+  <title>About | ProsperPath</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    /* =============================================
+       ABOUT PAGE — LOCAL STYLES
+       ============================================= */
+
+    /* Page wrapper */
+    .about-page-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-left: 32px;
+      padding-right: 32px;
+      background-color: #0a0a0a;
+      color: rgba(255,255,255,0.92);
+    }
+
+    /* Typography helpers */
+    .about-section-label {
+      font-size: 12px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-weight: 500;
+      color: rgba(255,255,255,0.52);
+      margin-bottom: 20px;
+    }
+
+    .about-hero-headline {
+      font-size: 52px;
+      line-height: 1.12;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      max-width: 760px;
+      margin: 0 auto 28px;
+    }
+
+    .about-section-headline {
+      font-size: 40px;
+      line-height: 1.16;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      max-width: 680px;
+      margin: 0 0 28px;
+    }
+
+    .about-body-text {
+      font-size: 18px;
+      line-height: 1.75;
+      color: rgba(255,255,255,0.74);
+      max-width: 680px;
+      margin: 0 0 20px;
+    }
+
+    .about-philosophy-text {
+      font-size: 34px;
+      line-height: 1.35;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      color: rgba(255,255,255,0.92);
+      margin: 0;
+    }
+
+    /* ---- SECTIONS ---- */
+
+    /* 1. Mission Hero — centered column */
+    .about-section-mission {
+      padding-top: 160px;
+      padding-bottom: 140px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .about-section-mission .about-body-text {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* 2. Foundational Idea — centered text block */
+    .about-section-foundational {
+      padding-top: 120px;
+      padding-bottom: 120px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .about-section-foundational .about-body-text {
+      max-width: 780px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* 3. Why ProsperPath Exists — side anchor */
+    .about-section-why {
+      padding-top: 140px;
+      padding-bottom: 140px;
+    }
+    .about-side-anchor-grid {
+      display: grid;
+      grid-template-columns: 260px 640px;
+      gap: 88px;
+      align-items: start;
+    }
+
+    /* 4. What ProsperPath Is — centered header + cards */
+    .about-section-what {
+      padding-top: 120px;
+      padding-bottom: 140px;
+      text-align: center;
+    }
+    .about-card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      margin-top: 48px;
+      text-align: left;
+    }
+    .about-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 30px;
+      min-height: 240px;
+      transition: transform 0.22s ease-out, border-color 0.22s ease-out, box-shadow 0.22s ease-out;
+      will-change: transform;
+    }
+    .about-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212,175,55,0.20);
+      box-shadow: 0 14px 36px rgba(0,0,0,0.18);
+    }
+    .about-card-title {
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      color: rgba(255,255,255,0.92);
+      margin: 0 0 18px;
+    }
+    .about-card-body {
+      font-size: 16px;
+      line-height: 1.65;
+      color: rgba(255,255,255,0.60);
+      margin: 0;
+    }
+
+    /* 5. Principles — centered minimal */
+    .about-section-principles {
+      padding-top: 150px;
+      padding-bottom: 150px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .about-principles-list {
+      display: flex;
+      flex-direction: column;
+      gap: 42px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    /* 6. Framework — two column */
+    .about-section-framework {
+      padding-top: 140px;
+      padding-bottom: 150px;
+    }
+    .about-framework-grid {
+      display: grid;
+      grid-template-columns: 460px 1fr;
+      gap: 88px;
+      align-items: center;
+    }
+    .about-diagram-container {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 36px;
+    }
+    .about-diagram-layer {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      font-size: 16px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.82);
+      position: relative;
+    }
+    .about-diagram-layer + .about-diagram-connector {
+      display: flex;
+      justify-content: center;
+      padding: 6px 0;
+    }
+    .about-diagram-connector-line {
+      width: 2px;
+      height: 28px;
+      background: linear-gradient(to bottom, rgba(212,175,55,0.5), rgba(212,175,55,0.2));
+      border-radius: 1px;
+    }
+    .about-diagram-layer-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(212,175,55,0.8);
+      flex-shrink: 0;
+    }
+
+    .about-framework-right .about-section-label {
+      display: block;
+    }
+    .about-framework-list {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0 0;
+    }
+    .about-framework-list li {
+      font-size: 18px;
+      line-height: 1.75;
+      color: rgba(255,255,255,0.74);
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .about-framework-list li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(212,175,55,0.7);
+      flex-shrink: 0;
+    }
+    .about-framework-list li:last-child {
+      border-bottom: none;
+    }
+
+    /* 7. Methodology — side anchor */
+    .about-section-methodology {
+      padding-top: 120px;
+      padding-bottom: 130px;
+    }
+    .about-methodology-grid {
+      display: grid;
+      grid-template-columns: 260px 680px;
+      gap: 88px;
+      align-items: start;
+    }
+
+    /* 8. Vision — centered block */
+    .about-section-vision {
+      padding-top: 150px;
+      padding-bottom: 140px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .about-section-vision .about-section-headline {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .about-vision-statements {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      align-items: center;
+      margin-top: 36px;
+    }
+
+    /* 9. Credibility / Platform Design — centered list */
+    .about-section-credibility {
+      padding-top: 110px;
+      padding-bottom: 110px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .about-credibility-list {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-width: 560px;
+      width: 100%;
+    }
+    .about-credibility-list li {
+      font-size: 18px;
+      line-height: 1.75;
+      color: rgba(255,255,255,0.74);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .about-credibility-list li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(212,175,55,0.7);
+      flex-shrink: 0;
+    }
+
+    /* 10. CTA */
+    .about-section-cta {
+      padding-top: 160px;
+      padding-bottom: 180px;
+      display: flex;
+      justify-content: center;
+    }
+    .about-cta-card {
+      max-width: 860px;
+      width: 100%;
+      padding: 56px 40px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.08);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .about-cta-card .about-section-headline {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .about-cta-card .about-body-text {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .about-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      height: 52px;
+      padding: 0 26px;
+      border-radius: 12px;
+      background: rgba(212,175,55,0.92);
+      color: #0a0a0a;
+      font-weight: 600;
+      font-size: 15px;
+      font-family: inherit;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      margin-top: 28px;
+      transition: transform 0.18s ease-out, background 0.18s ease-out, box-shadow 0.18s ease-out;
+      letter-spacing: 0.01em;
+      will-change: transform;
+    }
+    .about-cta-btn:hover {
+      transform: translateY(-2px) scale(1.01);
+      background: rgba(212,175,55,1);
+      box-shadow: 0 10px 28px rgba(212,175,55,0.16);
+    }
+
+    /* Divider between major sections */
+    .about-section-divider {
+      width: 100%;
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+      border: none;
+    }
+
+    /* Credibility reinforcement block above CTA */
+    .about-section-credibility-close {
+      max-width: 760px;
+      margin: 0 auto;
+      text-align: center;
+      padding-top: 90px;
+      padding-bottom: 70px;
+    }
+    .about-section-credibility-close .about-section-label {
+      display: block;
+      margin-bottom: 16px;
+    }
+    .about-section-credibility-close .about-body-text {
+      max-width: 760px;
+      margin: 0 auto;
+      font-size: 17px;
+      color: rgba(255,255,255,0.54);
+    }
+
+    /* =============================================
+       SCROLL REVEAL — initial hidden states
+       ============================================= */
+
+    /* Sections that will animate on scroll */
+    .about-section-mission,
+    .about-section-foundational,
+    .about-section-why,
+    .about-section-what,
+    .about-section-principles,
+    .about-section-framework,
+    .about-section-methodology,
+    .about-section-vision,
+    .about-section-credibility,
+    .about-section-cta,
+    .about-section-credibility-close {
+      opacity: 0;
+      transform: translateY(20px);
+      will-change: opacity, transform;
+    }
+
+    /* Revealed state — added by IntersectionObserver */
+    .about-section-mission.is-visible,
+    .about-section-foundational.is-visible,
+    .about-section-why.is-visible,
+    .about-section-what.is-visible,
+    .about-section-principles.is-visible,
+    .about-section-framework.is-visible,
+    .about-section-methodology.is-visible,
+    .about-section-vision.is-visible,
+    .about-section-credibility.is-visible,
+    .about-section-cta.is-visible,
+    .about-section-credibility-close.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Per-section timing via CSS custom property */
+    .about-section-mission    { transition: opacity 850ms 100ms cubic-bezier(0.22,1,0.36,1), transform 850ms 100ms cubic-bezier(0.22,1,0.36,1); }
+    .about-section-foundational { transition: opacity 820ms 100ms cubic-bezier(0.22,1,0.36,1), transform 820ms 100ms cubic-bezier(0.22,1,0.36,1); }
+    .about-section-why        { transition: opacity 820ms 100ms cubic-bezier(0.22,1,0.36,1), transform 820ms 100ms cubic-bezier(0.22,1,0.36,1); }
+    .about-section-what       { transition: opacity 780ms 100ms cubic-bezier(0.22,1,0.36,1), transform 780ms 100ms cubic-bezier(0.22,1,0.36,1); }
+    .about-section-principles { transition: opacity 860ms 100ms cubic-bezier(0.22,1,0.36,1), transform 860ms 100ms cubic-bezier(0.22,1,0.36,1); }
+    .about-section-framework  { transition: opacity 820ms 100ms cubic-bezier(0.22,1,0.36,1), transform 820ms 100ms cubic-bezier(0.22,1,0.36,1); }
+    .about-section-methodology{ transition: opacity 800ms 100ms cubic-bezier(0.22,1,0.36,1), transform 800ms 100ms cubic-bezier(0.22,1,0.36,1); }
+    .about-section-vision     { transition: opacity 860ms 100ms cubic-bezier(0.22,1,0.36,1), transform 860ms 100ms cubic-bezier(0.22,1,0.36,1); }
+    .about-section-credibility{ transition: opacity 760ms 80ms cubic-bezier(0.22,1,0.36,1), transform 760ms 80ms cubic-bezier(0.22,1,0.36,1); }
+    .about-section-cta        { transition: opacity 900ms 120ms cubic-bezier(0.22,1,0.36,1), transform 900ms 120ms cubic-bezier(0.22,1,0.36,1); }
+    .about-section-credibility-close { transition: opacity 820ms 100ms cubic-bezier(0.22,1,0.36,1), transform 820ms 100ms cubic-bezier(0.22,1,0.36,1); }
+
+    /* Section label subtle fade */
+    .about-section-label {
+      transition: opacity 500ms ease-out;
+    }
+    .about-section-mission    .about-section-label,
+    .about-section-foundational .about-section-label,
+    .about-section-why        .about-section-label,
+    .about-section-what       .about-section-label,
+    .about-section-principles .about-section-label,
+    .about-section-framework  .about-section-label,
+    .about-section-methodology .about-section-label,
+    .about-section-vision     .about-section-label,
+    .about-section-credibility .about-section-label,
+    .about-section-cta        .about-section-label,
+    .about-section-credibility-close .about-section-label {
+      opacity: 0;
+      transition-delay: 60ms;
+    }
+    .is-visible .about-section-label {
+      opacity: 0.52; /* match base color alpha */
+    }
+
+    /* Stagger items — principles, vision statements, framework layers */
+    .about-stagger-item {
+      opacity: 0;
+      transform: translateY(12px);
+      will-change: opacity, transform;
+    }
+
+    /* Framework SVG layers & connectors */
+    .pp-fw-layer,
+    .pp-fw-connector {
+      opacity: 0;
+      transform: translateY(8px);
+      will-change: opacity, transform;
+    }
+
+    /* =============================================
+       MOBILE
+       ============================================= */
+    @media (max-width: 768px) {
+      .about-page-wrapper {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .about-hero-headline {
+        font-size: 36px;
+      }
+
+      .about-section-headline {
+        font-size: 30px;
+      }
+
+      .about-body-text {
+        font-size: 16px;
+      }
+
+      .about-philosophy-text {
+        font-size: 26px;
+      }
+
+      .about-side-anchor-grid,
+      .about-methodology-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .about-card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .about-card-title {
+        font-size: 22px;
+      }
+
+      .about-framework-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .about-section-mission {
+        padding-top: 100px;
+        padding-bottom: 80px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <header class="header">
-        <div class="container">
-            <nav class="nav">
-                <a href="index.html" class="logo">
-                    <div class="logo-icon">⚡</div>
-                    <span>ProsperPath</span>
-                </a>
-                <div class="nav-links" id="nav-links">
-                    <a href="features.html">Features</a>
-                    <a href="team.html">Team</a>
-                    <a href="about.html" class="active">About</a>
-                </div>
-                <div class="nav-actions"
-                    style="display: flex; align-items: center; gap: var(--space-4); position: relative;">
-                    <a href="app.html" class="btn btn-primary nav-cta">Get Started</a>
-                    <div class="settings-wrapper" style="position: relative;">
-                        <button id="settings-btn" class="settings-icon-btn" aria-label="Settings"
-                            onclick="toggleAuthMenu()">
-                            <span class="icon">⚙️</span>
-                        </button>
-                        <div id="auth-wrapper" class="auth-rolldown-container">
-                            <div id="auth-container"></div>
-                        </div>
-                    </div>
-                </div>
-                <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
-                    <span></span><span></span><span></span>
-                </button>
-            </nav>
-        </div>
-    </header>
+  <!-- Header — identical to site header -->
+  <header class="header" id="header">
+    <div class="container">
+      <nav class="nav">
+        <a href="index.html" class="logo">
+          <div class="logo-icon">⚡</div>
+          <span>ProsperPath</span>
+        </a>
 
-    <section class="page-header" style="padding-top: 140px; text-align: center;">
-        <div class="container">
-            <h1>Our <i>Mission</i></h1>
-            <p>Advancing capital preservation through algorithmic transparency.</p>
+        <div class="nav-links" id="nav-links">
+          <a href="features.html">Features</a>
+          <a href="team.html">Team</a>
+          <a href="about.html" class="active">About</a>
         </div>
+
+        <div class="nav-actions" style="display: flex; align-items: center; gap: var(--space-4); position: relative;">
+          <a href="app.html" class="btn btn-primary nav-cta">GET STARTED</a>
+          <div class="settings-wrapper" style="position: relative;">
+            <button id="settings-btn" class="settings-icon-btn" aria-label="Settings" onclick="toggleAuthMenu()">
+              <span class="icon">⚙️</span>
+            </button>
+            <div id="auth-wrapper" class="auth-rolldown-container">
+              <div id="auth-container"></div>
+            </div>
+          </div>
+        </div>
+
+        <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- About Page Content -->
+  <div class="about-page-wrapper">
+
+    <!-- ==============================================
+         SECTION 1: MISSION HERO
+         ============================================== -->
+    <section class="about-section-mission">
+      <p class="about-section-label">MISSION</p>
+      <h1 class="about-hero-headline">Advancing capital preservation through algorithmic transparency.</h1>
+      <p class="about-body-text">ProsperPath exists to bring structural clarity to financial markets. Instead of relying on surface patterns, the platform focuses on the underlying mechanisms that drive price movement and portfolio outcomes.</p>
     </section>
 
-    <section class="section">
-        <div class="container" style="max-width: 800px; margin: 0 auto; padding-bottom: 80px;">
-            <p style="font-size: var(--text-lg); margin-bottom: var(--space-4);">
-                At ProsperPath, we believe that serious investors require institutional-grade clarity.
-                Our mission is to establish rigorous operational transparency across digital asset and algorithmic
-                workflows.
-            </p>
-            <p style="font-size: var(--text-lg); margin-bottom: var(--space-6);">
-                Founded as a comprehensive quantitative platform, ProsperPath provides exactingly researched analysis
-                and
-                structured execution frameworks. We bridge the gap between abstract market complexity and actionable,
-                disciplined portfolio allocation.
-            </p>
-        </div>
+    <div class="about-section-divider"></div>
+
+    <!-- ==============================================
+         SECTION 2: FOUNDATIONAL IDEA
+         ============================================== -->
+    <section class="about-section-foundational">
+      <p class="about-section-label">FOUNDATIONAL IDEA</p>
+      <p class="about-body-text">Markets appear unpredictable when viewed through isolated patterns and indicators.</p>
+      <p class="about-body-text">Yet beneath the noise, price movement follows structural mechanisms driven by liquidity, auction dynamics, and participant behavior.</p>
+      <p class="about-body-text" style="margin-bottom: 0;">ProsperPath is built around understanding those mechanisms.</p>
     </section>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <a href="index.html" class="logo">
-                        <div class="logo-icon">⚡</div>
-                        <span>ProsperPath</span>
-                    </a>
-                    <p>Institutional-grade intelligence for quantitative and systematic allocation.</p>
-                </div>
-                <div class="footer-column">
-                    <h4>Resources</h4>
-                    <div class="footer-links">
-                        <a href="app.html">App Platform</a>
-                        <a href="features.html">Features</a>
-                        <a href="team.html">Our Team</a>
-                        <a href="about.html">About Us</a>
-                    </div>
-                </div>
-                <div class="footer-column">
-                    <h4>Insights</h4>
-                    <div class="footer-links">
-                        <a href="app.html">Algorithmic Strategies</a>
-                        <a href="app.html">Execution Infrastructure</a>
-                        <a href="app.html">Institutional Custody</a>
-                        <a href="app.html">Risk Management</a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>© 2026 ProsperPath. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+    <div class="about-section-divider"></div>
 
-    <script src="script.js"></script>
-    <script src="ai-widget.js"></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="google-auth.js"></script>
-    <script>
-        window.addEventListener('load', () => {
-            if (typeof initGoogleAuth === 'function') initGoogleAuth();
+    <!-- ==============================================
+         SECTION 3: WHY PROSPERPATH EXISTS
+         ============================================== -->
+    <section class="about-section-why">
+      <div class="about-side-anchor-grid">
+        <div>
+          <p class="about-section-label">WHY PROSPERPATH EXISTS</p>
+        </div>
+        <div>
+          <p class="about-body-text">Most financial platforms optimize for engagement and activity.</p>
+          <p class="about-body-text">ProsperPath optimizes for clarity and decision quality.</p>
+          <p class="about-body-text" style="margin-bottom: 0;">Instead of encouraging constant trading, the platform focuses on improving structural understanding.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="about-section-divider"></div>
+
+    <!-- ==============================================
+         SECTION 4: WHAT PROSPERPATH IS
+         ============================================== -->
+    <section class="about-section-what">
+      <p class="about-section-label">WHAT PROSPERPATH IS</p>
+
+      <div class="about-card-grid">
+        <div class="about-card">
+          <h3 class="about-card-title">Market Mechanics</h3>
+          <p class="about-card-body">Interactive education explaining liquidity, price movement, and auction mechanics.</p>
+        </div>
+        <div class="about-card">
+          <h3 class="about-card-title">Portfolio Intelligence</h3>
+          <p class="about-card-body">Portfolio tracking and capital allocation tools designed to provide structural clarity.</p>
+        </div>
+        <div class="about-card">
+          <h3 class="about-card-title">Decision Tools</h3>
+          <p class="about-card-body">Systems built to improve thinking and decision quality rather than prediction.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="about-section-divider"></div>
+
+    <!-- ==============================================
+         SECTION 5: PRINCIPLES
+         ============================================== -->
+    <section class="about-section-principles">
+      <p class="about-section-label">PRINCIPLES</p>
+      <div class="about-principles-list" id="principles-list">
+        <p class="about-philosophy-text about-stagger-item">Understanding compounds.</p>
+        <p class="about-philosophy-text about-stagger-item">Clarity over prediction.</p>
+        <p class="about-philosophy-text about-stagger-item">Structure over noise.</p>
+        <p class="about-philosophy-text about-stagger-item">Mechanics over indicators.</p>
+      </div>
+    </section>
+
+    <div class="about-section-divider"></div>
+
+    <!-- ==============================================
+         SECTION 6: FRAMEWORK
+         ============================================== -->
+    <section class="about-section-framework">
+      <div class="about-framework-grid">
+        <!-- LEFT: Diagram (inline SVG) -->
+        <div style="display:flex; justify-content:center; align-items:center;">
+          <svg
+            viewBox="0 0 320 360"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            width="100%"
+            height="auto"
+            style="display:block; max-width:320px;"
+            role="img"
+            aria-labelledby="pp-fw-title pp-fw-desc"
+          >
+            <title id="pp-fw-title">ProsperPath framework diagram showing Market Mechanics, Market Context, and Market Structure as three connected layers.</title>
+            <desc id="pp-fw-desc">A vertical layered diagram representing the ProsperPath market understanding framework, starting from Market Mechanics at the foundation, moving through Market Context, and culminating in Market Structure.</desc>
+
+            <!-- Filters -->
+            <defs>
+              <filter id="pp-soft-glow" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur stdDeviation="18" result="blur"/>
+                <feBlend in="SourceGraphic" in2="blur" mode="normal"/>
+              </filter>
+            </defs>
+
+            <!-- Background glow — reduced to subtle warm presence -->
+            <ellipse cx="160" cy="180" rx="80" ry="108" fill="rgba(212,175,55,0.03)" filter="url(#pp-soft-glow)"/>
+
+            <!-- Outer guide frame -->
+            <rect x="26" y="32" width="268" height="276" rx="22" fill="transparent" stroke="rgba(255,255,255,0.035)"/>
+
+            <!-- === Layer: Market Structure (top) === -->
+            <g class="pp-fw-layer pp-fw-layer--structure" id="fw-layer-structure">
+              <rect x="50" y="66" width="220" height="64" rx="14" fill="rgba(255,255,255,0.018)" stroke="rgba(255,255,255,0.08)"/>
+              <text x="160" y="90" text-anchor="middle" font-family="Inter,Outfit,sans-serif" font-size="16" font-weight="600" fill="rgba(255,255,255,0.92)">Market Structure</text>
+              <text x="160" y="110" text-anchor="middle" font-family="Inter,Outfit,sans-serif" font-size="11.5" font-weight="400" fill="rgba(255,255,255,0.62)">Trend formation &amp; shifts</text>
+            </g>
+
+            <!-- Connector: Structure → Context -->
+            <g class="pp-fw-connector" id="fw-conn-1">
+              <line x1="160" y1="130" x2="160" y2="148" stroke="rgba(255,255,255,0.14)" stroke-width="1.2"/>
+              <text x="160" y="145" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" font-weight="500" fill="rgba(212,175,55,0.7)">▲</text>
+            </g>
+
+            <!-- === Layer: Market Context (middle) === -->
+            <g class="pp-fw-layer pp-fw-layer--context" id="fw-layer-context">
+              <rect x="50" y="148" width="220" height="64" rx="14" fill="rgba(255,255,255,0.018)" stroke="rgba(255,255,255,0.08)"/>
+              <text x="160" y="172" text-anchor="middle" font-family="Inter,Outfit,sans-serif" font-size="16" font-weight="600" fill="rgba(255,255,255,0.92)">Market Context</text>
+              <text x="160" y="192" text-anchor="middle" font-family="Inter,Outfit,sans-serif" font-size="11.5" font-weight="400" fill="rgba(255,255,255,0.62)">State &amp; environment</text>
+            </g>
+
+            <!-- Connector: Context → Mechanics -->
+            <g class="pp-fw-connector" id="fw-conn-2">
+              <line x1="160" y1="212" x2="160" y2="230" stroke="rgba(255,255,255,0.14)" stroke-width="1.2"/>
+              <text x="160" y="227" text-anchor="middle" font-family="Inter,sans-serif" font-size="14" font-weight="500" fill="rgba(212,175,55,0.7)">▲</text>
+            </g>
+
+            <!-- === Layer: Market Mechanics (bottom) === -->
+            <g class="pp-fw-layer pp-fw-layer--mechanics" id="fw-layer-mechanics">
+              <rect x="50" y="230" width="220" height="64" rx="14" fill="rgba(255,255,255,0.018)" stroke="rgba(255,255,255,0.08)"/>
+              <text x="160" y="254" text-anchor="middle" font-family="Inter,Outfit,sans-serif" font-size="16" font-weight="600" fill="rgba(255,255,255,0.92)">Market Mechanics</text>
+              <text x="160" y="274" text-anchor="middle" font-family="Inter,Outfit,sans-serif" font-size="11.5" font-weight="400" fill="rgba(255,255,255,0.62)">Liquidity &amp; auctions</text>
+            </g>
+          </svg>
+
+          <style>
+            /* Framework SVG: JS-triggered transitions */
+            .pp-fw-layer,
+            .pp-fw-connector {
+              transition: opacity 560ms cubic-bezier(0.22,1,0.36,1), transform 560ms cubic-bezier(0.22,1,0.36,1);
+            }
+            .pp-fw-layer.fw-revealed,
+            .pp-fw-connector.fw-revealed {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          </style>
+        </div>
+
+        <!-- RIGHT: Text -->
+        <div class="about-framework-right">
+          <p class="about-section-label">THE FRAMEWORK</p>
+          <p class="about-body-text" style="max-width: 100%;">ProsperPath organizes market understanding into three structural layers.</p>
+          <ul class="about-framework-list">
+            <li>Market Mechanics — liquidity and auction dynamics</li>
+            <li>Market Context — environment and market state</li>
+            <li>Market Structure — trend formation and transitions</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="about-section-divider"></div>
+
+    <!-- ==============================================
+         SECTION 7: METHODOLOGY
+         ============================================== -->
+    <section class="about-section-methodology">
+      <div class="about-methodology-grid">
+        <div>
+          <p class="about-section-label">METHODOLOGY</p>
+        </div>
+        <div>
+          <p class="about-body-text">ProsperPath approaches markets through structural analysis rather than surface pattern recognition.</p>
+          <ul class="about-framework-list">
+            <li>Auction mechanics and liquidity flows</li>
+            <li>Market state and contextual conditions</li>
+            <li>Structural movement and trend behavior</li>
+          </ul>
+          <p class="about-body-text" style="margin-top: 24px; margin-bottom: 0;">Understanding these mechanisms provides clearer insight into how markets evolve over time.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="about-section-divider"></div>
+
+    <!-- ==============================================
+         SECTION 8: VISION
+         ============================================== -->
+    <section class="about-section-vision">
+      <p class="about-section-label">VISION</p>
+      <div id="vision-stagger-group">
+        <h2 class="about-section-headline about-stagger-item">To build the most structurally accurate framework for understanding financial markets.</h2>
+        <div class="about-vision-statements">
+          <p class="about-philosophy-text about-stagger-item">Not faster predictions.</p>
+          <p class="about-philosophy-text about-stagger-item">Better thinking.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="about-section-divider"></div>
+
+    <!-- ==============================================
+         SECTION 9: CREDIBILITY / PLATFORM DESIGN
+         ============================================== -->
+    <section class="about-section-credibility">
+      <p class="about-section-label">PLATFORM DESIGN</p>
+      <ul class="about-credibility-list">
+        <li>Domain-based market education system</li>
+        <li>Liquidity and auction-mechanics framework</li>
+        <li>Institutional-style portfolio analysis</li>
+        <li>Clarity-driven decision systems</li>
+      </ul>
+    </section>
+
+    <div class="about-section-divider"></div>
+
+    <!-- ==============================================
+         CREDIBILITY REINFORCEMENT (closing, above CTA)
+         ============================================== -->
+    <div class="about-section-credibility-close">
+      <p class="about-section-label">FOUNDATION</p>
+      <p class="about-body-text">Built around structural market mechanics, contextual analysis, and disciplined decision systems.</p>
+    </div>
+
+    <div class="about-section-divider"></div>
+
+    <!-- ==============================================
+         SECTION 10: CTA
+         ============================================== -->
+    <section class="about-section-cta">
+      <div class="about-cta-card">
+        <p class="about-section-label">BEGIN WITH UNDERSTANDING</p>
+        <h2 class="about-section-headline">Explore the systems that power ProsperPath.</h2>
+        <p class="about-body-text">Begin building structural clarity in financial markets.</p>
+        <a href="app.html" class="about-cta-btn">Explore ProsperPath</a>
+      </div>
+    </section>
+
+  </div><!-- /about-page-wrapper -->
+
+  <!-- Footer — identical to site footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <div class="logo-icon">⚡</div>
+            <span>ProsperPath</span>
+          </a>
+          <p>Institutional-grade intelligence for quantitative and systematic wealth management. Your trusted source for AI-powered investing insights.</p>
+        </div>
+
+        <div class="footer-column">
+          <h4>Platform</h4>
+          <div class="footer-links">
+            <a href="clarity-box.html">Clarity Box</a>
+            <a href="backtest-landing.html">Backtest</a>
+            <a href="portfolio.html">Portfolio</a>
+            <a href="backtest.html">Backtest Engine</a>
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h4>Resources</h4>
+          <div class="footer-links">
+            <a href="resources.html">Resources</a>
+            <a href="blog.html">Insights</a>
+            <a href="ai-calculators.html">AI Calculators</a>
+            <a href="wealth-guides.html">Wealth Guides</a>
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h4>Company</h4>
+          <div class="footer-links">
+            <a href="about.html">About Us</a>
+            <a href="team.html">Our Team</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 ProsperPath Insights. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="ai-widget.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="google-auth.js"></script>
+  <script>
+    window.addEventListener('load', () => {
+      if (typeof initGoogleAuth === 'function') initGoogleAuth();
+    });
+  </script>
+
+  <!-- About page motion: lightweight IntersectionObserver reveal system -->
+  <script>
+  (function () {
+    'use strict';
+
+    var isMobile = window.matchMedia('(max-width: 767px)').matches;
+
+    /* ─── 1. Section scroll-reveal ─────────────────────────────── */
+    var sectionSelectors = [
+      '.about-section-mission',
+      '.about-section-foundational',
+      '.about-section-why',
+      '.about-section-what',
+      '.about-section-principles',
+      '.about-section-framework',
+      '.about-section-methodology',
+      '.about-section-vision',
+      '.about-section-credibility',
+      '.about-section-cta',
+      '.about-section-credibility-close'
+    ];
+
+    var sectionObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          sectionObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    sectionSelectors.forEach(function (sel) {
+      var el = document.querySelector(sel);
+      if (el) sectionObs.observe(el);
+    });
+
+    /* ─── 2. Stagger: Principles ────────────────────────────────── */
+    function observeStaggerGroup(parentSel, itemSel, itemDuration, staggerDelay) {
+      var parent = document.querySelector(parentSel);
+      if (!parent) return;
+      var items = parent.querySelectorAll(itemSel);
+      if (!items.length) return;
+
+      var dur    = isMobile ? Math.round(itemDuration * 0.75) : itemDuration;
+      var delay  = isMobile ? Math.round(staggerDelay * 0.71) : staggerDelay;
+      var easing = 'cubic-bezier(0.22,1,0.36,1)';
+
+      items.forEach(function (item, i) {
+        item.style.transitionProperty = 'opacity, transform';
+        item.style.transitionDuration = dur + 'ms';
+        item.style.transitionTimingFunction = easing;
+        item.style.transitionDelay = (i * delay) + 'ms';
+      });
+
+      var staggerObs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            items.forEach(function (item) {
+              item.style.opacity = '1';
+              item.style.transform = 'translateY(0)';
+            });
+            staggerObs.unobserve(entry.target);
+          }
         });
-    </script>
+      }, { threshold: 0.15 });
+
+      staggerObs.observe(parent);
+    }
+
+    observeStaggerGroup('#principles-list', '.about-stagger-item', 700, 140);
+    observeStaggerGroup('#vision-stagger-group', '.about-stagger-item', 680, 150);
+
+    /* ─── 3. Framework diagram: bottom-up reveal ────────────────── */
+    (function () {
+      var fwSection = document.querySelector('.about-section-framework');
+      if (!fwSection) return;
+
+      // Ordered reveal: Market Mechanics → Market Context → Market Structure
+      // Connectors appear 80ms after their related layer starts
+      var sequence = [
+        { el: document.getElementById('fw-layer-mechanics'),  delay: 0 },
+        { el: document.getElementById('fw-conn-2'),           delay: 80 },
+        { el: document.getElementById('fw-layer-context'),    delay: 150 },
+        { el: document.getElementById('fw-conn-1'),           delay: 230 },
+        { el: document.getElementById('fw-layer-structure'),  delay: 300 }
+      ];
+
+      var fwTriggered = false;
+
+      var fwObs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting && !fwTriggered) {
+            fwTriggered = true;
+            sequence.forEach(function (step) {
+              if (!step.el) return;
+              setTimeout(function () {
+                step.el.classList.add('fw-revealed');
+              }, step.delay);
+            });
+            fwObs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+
+      fwObs.observe(fwSection);
+    }());
+
+  }());
+  </script>
 </body>
 
 </html>

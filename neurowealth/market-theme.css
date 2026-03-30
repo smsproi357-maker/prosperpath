@@ -1,0 +1,537 @@
+/* ============================================
+   MARKET PAGES THEME OVERRIDE
+   Aligns Market/Crypto pages with Clarity Box
+   ============================================ */
+
+/* -----------------------------------------------------------
+   Global Overrides
+   - Forces the Market pages to use the deep black background
+   ----------------------------------------------------------- */
+body {
+    background: var(--cb-bg-primary, #050506);
+    color: var(--cb-text-primary, #f4f4f5);
+}
+
+/* -----------------------------------------------------------
+   Page Header
+   - Remove heavy gradients, align to minimal centered layout
+   ----------------------------------------------------------- */
+.page-header {
+    background: var(--cb-bg-primary) !important;
+    padding: calc(var(--cb-space-3xl, 8rem) + 40px) var(--space-4) var(--cb-space-xl, 4rem) !important;
+    position: relative;
+    border-bottom: 1px solid var(--cb-border, rgba(255, 255, 255, 0.12));
+}
+
+.page-header::after,
+.page-header::before {
+    display: none !important;
+}
+
+.page-header h1 {
+    font-family: var(--cb-font-display, 'Outfit', sans-serif);
+    font-size: clamp(2rem, 4vw, 3rem) !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.03em !important;
+    color: var(--cb-text-primary, #f4f4f5);
+    margin-bottom: var(--cb-space-sm, 1rem) !important;
+}
+
+.page-header .subtitle {
+    font-size: 1.125rem !important;
+    color: var(--cb-text-secondary, #a1a1aa) !important;
+    font-weight: 300 !important;
+    max-width: 650px;
+    margin: 0 auto var(--cb-space-xl, 4rem) !important;
+}
+
+/* -----------------------------------------------------------
+   Market Stats Bar (Summary Metrics)
+   - Make these more compact and subtle
+   ----------------------------------------------------------- */
+.crypto-stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-6);
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+.stat-item {
+    background: var(--cb-bg-secondary, #0a0a0c) !important;
+    border: 1px solid var(--cb-border, rgba(255, 255, 255, 0.12)) !important;
+    border-radius: var(--cb-radius-md, 12px) !important;
+    padding: var(--space-3) var(--space-5) !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 140px;
+}
+
+.stat-item .label {
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+    color: var(--cb-text-muted, #71717a) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px !important;
+}
+
+.stat-item .value {
+    font-family: var(--cb-font-display, 'Outfit', sans-serif);
+    font-size: 1.125rem !important;
+    font-weight: 600 !important;
+    color: var(--cb-text-primary, #f4f4f5) !important;
+}
+
+/* -----------------------------------------------------------
+   Market Sub-Nav (Tabs)
+   - Align exactly with Clarity Box Segmented Control
+   ----------------------------------------------------------- */
+.market-subnav-container {
+    margin-bottom: var(--space-6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap; /* Fix overlap with options link group */
+    gap: var(--space-4);
+}
+
+.market-categories {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    background: var(--cb-bg-secondary, #0a0a0c);
+    border: 1px solid var(--cb-border, rgba(255, 255, 255, 0.12));
+    border-radius: var(--cb-radius-xl, 24px);
+    width: fit-content;
+}
+
+.market-options {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.market-options .option-link {
+    color: var(--cb-text-muted, #71717a) !important;
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+    padding: 4px 12px;
+    border-radius: var(--cb-radius-full, 9999px);
+    transition: all var(--cb-transition-fast, 0.15s ease) !important;
+    border: 1px solid transparent;
+}
+
+.market-options .option-link:hover {
+    color: var(--cb-text-secondary, #a1a1aa) !important;
+    background: var(--cb-bg-elevated, rgba(255, 255, 255, 0.05)) !important;
+}
+
+.market-options .option-link.active {
+    color: var(--cb-text-primary, #f4f4f5) !important;
+    border-color: var(--cb-border, rgba(255, 255, 255, 0.12));
+    background: var(--cb-bg-card, rgba(255, 255, 255, 0.09)) !important;
+}
+
+.subnav-link {
+    padding: 0.5rem 1.25rem !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    color: var(--cb-text-muted, #71717a) !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: calc(var(--cb-radius-xl, 24px) - 4px) !important;
+    transition: all var(--cb-transition-base, 0.25s ease) !important;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+}
+
+.subnav-link:hover {
+    color: var(--cb-text-secondary, #a1a1aa) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.subnav-link.active {
+    color: var(--cb-text-primary, #f4f4f5) !important;
+    background: var(--cb-bg-elevated, rgba(255, 255, 255, 0.05)) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+    border: none !important; /* overrides any existing styles.css active tab borders */
+}
+
+/* -----------------------------------------------------------
+   Search Container
+   - Style like Clarity Box query inputs
+   ----------------------------------------------------------- */
+.market-search-container {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.market-search-container input {
+    width: 100%;
+    padding: var(--space-4) var(--space-5) !important;
+    padding-right: 120px !important;
+    background: var(--cb-bg-elevated, rgba(255, 255, 255, 0.05)) !important;
+    border: 1px solid var(--cb-border-light, rgba(255, 255, 255, 0.15)) !important;
+    border-radius: var(--cb-radius-xl, 24px) !important;
+    color: var(--cb-text-primary, #f4f4f5) !important;
+    font-size: 1rem !important;
+    transition: all var(--cb-transition-base, 0.25s ease) !important;
+}
+
+.market-search-container input::placeholder {
+    color: var(--cb-text-muted, #71717a) !important;
+}
+
+.market-search-container input:focus {
+    border-color: rgba(255, 255, 255, 0.18) !important;
+    box-shadow: 0 0 16px rgba(255, 255, 255, 0.08), 0 0 0 4px var(--cb-accent-subtle, rgba(228, 228, 231, 0.15)) !important;
+}
+
+.market-search-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 38px;
+    padding: 0 16px !important;
+    background: var(--cb-bg-secondary, #0a0a0c) !important;
+    border: 1px solid var(--cb-border, rgba(255, 255, 255, 0.12)) !important;
+    border-radius: var(--cb-radius-lg, 16px) !important;
+    color: var(--cb-text-primary, #f4f4f5) !important;
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+    transition: all var(--cb-transition-fast, 0.15s ease) !important;
+}
+
+/* Specific fix for Stocks page which has a country filter button next to the search bar */
+.market-search-container:has(.country-filter-wrapper) .market-search-btn {
+    right: 56px; /* Offset to make room for the globe button */
+}
+
+.country-filter-wrapper {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.country-filter-btn {
+    height: 38px;
+    width: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cb-bg-secondary, #0a0a0c) !important;
+    border: 1px solid var(--cb-border, rgba(255, 255, 255, 0.12)) !important;
+    border-radius: var(--cb-radius-lg, 16px) !important;
+    cursor: pointer;
+    transition: all var(--cb-transition-fast, 0.15s ease) !important;
+}
+
+.country-filter-btn:hover {
+    background: var(--cb-bg-elevated, rgba(255, 255, 255, 0.05)) !important;
+    border-color: var(--cb-border-light, rgba(255, 255, 255, 0.15)) !important;
+}
+
+.market-search-btn:hover {
+    background: var(--cb-bg-elevated, rgba(255, 255, 255, 0.05)) !important;
+    border-color: var(--cb-border-light, rgba(255, 255, 255, 0.15)) !important;
+    transform: translateY(-50%) !important;
+    box-shadow: none !important;
+}
+
+/* -----------------------------------------------------------
+   Asset Cards (.crypto-card)
+   - Must remain proper cards but use CB styling
+   - Refined background tone, soft border, muted text
+   ----------------------------------------------------------- */
+.crypto-card {
+    background: var(--cb-bg-secondary, #0a0a0c) !important;
+    border: 1px solid var(--cb-border, rgba(255, 255, 255, 0.12)) !important;
+    border-radius: var(--cb-radius-lg, 16px) !important;
+    padding: var(--space-5) !important;
+    transition: all var(--cb-transition-base, 0.25s ease) !important;
+    box-shadow: none !important;
+}
+
+.crypto-card:hover {
+    background: var(--cb-bg-card, rgba(255, 255, 255, 0.09)) !important;
+    border-color: rgba(255, 255, 255, 0.18) !important;
+    transform: translateY(-4px) !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+.coin-name-group h3 {
+    font-family: var(--cb-font-display, 'Outfit', sans-serif);
+    font-weight: 600 !important;
+    color: var(--cb-text-primary, #f4f4f5) !important;
+}
+
+.coin-symbol {
+    color: var(--cb-text-muted, #71717a) !important;
+}
+
+.coin-price {
+    font-family: var(--cb-font-display, 'Outfit', sans-serif);
+    font-size: 2rem !important; /* Slightly more restrained than 2.5rem */
+    font-weight: 500 !important;
+    color: var(--cb-text-primary, #f4f4f5) !important;
+    margin-top: 8px;
+}
+
+.coin-stats-row {
+    border-top: 1px solid var(--cb-border, rgba(255, 255, 255, 0.12)) !important;
+    color: var(--cb-text-secondary, #a1a1aa) !important;
+    font-size: 0.875rem !important;
+}
+
+/* -----------------------------------------------------------
+   Watchlist Button
+   ----------------------------------------------------------- */
+.watchlist-btn {
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    color: var(--cb-text-muted, #71717a) !important;
+}
+
+.watchlist-btn:hover {
+    background: var(--cb-bg-elevated, rgba(255, 255, 255, 0.05)) !important;
+    border-color: var(--cb-border, rgba(255, 255, 255, 0.12)) !important;
+    color: var(--cb-text-secondary, #a1a1aa) !important;
+}
+
+.watchlist-btn.active {
+    color: #eab308 !important; /* Restrained Gold */
+    background: rgba(234, 179, 8, 0.05) !important;
+    border-color: rgba(234, 179, 8, 0.2) !important;
+}
+
+/* -----------------------------------------------------------
+   Currency Selector Button
+   ----------------------------------------------------------- */
+.currency-selector-btn {
+    background: var(--cb-bg-elevated, rgba(255, 255, 255, 0.05)) !important;
+    border: 1px solid var(--cb-border, rgba(255, 255, 255, 0.12)) !important;
+    color: var(--cb-text-secondary, #a1a1aa) !important;
+    border-radius: var(--cb-radius-xl, 24px) !important;
+    padding: 6px 16px !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    transition: all var(--cb-transition-fast, 0.15s ease) !important;
+}
+
+.currency-selector-btn:hover {
+    background: var(--cb-bg-card, rgba(255, 255, 255, 0.09)) !important;
+    color: var(--cb-text-primary, #f4f4f5) !important;
+    border-color: var(--cb-border-light, rgba(255, 255, 255, 0.15)) !important;
+}
+
+.currency-dropdown {
+    background: var(--cb-bg-secondary, #0a0a0c) !important;
+    border: 1px solid var(--cb-border, rgba(255, 255, 255, 0.12)) !important;
+    border-radius: var(--cb-radius-md, 12px) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+}
+
+.currency-option {
+    color: var(--cb-text-secondary, #a1a1aa) !important;
+}
+
+.currency-option:hover {
+    background: var(--cb-bg-elevated, rgba(255, 255, 255, 0.05)) !important;
+    color: var(--cb-text-primary, #f4f4f5) !important;
+}
+
+/* -----------------------------------------------------------
+   Asset Detail Pages (crypto-detail.html & market-detail.html)
+   ----------------------------------------------------------- */
+.coin-hero {
+    padding: var(--cb-space-xl, 4rem) 0;
+    text-align: center;
+}
+
+.coin-hero-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: var(--cb-space-md, 1.5rem);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.05); /* Soft, subtle glow */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cb-bg-secondary, #0a0a0c);
+    border: 1px solid var(--cb-border, rgba(255, 255, 255, 0.12));
+    font-size: 32px;
+    margin-left: auto;
+    margin-right: auto;
+    color: var(--cb-text-primary, #f4f4f5);
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--cb-space-lg, 2.5rem);
+    margin-bottom: var(--cb-space-3xl, 8rem);
+}
+
+@media (max-width: 900px) {
+    .detail-grid {
+        grid-template-columns: 1fr;
+        gap: var(--cb-space-md, 1.5rem);
+    }
+}
+
+.chart-section h2 {
+    font-family: var(--cb-font-display, 'Outfit', sans-serif);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--cb-text-primary, #f4f4f5);
+    margin-bottom: var(--cb-space-md, 1.5rem);
+    letter-spacing: -0.01em;
+}
+
+.chart-container {
+    height: 500px;
+    background: var(--cb-bg-secondary, #0a0a0c) !important;
+    border-radius: var(--cb-radius-xl, 24px) !important;
+    border: 1px solid var(--cb-border, rgba(255, 255, 255, 0.12)) !important;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important; /* Deeper shadow, less flat */
+}
+
+.ai-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cb-space-md, 1.5rem);
+}
+
+/* AI Cards & Prediction/Sentiment Info */
+.ai-card {
+    background: var(--cb-bg-secondary, #0a0a0c) !important;
+    border: 1px solid var(--cb-border, rgba(255, 255, 255, 0.12)) !important;
+    border-radius: var(--cb-radius-lg, 16px) !important;
+    padding: var(--cb-space-md, 1.5rem) !important;
+    transition: all var(--cb-transition-base, 0.25s ease) !important;
+    box-shadow: none !important;
+}
+
+.ai-card:hover {
+    background: var(--cb-bg-card, rgba(255, 255, 255, 0.09)) !important;
+    border-color: rgba(255, 255, 255, 0.18) !important;
+    transform: translateY(-4px) !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+.ai-card h3 {
+    font-family: var(--cb-font-display, 'Outfit', sans-serif);
+    font-size: 1.125rem !important;
+    font-weight: 600 !important;
+    color: var(--cb-text-primary, #f4f4f5) !important;
+    margin-bottom: var(--cb-space-sm, 1rem) !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0;
+}
+
+/* Badges */
+.verdict-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    margin-left: auto;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.verdict-buy {
+    background: rgba(0, 212, 170, 0.1) !important;
+    color: #00d4aa !important;
+    border: 1px solid rgba(0, 212, 170, 0.2) !important;
+}
+
+.verdict-sell {
+    background: rgba(255, 107, 107, 0.1) !important;
+    color: #ff6b6b !important;
+    border: 1px solid rgba(255, 107, 107, 0.2) !important;
+}
+
+.verdict-hold {
+    background: rgba(255, 217, 61, 0.1) !important;
+    color: #ffd93d !important;
+    border: 1px solid rgba(255, 217, 61, 0.2) !important;
+}
+
+/* News List inside AI Cards */
+.news-item {
+    border-bottom: 1px solid var(--cb-border, rgba(255, 255, 255, 0.12));
+    padding-bottom: var(--cb-space-sm, 1rem);
+    margin-bottom: var(--cb-space-sm, 1rem);
+}
+
+.news-item:last-child {
+    border: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.news-item p {
+    font-size: 0.875rem;
+    color: var(--cb-text-secondary, #a1a1aa);
+    margin-top: 6px;
+    line-height: 1.5;
+}
+
+.news-date {
+    font-size: 0.75rem;
+    color: var(--cb-text-muted, #71717a);
+}
+
+/* Prediction Pills / Toggles (for AI comparison) */
+.model-pill, .pill-button {
+    background: var(--cb-bg-elevated, rgba(255, 255, 255, 0.05)) !important;
+    border: 1px solid var(--cb-border, rgba(255, 255, 255, 0.12)) !important;
+    color: var(--cb-text-secondary, #a1a1aa) !important;
+    border-radius: 9999px !important;
+    padding: 6px 16px !important;
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+    cursor: pointer;
+    transition: all var(--cb-transition-fast, 0.15s ease) !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.model-pill:hover, .pill-button:hover {
+    background: var(--cb-bg-card, rgba(255, 255, 255, 0.09)) !important;
+    color: var(--cb-text-primary, #f4f4f5) !important;
+    border-color: var(--cb-border-light, rgba(255, 255, 255, 0.15)) !important;
+}
+
+.model-pill.active, .pill-button.active {
+    background: var(--cb-bg-card, rgba(255, 255, 255, 0.09)) !important;
+    color: var(--cb-text-primary, #f4f4f5) !important;
+    border-color: var(--cb-border-light, rgba(255, 255, 255, 0.15)) !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06) !important;
+}

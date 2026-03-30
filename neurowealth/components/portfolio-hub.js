@@ -644,6 +644,11 @@
         const backBtn = g('ph-back-to-hub');
         if (backBtn) backBtn.addEventListener('click', goBackToHub);
 
+        // ── Demo mode: inject demo portfolios before first render ──────────
+        if (window.DemoPortfolioData && window.DemoPortfolioData.isDemoMode()) {
+            window.DemoPortfolioData.injectDemoPortfolios();
+        }
+
         window.addEventListener('hashchange', () => {
             const { view, portfolioId } = readHash();
             if (view === 'detail' && portfolioId) {
